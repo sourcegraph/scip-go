@@ -3,7 +3,6 @@ package index
 import (
 	"fmt"
 	"go/ast"
-	"go/token"
 
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/symbols"
@@ -11,91 +10,134 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func visitTypeDefinition(doc *document.Document, pkg *packages.Package, decl *ast.GenDecl) {
-	ast.Walk(TypeVisitor{
-		doc: doc,
+func visitTypesInFile(doc *document.Document, pkg *packages.Package, file *ast.File) {
+	visitor := TypeVisitor{
 		pkg: pkg,
-	}, decl)
+		doc: doc,
+		curScope: []*scip.Descriptor{
+			{
+				Name:   pkg.PkgPath,
+				Suffix: scip.Descriptor_Namespace,
+			},
+		},
+	}
+
+	ast.Walk(visitor, file)
 }
 
+// TypeVisitor collects the all the information for top-level structs
+// that can be imported by any other file (they do not have to be exported).
+//
+// For example, a struct `myStruct` can be imported by other files in the same
+// packages. So we need to make those field names global (we only have global
+// or file-local).
 type TypeVisitor struct {
-	doc     *document.Document
-	pkg     *packages.Package
-	curDecl *ast.GenDecl
+	doc *document.Document
+	pkg *packages.Package
+
+	curScope []*scip.Descriptor
+	curDecl  *ast.GenDecl
 }
 
 func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
-	switch node := n.(type) {
-	case *ast.GenDecl:
-		switch node.Tok {
-		case token.TYPE:
-			v.curDecl = node
-			return v
-		default:
-			return nil
-		}
-	case *ast.TypeSpec:
-		// TODO: Do we need a cur scope for this as well?...
-		// structDescriptors := []*scip.Descriptor{
-		// 	{
-		// 		Name:   v.pkg.PkgPath,
-		// 		Suffix: scip.Descriptor_Namespace,
-		// 	},
-		// 	{
-		// 		Name:   node.Name.Name,
-		// 		Suffix: scip.Descriptor_Type,
-		// 	},
-		// }
-
-		typeSymbol := symbols.FromDescriptors(v.pkg,
-			&scip.Descriptor{
-				Name:   v.pkg.PkgPath,
-				Suffix: scip.Descriptor_Namespace,
-			},
-			&scip.Descriptor{
-				Name:   node.Name.Name,
-				Suffix: scip.Descriptor_Type,
-			})
-
-		v.doc.DeclareNewSymbol(typeSymbol, v.curDecl, node.Name)
-
-		if node.TypeParams != nil {
-			// panic("generics")
-		}
-
-		ast.Walk(v, node.Type)
-		return nil
-
-	case *ast.StructType, *ast.InterfaceType:
-		return v
-
-	case *ast.FieldList:
-		for _, field := range node.List {
-			if len(field.Names) == 0 {
-			} else {
-				for _, name := range field.Names {
-					if fieldSymbol, ok := v.doc.GetSymbol(name.NamePos); ok {
-						v.doc.DeclareNewSymbol(fieldSymbol, field, name)
-					} else {
-						panic(fmt.Sprintf("field with no definition: %v", node))
-					}
-				}
-			}
-
-			switch field.Type.(type) {
-			case *ast.InterfaceType, *ast.StructType:
-				ast.Walk(v, field.Type)
-			}
-		}
-		return nil
-
-	case *ast.FuncType, *ast.SelectorExpr:
-		return nil
-
-	case *ast.Ident:
-		return nil
-
-	default:
+	if n == nil {
 		return nil
 	}
+
+	switch node := n.(type) {
+	case *ast.GenDecl:
+		// Current declaration is required for some documentation parsing.
+		// So we have to keep this here with us as we traverse more deeply
+		v.curDecl = node
+		return v
+
+	case
+		// Continue down file and decls
+		*ast.File,
+
+		// Toplevel types that are important
+		*ast.StructType,
+		*ast.InterfaceType,
+
+		// Continue traversing subtypes
+		*ast.FieldList,
+		*ast.Ident:
+
+		return v
+
+	case *ast.TypeSpec:
+		v.curScope = append(v.curScope, &scip.Descriptor{
+			Name:   node.Name.Name,
+			Suffix: scip.Descriptor_Type,
+		})
+		defer func() {
+			v.curScope = v.curScope[:len(v.curScope)-1]
+		}()
+
+		v.doc.DeclareNewSymbol(
+			symbols.FromDescriptors(v.pkg, v.curScope...),
+			v.curDecl,
+			node.Name,
+		)
+
+		ast.Walk(v, node.Type)
+	case *ast.Field:
+		// I think the only case of this is embedded fields.
+		if len(node.Names) == 0 {
+			name := v.getIdentOfTypeExpr(node.Type)
+			embeddedSymbol := v.makeSymbol(&scip.Descriptor{
+				Name:   name.Name,
+				Suffix: scip.Descriptor_Term,
+			})
+
+			// In this odd scenario, the definition is at embedded field level,
+			// not wherever the name is. So that messes up our lookup table.
+			v.doc.DeclareNewSymbolForPos(embeddedSymbol, node, name, node.Pos())
+		} else {
+			for _, name := range node.Names {
+				v.doc.DeclareNewSymbol(v.makeSymbol(&scip.Descriptor{
+					Name:   name.Name,
+					Suffix: scip.Descriptor_Term,
+				}), nil, name)
+
+				switch node.Type.(type) {
+				case *ast.StructType, *ast.InterfaceType:
+					// Current scope is now embedded in the anonymous struct
+					//   So we walk the rest of the type expression and save
+					//   the nested names
+					v.curScope = append(v.curScope, &scip.Descriptor{
+						Name:   name.Name,
+						Suffix: scip.Descriptor_Term,
+					})
+					defer func() {
+						v.curScope = v.curScope[:len(v.curScope)-1]
+					}()
+
+					ast.Walk(v, node.Type)
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+// Implements ast.Visitor
+var _ ast.Visitor = &TypeVisitor{}
+
+func (s *TypeVisitor) getIdentOfTypeExpr(ty ast.Expr) *ast.Ident {
+	switch ty := ty.(type) {
+	case *ast.Ident:
+		return ty
+	case *ast.SelectorExpr:
+		return ty.Sel
+	case *ast.StarExpr:
+		return s.getIdentOfTypeExpr(ty.X)
+	default:
+		panic(fmt.Sprintf("Unhandled unamed struct field: %T %+v", ty, ty))
+	}
+}
+
+func (s *TypeVisitor) makeSymbol(descriptor *scip.Descriptor) string {
+	return symbols.FromDescriptors(s.pkg, append(s.curScope, descriptor)...)
 }

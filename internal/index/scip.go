@@ -175,7 +175,7 @@ func visitSyntax(pkg *packages.Package, pkgSymbols *lookup.Package, f *ast.File,
 	// TODO: Maybe we should do this before? we have traverse all
 	// the fields first before, but now I think it's fine right here
 	// .... maybe
-	visitFieldsInFile(doc, pkg, f)
+	visitTypesInFile(doc, pkg, f)
 
 	for _, decl := range f.Decls {
 		switch decl := decl.(type) {
@@ -188,12 +188,12 @@ func visitSyntax(pkg *packages.Package, pkgSymbols *lookup.Package, f *ast.File,
 				// These do not create global symbols
 				continue
 
+			case token.TYPE:
+				// We do this via visitTypesInFile above
+
 			case token.VAR, token.CONST:
 				// visit var
 				visitVarDefinition(doc, pkg, decl)
-
-			case token.TYPE:
-				// visitTypeDefinition(doc, pkg, decl)
 
 			default:
 				panic("Unhandled general declaration")
