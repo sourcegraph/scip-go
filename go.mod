@@ -10,8 +10,14 @@ require (
 )
 
 require (
+	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
+	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
+)
+
+require (
 	github.com/Masterminds/semver v1.4.2 // indirect
 	github.com/Masterminds/sprig v2.15.0+incompatible // indirect
+	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/aokoli/goutils v1.0.1 // indirect
 	github.com/bufbuild/buf v1.4.0 // indirect
 	github.com/cockroachdb/errors v1.8.9 // indirect

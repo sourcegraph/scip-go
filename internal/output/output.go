@@ -12,11 +12,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/parallel"
 )
 
-type Options struct {
-	Verbosity      Verbosity
-	ShowAnimations bool
-}
-
 type Verbosity int
 
 const (
@@ -26,6 +21,16 @@ const (
 	VeryVerboseOutput
 	VeryVeryVerboseOutput
 )
+
+type Options struct {
+	Verbosity      Verbosity
+	ShowAnimations bool
+}
+
+var opts Options = Options{
+	Verbosity:      DefaultOutput,
+	ShowAnimations: false,
+}
 
 // updateInterval is the duration between updates in withProgress.
 var updateInterval = time.Second / 4
@@ -46,26 +51,26 @@ var successPrefix = "✔"
 var logger = log.New(os.Stdout, "", 0)
 
 // WithProgress prints a spinner while the given function is active.
-func WithProgress(name string, fn func(), outputOptions Options) {
+func WithProgress(name string, fn func()) {
 	ch := make(chan func(), 1)
 	ch <- fn
 	close(ch)
 
 	wg, count := parallel.Run(ch)
-	WithProgressParallel(wg, name, outputOptions, count, 1)
+	WithProgressParallel(wg, name, count, 1)
 }
 
 // WithProgressParallel will continuously print progress to stdout until the given wait group
 // counter goes to zero. Progress is determined by the values of `c` (number of tasks completed)
 // and the value `n` (total number of tasks).
-func WithProgressParallel(wg *sync.WaitGroup, name string, outputOptions Options, c *uint64, n uint64) {
+func WithProgressParallel(wg *sync.WaitGroup, name string, c *uint64, n uint64) {
 	sync := make(chan struct{})
 	go func() {
 		wg.Wait()
 		close(sync)
 	}()
 
-	withTitle(name, outputOptions, func(printer *pentimento.Printer) {
+	withTitle(name, func(printer *pentimento.Printer) {
 		for {
 			select {
 			case <-sync:
@@ -79,13 +84,13 @@ func WithProgressParallel(wg *sync.WaitGroup, name string, outputOptions Options
 }
 
 // withTitle invokes withTitleAnimated withTitleStatic depending on the value of animated.
-func withTitle(name string, outputOptions Options, fn func(printer *pentimento.Printer)) {
-	if outputOptions.Verbosity == NoOutput {
+func withTitle(name string, fn func(printer *pentimento.Printer)) {
+	if opts.Verbosity == NoOutput {
 		fn(nil)
-	} else if !outputOptions.ShowAnimations || outputOptions.Verbosity >= VeryVerboseOutput {
-		withTitleStatic(name, outputOptions.Verbosity, fn)
+	} else if !opts.ShowAnimations || opts.Verbosity >= VeryVerboseOutput {
+		withTitleStatic(name, opts.Verbosity, fn)
 	} else {
-		withTitleAnimated(name, outputOptions.Verbosity, fn)
+		withTitleAnimated(name, opts.Verbosity, fn)
 	}
 }
 
@@ -114,11 +119,7 @@ func withTitleAnimated(name string, verbosity Verbosity, fn func(printer *pentim
 		return nil
 	})
 
-	if verbosity > DefaultOutput {
-		fmt.Printf("%s %s... Done (%s)\n", successPrefix, name, HumanElapsed(start))
-	} else {
-		fmt.Printf("%s %s... Done\n", successPrefix, name)
-	}
+	fmt.Printf("%s %s... Done (%s)\n", successPrefix, name, HumanElapsed(start))
 }
 
 // printProgress outputs a throbber, the given name, and the given number of tasks completed to
@@ -137,4 +138,15 @@ func printProgress(printer *pentimento.Printer, name string, c *uint64, n uint64
 	}
 
 	printer.WriteContent(content)
+}
+
+func SetOutputOptions(verb Verbosity, animation bool) {
+	opts.Verbosity = verb
+	opts.ShowAnimations = animation
+}
+
+func Println(a ...any) {
+	if opts.Verbosity != NoOutput {
+		fmt.Println(a...)
+	}
 }

@@ -38,7 +38,6 @@
   var x error
 //    ^ definition x.
 //    documentation x has a builtin error type
-//      ^^^^^ reference builtin/builtin builtin/error#
   
   var BigVar Interface = &Struct{
 //    ^^^^^^ definition BigVar.
@@ -50,13 +49,10 @@
 // ^^^^^^^^^ reference sg/initial/Struct#Anonymous.
     FieldA int
 //  ^^^^^^ definition local 0
-//         ^^^ reference builtin/builtin builtin/int#
     FieldB int
 //  ^^^^^^ definition local 1
-//         ^^^ reference builtin/builtin builtin/int#
     FieldC int
 //  ^^^^^^ definition local 2
-//         ^^^ reference builtin/builtin builtin/int#
    }{FieldA: 1337},
 //   ^^^^^^ reference local 0
   }
@@ -90,56 +86,46 @@
    // EmbeddedField has some docs!
    EmbeddedField string
 // ^^^^^^^^^^^^^ definition sg/initial/Embedded#EmbeddedField.
-// documentation EmbeddedField has some docs!
-//               ^^^^^^ reference builtin/builtin builtin/string#
    Field         string // conflicts with parent "Field"
 // ^^^^^ definition sg/initial/Embedded#Field.
-// documentation conflicts with parent "Field"
-//               ^^^^^^ reference builtin/builtin builtin/string#
   }
   
   type Struct struct {
 //     ^^^^^^ definition sg/initial/Struct#
    *Embedded
-//  ^^^^^^^^ definition local 3
+//  ^^^^^^^^ definition sg/initial/Struct#Embedded.
 //  ^^^^^^^^ reference sg/initial/Embedded#
    Field     string
 // ^^^^^ definition sg/initial/Struct#Field.
-//           ^^^^^^ reference builtin/builtin builtin/string#
    Anonymous struct {
 // ^^^^^^^^^ definition sg/initial/Struct#Anonymous.
     FieldA int
 //  ^^^^^^ definition sg/initial/Struct#Anonymous.FieldA.
-//         ^^^ reference builtin/builtin builtin/int#
     FieldB int
 //  ^^^^^^ definition sg/initial/Struct#Anonymous.FieldB.
-//         ^^^ reference builtin/builtin builtin/int#
     FieldC int
 //  ^^^^^^ definition sg/initial/Struct#Anonymous.FieldC.
-//         ^^^ reference builtin/builtin builtin/int#
    }
   }
   
   // StructMethod has some docs!
   func (s *Struct) StructMethod() {}
-//      ^ definition local 4
+//      ^ definition local 3
 //         ^^^^^^ reference sg/initial/Struct#
 //                 ^^^^^^^^^^^^ definition sg/initial/Struct#StructMethod().
 //                 documentation StructMethod has some docs!
   
   func (s *Struct) ImplementsInterface() string { return "hi!" }
-//      ^ definition local 5
+//      ^ definition local 4
 //         ^^^^^^ reference sg/initial/Struct#
 //                 ^^^^^^^^^^^^^^^^^^^ definition sg/initial/Struct#ImplementsInterface().
-//                                       ^^^^^^ reference builtin/builtin builtin/string#
   
   func (s *Struct) MachineLearning(
-//      ^ definition local 6
+//      ^ definition local 5
 //         ^^^^^^ reference sg/initial/Struct#
 //                 ^^^^^^^^^^^^^^^ definition sg/initial/Struct#MachineLearning().
    param1 float32, // It's ML, I can't describe what this param is.
-// ^^^^^^ definition local 7
-//        ^^^^^^^ reference builtin/builtin builtin/float32#
+// ^^^^^^ definition local 6
   
    // We call the below hyperparameters because, uhh, well:
    //
@@ -156,39 +142,32 @@
    //     `--'   `--'
    //
    hyperparam2 float32,
-// ^^^^^^^^^^^ definition local 8
-//             ^^^^^^^ reference builtin/builtin builtin/float32#
+// ^^^^^^^^^^^ definition local 7
    hyperparam3 float32,
-// ^^^^^^^^^^^ definition local 9
-//             ^^^^^^^ reference builtin/builtin builtin/float32#
+// ^^^^^^^^^^^ definition local 8
   ) float32 {
-//  ^^^^^^^ reference builtin/builtin builtin/float32#
    // varShouldNotHaveDocs is in a function, should not have docs emitted.
    var varShouldNotHaveDocs int32
-//     ^^^^^^^^^^^^^^^^^^^^ definition local 10
-//                          ^^^^^ reference builtin/builtin builtin/int32#
+//     ^^^^^^^^^^^^^^^^^^^^ definition local 9
   
    // constShouldNotHaveDocs is in a function, should not have docs emitted.
    const constShouldNotHaveDocs = 5
-//       ^^^^^^^^^^^^^^^^^^^^^^ definition local 11
+//       ^^^^^^^^^^^^^^^^^^^^^^ definition local 10
   
    // typeShouldNotHaveDocs is in a function, should not have docs emitted.
    type typeShouldNotHaveDocs struct{ a string }
-//      ^^^^^^^^^^^^^^^^^^^^^ definition local 12
-//                                    ^ definition local 13
-//                                      ^^^^^^ reference builtin/builtin builtin/string#
+//      ^^^^^^^^^^^^^^^^^^^^^ definition local 11
+//                                    ^ definition local 12
   
    // funcShouldNotHaveDocs is in a function, should not have docs emitted.
    funcShouldNotHaveDocs := func(a string) string { return "hello" }
-// ^^^^^^^^^^^^^^^^^^^^^ definition local 14
-//                               ^ definition local 15
-//                                 ^^^^^^ reference builtin/builtin builtin/string#
-//                                         ^^^^^^ reference builtin/builtin builtin/string#
+// ^^^^^^^^^^^^^^^^^^^^^ definition local 13
+//                               ^ definition local 14
   
    return param1 + (hyperparam2 * *hyperparam3) // lol is this all ML is? I'm gonna be rich
-//        ^^^^^^ reference local 7
-//                  ^^^^^^^^^^^ reference local 8
-//                                 ^^^^^^^^^^^ reference local 9
+//        ^^^^^^ reference local 6
+//                  ^^^^^^^^^^^ reference local 7
+//                                 ^^^^^^^^^^^ reference local 8
   }
   
   // Interface has docs too
@@ -197,7 +176,6 @@
 //     documentation Interface has docs too
    ImplementsInterface() string
 // ^^^^^^^^^^^^^^^^^^^ definition sg/initial/Interface#ImplementsInterface.
-//                       ^^^^^^ reference builtin/builtin builtin/string#
   }
   
   func NewInterface() Interface { return nil }
@@ -249,7 +227,6 @@
 // documentation Go can be fun
     bar string
 //  ^^^ definition sg/initial/X#bar.
-//      ^^^^^^ reference builtin/builtin builtin/string#
    }
   
    Y struct {

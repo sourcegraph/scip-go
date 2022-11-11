@@ -6,6 +6,7 @@ import (
 	"go/token"
 
 	"github.com/sourcegraph/scip-go/internal/document"
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
@@ -34,18 +35,28 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			return nil
 		}
 	case *ast.TypeSpec:
-		structDescriptors := []*scip.Descriptor{
-			{
+		// TODO: Do we need a cur scope for this as well?...
+		// structDescriptors := []*scip.Descriptor{
+		// 	{
+		// 		Name:   v.pkg.PkgPath,
+		// 		Suffix: scip.Descriptor_Namespace,
+		// 	},
+		// 	{
+		// 		Name:   node.Name.Name,
+		// 		Suffix: scip.Descriptor_Type,
+		// 	},
+		// }
+
+		typeSymbol := symbols.FromDescriptors(v.pkg,
+			&scip.Descriptor{
 				Name:   v.pkg.PkgPath,
 				Suffix: scip.Descriptor_Namespace,
 			},
-			{
+			&scip.Descriptor{
 				Name:   node.Name.Name,
 				Suffix: scip.Descriptor_Type,
-			},
-		}
+			})
 
-		typeSymbol := scipSymbolFromDescriptors(v.pkg, structDescriptors)
 		v.doc.DeclareNewSymbol(typeSymbol, v.curDecl, node.Name)
 
 		if node.TypeParams != nil {
@@ -60,11 +71,14 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 
 	case *ast.FieldList:
 		for _, field := range node.List {
-			for _, name := range field.Names {
-				if fieldSymbol, ok := v.doc.GetSymbol(name.NamePos); ok {
-					v.doc.DeclareNewSymbol(fieldSymbol, field, name)
-				} else {
-					panic(fmt.Sprintf("field with no definition: %v", node))
+			if len(field.Names) == 0 {
+			} else {
+				for _, name := range field.Names {
+					if fieldSymbol, ok := v.doc.GetSymbol(name.NamePos); ok {
+						v.doc.DeclareNewSymbol(fieldSymbol, field, name)
+					} else {
+						panic(fmt.Sprintf("field with no definition: %v", node))
+					}
 				}
 			}
 

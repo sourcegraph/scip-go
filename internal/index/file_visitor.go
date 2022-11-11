@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
-	"go/types"
 
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/lookup"
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -47,23 +47,6 @@ func (f *FileVisitor) createNewLocalSymbol(pos token.Pos) string {
 	return f.locals[pos]
 }
 
-func (f *FileVisitor) findPackage(ref types.Object) *packages.Package {
-	mod, ok := f.pkgLookup[pkgPath(ref)]
-	if !ok {
-		if ref.Pkg() == nil {
-			panic(fmt.Sprintf("Failed to find the thing for ref: %s | %+v\n", pkgPath(ref), ref))
-		}
-
-		mod = f.pkgLookup[ref.Pkg().Name()]
-	}
-
-	if mod == nil {
-		panic(fmt.Sprintf("Very weird, can't figure out this reference: %s", ref))
-	}
-
-	return mod
-}
-
 func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	if n == nil {
 		return nil
@@ -83,7 +66,6 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			if pkgSymbols, ok := v.pkgSymbols.Get(def.Pos()); ok {
 				sym = pkgSymbols
 			} else if globalSymbol, ok := v.globalSymbols.GetSymbol(v.pkg, def.Pos()); ok {
-				fmt.Println("GLOBAL SYMBOL", globalSymbol)
 				sym = globalSymbol
 			} else {
 				sym = v.createNewLocalSymbol(def.Pos())
@@ -99,37 +81,22 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			if localSymbol, ok := v.locals[ref.Pos()]; ok {
 				symbol = localSymbol
 			} else {
-				refPkgPath := pkgPath(ref)
+				refPkgPath := symbols.PkgPathFromObject(ref)
 				pkg, ok := v.pkgLookup[refPkgPath]
 				if !ok {
-					if ref.Pkg() == nil {
-						panic(fmt.Sprintf("Failed to find the thing for ref: %s | %+v\n", pkgPath(ref), ref))
-					}
-
-					pkg = v.pkgLookup[ref.Pkg().Name()]
+					panic(fmt.Sprintf("Failed to find the thing for ref: |%+v|\n", ref))
 				}
 
-				if pkg == nil {
-					// panic(fmt.Sprintf("Very weird, can't figure out this reference: %s", ref))
-					return
+				var err error
+				symbol, ok, err = v.globalSymbols.GetSymbolOfObject(pkg, ref)
+				if err != nil {
+					fmt.Println("ERROR:", err)
+					fmt.Println(pkg.Fset.Position(node.Pos()))
+					return v
 				}
 
-				switch ref := ref.(type) {
-				case *types.Var:
-					// For fields, we need to make sure they have the proper symbol path
-					//    We iterate over the structs on the first pass to generate these
-					//    fields, and then look them up on reference
-					if ref.IsField() {
-						symbol, _ = v.globalSymbols.GetSymbol(pkg, ref.Pos())
-						// TODO: assert symbol?
-					}
-
-				case *types.Nil:
-					return nil
-				}
-
-				if symbol == "" {
-					symbol = scipSymbolFromObject(pkg, ref)
+				if !ok {
+					return v
 				}
 			}
 

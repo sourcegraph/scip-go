@@ -5,7 +5,7 @@ import (
 	"go/token"
 
 	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip/bindings/go/scip"
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -43,10 +43,7 @@ func (v VarVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	case *ast.ValueSpec:
 		// Iterate over names, which are the only thing that can be definitions
 		for _, name := range node.Names {
-			symbol := scipSymbolFromDescriptors(v.pkg, []*scip.Descriptor{
-				descriptorTerm(name.Name),
-			})
-
+			symbol := symbols.FromDescriptors(v.pkg, descriptorTerm(name.Name))
 			v.doc.DeclareNewSymbol(symbol, v.curDecl, name)
 
 			// position := v.pkg.Fset.Position(name.Pos())

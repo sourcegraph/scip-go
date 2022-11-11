@@ -1,7 +1,13 @@
 package loader
 
 import (
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
+	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -14,89 +20,148 @@ var loadMode = packages.NeedDeps |
 	packages.NeedModule |
 	packages.NeedName
 
-func normalizeThisPackage(opts config.IndexOpts, pkgs []*packages.Package) {
-	for _, pkg := range pkgs {
-		if pkg.Module.Dir == opts.ModuleRoot {
-			if pkg.Module.Version == "" {
-				pkg.Module.Version = opts.ModuleVersion
-			}
+var goVersion = "go1.19"
 
-			if pkg.Module.Path == "" {
-				pkg.Module.Path = opts.ModuleRoot
-			}
-		}
-	}
-}
-
-func LoadPackages(opts config.IndexOpts, moduleRoot string) ([]*packages.Package, map[string]*packages.Package) {
-	cfg := &packages.Config{
+func makeConfig(root string) *packages.Config {
+	return &packages.Config{
 		Mode: loadMode,
-		Dir:  moduleRoot,
+		Dir:  root,
 		Logf: nil,
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies
 		Tests: true,
 	}
+}
+
+func LoadPackages(opts config.IndexOpts, moduleRoot string) ([]*packages.Package, map[string]*packages.Package, error) {
+	cfg := makeConfig(moduleRoot)
 	pkgs, err := packages.Load(cfg, "./...")
 	if err != nil {
 		panic(err)
 	}
 
-	normalizeThisPackage(opts, pkgs)
+	modOutput, err := command.Run(moduleRoot, "go", "list", "-mod=readonly", "-m", "-json")
+	if err != nil {
+		err = fmt.Errorf("failed to list module info: %v\n", err)
+		return nil, nil, err
+	}
+
+	var thisPackage *packages.Module
+	if err := json.NewDecoder(strings.NewReader(modOutput)).Decode(&thisPackage); err != nil {
+		return nil, nil, err
+	}
+
+	goVersion = "go" + thisPackage.GoVersion
+
+	output.Println("Using go version:", goVersion)
+
+	// github.com/golang/go/src/builtin/builtin.go
+	builtinPkg := &packages.Package{
+		Name:    "builtin",
+		PkgPath: "builtin",
+		Module: &packages.Module{
+			Path:    "github.com/golang/go/src/builtin",
+			Version: goVersion,
+		},
+	}
+
+	pkgs = append(pkgs, builtinPkg)
 
 	// TODO: Normalize the std library packages so that
 	// we don't have do any special handling later on.
 	//
 	// This will make our lives a lot easier when reasoning
 	// about packages (they will just all be loaded)
-	pkgLookup := map[string]*packages.Package{
-		"builtin": {
-			Module: &packages.Module{
-				Path:    "builtin/builtin",
-				Version: "go1.19",
-			},
-		},
-	}
+
+	pkgLookup := map[string]*packages.Package{}
 
 	for _, pkg := range pkgs {
-		ensureVersionForPackage(pkg)
-		pkgLookup[pkg.Name] = pkg
+		normalizePackage(&opts, pkg)
+		fmt.Println("Putting package path:", pkg.Name, pkg.PkgPath)
+		pkgLookup[pkg.PkgPath] = pkg
 
-		for name, imp := range pkg.Imports {
-			ensureVersionForPackage(imp)
-			pkgLookup[name] = imp
+		for _, imp := range pkg.Imports {
+			normalizePackage(&opts, imp)
+			pkgLookup[imp.PkgPath] = imp
+			// fmt.Println("imp", imp.Name, imp.PkgPath, imp.Module.Path)
 		}
 	}
 
-	return pkgs, pkgLookup
+	return pkgs, pkgLookup, nil
+
+	// allPackages := []*packages.Package{}
+	// for _, pkg := range pkgLookup {
+	// 	allPackages = append(allPackages, pkg)
+	// }
+	// return allPackages, pkgLookup, nil
 }
 
-func ensureVersionForPackage(pkg *packages.Package) {
-	if pkg.Module != nil {
-		return
-	}
-
-	pkg.Module = &packages.Module{
-		Path:    "github.com/golang/go",
-		Version: "v1.19",
-	}
-
-	// fmt.Printf("Ensuring Version for Package: %s | %+v\n", pkg.PkgPath, pkg)
-	// TODO: Just use the current stuff for version
-	// if gomod.IsStandardlibPackge(pkg.PkgPath) {
-	// 	pkg.Module = &packages.Module{
-	// 		Path:    "github.com/golang/go",
-	// 		Version: "v1.19",
-	// 		// Main:      false,
-	// 		// Indirect:  false,
-	// 		// Dir:       "",
-	// 		// GoMod:     "",
-	// 		// GoVersion: "",
-	// 		// Error:     &packages.ModuleError{},
-	// 	}
-	//
-	// 	return
+func traversePackage(opts *config.IndexOpts, pkgLookup map[string]*packages.Package, pkg *packages.Package) {
+	// for _, imp := range pkg.Imports {
+	// 	if _, ok := pkgLookup
+	// 	pkgLookup[imp.PkgPath] = normalizePackage(opts, imp)
 	// }
 
+	pkgLookup[pkg.PkgPath] = pkg
+}
+
+func IsStandardLib(pkg *packages.Package) bool {
+	// for example:
+	//	PkgPath = net/http
+	//	-> net
+	//	-> true
+	//
+	//	PkgPath = github.com/sourcegraph/scip-go/...
+	//	-> github.com/
+	//	-> false
+	base := strings.Split(pkg.PkgPath, "/")[0]
+	_, ok := stdPackages[base]
+	return ok
+}
+
+func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {
+	// Name string = "pentimento"
+	// PkgPath string = "github.com/efritz/pentimento"
+	// Module:
+	//		Path string = "github.com/efritz/pentimento"
+	//		Version string = "v0.0.0-20190429011147-ade47d831101"
+
+	if IsStandardLib(pkg) {
+		pkg.Module = &packages.Module{
+			Path:    "github.com/golang/go/src",
+			Version: "v1.19",
+		}
+	} else {
+		if pkg.Module == nil {
+			panic(fmt.Sprintf(
+				"Should not be possible to have nil module for userland package: %s %s",
+				pkg,
+				pkg.PkgPath,
+			))
+		}
+
+	}
+
+	// Follow replaced modules
+	if pkg.Module.Replace != nil {
+		// panic(fmt.Sprintf("replace... haven't truly handled yet:\nModule: %+v\nReplace: %+v\n", pkg.Module, pkg.Module.Replace))
+		pkg.Module = pkg.Module.Replace
+
+		// Local replaces for local files can have this happen,
+		// so short circuit the check here (the following versions should not be able to fail)
+		if pkg.Module.Version == "" {
+			pkg.Module.Version = opts.ModuleVersion
+		}
+	}
+
+	if pkg.Module.Version == "" {
+		if pkg.Module.Path != opts.ModulePath {
+			panic(fmt.Sprintf("Unknown version for userland package: %s %s", pkg, pkg.Module.Path))
+		}
+
+		pkg.Module.Version = opts.ModuleVersion
+	}
+
+	return pkg
 }

@@ -1,19 +1,16 @@
   package initial
   
   import "fmt"
-//        ^^^ reference github.com/golang/go fmt/
+//        ^^^ reference github.com/golang/go/src fmt/
   
   type Inner struct {
 //     ^^^^^ definition sg/initial/Inner#
    X int
 // ^ definition sg/initial/Inner#X.
-//   ^^^ reference builtin/builtin builtin/int#
    Y int
 // ^ definition sg/initial/Inner#Y.
-//   ^^^ reference builtin/builtin builtin/int#
    Z int
 // ^ definition sg/initial/Inner#Z.
-//   ^^^ reference builtin/builtin builtin/int#
   }
   
   type Outer struct {
@@ -23,7 +20,6 @@
 // ^^^^^ reference sg/initial/Inner#
    W int
 // ^ definition sg/initial/Outer#W.
-//   ^^^ reference builtin/builtin builtin/int#
   }
   
   func useOfCompositeStructs() {
@@ -46,13 +42,11 @@
    }
   
    fmt.Printf("> %d\n", o.X)
-// ^^^ reference fmt/fmt/
-//     ^^^^^^ reference github.com/golang/go fmt/Printf().
+//     ^^^^^^ reference github.com/golang/go/src fmt/Printf().
 //                      ^ reference local 0
 //                        ^ reference sg/initial/Inner#X.
    fmt.Println(o.Inner.Y)
-// ^^^ reference fmt/fmt/
-//     ^^^^^^^ reference github.com/golang/go fmt/Println().
+//     ^^^^^^^ reference github.com/golang/go/src fmt/Println().
 //             ^ reference local 0
 //               ^^^^^ reference sg/initial/Outer#Inner.
 //                     ^ reference sg/initial/Inner#Y.

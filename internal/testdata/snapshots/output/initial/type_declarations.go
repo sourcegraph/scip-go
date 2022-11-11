@@ -2,13 +2,10 @@
   
   type LiteralType int
 //     ^^^^^^^^^^^ definition sg/initial/LiteralType#
-//                 ^^^ reference builtin/builtin builtin/int#
   
   type FuncType func(LiteralType, int) bool
 //     ^^^^^^^^ definition sg/initial/FuncType#
 //                   ^^^^^^^^^^^ reference sg/initial/LiteralType#
-//                                ^^^ reference builtin/builtin builtin/int#
-//                                     ^^^^ reference builtin/builtin builtin/bool#
   
   type IfaceType interface {
 //     ^^^^^^^^^ definition sg/initial/IfaceType#
@@ -29,19 +26,15 @@
    // anonymous struct
    anon struct {
 // ^^^^ definition sg/initial/StructType#anon.
-// documentation anonymous struct
     sub int
 //  ^^^ definition sg/initial/StructType#anon.sub.
-//      ^^^ reference builtin/builtin builtin/int#
    }
   
    // interface within struct
    i interface {
 // ^ definition sg/initial/StructType#i.
-// documentation interface within struct
     AnonMethod() bool
 //  ^^^^^^^^^^ definition sg/initial/StructType#i.AnonMethod.
-//               ^^^^ reference builtin/builtin builtin/bool#
    }
   }
   

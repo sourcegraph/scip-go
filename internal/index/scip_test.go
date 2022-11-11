@@ -1,6 +1,7 @@
 package index_test
 
 import (
+	"flag"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,6 +14,7 @@ import (
 )
 
 // Use "update-snapshots" to update snapshots
+var filter = flag.String("filter", "", "filenames to filter by")
 
 func TestSnapshots(t *testing.T) {
 	snapshotRoot := getRepositoryRoot(t)
@@ -20,9 +22,14 @@ func TestSnapshots(t *testing.T) {
 	testutil.SnapshotTest(t,
 		snapshotRoot,
 		func(inputDirectory, outputDirectory string, sources []*scip.SourceFile) []*scip.SourceFile {
+			if *filter != "" && !strings.Contains(inputDirectory, *filter) {
+				return []*scip.SourceFile{}
+			}
+
 			index, err := index.IndexProject(config.IndexOpts{
 				ModuleRoot:    inputDirectory,
 				ModuleVersion: "0.1-test",
+				ModulePath:    "sg/" + filepath.Base(inputDirectory),
 			})
 
 			if err != nil {
@@ -34,6 +41,10 @@ func TestSnapshots(t *testing.T) {
 
 			sourceFiles := []*scip.SourceFile{}
 			for _, doc := range index.Documents {
+				if *filter != "" && !strings.Contains(doc.RelativePath, *filter) {
+					continue
+				}
+
 				formatted, err := testutil.FormatSnapshot(doc, index, "//", symbolFormatter)
 				if err != nil {
 					t.Errorf("Failed to format document: %s // %s", doc.RelativePath, err)

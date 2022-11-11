@@ -56,6 +56,15 @@ func (d *Document) DeclareNewSymbol(
 	parent ast.Node,
 	ident *ast.Ident,
 ) {
+	d.DeclareNewSymbolForPos(symbol, parent, ident, ident.Pos())
+}
+
+func (d *Document) DeclareNewSymbolForPos(
+	symbol string,
+	parent ast.Node,
+	ident *ast.Ident,
+	pos token.Pos,
+) {
 	documentation := []string{}
 	if ident != nil {
 		hover := d.extractHoverText(parent, ident)
@@ -78,7 +87,7 @@ func (d *Document) DeclareNewSymbol(
 		Documentation: documentation,
 	})
 
-	d.pkgSymbols.Set(ident.Pos(), symbol)
+	d.pkgSymbols.Set(pos, symbol)
 }
 
 func (d *Document) NewOccurrence(symbol string, rng []int32) {
