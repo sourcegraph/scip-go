@@ -91,7 +91,8 @@ func (p *Global) GetSymbolOfObject(pkg *packages.Package, obj types.Object) (str
 	switch obj := obj.(type) {
 	case *types.TypeName:
 		skippedTypes[obj.Name()] = struct{}{}
-
+		return "", false, nil
+	case *types.Const:
 		return "", false, nil
 	}
 
