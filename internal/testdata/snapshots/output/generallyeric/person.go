@@ -28,11 +28,10 @@
 //                      ^^^^^^ definition local 2
 //                               ^ reference local 1
    for _, v := range things {
-//     ^ definition local 3
-//        ^ definition local 4
+//        ^ definition local 3
 //                   ^^^^^^ reference local 2
     v.Work()
-//  ^ reference local 4
+//  ^ reference local 3
 //    ^^^^ reference sg/generallyeric/Person#Work.
    }
   }
@@ -40,21 +39,21 @@
   func main() {
 //     ^^^^ definition sg/generallyeric/main().
    var a, b, c worker
-//     ^ definition local 5
-//        ^ definition local 6
-//           ^ definition local 7
+//     ^ definition local 4
+//        ^ definition local 5
+//           ^ definition local 6
 //             ^^^^^^ reference sg/generallyeric/worker#
    a = "A"
-// ^ reference local 5
+// ^ reference local 4
    b = "B"
-// ^ reference local 6
+// ^ reference local 5
    c = "C"
-// ^ reference local 7
+// ^ reference local 6
    DoWork([]worker{a, b, c})
 // ^^^^^^ reference sg/generallyeric/DoWork().
 //          ^^^^^^ reference sg/generallyeric/worker#
-//                 ^ reference local 5
-//                    ^ reference local 6
-//                       ^ reference local 7
+//                 ^ reference local 4
+//                    ^ reference local 5
+//                       ^ reference local 6
   }
   

@@ -61,10 +61,10 @@
   // I can't say for sure, I don't write any.
   // But look, a CAT!
   //
-  //        |\      _,,,---,,_
-  //  ZZZzz /,`.-'`'    -.  ;-;;,_
-  //       |,4-  ) )-,_. ,\ (  `'-'
-  //      '---''(_/--'  `-'\_)
+  //       |\      _,,,---,,_
+  // ZZZzz /,`.-'`'    -.  ;-;;,_
+  //      |,4-  ) )-,_. ,\ (  `'-'
+  //     '---''(_/--'  `-'\_)
   //
   // It's sleeping! Some people write that as `sleeping` but Markdown
   // isn't allowed in Go docstrings, right? right?!
@@ -193,30 +193,24 @@
   
   // Yeah this is some Go magic incantation which is common.
   //
-  //   ,_     _
-  //   |\\_,-~/
-  //   / _  _ |    ,--.
-  //  (  @  @ )   / ,-'
-  //   \  _T_/-._( (
-  //  /         `. \
-  //  |         _  \ |
-  //  \ \ ,  /      |
-  //   || |-_\__   /
-  //  ((_/`(____,-'
-  //
+  //  ,_     _
+  //  |\\_,-~/
+  //  / _  _ |    ,--.
+  // (  @  @ )   / ,-'
+  //  \  _T_/-._( (
+  // /         `. \
+  // |         _  \ |
+  // \ \ ,  /      |
+  //  || |-_\__   /
+  // ((_/`(____,-'
   var _ = Interface(&Struct{})
-//    ^ definition _.
-//    documentation Yeah this is some Go magic incantation which is common.
 //        ^^^^^^^^^ reference sg/initial/Interface#
 //                   ^^^^^^ reference sg/initial/Struct#
   
   type _ = struct{}
-//     ^ definition sg/initial/_#
   
   // crypto/tls/common_string.go uses this pattern..
   func _() {
-//     ^ definition sg/initial/_().
-//     documentation crypto/tls/common_string.go uses this pattern..
   }
   
   // Go can be fun
@@ -232,7 +226,7 @@
    Y struct {
 // ^ definition sg/initial/Y#
 // documentation Go can be fun
-    baz float
+    baz float64
 //  ^^^ definition sg/initial/Y#baz.
    }
   )

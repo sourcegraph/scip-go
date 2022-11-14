@@ -4,12 +4,40 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"go/types"
 
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
+
+func NewFileVisitor(
+	doc *document.Document,
+	pkg *packages.Package,
+	file *ast.File,
+	pkgLookup map[string]*packages.Package,
+	pkgSymbols *lookup.Package,
+	globalSymbols *lookup.Global,
+) *FileVisitor {
+	caseClauses := map[token.Pos]types.Object{}
+	for implicit, obj := range pkg.TypesInfo.Implicits {
+		if _, ok := implicit.(*ast.CaseClause); ok {
+			caseClauses[obj.Pos()] = obj
+		}
+	}
+
+	return &FileVisitor{
+		doc:           doc,
+		pkg:           pkg,
+		file:          file,
+		pkgLookup:     pkgLookup,
+		locals:        map[token.Pos]string{},
+		caseClauses:   caseClauses,
+		pkgSymbols:    pkgSymbols,
+		globalSymbols: globalSymbols,
+	}
+}
 
 // FileVisitor visits an entire file, but it must be called
 // after StructVisitor.
@@ -29,9 +57,13 @@ type FileVisitor struct {
 	// local definition position to symbol
 	locals map[token.Pos]string
 
-	// field definition position to symbol
+	// case statement clauses
+	caseClauses map[token.Pos]types.Object
 
-	pkgSymbols    *lookup.Package
+	// field definition position to symbol for the package
+	pkgSymbols *lookup.Package
+
+	// field definition position to symbol for the entire compliation
 	globalSymbols *lookup.Global
 }
 
@@ -53,11 +85,33 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	}
 
 	switch node := n.(type) {
+	case *ast.File:
+		if node.Doc != nil {
+			ast.Walk(v, node.Doc)
+		}
+
+		// TODO: Handle package name declaration separately
+		// ast.Walk(v, n.Name)
+
+		walkDeclList(v, node.Decls)
+		return nil
 	case *ast.Ident:
-		info := v.pkg.TypesInfo
+		// Short circuit if this is a blank identifier
+		if node.Name == "_" {
+			return nil
+		}
 
 		pos := node.NamePos
 		position := v.pkg.Fset.Position(pos)
+
+		// Short circuit on case clauses
+		if obj, ok := v.caseClauses[node.Pos()]; ok {
+			sym := v.createNewLocalSymbol(obj.Pos())
+			v.doc.NewOccurrence(sym, scipRange(position, obj), nil)
+			return nil
+		}
+
+		info := v.pkg.TypesInfo
 
 		// Emit Definition
 		def := info.Defs[node]
@@ -71,15 +125,20 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				sym = v.createNewLocalSymbol(def.Pos())
 			}
 
-			v.doc.NewOccurrence(sym, scipRange(position, def))
+			v.doc.NewOccurrence(sym, scipRange(position, def), nil)
 		}
 
 		// Emit Reference
 		ref := info.Uses[node]
 		if ref != nil {
 			var symbol string
+			var overrideType types.Type = nil
 			if localSymbol, ok := v.locals[ref.Pos()]; ok {
 				symbol = localSymbol
+
+				if _, ok := v.caseClauses[ref.Pos()]; ok {
+					overrideType = v.pkg.TypesInfo.TypeOf(node)
+				}
 			} else {
 				refPkgPath := symbols.PkgPathFromObject(ref)
 				pkg, ok := v.pkgLookup[refPkgPath]
@@ -91,6 +150,9 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				symbol, ok, err = v.globalSymbols.GetSymbolOfObject(pkg, ref)
 				if err != nil {
 					fmt.Println("ERROR:", err)
+
+					implicit := v.pkg.TypesInfo.Implicits[node]
+					fmt.Println("	implicit: ", implicit)
 					fmt.Println(pkg.Fset.Position(node.Pos()))
 					return v
 				}
@@ -100,9 +162,19 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				}
 			}
 
-			v.doc.AppendSymbolReference(symbol, scipRange(position, ref))
+			v.doc.AppendSymbolReference(symbol, scipRange(position, ref), overrideType)
+		}
+
+		if def == nil && ref == nil {
+			panic(fmt.Sprintf("Neither def nor ref found: %s | %T | %s", node.Name, node, v.pkg.Fset.Position(node.Pos())))
 		}
 	}
 
 	return v
+}
+
+func walkDeclList(v ast.Visitor, list []ast.Decl) {
+	for _, x := range list {
+		ast.Walk(v, x)
+	}
 }

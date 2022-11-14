@@ -34,10 +34,10 @@ var BigVar Interface = &Struct{
 // I can't say for sure, I don't write any.
 // But look, a CAT!
 //
-// 	      |\      _,,,---,,_
-// 	ZZZzz /,`.-'`'    -.  ;-;;,_
-// 	     |,4-  ) )-,_. ,\ (  `'-'
-// 	    '---''(_/--'  `-'\_)
+//	      |\      _,,,---,,_
+//	ZZZzz /,`.-'`'    -.  ;-;;,_
+//	     |,4-  ) )-,_. ,\ (  `'-'
+//	    '---''(_/--'  `-'\_)
 //
 // It's sleeping! Some people write that as `sleeping` but Markdown
 // isn't allowed in Go docstrings, right? right?!
@@ -120,17 +120,16 @@ var _sortUnderscoreLast = 3
 
 // Yeah this is some Go magic incantation which is common.
 //
-// 	 ,_     _
-// 	 |\\_,-~/
-// 	 / _  _ |    ,--.
-// 	(  @  @ )   / ,-'
-// 	 \  _T_/-._( (
-// 	/         `. \
-// 	|         _  \ |
-// 	\ \ ,  /      |
-// 	 || |-_\__   /
-// 	((_/`(____,-'
-//
+//	 ,_     _
+//	 |\\_,-~/
+//	 / _  _ |    ,--.
+//	(  @  @ )   / ,-'
+//	 \  _T_/-._( (
+//	/         `. \
+//	|         _  \ |
+//	\ \ ,  /      |
+//	 || |-_\__   /
+//	((_/`(____,-'
 var _ = Interface(&Struct{})
 
 type _ = struct{}
@@ -147,6 +146,6 @@ type (
 	}
 
 	Y struct {
-		baz float
+		baz float64
 	}
 )

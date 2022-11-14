@@ -10,12 +10,11 @@
 //                  ^ definition local 1
 //                      ^ reference local 0
    for _, v := range s {
-//     ^ definition local 2
-//        ^ definition local 3
+//        ^ definition local 2
 //                   ^ reference local 1
     fmt.Print(v)
 //      ^^^^^ reference github.com/golang/go/src fmt/Print().
-//            ^ reference local 3
+//            ^ reference local 2
    }
   }
   

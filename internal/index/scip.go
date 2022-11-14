@@ -64,18 +64,14 @@ func IndexProject(opts config.IndexOpts) (*scip.Index, error) {
 			relative, _ := filepath.Rel(moduleRoot, pkg.Fset.File(f.Package).Name())
 			doc := pathToDocuments[relative]
 
-			visitor := FileVisitor{
-				doc:       doc,
-				pkg:       pkg,
-				file:      f,
-				pkgLookup: pkgLookup,
-
-				// locals are per-file, so create a new one per file
-				locals: map[token.Pos]string{},
-
-				pkgSymbols:    pkgSymbols,
-				globalSymbols: globalSymbols,
-			}
+			visitor := NewFileVisitor(
+				doc,
+				pkg,
+				f,
+				pkgLookup,
+				pkgSymbols,
+				globalSymbols,
+			)
 
 			// Generate import references
 			for _, spec := range f.Imports {
@@ -106,7 +102,8 @@ func emitImportReference(
 	scipRange := scipRangeFromName(position, pkgPath, true)
 	symbol := symbols.FromDescriptors(importedPackage, descriptorPackage(pkgPath))
 
-	doc.AppendSymbolReference(symbol, scipRange)
+	// TODO(tjdevries): Might be reasonable to get an obj here...
+	doc.AppendSymbolReference(symbol, scipRange, nil)
 }
 
 func scipRangeFromName(position token.Position, name string, adjust bool) []int32 {
