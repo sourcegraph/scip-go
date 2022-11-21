@@ -5,25 +5,35 @@
   
   type Inner struct {
 //     ^^^^^ definition sg/initial/Inner#
+//     documentation ```go
+//     documentation ```go
    X int
 // ^ definition sg/initial/Inner#X.
+// documentation ```go
    Y int
 // ^ definition sg/initial/Inner#Y.
+// documentation ```go
    Z int
 // ^ definition sg/initial/Inner#Z.
+// documentation ```go
   }
   
   type Outer struct {
 //     ^^^^^ definition sg/initial/Outer#
+//     documentation ```go
+//     documentation ```go
    Inner
 // ^^^^^ definition sg/initial/Outer#Inner.
+// documentation ```go
 // ^^^^^ reference sg/initial/Inner#
    W int
 // ^ definition sg/initial/Outer#W.
+// documentation ```go
   }
   
   func useOfCompositeStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^ definition sg/initial/useOfCompositeStructs().
+//     documentation ```go
    o := Outer{
 // ^ definition local 0
 //      ^^^^^ reference sg/initial/Outer#

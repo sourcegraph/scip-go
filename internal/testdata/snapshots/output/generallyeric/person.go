@@ -5,17 +5,22 @@
   
   type Person interface {
 //     ^^^^^^ definition sg/generallyeric/Person#
+//     documentation ```go
+//     documentation ```go
    Work()
 // ^^^^ definition sg/generallyeric/Person#Work.
+// documentation ```go
   }
   
   type worker string
 //     ^^^^^^ definition sg/generallyeric/worker#
+//     documentation ```go
   
   func (w worker) Work() {
 //      ^ definition local 0
 //        ^^^^^^ reference sg/generallyeric/worker#
 //                ^^^^ definition sg/generallyeric/worker#Work().
+//                documentation ```go
    fmt.Printf("%s is working\n", w)
 //     ^^^^^^ reference github.com/golang/go/src fmt/Printf().
 //                               ^ reference local 0
@@ -23,6 +28,7 @@
   
   func DoWork[T Person](things []T) {
 //     ^^^^^^ definition sg/generallyeric/DoWork().
+//     documentation ```go
 //            ^ definition local 1
 //              ^^^^^^ reference sg/generallyeric/Person#
 //                      ^^^^^^ definition local 2
@@ -38,6 +44,7 @@
   
   func main() {
 //     ^^^^ definition sg/generallyeric/main().
+//     documentation ```go
    var a, b, c worker
 //     ^ definition local 4
 //        ^ definition local 5

@@ -57,6 +57,9 @@ func (d *Document) GetSymbol(pos token.Pos) (string, bool) {
 	return d.pkgSymbols.Get(pos)
 }
 
+// DeclareNewSymbolForPos declares a new symbol and tracks it within a Document.
+//
+// NOTE: Does NOT emit a new occurrence
 func (d *Document) DeclareNewSymbol(
 	symbol string,
 	parent ast.Node,
@@ -65,6 +68,11 @@ func (d *Document) DeclareNewSymbol(
 	d.DeclareNewSymbolForPos(symbol, parent, ident, ident.Pos())
 }
 
+// DeclareNewSymbolForPos declares a new symbol and tracks it within a Document
+// but allows for an override of the position. Generally speaking, you should use
+// DeclareNewSymbol instead (since it will calculate the pos for most cases)
+//
+// NOTE: Does NOT emit a new occurrence
 func (d *Document) DeclareNewSymbolForPos(
 	symbol string,
 	parent ast.Node,
@@ -74,8 +82,11 @@ func (d *Document) DeclareNewSymbolForPos(
 	documentation := []string{}
 	if ident != nil {
 		hover := d.extractHoverText(parent, ident)
-		// signature, extra := indexer.TypeStringForObject(d.pkg.TypesInfo.Defs[ident])
-		signature, extra := "", ""
+		var signature, extra string
+		def := d.pkg.TypesInfo.Defs[ident]
+		if def != nil {
+			signature, extra = typeStringForObject(def)
+		}
 
 		if signature != "" {
 			documentation = append(documentation, formatCode(signature))
@@ -96,37 +107,20 @@ func (d *Document) DeclareNewSymbolForPos(
 	d.pkgSymbols.Set(pos, symbol)
 }
 
-func (d *Document) NewOccurrence(symbol string, rng []int32, obj *types.Object) {
-	var documentation []string = nil
-	if obj != nil {
-		// hover := d.extractHoverText(nil, ident)
-		signature, extra := typeString(*obj)
-		// signature, extra := "", ""
-
-		if signature != "" {
-			documentation = append(documentation, formatCode(signature))
-		}
-		// if hover != "" {
-		// 	documentation = append(documentation, formatMarkdown(hover))
-		// }
-		if extra != "" {
-			documentation = append(documentation, formatCode(extra))
-		}
-	}
-
+// NewOccurrence emits a scip.Occurence ONLY. This will not emit a
+// new symbol. You must do that using DeclareNewSymbol[ForPos]
+func (d *Document) NewOccurrence(symbol string, rng []int32) {
 	d.Occurrences = append(d.Occurrences, &scip.Occurrence{
-		Range:                 rng,
-		Symbol:                symbol,
-		SymbolRoles:           SymbolDefinition,
-		OverrideDocumentation: documentation,
+		Range:       rng,
+		Symbol:      symbol,
+		SymbolRoles: SymbolDefinition,
 	})
 }
 
 func (d *Document) AppendSymbolReference(symbol string, rng []int32, overrideType types.Type) {
 	var documentation []string = nil
 	if overrideType != nil {
-		tyString := typeStringForType(overrideType)
-
+		tyString := overrideType.String()
 		if tyString != "" {
 			documentation = append(documentation, formatCode(tyString))
 		}
@@ -181,9 +175,7 @@ func formatCode(v string) string {
 		return ""
 	}
 
-	// reuse MarkedString here as it takes care of code fencing
-	// return protocol.NewMarkedString(v, "go").String()
-	return v
+	return fmt.Sprintf("```go\n%s\n```", v)
 }
 
 func formatMarkdown(v string) string {
@@ -210,7 +202,7 @@ func typeStringForType(typ types.Type) string {
 	return typ.String()
 }
 
-func typeString(obj types.Object) (signature string, extra string) {
+func typeStringForObject(obj types.Object) (signature string, extra string) {
 	switch v := obj.(type) {
 	case *types.PkgName:
 		return fmt.Sprintf("package %s", v.Name()), ""

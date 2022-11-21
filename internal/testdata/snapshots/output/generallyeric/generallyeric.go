@@ -6,6 +6,7 @@
   
   func Print[T any](s []T) {
 //     ^^^^^ definition sg/generallyeric/Print().
+//     documentation ```go
 //           ^ definition local 0
 //                  ^ definition local 1
 //                      ^ reference local 0

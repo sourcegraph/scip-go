@@ -107,7 +107,7 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		// Short circuit on case clauses
 		if obj, ok := v.caseClauses[node.Pos()]; ok {
 			sym := v.createNewLocalSymbol(obj.Pos())
-			v.doc.NewOccurrence(sym, scipRange(position, obj), nil)
+			v.doc.NewOccurrence(sym, scipRange(position, obj))
 			return nil
 		}
 
@@ -125,7 +125,7 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				sym = v.createNewLocalSymbol(def.Pos())
 			}
 
-			v.doc.NewOccurrence(sym, scipRange(position, def), nil)
+			v.doc.NewOccurrence(sym, scipRange(position, def))
 		}
 
 		// Emit Reference

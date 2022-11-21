@@ -3,6 +3,7 @@
   // Const is a constant equal to 5. It's the best constant I've ever written. 😹
   const Const = 5
 //      ^^^^^ definition Const.
+//      documentation ```go
 //      documentation Const is a constant equal to 5. It's the best constant I've ever written. 😹
   
   // Docs for the const block itself.
@@ -10,17 +11,20 @@
    // ConstBlock1 is a constant in a block.
    ConstBlock1 = 1
 // ^^^^^^^^^^^ definition ConstBlock1.
+// documentation ```go
 // documentation Docs for the const block itself.
   
    // ConstBlock2 is a constant in a block.
    ConstBlock2 = 2
 // ^^^^^^^^^^^ definition ConstBlock2.
+// documentation ```go
 // documentation Docs for the const block itself.
   )
   
   // Var is a variable interface.
   var Var Interface = &Struct{Field: "bar!"}
 //    ^^^ definition Var.
+//    documentation ```go
 //    documentation Var is a variable interface.
 //        ^^^^^^^^^ reference sg/initial/Interface#
 //                     ^^^^^^ reference sg/initial/Struct#
@@ -29,6 +33,7 @@
   // unexportedVar is an unexported variable interface.
   var unexportedVar Interface = &Struct{Field: "bar!"}
 //    ^^^^^^^^^^^^^ definition unexportedVar.
+//    documentation ```go
 //    documentation unexportedVar is an unexported variable interface.
 //                  ^^^^^^^^^ reference sg/initial/Interface#
 //                               ^^^^^^ reference sg/initial/Struct#
@@ -37,10 +42,12 @@
   // x has a builtin error type
   var x error
 //    ^ definition x.
+//    documentation ```go
 //    documentation x has a builtin error type
   
   var BigVar Interface = &Struct{
 //    ^^^^^^ definition BigVar.
+//    documentation ```go
 //           ^^^^^^^^^ reference sg/initial/Interface#
 //                        ^^^^^^ reference sg/initial/Struct#
    Field: "bar!",
@@ -72,39 +79,53 @@
    // This has some docs
    VarBlock1 = "if you're reading this"
 // ^^^^^^^^^ definition VarBlock1.
+// documentation ```go
 // documentation What are docs, really?
   
    VarBlock2 = "hi"
 // ^^^^^^^^^ definition VarBlock2.
+// documentation ```go
 // documentation What are docs, really?
   )
   
   // Embedded is a struct, to be embedded in another struct.
   type Embedded struct {
 //     ^^^^^^^^ definition sg/initial/Embedded#
+//     documentation ```go
 //     documentation Embedded is a struct, to be embedded in another struct.
+//     documentation ```go
    // EmbeddedField has some docs!
    EmbeddedField string
 // ^^^^^^^^^^^^^ definition sg/initial/Embedded#EmbeddedField.
+// documentation ```go
    Field         string // conflicts with parent "Field"
 // ^^^^^ definition sg/initial/Embedded#Field.
+// documentation ```go
   }
   
   type Struct struct {
 //     ^^^^^^ definition sg/initial/Struct#
+//     documentation ```go
+//     documentation ```go
    *Embedded
 //  ^^^^^^^^ definition sg/initial/Struct#Embedded.
+//  documentation ```go
 //  ^^^^^^^^ reference sg/initial/Embedded#
    Field     string
 // ^^^^^ definition sg/initial/Struct#Field.
+// documentation ```go
    Anonymous struct {
 // ^^^^^^^^^ definition sg/initial/Struct#Anonymous.
+// documentation ```go
     FieldA int
 //  ^^^^^^ definition sg/initial/Struct#Anonymous.FieldA.
+//  documentation ```go
     FieldB int
 //  ^^^^^^ definition sg/initial/Struct#Anonymous.FieldB.
+//  documentation ```go
     FieldC int
 //  ^^^^^^ definition sg/initial/Struct#Anonymous.FieldC.
+//  documentation ```go
    }
   }
   
@@ -113,17 +134,20 @@
 //      ^ definition local 3
 //         ^^^^^^ reference sg/initial/Struct#
 //                 ^^^^^^^^^^^^ definition sg/initial/Struct#StructMethod().
+//                 documentation ```go
 //                 documentation StructMethod has some docs!
   
   func (s *Struct) ImplementsInterface() string { return "hi!" }
 //      ^ definition local 4
 //         ^^^^^^ reference sg/initial/Struct#
 //                 ^^^^^^^^^^^^^^^^^^^ definition sg/initial/Struct#ImplementsInterface().
+//                 documentation ```go
   
   func (s *Struct) MachineLearning(
 //      ^ definition local 5
 //         ^^^^^^ reference sg/initial/Struct#
 //                 ^^^^^^^^^^^^^^^ definition sg/initial/Struct#MachineLearning().
+//                 documentation ```go
    param1 float32, // It's ML, I can't describe what this param is.
 // ^^^^^^ definition local 6
   
@@ -173,23 +197,30 @@
   // Interface has docs too
   type Interface interface {
 //     ^^^^^^^^^ definition sg/initial/Interface#
+//     documentation ```go
 //     documentation Interface has docs too
+//     documentation ```go
    ImplementsInterface() string
 // ^^^^^^^^^^^^^^^^^^^ definition sg/initial/Interface#ImplementsInterface.
+// documentation ```go
   }
   
   func NewInterface() Interface { return nil }
 //     ^^^^^^^^^^^^ definition sg/initial/NewInterface().
+//     documentation ```go
 //                    ^^^^^^^^^ reference sg/initial/Interface#
   
   var SortExportedFirst = 1
 //    ^^^^^^^^^^^^^^^^^ definition SortExportedFirst.
+//    documentation ```go
   
   var sortUnexportedSecond = 2
 //    ^^^^^^^^^^^^^^^^^^^^ definition sortUnexportedSecond.
+//    documentation ```go
   
   var _sortUnderscoreLast = 3
 //    ^^^^^^^^^^^^^^^^^^^ definition _sortUnderscoreLast.
+//    documentation ```go
   
   // Yeah this is some Go magic incantation which is common.
   //
@@ -218,16 +249,22 @@
    // And confusing
    X struct {
 // ^ definition sg/initial/X#
+// documentation ```go
 // documentation Go can be fun
+// documentation ```go
     bar string
 //  ^^^ definition sg/initial/X#bar.
+//  documentation ```go
    }
   
    Y struct {
 // ^ definition sg/initial/Y#
+// documentation ```go
 // documentation Go can be fun
+// documentation ```go
     baz float64
 //  ^^^ definition sg/initial/Y#baz.
+//  documentation ```go
    }
   )
   
