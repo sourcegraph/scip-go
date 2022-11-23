@@ -74,7 +74,7 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			v.curScope = v.curScope[:len(v.curScope)-1]
 		}()
 
-		v.doc.DeclareNewSymbol(
+		v.doc.SetNewSymbol(
 			symbols.FromDescriptors(v.pkg, v.curScope...),
 			v.curDecl,
 			node.Name,
@@ -92,10 +92,10 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 
 			// In this odd scenario, the definition is at embedded field level,
 			// not wherever the name is. So that messes up our lookup table.
-			v.doc.DeclareNewSymbolForPos(embeddedSymbol, node, name, node.Pos())
+			v.doc.SetNewSymbolForPos(embeddedSymbol, node, name, node.Pos())
 		} else {
 			for _, name := range node.Names {
-				v.doc.DeclareNewSymbol(v.makeSymbol(&scip.Descriptor{
+				v.doc.SetNewSymbol(v.makeSymbol(&scip.Descriptor{
 					Name:   name.Name,
 					Suffix: scip.Descriptor_Term,
 				}), nil, name)

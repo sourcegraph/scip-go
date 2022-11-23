@@ -28,7 +28,7 @@ func visitFunctionDefinition(doc *document.Document, pkg *packages.Package, node
 
 	symbol := symbols.FromDescriptors(pkg, desciptors...)
 
-	doc.DeclareNewSymbol(
+	doc.SetNewSymbol(
 		symbol,
 		node,
 		node.Name,

@@ -15,6 +15,7 @@
   type worker string
 //     ^^^^^^ definition sg/generallyeric/worker#
 //     documentation ```go
+//     relationship sg/generallyeric/Person# implementation
   
   func (w worker) Work() {
 //      ^ definition local 0

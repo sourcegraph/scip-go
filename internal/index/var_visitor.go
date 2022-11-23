@@ -44,7 +44,7 @@ func (v VarVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		// Iterate over names, which are the only thing that can be definitions
 		for _, name := range node.Names {
 			symbol := symbols.FromDescriptors(v.pkg, descriptorTerm(name.Name))
-			v.doc.DeclareNewSymbol(symbol, v.curDecl, name)
+			v.doc.SetNewSymbol(symbol, v.curDecl, name)
 
 			// position := v.pkg.Fset.Position(name.Pos())
 			// v.doc.NewOccurrence(symbol, scipRangeFromName(position, name.Name, false))

@@ -48,32 +48,34 @@ type Document struct {
 	// pkgSymbols maps positions to symbol names within
 	// this document.
 	pkgSymbols *lookup.Package
+
+	symbolMap map[token.Pos]*scip.SymbolInformation
 }
 
-const SymbolDefinition = int32(scip.SymbolRole_Definition)
-const SymbolReference = int32(scip.SymbolRole_ReadAccess)
+const symbolDefinition = int32(scip.SymbolRole_Definition)
+const symbolReference = int32(scip.SymbolRole_ReadAccess)
 
 func (d *Document) GetSymbol(pos token.Pos) (string, bool) {
-	return d.pkgSymbols.Get(pos)
+	return d.pkgSymbols.GetSymbol(pos)
 }
 
-// DeclareNewSymbolForPos declares a new symbol and tracks it within a Document.
+// SetNewSymbol declares a new symbol and tracks it within a Document.
 //
 // NOTE: Does NOT emit a new occurrence
-func (d *Document) DeclareNewSymbol(
+func (d *Document) SetNewSymbol(
 	symbol string,
 	parent ast.Node,
 	ident *ast.Ident,
 ) {
-	d.DeclareNewSymbolForPos(symbol, parent, ident, ident.Pos())
+	d.SetNewSymbolForPos(symbol, parent, ident, ident.Pos())
 }
 
-// DeclareNewSymbolForPos declares a new symbol and tracks it within a Document
+// SetNewSymbolForPos declares a new symbol and tracks it within a Document
 // but allows for an override of the position. Generally speaking, you should use
 // DeclareNewSymbol instead (since it will calculate the pos for most cases)
 //
 // NOTE: Does NOT emit a new occurrence
-func (d *Document) DeclareNewSymbolForPos(
+func (d *Document) SetNewSymbolForPos(
 	symbol string,
 	parent ast.Node,
 	ident *ast.Ident,
@@ -99,12 +101,18 @@ func (d *Document) DeclareNewSymbolForPos(
 		}
 	}
 
-	d.Symbols = append(d.Symbols, &scip.SymbolInformation{
+	d.pkgSymbols.Set(pos, &scip.SymbolInformation{
 		Symbol:        symbol,
 		Documentation: documentation,
+		Relationships: []*scip.Relationship{},
 	})
+}
 
-	d.pkgSymbols.Set(pos, symbol)
+// DeclareSymbols will put all of the symbol information into the scip document itself.
+func (d *Document) DeclareSymbols() {
+	for _, sym := range d.pkgSymbols.Symbols() {
+		d.Document.Symbols = append(d.Document.Symbols, sym)
+	}
 }
 
 // NewOccurrence emits a scip.Occurence ONLY. This will not emit a
@@ -113,7 +121,7 @@ func (d *Document) NewOccurrence(symbol string, rng []int32) {
 	d.Occurrences = append(d.Occurrences, &scip.Occurrence{
 		Range:       rng,
 		Symbol:      symbol,
-		SymbolRoles: SymbolDefinition,
+		SymbolRoles: symbolDefinition,
 	})
 }
 
@@ -129,7 +137,7 @@ func (d *Document) AppendSymbolReference(symbol string, rng []int32, overrideTyp
 	d.Occurrences = append(d.Occurrences, &scip.Occurrence{
 		Range:                 rng,
 		Symbol:                symbol,
-		SymbolRoles:           SymbolReference,
+		SymbolRoles:           symbolReference,
 		OverrideDocumentation: documentation,
 	})
 }

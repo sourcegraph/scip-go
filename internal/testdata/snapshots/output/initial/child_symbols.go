@@ -107,6 +107,7 @@
 //     ^^^^^^ definition sg/initial/Struct#
 //     documentation ```go
 //     documentation ```go
+//     relationship sg/initial/Interface# implementation
    *Embedded
 //  ^^^^^^^^ definition sg/initial/Struct#Embedded.
 //  documentation ```go

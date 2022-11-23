@@ -17,8 +17,8 @@ import (
 )
 
 var app = kingpin.New(
-	"lsif-go",
-	"lsif-go is an LSIF indexer for Go.",
+	"scip-go",
+	"scip-go is an SCIP indexer for Go.",
 ).Version("0.1")
 
 var (

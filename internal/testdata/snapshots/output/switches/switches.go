@@ -25,16 +25,16 @@
    case int:
     return concreteValue*3 > 10
 //         ^^^^^^^^^^^^^ reference local 2
-//         override documentation ```go
+//         override_documentation ```go
    case bool:
     return !concreteValue
 //          ^^^^^^^^^^^^^ reference local 2
-//          override documentation ```go
+//          override_documentation ```go
    case CustomSwitch:
 //      ^^^^^^^^^^^^ reference sg/switches/CustomSwitch#
     return concreteValue.Something()
 //         ^^^^^^^^^^^^^ reference local 2
-//         override documentation ```go
+//         override_documentation ```go
 //                       ^^^^^^^^^ reference sg/switches/CustomSwitch#Something().
    default:
     return false

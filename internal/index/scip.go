@@ -10,6 +10,7 @@ import (
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
+	"github.com/sourcegraph/scip-go/internal/implementations"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/symbols"
@@ -57,12 +58,22 @@ func IndexProject(opts config.IndexOpts) (*scip.Index, error) {
 		visitPackage(moduleRoot, pkg, pathToDocuments, globalSymbols)
 	}
 
+	impls.AddImplementationRelationships(pkgs, globalSymbols)
+
+	// NOTE:
+	// I'm not sure how to do this yet... but we basically need to iterate over
+	// all the possible implementations and other relationships. After doing so
+	// is when we can add the symbols itself to the documents. It seems a bit weird
+	// but I'll see if there's some other way to do it later.
+	for _, doc := range pathToDocuments {
+		doc.DeclareSymbols()
+	}
+
 	for _, pkg := range pkgs {
 		pkgSymbols := globalSymbols.GetPackage(pkg)
 
 		for _, f := range pkg.Syntax {
-			relative, _ := filepath.Rel(moduleRoot, pkg.Fset.File(f.Package).Name())
-			doc := pathToDocuments[relative]
+			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
 
 			visitor := NewFileVisitor(
 				doc,
@@ -155,12 +166,13 @@ func visitPackage(
 
 	// Iterate over all the files, collect any global symbols
 	for _, f := range pkg.Syntax {
-		relative, _ := filepath.Rel(moduleRoot, pkg.Fset.File(f.Package).Name())
+		abs := pkg.Fset.File(f.Package).Name()
+		relative, _ := filepath.Rel(moduleRoot, abs)
 
 		doc := visitSyntax(pkg, pkgSymbols, f, relative)
 
 		// Save document for pass 2
-		pathToDocuments[relative] = doc
+		pathToDocuments[abs] = doc
 	}
 
 	globalSymbols.Add(pkgSymbols)

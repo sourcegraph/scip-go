@@ -117,7 +117,7 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		def := info.Defs[node]
 		if def != nil {
 			var sym string
-			if pkgSymbols, ok := v.pkgSymbols.Get(def.Pos()); ok {
+			if pkgSymbols, ok := v.pkgSymbols.GetSymbol(def.Pos()); ok {
 				sym = pkgSymbols
 			} else if globalSymbol, ok := v.globalSymbols.GetSymbol(v.pkg, def.Pos()); ok {
 				sym = globalSymbol
