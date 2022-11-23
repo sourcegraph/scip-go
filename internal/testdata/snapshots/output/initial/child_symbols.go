@@ -143,6 +143,7 @@
 //         ^^^^^^ reference sg/initial/Struct#
 //                 ^^^^^^^^^^^^^^^^^^^ definition sg/initial/Struct#ImplementsInterface().
 //                 documentation ```go
+//                 relationship sg/initial/Interface#ImplementsInterface. implementation
   
   func (s *Struct) MachineLearning(
 //      ^ definition local 5

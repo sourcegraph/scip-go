@@ -41,6 +41,8 @@
 //        ^^ reference sg/impls/T1#
 //            ^^ definition sg/impls/T1#F1().
 //            documentation ```go
+//            relationship sg/impls/I1#F1. implementation
+//            relationship sg/impls/I1Clone#F1. implementation
   
   type T2 int
 //     ^^ definition sg/impls/T2#
@@ -53,6 +55,8 @@
 //        ^^ reference sg/impls/T2#
 //            ^^ definition sg/impls/T2#F1().
 //            documentation ```go
+//            relationship sg/impls/I1#F1. implementation
+//            relationship sg/impls/I1Clone#F1. implementation
   func (r T2) F2() {}
 //      ^ definition local 2
 //        ^^ reference sg/impls/T2#
