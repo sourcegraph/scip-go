@@ -14,12 +14,12 @@ func TestIndexer_findBestPackageDefinitionPath(t *testing.T) {
 		Docs bool
 	}
 
-	makePackage := func(pkgName string, fileInfo []FileInfo) (*packages.Package, map[token.Pos]string) {
+	makePackage := func(pkgName string, fileInfo []FileInfo) (*packages.Package, map[*ast.File]string) {
 		fset := token.NewFileSet()
 
 		files := map[string]*ast.File{}
 		syntax := []*ast.File{}
-		posMap := map[token.Pos]string{}
+		posMap := map[*ast.File]string{}
 
 		for idx, info := range fileInfo {
 			var doc *ast.CommentGroup
@@ -39,7 +39,7 @@ func TestIndexer_findBestPackageDefinitionPath(t *testing.T) {
 
 			files[info.Name] = f
 			syntax = append(syntax, f)
-			posMap[token.Pos(idx)] = info.Name
+			posMap[f] = info.Name
 
 			fset.AddFile(info.Name, fset.Base(), 1)
 		}

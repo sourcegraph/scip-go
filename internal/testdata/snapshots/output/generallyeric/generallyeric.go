@@ -14,6 +14,7 @@
 //        ^ definition local 2
 //                   ^ reference local 1
     fmt.Print(v)
+//  ^^^ reference github.com/golang/go/src fmt/
 //      ^^^^^ reference github.com/golang/go/src fmt/Print().
 //            ^ reference local 2
    }

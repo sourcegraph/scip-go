@@ -10,10 +10,9 @@ import (
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip-go/internal/implementations"
+	impls "github.com/sourcegraph/scip-go/internal/implementations"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
-	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
@@ -89,7 +88,7 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 				}
 
 				position := pkg.Fset.Position(spec.Pos())
-				emitImportReference(doc, position, importedPackage)
+				emitImportReference(globalSymbols, doc, position, importedPackage)
 			}
 
 			ast.Walk(visitor, f)
@@ -101,16 +100,15 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 }
 
 func emitImportReference(
+	globalSymbols *lookup.Global,
 	doc *document.Document,
 	position token.Position,
 	importedPackage *packages.Package,
 ) {
 	pkgPath := importedPackage.PkgPath
 	scipRange := scipRangeFromName(position, pkgPath, true)
-	symbol := symbols.FromDescriptors(importedPackage, descriptorPackage(pkgPath))
-
-	// TODO(tjdevries): Might be reasonable to get an obj here...
-	doc.AppendSymbolReference(symbol, scipRange, nil)
+	symbol := globalSymbols.GetPkgNameSymbol(pkgPath)
+	doc.AppendSymbolReference(symbol.Symbol, scipRange, nil)
 }
 
 func scipRangeFromName(position token.Position, name string, adjust bool) []int32 {
@@ -159,6 +157,16 @@ func visitPackage(
 	globalSymbols *lookup.Global,
 ) {
 	pkgSymbols := lookup.NewPackageSymbols(pkg)
+
+	// TODO: I don't like this
+	if pkg.Name != "builtin" {
+		pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
+		if err != nil {
+			panic(fmt.Sprintf("Unhandled package declaration: %s", err))
+		}
+
+		globalSymbols.SetPkgName(pkg, pkgDeclaration)
+	}
 
 	// Iterate over all the files, collect any global symbols
 	for _, f := range pkg.Syntax {

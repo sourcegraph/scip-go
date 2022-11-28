@@ -2,8 +2,8 @@ package index
 
 import (
 	"errors"
+	"fmt"
 	"go/ast"
-	"go/token"
 	"math"
 	"path"
 	"strings"
@@ -12,9 +12,10 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func findBestPackageDefinitionPath(pkg *packages.Package) (token.Pos, error) {
+func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
 	if len(pkg.Syntax) == 0 {
-		return token.NoPos, errors.New("must have at least one possible path")
+		fmt.Println("|", pkg.Name, "|", pkg.Module)
+		return nil, errors.New(fmt.Sprintf("must have at least one possible path: |%+v|", pkg))
 	}
 
 	files := []*ast.File{}
@@ -31,7 +32,7 @@ func findBestPackageDefinitionPath(pkg *packages.Package) (token.Pos, error) {
 	// The idiomatic way is to _only_ have one .go file per package that has a docstring
 	// for the package. This should generally return here.
 	if len(filesWithDocs) == 1 {
-		return filesWithDocs[0].Name.Pos(), nil
+		return filesWithDocs[0], nil
 	}
 
 	// If we for some reason have more than one .go file per package that has a docstring,
@@ -49,27 +50,29 @@ func findBestPackageDefinitionPath(pkg *packages.Package) (token.Pos, error) {
 	//     1. doc.go
 	//     2. exact match
 	//     3. computes levenshtein and picks best score
-	minDistance, bestToken := math.MaxInt32, token.NoPos
+	var bestFile *ast.File
+
+	minDistance := math.MaxInt32
 	for _, f := range files {
 		fPath := pkg.Fset.Position(f.Pos()).Filename
 		fileName := fileNameWithoutExtension(fPath)
 
 		if "doc.go" == path.Base(fPath) {
-			return f.Name.NamePos, nil
+			return f, nil
 		}
 
 		if pkg.Name == fileName {
-			return f.Name.NamePos, nil
+			return f, nil
 		}
 
 		distance := levenshtein.ComputeDistance(pkg.Name, fileName)
 		if distance < minDistance {
 			minDistance = distance
-			bestToken = f.Name.NamePos
+			bestFile = f
 		}
 	}
 
-	return bestToken, nil
+	return bestFile, nil
 }
 
 func fileNameWithoutExtension(fileName string) string {

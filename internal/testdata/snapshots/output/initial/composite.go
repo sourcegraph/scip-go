@@ -52,10 +52,12 @@
    }
   
    fmt.Printf("> %d\n", o.X)
+// ^^^ reference github.com/golang/go/src fmt/
 //     ^^^^^^ reference github.com/golang/go/src fmt/Printf().
 //                      ^ reference local 0
 //                        ^ reference sg/initial/Inner#X.
    fmt.Println(o.Inner.Y)
+// ^^^ reference github.com/golang/go/src fmt/
 //     ^^^^^^^ reference github.com/golang/go/src fmt/Println().
 //             ^ reference local 0
 //               ^^^^^ reference sg/initial/Outer#Inner.

@@ -3,10 +3,12 @@ package lookup
 import (
 	"errors"
 	"fmt"
+	"go/ast"
 	"go/token"
 	"go/types"
 	"sync"
 
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
@@ -20,7 +22,8 @@ func NewPackageSymbols(pkg *packages.Package) *Package {
 
 func NewGlobalSymbols() *Global {
 	return &Global{
-		symbols: map[string]*Package{},
+		symbols:  map[string]*Package{},
+		pkgNames: map[string]*scip.SymbolInformation{},
 	}
 }
 
@@ -64,14 +67,32 @@ func (p *Package) Symbols() []*scip.SymbolInformation {
 }
 
 type Global struct {
-	m       sync.Mutex
-	symbols map[string]*Package
+	m        sync.Mutex
+	symbols  map[string]*Package
+	pkgNames map[string]*scip.SymbolInformation
 }
 
 func (p *Global) Add(pkgSymbols *Package) {
 	p.m.Lock()
 	p.symbols[pkgSymbols.pkg.PkgPath] = pkgSymbols
 	p.m.Unlock()
+}
+
+func (p *Global) SetPkgName(pkg *packages.Package, pkgDeclaration *ast.File) {
+	p.m.Lock()
+	p.pkgNames[pkg.PkgPath] = &scip.SymbolInformation{
+		Symbol: symbols.FromDescriptors(pkg, &scip.Descriptor{
+			Name:   pkg.PkgPath,
+			Suffix: scip.Descriptor_Namespace,
+		}),
+		Documentation: []string{},
+		Relationships: []*scip.Relationship{},
+	}
+	p.m.Unlock()
+}
+
+func (p *Global) GetPkgNameSymbol(pkgPath string) *scip.SymbolInformation {
+	return p.pkgNames[pkgPath]
 }
 
 func (p *Global) GetPackage(pkg *packages.Package) *Package {
@@ -93,7 +114,9 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 		return sym, true, nil
 	}
 
-	switch obj.(type) {
+	switch obj := obj.(type) {
+	case *types.PkgName:
+		panic(fmt.Sprintf("should never lookup PkgName %s | %+v", obj.Id(), obj.Imported().Path()))
 	case *types.Nil:
 		return nil, false, nil
 	}

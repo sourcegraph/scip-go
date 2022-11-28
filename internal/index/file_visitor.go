@@ -85,7 +85,37 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	}
 
 	switch node := n.(type) {
+	case *ast.ImportSpec:
+		// Skip imports
+		return nil
+
+	case *ast.SelectorExpr:
+		if ident, ok := node.X.(*ast.Ident); ok {
+			use := v.pkg.TypesInfo.Uses[ident]
+
+			// We special case handling PkgNames because they do some goofy things
+			// compared to almost every other construct in the language.
+			switch sel := use.(type) {
+			case *types.PkgName:
+				pos := ident.NamePos
+				position := v.pkg.Fset.Position(pos)
+				symbol := v.globalSymbols.GetPkgNameSymbol(sel.Imported().Path()).Symbol
+				v.doc.AppendSymbolReference(symbol, scipRange(position, sel), nil)
+
+				// Then walk the selection
+				ast.Walk(v, node.Sel)
+
+				// and since we've handled the rest, end visit
+				return nil
+			}
+		}
+
+		return v
 	case *ast.File:
+		// ast.Walk(v, node.Name)
+		// sym := v.globalSymbols.GetPkgNameSymbol(node.Pos())
+		// fmt.Println("FILE", node.Name, sym)
+
 		if node.Doc != nil {
 			ast.Walk(v, node.Doc)
 		}
@@ -131,8 +161,11 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		// Emit Reference
 		ref := info.Uses[node]
 		if ref != nil {
-			var symbol string
-			var overrideType types.Type = nil
+			var (
+				symbol       string
+				overrideType types.Type
+			)
+
 			if localSymbol, ok := v.locals[ref.Pos()]; ok {
 				symbol = localSymbol
 
@@ -140,21 +173,15 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 					overrideType = v.pkg.TypesInfo.TypeOf(node)
 				}
 			} else {
-				refPkgPath := symbols.PkgPathFromObject(ref)
-				pkg, ok := v.pkgLookup[refPkgPath]
-				if !ok {
-					panic(fmt.Sprintf("Failed to find the thing for ref: |%+v|\n", ref))
-				}
-
 				var err error
 				symInfo, ok, err := v.globalSymbols.GetSymbolOfObject(ref)
 				if err != nil {
-					fmt.Println("ERROR:", err)
+					_, ok := v.pkgLookup[symbols.PkgPathFromObject(ref)]
+					if !ok {
+						panic(fmt.Sprintf("Failed to find a package for ref: |%+v|\n", ref))
+					}
 
-					implicit := v.pkg.TypesInfo.Implicits[node]
-					fmt.Println("	implicit: ", implicit)
-					fmt.Println(pkg.Fset.Position(node.Pos()))
-					return v
+					panic(fmt.Sprintf("Unable to find symbol of object: %s", err))
 				}
 
 				if !ok {
@@ -169,7 +196,12 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		}
 
 		if def == nil && ref == nil {
-			panic(fmt.Sprintf("Neither def nor ref found: %s | %T | %s", node.Name, node, v.pkg.Fset.Position(node.Pos())))
+			panic(fmt.Sprintf(
+				"Neither def nor ref found: %s | %T | %s",
+				node.Name,
+				node,
+				v.pkg.Fset.Position(node.Pos())),
+			)
 		}
 	}
 

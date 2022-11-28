@@ -24,6 +24,7 @@
 //                documentation ```go
 //                relationship sg/generallyeric/Person#Work. implementation
    fmt.Printf("%s is working\n", w)
+// ^^^ reference github.com/golang/go/src fmt/
 //     ^^^^^^ reference github.com/golang/go/src fmt/Printf().
 //                               ^ reference local 0
   }

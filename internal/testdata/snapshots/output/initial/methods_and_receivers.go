@@ -30,6 +30,7 @@
 //      ^^^^^^^^ reference sg/initial/MyStruct#
 //               ^ reference sg/initial/MyStruct#f.
    fmt.Println(s)
+// ^^^ reference github.com/golang/go/src fmt/
 //     ^^^^^^^ reference github.com/golang/go/src fmt/Println().
 //             ^ reference local 2
   }
