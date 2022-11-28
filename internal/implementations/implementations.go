@@ -29,13 +29,8 @@ type ImplDef struct {
 	// IsAliasType     bool
 }
 
-func AddImplementationRelationships(
-	pkgs []*packages.Package,
-	// documents map[string]*document.Document,
-	symbols *lookup.Global,
-) {
-
-	output.WithProgress("Implementations", func() {
+func AddImplementationRelationships(pkgs []*packages.Package, symbols *lookup.Global) {
+	output.WithProgress("Indexing Implementations", func() {
 		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
 		if err != nil {
 			return
@@ -177,7 +172,7 @@ func extractInterfacesAndConcreteTypes(pkgs []*packages.Package, symbols *lookup
 
 			symbol, ok := pkgSymbols.Get(obj.Pos())
 			if !ok {
-				fmt.Println("No symbol for:", ident.Name, obj.Name())
+				fmt.Println("No symbol for:", ident.Name, obj.Id())
 				continue
 			}
 
@@ -191,10 +186,14 @@ func extractInterfacesAndConcreteTypes(pkgs []*packages.Package, symbols *lookup
 
 			canonicalizedMethods := map[canonicalMethod]*scip.SymbolInformation{}
 			for _, m := range methods {
-				sym, ok := pkgSymbols.Get(m.Obj().Pos())
+				// sym, ok := pkgSymbols.Get(m.Obj().Pos())
+				sym, ok, err := symbols.GetSymbolOfObject(m.Obj())
+				if err != nil {
+					panic(fmt.Sprintf("Error while looking for symbol %s | %s", err, m.Obj()))
+				}
+
 				if !ok {
-					fmt.Println(fmt.Sprintf("Could not find symbol for %s", m.Obj()))
-					continue
+					panic(fmt.Sprintf("Could not find symbol for %s", m.Obj()))
 				}
 
 				canonicalizedMethods[canonicalizeMethod(m)] = sym

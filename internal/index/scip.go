@@ -19,10 +19,6 @@ import (
 )
 
 func Index(opts config.IndexOpts) (*scip.Index, error) {
-	return IndexProject(opts)
-}
-
-func IndexProject(opts config.IndexOpts) (*scip.Index, error) {
 	opts.ModuleRoot, _ = filepath.Abs(opts.ModuleRoot)
 	moduleRoot := opts.ModuleRoot
 

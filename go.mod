@@ -17,6 +17,7 @@ require (
 require (
 	github.com/Masterminds/semver v1.4.2 // indirect
 	github.com/Masterminds/sprig v2.15.0+incompatible // indirect
+	github.com/agnivade/levenshtein v1.1.1
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/aokoli/goutils v1.0.1 // indirect
 	github.com/bufbuild/buf v1.4.0 // indirect

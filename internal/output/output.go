@@ -29,7 +29,7 @@ type Options struct {
 
 var opts Options = Options{
 	Verbosity:      DefaultOutput,
-	ShowAnimations: false,
+	ShowAnimations: true,
 }
 
 // updateInterval is the duration between updates in withProgress.

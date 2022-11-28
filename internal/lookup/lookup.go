@@ -7,7 +7,6 @@ import (
 	"go/types"
 	"sync"
 
-	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
@@ -80,58 +79,69 @@ func (p *Global) GetPackage(pkg *packages.Package) *Package {
 }
 
 var skippedTypes = map[string]struct{}{}
+var builtinSymbols = map[string]*scip.SymbolInformation{}
 
 // GetSymbolOfObject returns a symbol and whether we were successful at finding.
 //
 // We can return an empty string if this object should be ignored.
-func (p *Global) GetSymbolOfObject(pkg *packages.Package, obj types.Object) (string, bool, error) {
-	switch obj.(type) {
-	case *types.PkgName:
-		// TODO: Should emit something for this I think
-		return "", false, nil
-	case *types.Nil:
-		return "", false, nil
+func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, bool, error) {
+	if _, ok := skippedTypes[obj.Id()]; ok {
+		return nil, false, nil
 	}
 
-	symbol, ok := p.GetSymbol(pkg, obj.Pos())
+	if sym, ok := builtinSymbols[obj.Id()]; ok {
+		return sym, true, nil
+	}
+
+	switch obj.(type) {
+	case *types.Nil:
+		return nil, false, nil
+	}
+
+	pkg := obj.Pkg()
+	if pkg == nil {
+		switch obj := obj.(type) {
+		case *types.TypeName:
+			skippedTypes[obj.Id()] = struct{}{}
+			return nil, false, nil
+		case *types.Const:
+			return nil, false, nil
+		case *types.Builtin:
+			return nil, false, nil
+		}
+
+		panic(fmt.Sprintf("failed to create symbol for builtin obj: %T %+v | %s", obj, obj, obj.Id()))
+	}
+
+	pkgPath := pkg.Path()
+	symbol, ok := p.getSymbolInformationByPath(pkgPath, obj.Pos())
 	if ok {
 		return symbol, true, nil
 	}
 
 	switch obj := obj.(type) {
 	case *types.Var:
-		return "", false, errors.New(fmt.Sprintln("obj", obj, "| origion", obj.Origin(), "| position", pkg.Fset.Position(obj.Pos())))
+		// , "| position", pkg.Fset.Position(obj.Pos())))
+		return nil, false, errors.New(fmt.Sprintln("obj", obj, "| origin", obj.Origin()))
 	}
 
-	if pkg.Name != "builtin" {
-		panic(fmt.Sprintf("non-builtin package failing: %s | %T | %+v", pkg.Name, obj, obj))
-	}
+	panic(fmt.Sprintf("failed to create symbol for obj: %T %+v", obj, obj))
 
-	switch obj := obj.(type) {
-	case *types.TypeName:
-		skippedTypes[obj.Name()] = struct{}{}
-		return "", false, nil
-	case *types.Const:
-		return "", false, nil
-	}
-
-	symbol, ok = symbols.FromObject(pkg, obj)
-	if !ok {
-		panic(fmt.Sprintf("failed to create symbol for builtin obj: %s %T %+v", pkg.Name, obj, obj))
-	}
-
-	return symbol, true, nil
 }
 
-func (p *Global) GetSymbolInformation(pkg *packages.Package, pos token.Pos) (*scip.SymbolInformation, bool) {
-	pkgFields, ok := p.symbols[pkg.PkgPath]
+func (p *Global) getSymbolInformationByPath(pkgPath string, pos token.Pos) (*scip.SymbolInformation, bool) {
+	pkgFields, ok := p.symbols[pkgPath]
 	if !ok {
-		fmt.Println("whoa whoa whoa... missing package?", pkg.PkgPath)
+		fmt.Println("whoa whoa whoa... missing package?", pkgPath)
 		return nil, false
 	}
 
 	field, ok := pkgFields.Get(pos)
 	return field, ok
+}
+
+func (p *Global) GetSymbolInformation(pkg *packages.Package, pos token.Pos) (*scip.SymbolInformation, bool) {
+	return p.getSymbolInformationByPath(pkg.PkgPath, pos)
 }
 
 func (p *Global) GetSymbol(pkg *packages.Package, pos token.Pos) (string, bool) {

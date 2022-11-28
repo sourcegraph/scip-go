@@ -26,7 +26,7 @@ func TestSnapshots(t *testing.T) {
 				return []*scip.SourceFile{}
 			}
 
-			index, err := index.IndexProject(config.IndexOpts{
+			index, err := index.Index(config.IndexOpts{
 				ModuleRoot:    inputDirectory,
 				ModuleVersion: "0.1-test",
 				ModulePath:    "sg/" + filepath.Base(inputDirectory),

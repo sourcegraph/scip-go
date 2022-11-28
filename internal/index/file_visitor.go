@@ -147,7 +147,7 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				}
 
 				var err error
-				symbol, ok, err = v.globalSymbols.GetSymbolOfObject(pkg, ref)
+				symInfo, ok, err := v.globalSymbols.GetSymbolOfObject(ref)
 				if err != nil {
 					fmt.Println("ERROR:", err)
 
@@ -160,6 +160,9 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				if !ok {
 					return v
 				}
+
+				// Set the resulting info
+				symbol = symInfo.Symbol
 			}
 
 			v.doc.AppendSymbolReference(symbol, scipRange(position, ref), overrideType)

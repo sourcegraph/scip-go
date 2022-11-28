@@ -78,13 +78,11 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) ([]*packages.Package
 
 	for _, pkg := range pkgs {
 		normalizePackage(&opts, pkg)
-		fmt.Println("Putting package path:", pkg.Name, pkg.PkgPath)
 		pkgLookup[pkg.PkgPath] = pkg
 
 		for _, imp := range pkg.Imports {
 			normalizePackage(&opts, imp)
 			pkgLookup[imp.PkgPath] = imp
-			// fmt.Println("imp", imp.Name, imp.PkgPath, imp.Module.Path)
 		}
 	}
 
