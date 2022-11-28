@@ -1,5 +1,5 @@
   package initial
-//        ^^^^^^^ definition sg/initial/
+//        ^^^^^^^ reference sg/initial/
   
   import "fmt"
 //        ^^^ reference github.com/golang/go/src fmt/
