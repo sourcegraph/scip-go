@@ -1,4 +1,5 @@
   package switches
+//        ^^^^^^^^ definition sg/switches/
   
   // CustomSwitch does the things in a switch
   type CustomSwitch struct{}

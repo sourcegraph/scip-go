@@ -1,4 +1,5 @@
   package initial
+//        ^^^^^^^ reference sg/initial/
   
   import "net/http"
 //        ^^^^^^^^ reference github.com/golang/go/src net/http/

@@ -50,7 +50,45 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 	// We don't want to visit in the same depth as file visitors though,
 	// so we do ONLY do this
 	for _, pkg := range pkgLookup {
+		fmt.Println("Attempting pkg:", pkg.PkgPath)
+
 		visitPackage(moduleRoot, pkg, pathToDocuments, globalSymbols)
+
+		// TODO: I don't like this
+		pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
+		if err != nil {
+			panic(fmt.Sprintf("Unhandled package declaration: %s", err))
+		}
+
+		if pkgDeclaration == nil {
+			continue
+		}
+
+		globalSymbols.SetPkgName(pkg, pkgDeclaration)
+
+		if _, ok := pkgs[pkg.PkgPath]; !ok {
+			continue
+		}
+
+		pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg.PkgPath).Symbol.Symbol
+
+		for _, f := range pkg.Syntax {
+			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+
+			if pkgDeclaration != nil {
+				if f == pkgDeclaration {
+					fmt.Println("FOUND ONE FOR THIS PACKAGE", f.Name)
+					position := pkg.Fset.Position(f.Name.NamePos)
+					doc.SetNewSymbolForPos(pkgSymbol, nil, f.Name, f.Name.NamePos)
+					doc.NewDefinition(pkgSymbol, scipRangeFromName(position, f.Name.Name, false))
+				} else {
+					position := pkg.Fset.Position(f.Name.NamePos)
+					fmt.Println("Emit symbol:", pkgSymbol, position)
+					doc.AppendSymbolReference(pkgSymbol, scipRangeFromName(position, f.Name.Name, false), nil)
+				}
+			}
+		}
+
 	}
 
 	impls.AddImplementationRelationships(pkgs, globalSymbols)
@@ -108,7 +146,7 @@ func emitImportReference(
 	pkgPath := importedPackage.PkgPath
 	scipRange := scipRangeFromName(position, pkgPath, true)
 	symbol := globalSymbols.GetPkgNameSymbol(pkgPath)
-	doc.AppendSymbolReference(symbol.Symbol, scipRange, nil)
+	doc.AppendSymbolReference(symbol.Symbol.Symbol, scipRange, nil)
 }
 
 func scipRangeFromName(position token.Position, name string, adjust bool) []int32 {
@@ -157,19 +195,9 @@ func visitPackage(
 	globalSymbols *lookup.Global,
 ) {
 	pkgSymbols := lookup.NewPackageSymbols(pkg)
-
-	// TODO: I don't like this
-	if pkg.Name != "builtin" {
-		pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
-		if err != nil {
-			panic(fmt.Sprintf("Unhandled package declaration: %s", err))
-		}
-
-		globalSymbols.SetPkgName(pkg, pkgDeclaration)
-	}
-
 	// Iterate over all the files, collect any global symbols
 	for _, f := range pkg.Syntax {
+
 		abs := pkg.Fset.File(f.Package).Name()
 		relative, _ := filepath.Rel(moduleRoot, abs)
 

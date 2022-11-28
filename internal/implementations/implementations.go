@@ -29,7 +29,7 @@ type ImplDef struct {
 	// IsAliasType     bool
 }
 
-func AddImplementationRelationships(pkgs []*packages.Package, symbols *lookup.Global) {
+func AddImplementationRelationships(pkgs map[string]*packages.Package, symbols *lookup.Global) {
 	output.WithProgress("Indexing Implementations", func() {
 		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
 		if err != nil {
@@ -130,7 +130,7 @@ func implementationsForType(ty ImplDef, tyMethods *intsets.Sparse, interfaceToMe
 	return matching
 }
 
-func extractInterfacesAndConcreteTypes(pkgs []*packages.Package, symbols *lookup.Global) (interfaces map[string]ImplDef, concreteTypes map[string]ImplDef, err error) {
+func extractInterfacesAndConcreteTypes(pkgs map[string]*packages.Package, symbols *lookup.Global) (interfaces map[string]ImplDef, concreteTypes map[string]ImplDef, err error) {
 	interfaces = map[string]ImplDef{}
 	concreteTypes = map[string]ImplDef{}
 

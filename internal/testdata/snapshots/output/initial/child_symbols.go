@@ -1,4 +1,5 @@
   package initial
+//        ^^^^^^^ reference sg/initial/
   
   // Const is a constant equal to 5. It's the best constant I've ever written. 😹
   const Const = 5

@@ -115,9 +115,9 @@ func (d *Document) DeclareSymbols() {
 	}
 }
 
-// NewOccurrence emits a scip.Occurence ONLY. This will not emit a
+// NewDefinition emits a scip.Occurence ONLY. This will not emit a
 // new symbol. You must do that using DeclareNewSymbol[ForPos]
-func (d *Document) NewOccurrence(symbol string, rng []int32) {
+func (d *Document) NewDefinition(symbol string, rng []int32) {
 	d.Occurrences = append(d.Occurrences, &scip.Occurrence{
 		Range:       rng,
 		Symbol:      symbol,

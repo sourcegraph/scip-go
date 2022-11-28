@@ -99,7 +99,7 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			case *types.PkgName:
 				pos := ident.NamePos
 				position := v.pkg.Fset.Position(pos)
-				symbol := v.globalSymbols.GetPkgNameSymbol(sel.Imported().Path()).Symbol
+				symbol := v.globalSymbols.GetPkgNameSymbol(sel.Imported().Path()).Symbol.Symbol
 				v.doc.AppendSymbolReference(symbol, scipRange(position, sel), nil)
 
 				// Then walk the selection
@@ -137,7 +137,7 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		// Short circuit on case clauses
 		if obj, ok := v.caseClauses[node.Pos()]; ok {
 			sym := v.createNewLocalSymbol(obj.Pos())
-			v.doc.NewOccurrence(sym, scipRange(position, obj))
+			v.doc.NewDefinition(sym, scipRange(position, obj))
 			return nil
 		}
 
@@ -155,7 +155,7 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				sym = v.createNewLocalSymbol(def.Pos())
 			}
 
-			v.doc.NewOccurrence(sym, scipRange(position, def))
+			v.doc.NewDefinition(sym, scipRange(position, def))
 		}
 
 		// Emit Reference

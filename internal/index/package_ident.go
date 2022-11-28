@@ -13,6 +13,10 @@ import (
 )
 
 func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
+	if pkg.PkgPath == "builtin" {
+		return nil, nil
+	}
+
 	if len(pkg.Syntax) == 0 {
 		fmt.Println("|", pkg.Name, "|", pkg.Module)
 		return nil, errors.New(fmt.Sprintf("must have at least one possible path: |%+v|", pkg))

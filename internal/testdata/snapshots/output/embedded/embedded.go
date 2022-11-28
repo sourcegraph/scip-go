@@ -1,4 +1,5 @@
   package embedded
+//        ^^^^^^^^ definition sg/embedded/
   
   import "os/exec"
 //        ^^^^^^^ reference github.com/golang/go/src os/exec/

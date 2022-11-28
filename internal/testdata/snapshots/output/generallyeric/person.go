@@ -1,4 +1,5 @@
   package generallyeric
+//        ^^^^^^^^^^^^^ reference sg/generallyeric/
   
   import "fmt"
 //        ^^^ reference github.com/golang/go/src fmt/

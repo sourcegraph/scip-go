@@ -1,4 +1,5 @@
   package initial
+//        ^^^^^^^ reference sg/initial/
   
   func UsesBuiltin() int {
 //     ^^^^^^^^^^^ definition sg/initial/UsesBuiltin().

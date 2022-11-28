@@ -1,4 +1,5 @@
   package impls
+//        ^^^^^ definition sg/impls/
   
   type I1 interface {
 //     ^^ definition sg/impls/I1#

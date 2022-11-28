@@ -1,4 +1,5 @@
   package initial
+//        ^^^^^^^ reference sg/initial/
   
   const MY_THING = 10
 //      ^^^^^^^^ definition MY_THING.

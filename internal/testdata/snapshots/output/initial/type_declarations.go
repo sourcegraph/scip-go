@@ -1,4 +1,5 @@
   package initial
+//        ^^^^^^^ reference sg/initial/
   
   type LiteralType int
 //     ^^^^^^^^^^^ definition sg/initial/LiteralType#

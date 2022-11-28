@@ -1,4 +1,5 @@
   package initial
+//        ^^^^^^^ reference sg/initial/
   
   func UsesLater() {
 //     ^^^^^^^^^ definition sg/initial/UsesLater().

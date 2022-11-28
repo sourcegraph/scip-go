@@ -23,7 +23,7 @@ func NewPackageSymbols(pkg *packages.Package) *Package {
 func NewGlobalSymbols() *Global {
 	return &Global{
 		symbols:  map[string]*Package{},
-		pkgNames: map[string]*scip.SymbolInformation{},
+		pkgNames: map[string]*PackageName{},
 	}
 }
 
@@ -66,10 +66,15 @@ func (p *Package) Symbols() []*scip.SymbolInformation {
 	return symbols
 }
 
+type PackageName struct {
+	Symbol *scip.SymbolInformation
+	Pos    token.Pos
+}
+
 type Global struct {
 	m        sync.Mutex
 	symbols  map[string]*Package
-	pkgNames map[string]*scip.SymbolInformation
+	pkgNames map[string]*PackageName
 }
 
 func (p *Global) Add(pkgSymbols *Package) {
@@ -80,18 +85,21 @@ func (p *Global) Add(pkgSymbols *Package) {
 
 func (p *Global) SetPkgName(pkg *packages.Package, pkgDeclaration *ast.File) {
 	p.m.Lock()
-	p.pkgNames[pkg.PkgPath] = &scip.SymbolInformation{
-		Symbol: symbols.FromDescriptors(pkg, &scip.Descriptor{
-			Name:   pkg.PkgPath,
-			Suffix: scip.Descriptor_Namespace,
-		}),
-		Documentation: []string{},
-		Relationships: []*scip.Relationship{},
+	p.pkgNames[pkg.PkgPath] = &PackageName{
+		Symbol: &scip.SymbolInformation{
+			Symbol: symbols.FromDescriptors(pkg, &scip.Descriptor{
+				Name:   pkg.PkgPath,
+				Suffix: scip.Descriptor_Namespace,
+			}),
+			Documentation: []string{},
+			Relationships: []*scip.Relationship{},
+		},
+		Pos: pkgDeclaration.Name.NamePos,
 	}
 	p.m.Unlock()
 }
 
-func (p *Global) GetPkgNameSymbol(pkgPath string) *scip.SymbolInformation {
+func (p *Global) GetPkgNameSymbol(pkgPath string) *PackageName {
 	return p.pkgNames[pkgPath]
 }
 

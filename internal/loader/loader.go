@@ -34,7 +34,7 @@ func makeConfig(root string) *packages.Config {
 	}
 }
 
-func LoadPackages(opts config.IndexOpts, moduleRoot string) ([]*packages.Package, map[string]*packages.Package, error) {
+func LoadPackages(opts config.IndexOpts, moduleRoot string) (map[string]*packages.Package, map[string]*packages.Package, error) {
 	cfg := makeConfig(moduleRoot)
 	pkgs, err := packages.Load(cfg, "./...")
 	if err != nil {
@@ -57,24 +57,16 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) ([]*packages.Package
 	output.Println("Using go version:", goVersion)
 
 	// github.com/golang/go/src/builtin/builtin.go
-	builtinPkg := &packages.Package{
-		Name:    "builtin",
-		PkgPath: "builtin",
-		Module: &packages.Module{
-			Path:    "github.com/golang/go/src/builtin",
-			Version: goVersion,
+	pkgLookup := map[string]*packages.Package{
+		"builtin": {
+			Name:    "builtin",
+			PkgPath: "builtin",
+			Module: &packages.Module{
+				Path:    "github.com/golang/go/src/builtin",
+				Version: goVersion,
+			},
 		},
 	}
-
-	pkgs = append(pkgs, builtinPkg)
-
-	// TODO: Normalize the std library packages so that
-	// we don't have do any special handling later on.
-	//
-	// This will make our lives a lot easier when reasoning
-	// about packages (they will just all be loaded)
-
-	pkgLookup := map[string]*packages.Package{}
 
 	for _, pkg := range pkgs {
 		normalizePackage(&opts, pkg)
@@ -86,7 +78,12 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) ([]*packages.Package
 		}
 	}
 
-	return pkgs, pkgLookup, nil
+	projectPackages := map[string]*packages.Package{}
+	for _, pkg := range pkgs {
+		projectPackages[pkg.PkgPath] = pkg
+	}
+
+	return projectPackages, pkgLookup, nil
 
 	// allPackages := []*packages.Package{}
 	// for _, pkg := range pkgLookup {
