@@ -84,15 +84,17 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	case *ast.Field:
 		// I think the only case of this is embedded fields.
 		if len(node.Names) == 0 {
-			name := v.getIdentOfTypeExpr(node.Type)
-			embeddedSymbol := v.makeSymbol(&scip.Descriptor{
-				Name:   name.Name,
-				Suffix: scip.Descriptor_Term,
-			})
+			names := v.getIdentOfTypeExpr(node.Type)
+			for _, name := range names {
+				embeddedSymbol := v.makeSymbol(&scip.Descriptor{
+					Name:   name.Name,
+					Suffix: scip.Descriptor_Term,
+				})
 
-			// In this odd scenario, the definition is at embedded field level,
-			// not wherever the name is. So that messes up our lookup table.
-			v.doc.SetNewSymbolForPos(embeddedSymbol, node, name, node.Pos())
+				// In this odd scenario, the definition is at embedded field level,
+				// not wherever the name is. So that messes up our lookup table.
+				v.doc.SetNewSymbolForPos(embeddedSymbol, node, name, node.Pos())
+			}
 		} else {
 			for _, name := range node.Names {
 				v.doc.SetNewSymbol(v.makeSymbol(&scip.Descriptor{
@@ -125,15 +127,25 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 // Implements ast.Visitor
 var _ ast.Visitor = &TypeVisitor{}
 
-func (s *TypeVisitor) getIdentOfTypeExpr(ty ast.Expr) *ast.Ident {
+func (s *TypeVisitor) getIdentOfTypeExpr(ty ast.Expr) []*ast.Ident {
 	switch ty := ty.(type) {
 	case *ast.Ident:
-		return ty
+		return []*ast.Ident{ty}
 	case *ast.SelectorExpr:
-		return ty.Sel
+		return []*ast.Ident{ty.Sel}
 	case *ast.StarExpr:
 		return s.getIdentOfTypeExpr(ty.X)
 	case *ast.IndexExpr:
+		return s.getIdentOfTypeExpr(ty.X)
+	case *ast.BinaryExpr:
+		// As far as I can tell, binary exprs are ONLY for type constraints
+		// and those don't really define anything on the struct.
+		//
+		// So far now, we'll just not return anything.
+		//
+		// return append(s.getIdentOfTypeExpr(ty.X), s.getIdentOfTypeExpr(ty.Y)...)
+		return []*ast.Ident{}
+	case *ast.UnaryExpr:
 		return s.getIdentOfTypeExpr(ty.X)
 	default:
 		panic(fmt.Sprintf("Unhandled named struct field: %T %+v\n%s", ty, ty, s.pkg.Fset.Position(ty.Pos())))
