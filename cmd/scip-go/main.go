@@ -32,6 +32,8 @@ var (
 	noOutput         bool
 	animation        bool
 
+	scipCommand string
+
 	// TODO: We should consider if we can avoid doing this in this iteration of scip-go
 	// depBatchSize          int
 )
@@ -55,9 +57,11 @@ func init() {
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
 	app.Flag("verbose", "Output debug logs.").Short('v').CounterVar(&verbosity)
-	app.Flag("animation", "Do not animate output.").Default("true").BoolVar(&animation)
+	app.Flag("animation", "Do not animate output.").Default("false").BoolVar(&animation)
 
 	// app.Flag("dep-batch-size", "How many dependencies to load at once to limit memory usage (e.g. 100). 0 means load all at once.").Default("0").IntVar(&depBatchSize)
+
+	app.Flag("command", "Optionally specifies a command to run. Defaults to 'index'").Default("index").StringVar(&scipCommand)
 }
 
 func main() {
@@ -75,14 +79,41 @@ func mainErr() error {
 	output.SetOutputOptions(getVerbosity(), animation)
 	output.Println("scip-go")
 
-	moduleName, isStd, err := modules.ModuleName(moduleRoot, repositoryRemote)
-	fmt.Println(moduleName, isStd, err)
+	modulePath, isStd, err := modules.ModuleName(moduleRoot, repositoryRemote)
+	if isStd {
+		panic("TODO: support stdlib. Check old lsif-go status")
+	}
 
-	index, err := index.Index(config.IndexOpts{
-		ModuleRoot:    moduleRoot,
-		ModuleVersion: moduleVersion,
-		ModulePath:    moduleName,
-	})
+	options := config.New(moduleRoot, moduleVersion, modulePath)
+	if scipCommand == "list-packages" {
+		current, deps, err := index.GetPackages(options)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Current:", current)
+		fmt.Println("Deps:", deps)
+		return nil
+	}
+
+	if scipCommand == "list-missing" {
+		missing, err := index.ListMissing(options)
+		if err != nil {
+			return err
+		}
+
+		if len(missing) == 0 {
+			fmt.Println("No missing documents")
+		} else {
+			fmt.Println("Missing documents:")
+			for _, m := range missing {
+				fmt.Println(m)
+			}
+		}
+		return nil
+	}
+
+	index, err := index.Index(options)
 	if err != nil {
 		return err
 	}

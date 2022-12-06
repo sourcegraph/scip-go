@@ -1,7 +1,6 @@
 package loader
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -36,9 +35,6 @@ func TestBuiltinFormat(t *testing.T) {
 	if !IsStandardLib(fmtPkg) {
 		t.Fatal("Package was not a builtin package: post ensure")
 	}
-
-	fmt.Println("MODULE", fmtPkg.PkgPath)
-	fmt.Println(fmtPkg)
 }
 
 func TestPackageWithinModule(t *testing.T) {
@@ -48,13 +44,10 @@ func TestPackageWithinModule(t *testing.T) {
 	config := makeConfig(root)
 	config.Tests = false
 
-	pkgs, err := packages.Load(config, "./...")
+	_, err := packages.Load(config, "./...")
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	fmt.Println(pkgs)
-
 }
 
 func TestPentimentoPackage(t *testing.T) {

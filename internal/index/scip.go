@@ -6,6 +6,7 @@ import (
 	"go/token"
 	"go/types"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/config"
@@ -18,11 +19,64 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func Index(opts config.IndexOpts) (*scip.Index, error) {
-	opts.ModuleRoot, _ = filepath.Abs(opts.ModuleRoot)
-	moduleRoot := opts.ModuleRoot
+func GetPackages(opts config.IndexOpts) (current []string, deps []string, err error) {
+	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	pkgs, pkgLookup, err := loader.LoadPackages(opts, moduleRoot)
+	for name := range pkgs {
+		current = append(current, name)
+	}
+
+	sort.Slice(current, func(i, j int) bool {
+		return current[i] < current[j]
+	})
+
+	for name := range pkgLookup {
+		deps = append(deps, name)
+	}
+
+	sort.Slice(deps, func(i, j int) bool {
+		return deps[i] < deps[j]
+	})
+
+	return
+}
+
+func ListMissing(opts config.IndexOpts) (missing []string, err error) {
+	pathToDocuments := map[string]*document.Document{}
+	globalSymbols := lookup.NewGlobalSymbols()
+
+	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	lookupNames := funk.Keys(pkgLookup)
+	for _, pkgName := range lookupNames {
+		pkg := pkgLookup[pkgName]
+		visitPackage(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
+	}
+
+	pkgNames := funk.Keys(pkgs)
+	for _, name := range pkgNames {
+		pkg := pkgs[name]
+		for _, f := range pkg.Syntax {
+			docName := pkg.Fset.File(f.Package).Name()
+			doc := pathToDocuments[docName]
+			if doc == nil {
+				missing = append(missing, docName)
+			}
+
+		}
+	}
+
+	return missing, nil
+}
+
+func Index(opts config.IndexOpts) (*scip.Index, error) {
+	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +89,7 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 				Version:   "0.1",
 				Arguments: []string{},
 			},
-			ProjectRoot:          "file://" + moduleRoot,
+			ProjectRoot:          "file://" + opts.ModuleRoot,
 			TextDocumentEncoding: scip.TextEncoding_UTF8,
 		},
 		Documents:       []*scip.Document{},
@@ -50,12 +104,10 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 	//
 	// We don't want to visit in the same depth as file visitors though,
 	// so we do ONLY do this
-	lookupNames := funk.Keys(pkgLookup)
-	for _, pkgName := range lookupNames {
-		pkg := pkgLookup[pkgName]
-		fmt.Println("Attempting pkg:", pkg.PkgPath)
-
-		visitPackage(moduleRoot, pkg, pathToDocuments, globalSymbols)
+	lookupIDs := funk.Keys(pkgLookup)
+	for _, pkgID := range lookupIDs {
+		pkg := pkgLookup[pkgID]
+		visitPackage(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
 		// TODO: I don't like this
 		pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
@@ -69,12 +121,12 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 
 		globalSymbols.SetPkgName(pkg, pkgDeclaration)
 
-		if _, ok := pkgs[pkg.PkgPath]; !ok {
+		if _, ok := pkgs[pkg.ID]; !ok {
 			continue
 		}
 
+		// TODO: I don't think I need Symbol.Symbol anymore, could probably move that back
 		pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg.PkgPath).Symbol.Symbol
-
 		for _, f := range pkg.Syntax {
 			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
 
@@ -105,15 +157,18 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 		doc.DeclareSymbols()
 	}
 
-	pkgNames := funk.Keys(pkgs)
-	fmt.Println("pkgNames:", pkgNames)
-	for _, name := range pkgNames {
-		pkg := pkgs[name]
+	pkgIDs := funk.Keys(pkgs)
+	for _, ID := range pkgIDs {
+		pkg := pkgs[ID]
 
 		pkgSymbols := globalSymbols.GetPackage(pkg)
 
 		for _, f := range pkg.Syntax {
 			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+			if doc == nil {
+				fmt.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
+				continue
+			}
 
 			visitor := NewFileVisitor(
 				doc,

@@ -102,7 +102,30 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 					Suffix: scip.Descriptor_Term,
 				}), nil, name)
 
-				switch node.Type.(type) {
+				switch typ := node.Type.(type) {
+				case *ast.MapType:
+					v.curScope = append(v.curScope, &scip.Descriptor{
+						Name:   name.Name,
+						Suffix: scip.Descriptor_Term,
+					})
+					defer func() {
+						v.curScope = v.curScope[:len(v.curScope)-1]
+					}()
+
+					ast.Walk(v, typ.Key)
+					ast.Walk(v, typ.Value)
+
+				case *ast.ArrayType:
+					v.curScope = append(v.curScope, &scip.Descriptor{
+						Name:   name.Name,
+						Suffix: scip.Descriptor_Term,
+					})
+					defer func() {
+						v.curScope = v.curScope[:len(v.curScope)-1]
+					}()
+
+					ast.Walk(v, typ.Elt)
+
 				case *ast.StructType, *ast.InterfaceType:
 					// Current scope is now embedded in the anonymous struct
 					//   So we walk the rest of the type expression and save

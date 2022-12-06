@@ -1,7 +1,6 @@
 package index
 
 import (
-	"errors"
 	"fmt"
 	"go/ast"
 	"math"
@@ -17,9 +16,15 @@ func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
 		return nil, nil
 	}
 
+	// Unsafe?...
+	if pkg.PkgPath == "unsafe" {
+		return nil, nil
+	}
+
 	if len(pkg.Syntax) == 0 {
-		fmt.Println("|", pkg.Name, "|", pkg.Module)
-		return nil, errors.New(fmt.Sprintf("must have at least one possible path: |%+v|", pkg))
+		fmt.Println("Missing |", pkg.ID, pkg.Module.Path)
+		// return nil, errors.New(fmt.Sprintf("must have at least one possible path: |%+v|", pkg))
+		return nil, nil
 	}
 
 	files := []*ast.File{}

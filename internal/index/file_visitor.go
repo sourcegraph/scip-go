@@ -112,16 +112,12 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 
 		return v
 	case *ast.File:
-		// ast.Walk(v, node.Name)
-		// sym := v.globalSymbols.GetPkgNameSymbol(node.Pos())
-		// fmt.Println("FILE", node.Name, sym)
-
 		if node.Doc != nil {
 			ast.Walk(v, node.Doc)
 		}
 
-		// TODO: Handle package name declaration separately
-		// ast.Walk(v, n.Name)
+		// Handle package name declaration separately
+		// No need to: ast.Walk(v, n.Name)
 
 		walkDeclList(v, node.Decls)
 		return nil

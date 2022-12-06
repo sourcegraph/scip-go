@@ -30,10 +30,10 @@ type ImplDef struct {
 }
 
 func AddImplementationRelationships(pkgs map[string]*packages.Package, symbols *lookup.Global) {
-	output.WithProgress("Indexing Implementations", func() {
+	output.WithProgress("Indexing Implementations", func() error {
 		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
 		if err != nil {
-			return
+			return err
 		}
 
 		// Create a unique mapping of method -> int
@@ -110,8 +110,9 @@ func AddImplementationRelationships(pkgs map[string]*packages.Package, symbols *
 					})
 				}
 			}
-
 		}
+
+		return nil
 	})
 }
 

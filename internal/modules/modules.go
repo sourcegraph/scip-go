@@ -13,22 +13,27 @@ import (
 )
 
 func ModuleName(dir, repo string) (moduleName string, isStdLib bool, err error) {
-	resolve := func() {
+	resolve := func() error {
 		name := repo
 
 		if !isModule(dir) {
 			log.Println("WARNING: No go.mod file found in current directory.")
 		} else {
 			if name, err = command.Run(dir, "go", "list", "-mod=readonly", "-m"); err != nil {
-				err = fmt.Errorf("failed to list modules: %v\n%s", err, name)
-				return
+				return fmt.Errorf("failed to list modules: %v\n%s", err, name)
 			}
 		}
 
 		moduleName, isStdLib, err = resolveModuleName(repo, name)
+
+		return nil
 	}
 
-	output.WithProgress("Resolving module name", resolve)
+	err = output.WithProgress("Resolving module name", resolve)
+	if err != nil {
+		return "", false, err
+	}
+
 	return moduleName, isStdLib, err
 }
 

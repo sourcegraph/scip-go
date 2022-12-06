@@ -34,62 +34,64 @@ func makeConfig(root string) *packages.Config {
 	}
 }
 
-func LoadPackages(opts config.IndexOpts, moduleRoot string) (map[string]*packages.Package, map[string]*packages.Package, error) {
-	cfg := makeConfig(moduleRoot)
-	pkgs, err := packages.Load(cfg, "./...")
-	if err != nil {
-		panic(err)
-	}
-
-	modOutput, err := command.Run(moduleRoot, "go", "list", "-mod=readonly", "-m", "-json")
-	if err != nil {
-		err = fmt.Errorf("failed to list module info: %v\n", err)
-		return nil, nil, err
-	}
-
-	var thisPackage *packages.Module
-	if err := json.NewDecoder(strings.NewReader(modOutput)).Decode(&thisPackage); err != nil {
-		return nil, nil, err
-	}
-
-	goVersion = "go" + thisPackage.GoVersion
-
-	output.Println("Using go version:", goVersion)
-
-	// github.com/golang/go/src/builtin/builtin.go
-	pkgLookup := map[string]*packages.Package{
-		"builtin": {
-			Name:    "builtin",
-			PkgPath: "builtin",
-			Module: &packages.Module{
-				Path:    "github.com/golang/go/src/builtin",
-				Version: goVersion,
-			},
+func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup map[string]*packages.Package, projectPackages map[string]*packages.Package, err error) {
+	pkgLookup = make(map[string]*packages.Package)
+	pkgLookup["builtin"] = &packages.Package{
+		Name:    "builtin",
+		PkgPath: "builtin",
+		Module: &packages.Module{
+			Path:    "github.com/golang/go/src/builtin",
+			Version: goVersion,
 		},
 	}
 
-	for _, pkg := range pkgs {
-		normalizePackage(&opts, pkg)
-		pkgLookup[pkg.PkgPath] = pkg
+	projectPackages = make(map[string]*packages.Package)
 
-		for _, imp := range pkg.Imports {
-			normalizePackage(&opts, imp)
-			pkgLookup[imp.PkgPath] = imp
+	if err := output.WithProgress("Loading Packages", func() error {
+		cfg := makeConfig(moduleRoot)
+		pkgs, err := packages.Load(cfg, "./...")
+		if err != nil {
+			return err
 		}
-	}
 
-	projectPackages := map[string]*packages.Package{}
-	for _, pkg := range pkgs {
-		projectPackages[pkg.PkgPath] = pkg
+		modOutput, err := command.Run(moduleRoot, "go", "list", "-mod=readonly", "-m", "-json")
+		if err != nil {
+			return fmt.Errorf("failed to list module info: %v\n", err)
+		}
+
+		var thisPackage *packages.Module
+		if err := json.NewDecoder(strings.NewReader(modOutput)).Decode(&thisPackage); err != nil {
+			return err
+		}
+
+		goVersion = "go" + thisPackage.GoVersion
+		output.Println("Using go version:", goVersion)
+
+		// github.com/golang/go/src/builtin/builtin.go
+		for _, pkg := range pkgs {
+			normalizePackage(&opts, pkg)
+			if existing, ok := pkgLookup[pkg.ID]; ok {
+				panic(fmt.Sprintf("Already contains package: %s %s | %s", pkg.PkgPath, existing.ID, pkg.ID))
+			}
+
+			pkgLookup[pkg.ID] = pkg
+
+			for _, imp := range pkg.Imports {
+				normalizePackage(&opts, imp)
+				pkgLookup[imp.ID] = imp
+			}
+		}
+
+		for _, pkg := range pkgs {
+			projectPackages[pkg.ID] = pkg
+		}
+
+		return nil
+	}); err != nil {
+		return nil, nil, err
 	}
 
 	return projectPackages, pkgLookup, nil
-
-	// allPackages := []*packages.Package{}
-	// for _, pkg := range pkgLookup {
-	// 	allPackages = append(allPackages, pkg)
-	// }
-	// return allPackages, pkgLookup, nil
 }
 
 func traversePackage(opts *config.IndexOpts, pkgLookup map[string]*packages.Package, pkg *packages.Package) {

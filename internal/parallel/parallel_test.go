@@ -7,13 +7,13 @@ import (
 )
 
 func TestRun(t *testing.T) {
-	ch := make(chan func(), 3)
-	ch <- func() {}
-	ch <- func() {}
-	ch <- func() {}
+	ch := make(chan func() error, 3)
+	ch <- func() error { return nil }
+	ch <- func() error { return nil }
+	ch <- func() error { return nil }
 	close(ch)
 
-	wg, n := Run(ch)
+	wg, _, n := Run(ch)
 	wg.Wait()
 
 	if *n != 3 {
@@ -26,13 +26,13 @@ func TestRunProgress(t *testing.T) {
 	sync2 := make(chan struct{})
 	sync3 := make(chan struct{})
 
-	ch := make(chan func(), 3)
-	ch <- func() { <-sync1 }
-	ch <- func() { <-sync2 }
-	ch <- func() { <-sync3 }
+	ch := make(chan func() error, 3)
+	ch <- func() error { <-sync1; return nil }
+	ch <- func() error { <-sync2; return nil }
+	ch <- func() error { <-sync3; return nil }
 	close(ch)
 
-	wg, n := Run(ch)
+	wg, _, n := Run(ch)
 
 	checkValue := func(expected uint64) {
 		var v uint64

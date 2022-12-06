@@ -139,6 +139,14 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 			return nil, false, nil
 		case *types.Builtin:
 			return nil, false, nil
+		case *types.Func:
+			if orig := obj.Origin(); orig != nil {
+				name := orig.FullName()
+				switch name {
+				case "(error).Error":
+					return nil, false, nil
+				}
+			}
 		}
 
 		panic(fmt.Sprintf("failed to create symbol for builtin obj: %T %+v | %s", obj, obj, obj.Id()))
@@ -157,7 +165,6 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 	}
 
 	panic(fmt.Sprintf("failed to create symbol for obj: %T %+v", obj, obj))
-
 }
 
 func (p *Global) getSymbolInformationByPath(pkgPath string, pos token.Pos) (*scip.SymbolInformation, bool) {
