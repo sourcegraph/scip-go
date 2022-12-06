@@ -35,8 +35,9 @@ type TypeVisitor struct {
 	doc *document.Document
 	pkg *packages.Package
 
-	curScope []*scip.Descriptor
-	curDecl  *ast.GenDecl
+	curScope    []*scip.Descriptor
+	curDecl     *ast.GenDecl
+	isInterface bool
 }
 
 func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
@@ -49,7 +50,29 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		// Current declaration is required for some documentation parsing.
 		// So we have to keep this here with us as we traverse more deeply
 		v.curDecl = node
-		return v
+
+		if node.Doc != nil {
+			ast.Walk(v, node.Doc)
+		}
+
+		for _, s := range node.Specs {
+			switch spec := s.(type) {
+			case *ast.TypeSpec:
+				// fmt.Printf("Type: %T\n", node.Type)
+				switch spec.Type.(type) {
+				case *ast.InterfaceType:
+					fmt.Println("Found interface", spec)
+					v.isInterface = true
+				default:
+					fmt.Println("Did not find interface:", spec)
+					v.isInterface = false
+				}
+			}
+
+			ast.Walk(v, s)
+		}
+
+		return nil
 
 	case
 		// Continue down file and decls
@@ -84,6 +107,12 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	case *ast.Field:
 		// I think the only case of this is embedded fields.
 		if len(node.Names) == 0 {
+			// If we have an interface, these do not *declare* a new symbol,
+			// they simply add another constraint.
+			if v.isInterface {
+				return v
+			}
+
 			names := v.getIdentOfTypeExpr(node.Type)
 			for _, name := range names {
 				embeddedSymbol := v.makeSymbol(&scip.Descriptor{

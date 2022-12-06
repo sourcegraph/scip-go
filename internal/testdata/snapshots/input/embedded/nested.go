@@ -1,4 +1,4 @@
-package initial
+package embedded
 
 import "net/http"
 
