@@ -16,14 +16,12 @@
   type worker string
 //     ^^^^^^ definition sg/generallyeric/worker#
 //     documentation ```go
-//     relationship sg/generallyeric/Person# implementation
   
   func (w worker) Work() {
 //      ^ definition local 0
 //        ^^^^^^ reference sg/generallyeric/worker#
 //                ^^^^ definition sg/generallyeric/worker#Work().
 //                documentation ```go
-//                relationship sg/generallyeric/Person#Work. implementation
    fmt.Printf("%s is working\n", w)
 // ^^^ reference github.com/golang/go/src fmt/
 //     ^^^^^^ reference github.com/golang/go/src fmt/Printf().

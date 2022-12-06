@@ -133,8 +133,10 @@ func (s *TypeVisitor) getIdentOfTypeExpr(ty ast.Expr) *ast.Ident {
 		return ty.Sel
 	case *ast.StarExpr:
 		return s.getIdentOfTypeExpr(ty.X)
+	case *ast.IndexExpr:
+		return s.getIdentOfTypeExpr(ty.X)
 	default:
-		panic(fmt.Sprintf("Unhandled unamed struct field: %T %+v", ty, ty))
+		panic(fmt.Sprintf("Unhandled named struct field: %T %+v\n%s", ty, ty, s.pkg.Fset.Position(ty.Pos())))
 	}
 }
 

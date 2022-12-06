@@ -10,6 +10,7 @@ import (
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
+	"github.com/sourcegraph/scip-go/internal/funk"
 	impls "github.com/sourcegraph/scip-go/internal/implementations"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
@@ -49,7 +50,9 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 	//
 	// We don't want to visit in the same depth as file visitors though,
 	// so we do ONLY do this
-	for _, pkg := range pkgLookup {
+	lookupNames := funk.Keys(pkgLookup)
+	for _, pkgName := range lookupNames {
+		pkg := pkgLookup[pkgName]
 		fmt.Println("Attempting pkg:", pkg.PkgPath)
 
 		visitPackage(moduleRoot, pkg, pathToDocuments, globalSymbols)
@@ -77,13 +80,11 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 
 			if pkgDeclaration != nil {
 				if f == pkgDeclaration {
-					fmt.Println("FOUND ONE FOR THIS PACKAGE", f.Name)
 					position := pkg.Fset.Position(f.Name.NamePos)
 					doc.SetNewSymbolForPos(pkgSymbol, nil, f.Name, f.Name.NamePos)
 					doc.NewDefinition(pkgSymbol, scipRangeFromName(position, f.Name.Name, false))
 				} else {
 					position := pkg.Fset.Position(f.Name.NamePos)
-					fmt.Println("Emit symbol:", pkgSymbol, position)
 					doc.AppendSymbolReference(pkgSymbol, scipRangeFromName(position, f.Name.Name, false), nil)
 				}
 			}
@@ -91,7 +92,9 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 
 	}
 
-	impls.AddImplementationRelationships(pkgs, globalSymbols)
+	if false {
+		impls.AddImplementationRelationships(pkgs, globalSymbols)
+	}
 
 	// NOTE:
 	// I'm not sure how to do this yet... but we basically need to iterate over
@@ -102,7 +105,11 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 		doc.DeclareSymbols()
 	}
 
-	for _, pkg := range pkgs {
+	pkgNames := funk.Keys(pkgs)
+	fmt.Println("pkgNames:", pkgNames)
+	for _, name := range pkgNames {
+		pkg := pkgs[name]
+
 		pkgSymbols := globalSymbols.GetPackage(pkg)
 
 		for _, f := range pkg.Syntax {

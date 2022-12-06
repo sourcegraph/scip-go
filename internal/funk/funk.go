@@ -1,0 +1,19 @@
+package funk
+
+import (
+	"sort"
+
+	"golang.org/x/exp/constraints"
+)
+
+func Keys[K constraints.Ordered, V any](m map[K]V) []K {
+	keys := make([]K, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+
+	// Always give back a sorted list
+	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+
+	return keys
+}
