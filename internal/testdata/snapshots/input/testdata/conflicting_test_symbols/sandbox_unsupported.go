@@ -1,5 +1,7 @@
+//go:build !linux
+// +build !linux
+
 // From https://github.com/moby/moby/blob/master/libnetwork/osl/sandbox_unsupported.go
-// Build tag constraints removed here to ensure this code is tested on CI.
 
 package osl
 
@@ -12,7 +14,7 @@ var (
 
 // NewSandbox provides a new sandbox instance created in an os specific way
 // provided a key which uniquely identifies the sandbox
-func NewSandbox(key string, osCreate, isRestore bool) (Sandbox, error) {
+func NewSandbox(key string, osCreate, isRestore bool) (*string, error) {
 	return nil, ErrNotImplemented
 }
 

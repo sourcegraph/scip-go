@@ -58,13 +58,10 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		for _, s := range node.Specs {
 			switch spec := s.(type) {
 			case *ast.TypeSpec:
-				// fmt.Printf("Type: %T\n", node.Type)
 				switch spec.Type.(type) {
 				case *ast.InterfaceType:
-					fmt.Println("Found interface", spec)
 					v.isInterface = true
 				default:
-					fmt.Println("Did not find interface:", spec)
 					v.isInterface = false
 				}
 			}
