@@ -1,6 +1,7 @@
 package visitors
 
 import (
+	"fmt"
 	"go/ast"
 	"go/token"
 	"go/types"
@@ -125,4 +126,44 @@ func scipRange(position token.Position, obj types.Object) []int32 {
 	n := int32(len(obj.Name()))
 
 	return []int32{line, column + adjustment, column + n - adjustment}
+}
+
+func getIdentOfTypeExpr(pkg *packages.Package, ty ast.Expr) []*ast.Ident {
+	switch ty := ty.(type) {
+	case *ast.Ident:
+		return []*ast.Ident{ty}
+	case *ast.SelectorExpr:
+		return []*ast.Ident{ty.Sel}
+	case *ast.StarExpr:
+		return getIdentOfTypeExpr(pkg, ty.X)
+	case *ast.IndexExpr:
+		return getIdentOfTypeExpr(pkg, ty.X)
+	case *ast.BinaryExpr:
+		// As far as I can tell, binary exprs are ONLY for type constraints
+		// and those don't really define anything on the struct.
+		//
+		// So far now, we'll just not return anything.
+		//
+		// return append(s.getIdentOfTypeExpr(ty.X), s.getIdentOfTypeExpr(ty.Y)...)
+		return []*ast.Ident{}
+	case *ast.UnaryExpr:
+		return getIdentOfTypeExpr(pkg, ty.X)
+
+	// TODO: Should see if any of these need better ident finders
+	case *ast.InterfaceType:
+		return nil
+	case *ast.FuncType:
+		return nil
+	case *ast.FuncLit:
+		return nil
+	case *ast.MapType:
+		return nil
+	case *ast.ArrayType:
+		return nil
+	case *ast.ChanType:
+		return nil
+
+	default:
+		panic(fmt.Sprintf("Unhandled named struct field: %T %+v\n%s", ty, ty, pkg.Fset.Position(ty.Pos())))
+	}
 }

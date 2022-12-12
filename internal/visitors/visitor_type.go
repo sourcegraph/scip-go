@@ -1,7 +1,6 @@
 package visitors
 
 import (
-	"fmt"
 	"go/ast"
 
 	"github.com/sourcegraph/scip-go/internal/document"
@@ -11,7 +10,7 @@ import (
 )
 
 func visitTypesInFile(doc *document.Document, pkg *packages.Package, file *ast.File) {
-	visitor := TypeVisitor{
+	visitor := typeVisitor{
 		pkg:   pkg,
 		doc:   doc,
 		scope: NewScope(pkg.PkgPath),
@@ -20,13 +19,13 @@ func visitTypesInFile(doc *document.Document, pkg *packages.Package, file *ast.F
 	ast.Walk(visitor, file)
 }
 
-// TypeVisitor collects the all the information for top-level structs
+// typeVisitor collects the all the information for top-level structs
 // that can be imported by any other file (they do not have to be exported).
 //
 // For example, a struct `myStruct` can be imported by other files in the same
 // packages. So we need to make those field names global (we only have global
 // or file-local).
-type TypeVisitor struct {
+type typeVisitor struct {
 	doc *document.Document
 	pkg *packages.Package
 
@@ -35,7 +34,7 @@ type TypeVisitor struct {
 	isInterface bool
 }
 
-func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
+func (v typeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	if n == nil {
 		return nil
 	}
@@ -102,7 +101,7 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				return v
 			}
 
-			names := v.getIdentOfTypeExpr(node.Type)
+			names := getIdentOfTypeExpr(v.pkg, node.Type)
 			for _, name := range names {
 				embeddedSymbol := v.makeSymbol(&scip.Descriptor{
 					Name:   name.Name,
@@ -157,33 +156,8 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 }
 
 // Implements ast.Visitor
-var _ ast.Visitor = &TypeVisitor{}
+var _ ast.Visitor = &typeVisitor{}
 
-func (s *TypeVisitor) getIdentOfTypeExpr(ty ast.Expr) []*ast.Ident {
-	switch ty := ty.(type) {
-	case *ast.Ident:
-		return []*ast.Ident{ty}
-	case *ast.SelectorExpr:
-		return []*ast.Ident{ty.Sel}
-	case *ast.StarExpr:
-		return s.getIdentOfTypeExpr(ty.X)
-	case *ast.IndexExpr:
-		return s.getIdentOfTypeExpr(ty.X)
-	case *ast.BinaryExpr:
-		// As far as I can tell, binary exprs are ONLY for type constraints
-		// and those don't really define anything on the struct.
-		//
-		// So far now, we'll just not return anything.
-		//
-		// return append(s.getIdentOfTypeExpr(ty.X), s.getIdentOfTypeExpr(ty.Y)...)
-		return []*ast.Ident{}
-	case *ast.UnaryExpr:
-		return s.getIdentOfTypeExpr(ty.X)
-	default:
-		panic(fmt.Sprintf("Unhandled named struct field: %T %+v\n%s", ty, ty, s.pkg.Fset.Position(ty.Pos())))
-	}
-}
-
-func (s *TypeVisitor) makeSymbol(descriptor *scip.Descriptor) string {
+func (s *typeVisitor) makeSymbol(descriptor *scip.Descriptor) string {
 	return symbols.FromDescriptors(s.pkg, append(s.scope.descriptors, descriptor)...)
 }

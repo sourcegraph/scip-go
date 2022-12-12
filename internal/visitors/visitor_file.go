@@ -19,7 +19,7 @@ func NewFileVisitor(
 	pkgLookup map[string]*packages.Package,
 	pkgSymbols *lookup.Package,
 	globalSymbols *lookup.Global,
-) *FileVisitor {
+) *fileVisitor {
 	caseClauses := map[token.Pos]types.Object{}
 	for implicit, obj := range pkg.TypesInfo.Implicits {
 		if _, ok := implicit.(*ast.CaseClause); ok {
@@ -27,7 +27,7 @@ func NewFileVisitor(
 		}
 	}
 
-	return &FileVisitor{
+	return &fileVisitor{
 		doc:           doc,
 		pkg:           pkg,
 		file:          file,
@@ -39,11 +39,11 @@ func NewFileVisitor(
 	}
 }
 
-// FileVisitor visits an entire file, but it must be called
+// fileVisitor visits an entire file, but it must be called
 // after StructVisitor.
 //
 // Iterates over a file,
-type FileVisitor struct {
+type fileVisitor struct {
 	// Document to append occurrences to
 	doc *document.Document
 
@@ -68,9 +68,9 @@ type FileVisitor struct {
 }
 
 // Implements ast.Visitor
-var _ ast.Visitor = &FileVisitor{}
+var _ ast.Visitor = &fileVisitor{}
 
-func (f *FileVisitor) createNewLocalSymbol(pos token.Pos) string {
+func (f *fileVisitor) createNewLocalSymbol(pos token.Pos) string {
 	if _, ok := f.locals[pos]; ok {
 		panic("Cannot create a new local symbol for an ident that has already been created")
 	}
@@ -79,7 +79,7 @@ func (f *FileVisitor) createNewLocalSymbol(pos token.Pos) string {
 	return f.locals[pos]
 }
 
-func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
+func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	if n == nil {
 		return nil
 	}

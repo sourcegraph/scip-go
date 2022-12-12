@@ -1,12 +1,12 @@
 package visitors
 
 import (
-	"fmt"
 	"go/ast"
 	"go/token"
 
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/symbols"
+	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -47,31 +47,75 @@ func (v varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		// Iterate over names, which are the only thing that can be definitions
 		for _, name := range node.Names {
 			symbol := symbols.FromDescriptors(v.pkg, descriptorTerm(name.Name))
-			fmt.Println("symbol", symbol)
 			v.doc.SetNewSymbol(symbol, v.curDecl, name)
 
-			// position := v.pkg.Fset.Position(name.Pos())
-			// v.doc.NewOccurrence(symbol, scipRangeFromName(position, name.Name, false))
+			v.scope.push(name.Name, scip.Descriptor_Meta)
+			walkExprList(v, node.Values)
+			v.scope.pop()
 		}
-
-		for _, value := range node.Values {
-			fmt.Printf("value: %s %T\n", value, value)
-		}
-
-		walkExprList(v, node.Values)
 
 		return nil
 
-	case *ast.CompositeLit:
-		fmt.Println("composite lit", node)
-		return v
+	case *ast.Field:
+		// I think the only case of this is embedded fields.
+		if len(node.Names) == 0 {
 
-	case *ast.StructType:
-		// inline struct
-		fmt.Println("struct", node)
-		return v
+			names := getIdentOfTypeExpr(v.pkg, node.Type)
+			for _, name := range names {
+				embeddedSymbol := v.makeSymbol(&scip.Descriptor{
+					Name:   name.Name,
+					Suffix: scip.Descriptor_Term,
+				})
+
+				// In this odd scenario, the definition is at embedded field level,
+				// not wherever the name is. So that messes up our lookup table.
+				v.doc.SetNewSymbolForPos(embeddedSymbol, node, name, node.Pos())
+			}
+		} else {
+			for _, name := range node.Names {
+				v.doc.SetNewSymbol(v.makeSymbol(&scip.Descriptor{
+					Name:   name.Name,
+					Suffix: scip.Descriptor_Term,
+				}), nil, name)
+
+				switch typ := node.Type.(type) {
+				case *ast.MapType:
+					v.scope.push(name.Name, scip.Descriptor_Term)
+					defer func() {
+						v.scope.pop()
+					}()
+
+					ast.Walk(v, typ.Key)
+					ast.Walk(v, typ.Value)
+
+				case *ast.ArrayType:
+					v.scope.push(name.Name, scip.Descriptor_Term)
+					defer func() {
+						v.scope.pop()
+					}()
+
+					ast.Walk(v, typ.Elt)
+
+				case *ast.StructType, *ast.InterfaceType:
+					// Current scope is now embedded in the anonymous struct
+					//   So we walk the rest of the type expression and save
+					//   the nested names
+					v.scope.push(name.Name, scip.Descriptor_Term)
+					defer func() {
+						v.scope.pop()
+					}()
+
+					ast.Walk(v, node.Type)
+				}
+			}
+		}
+		return nil
 
 	default:
-		return nil
+		return v
 	}
+}
+
+func (s *varVisitor) makeSymbol(descriptor *scip.Descriptor) string {
+	return symbols.FromDescriptors(s.pkg, append(s.scope.descriptors, descriptor)...)
 }

@@ -14,10 +14,12 @@
 //    ^^^^^^^^ definition MyInline.
 //    documentation ```go
    privateField FieldInterface
-// ^^^^^^^^^^^^ definition local 0
+// ^^^^^^^^^^^^ definition sg/inlinestruct/MyInline:privateField.
+// documentation ```go
 //              ^^^^^^^^^^^^^^ reference sg/inlinestruct/FieldInterface#
    PublicField  FieldInterface
-// ^^^^^^^^^^^ definition local 1
+// ^^^^^^^^^^^ definition sg/inlinestruct/MyInline:PublicField.
+// documentation ```go
 //              ^^^^^^^^^^^^^^ reference sg/inlinestruct/FieldInterface#
   }{}
   
@@ -26,9 +28,9 @@
 //     documentation ```go
    _ = MyInline.privateField
 //     ^^^^^^^^ reference MyInline.
-//              ^^^^^^^^^^^^ reference local 0
+//              ^^^^^^^^^^^^ reference sg/inlinestruct/MyInline:privateField.
    _ = MyInline.PublicField
 //     ^^^^^^^^ reference MyInline.
-//              ^^^^^^^^^^^ reference local 1
+//              ^^^^^^^^^^^ reference sg/inlinestruct/MyInline:PublicField.
   }
   
