@@ -64,8 +64,10 @@ func (v funcVisitor) Visit(n ast.Node) ast.Visitor {
 	case *ast.InterfaceType:
 		// TODO: Should handle this more elegantly?
 		for _, field := range node.Methods.List {
-			symbol := v.scope.makeSymbol(v.pkg, field.Names[0].Name, scip.Descriptor_Method)
-			v.doc.SetNewSymbol(symbol, field.Names[0], field.Names[0])
+			for _, name := range field.Names {
+				symbol := v.scope.makeSymbol(v.pkg, name.Name, scip.Descriptor_Method)
+				v.doc.SetNewSymbol(symbol, name, name)
+			}
 		}
 
 		return nil

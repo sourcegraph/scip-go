@@ -1,6 +1,7 @@
 package visitors
 
 import (
+	"fmt"
 	"go/ast"
 	"go/token"
 
@@ -9,6 +10,8 @@ import (
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
+
+var inlineCount = 0
 
 func visitVarDefinition(doc *document.Document, pkg *packages.Package, decl *ast.GenDecl) {
 	ast.Walk(varVisitor{
@@ -43,13 +46,53 @@ func (v varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		default:
 			return nil
 		}
+
 	case *ast.ValueSpec:
 		// Iterate over names, which are the only thing that can be definitions
 		for _, name := range node.Names {
 			symbol := symbols.FromDescriptors(v.pkg, descriptorTerm(name.Name))
 			v.doc.SetNewSymbol(symbol, v.curDecl, name)
+		}
 
-			v.scope.push(name.Name, scip.Descriptor_Meta)
+		if len(node.Names) > 0 {
+			var scopeName string
+			if len(node.Names) == 1 {
+				scopeName = node.Names[0].Name
+			} else {
+				scopeName = fmt.Sprintf("inline-%d", inlineCount)
+				inlineCount += 1
+
+			}
+
+			v.scope.push(scopeName, scip.Descriptor_Meta)
+			if node.Type != nil {
+				switch valueType := node.Type.(type) {
+				case *ast.FuncType:
+					// nothing
+				case *ast.Ident:
+					// nothing
+				case *ast.ChanType:
+					// TODO: Could have chan with new struct
+				case *ast.ArrayType:
+					// TODO: Could have array with new struct
+				case *ast.MapType:
+					// TODO: could have nested struct?
+				case *ast.StarExpr:
+					// TODO: could be *struct?
+				case *ast.SelectorExpr:
+					// TODO?
+				case *ast.IndexExpr:
+					// TODO: Generics, possibly need to travrerse
+				case *ast.InterfaceType:
+					ast.Walk(v, valueType)
+				case *ast.StructType:
+					// panic(fmt.Sprintf("TODO: handle type %T %s", valueType, v.pkg.Fset.Position(node.Pos())))
+					ast.Walk(v, valueType)
+				default:
+					panic(fmt.Sprintf("TODO: handle type %T %s", valueType, v.pkg.Fset.Position(node.Pos())))
+				}
+			}
+
 			walkExprList(v, node.Values)
 			v.scope.pop()
 		}
