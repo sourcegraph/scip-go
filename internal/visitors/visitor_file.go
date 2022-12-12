@@ -1,4 +1,4 @@
-package index
+package visitors
 
 import (
 	"fmt"
@@ -177,7 +177,11 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 						panic(fmt.Sprintf("Failed to find a package for ref: |%+v|\n", ref))
 					}
 
-					panic(fmt.Sprintf("Unable to find symbol of object: %s", err))
+					panic(fmt.Sprintf(
+						"Unable to find symbol of object: %s\n%s",
+						err,
+						v.pkg.Fset.Position(node.Pos()),
+					))
 				}
 
 				if !ok {
@@ -202,10 +206,4 @@ func (v FileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	}
 
 	return v
-}
-
-func walkDeclList(v ast.Visitor, list []ast.Decl) {
-	for _, x := range list {
-		ast.Walk(v, x)
-	}
 }

@@ -1,6 +1,7 @@
-package index
+package visitors
 
 import (
+	"fmt"
 	"go/ast"
 	"go/token"
 
@@ -10,22 +11,22 @@ import (
 )
 
 func visitVarDefinition(doc *document.Document, pkg *packages.Package, decl *ast.GenDecl) {
-	ast.Walk(VarVisitor{
+	ast.Walk(varVisitor{
 		doc: doc,
 		pkg: pkg,
 	}, decl)
 }
 
-type VarVisitor struct {
+type varVisitor struct {
 	doc *document.Document
 	pkg *packages.Package
 
 	curDecl ast.Decl
 }
 
-var _ ast.Visitor = &VarVisitor{}
+var _ ast.Visitor = &varVisitor{}
 
-func (v VarVisitor) Visit(n ast.Node) (w ast.Visitor) {
+func (v varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	if n == nil {
 		return nil
 	}
@@ -44,20 +45,31 @@ func (v VarVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		// Iterate over names, which are the only thing that can be definitions
 		for _, name := range node.Names {
 			symbol := symbols.FromDescriptors(v.pkg, descriptorTerm(name.Name))
+			fmt.Println("symbol", symbol)
 			v.doc.SetNewSymbol(symbol, v.curDecl, name)
 
 			// position := v.pkg.Fset.Position(name.Pos())
 			// v.doc.NewOccurrence(symbol, scipRangeFromName(position, name.Name, false))
 		}
 
+		for _, value := range node.Values {
+			fmt.Printf("value: %s %T\n", value, value)
+		}
+
+		walkExprList(v, node.Values)
+
 		return nil
+
+	case *ast.CompositeLit:
+		fmt.Println("composite lit", node)
+		return v
+
+	case *ast.StructType:
+		// inline struct
+		fmt.Println("struct", node)
+		return v
+
 	default:
 		return nil
-	}
-}
-
-func walkExprList(v ast.Visitor, list []ast.Expr) {
-	for _, x := range list {
-		ast.Walk(v, x)
 	}
 }
