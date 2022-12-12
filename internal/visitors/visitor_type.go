@@ -12,9 +12,9 @@ import (
 
 func visitTypesInFile(doc *document.Document, pkg *packages.Package, file *ast.File) {
 	visitor := TypeVisitor{
-		pkg:      pkg,
-		doc:      doc,
-		curScope: NewScope(pkg.PkgPath),
+		pkg:   pkg,
+		doc:   doc,
+		scope: NewScope(pkg.PkgPath),
 	}
 
 	ast.Walk(visitor, file)
@@ -30,7 +30,7 @@ type TypeVisitor struct {
 	doc *document.Document
 	pkg *packages.Package
 
-	curScope    *Scope
+	scope       *Scope
 	curDecl     *ast.GenDecl
 	isInterface bool
 }
@@ -81,13 +81,13 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		return v
 
 	case *ast.TypeSpec:
-		v.curScope.push(node.Name.Name, scip.Descriptor_Type)
+		v.scope.push(node.Name.Name, scip.Descriptor_Type)
 		defer func() {
-			v.curScope.pop()
+			v.scope.pop()
 		}()
 
 		v.doc.SetNewSymbol(
-			symbols.FromDescriptors(v.pkg, v.curScope.descriptors...),
+			symbols.FromDescriptors(v.pkg, v.scope.descriptors...),
 			v.curDecl,
 			node.Name,
 		)
@@ -122,18 +122,18 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 
 				switch typ := node.Type.(type) {
 				case *ast.MapType:
-					v.curScope.push(name.Name, scip.Descriptor_Term)
+					v.scope.push(name.Name, scip.Descriptor_Term)
 					defer func() {
-						v.curScope.pop()
+						v.scope.pop()
 					}()
 
 					ast.Walk(v, typ.Key)
 					ast.Walk(v, typ.Value)
 
 				case *ast.ArrayType:
-					v.curScope.push(name.Name, scip.Descriptor_Term)
+					v.scope.push(name.Name, scip.Descriptor_Term)
 					defer func() {
-						v.curScope.pop()
+						v.scope.pop()
 					}()
 
 					ast.Walk(v, typ.Elt)
@@ -142,9 +142,9 @@ func (v TypeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 					// Current scope is now embedded in the anonymous struct
 					//   So we walk the rest of the type expression and save
 					//   the nested names
-					v.curScope.push(name.Name, scip.Descriptor_Term)
+					v.scope.push(name.Name, scip.Descriptor_Term)
 					defer func() {
-						v.curScope.pop()
+						v.scope.pop()
 					}()
 
 					ast.Walk(v, node.Type)
@@ -185,5 +185,5 @@ func (s *TypeVisitor) getIdentOfTypeExpr(ty ast.Expr) []*ast.Ident {
 }
 
 func (s *TypeVisitor) makeSymbol(descriptor *scip.Descriptor) string {
-	return symbols.FromDescriptors(s.pkg, append(s.curScope.descriptors, descriptor)...)
+	return symbols.FromDescriptors(s.pkg, append(s.scope.descriptors, descriptor)...)
 }

@@ -12,8 +12,9 @@ import (
 
 func visitVarDefinition(doc *document.Document, pkg *packages.Package, decl *ast.GenDecl) {
 	ast.Walk(varVisitor{
-		doc: doc,
-		pkg: pkg,
+		doc:   doc,
+		pkg:   pkg,
+		scope: NewScope(pkg.PkgPath),
 	}, decl)
 }
 
@@ -22,6 +23,7 @@ type varVisitor struct {
 	pkg *packages.Package
 
 	curDecl ast.Decl
+	scope   *Scope
 }
 
 var _ ast.Visitor = &varVisitor{}
