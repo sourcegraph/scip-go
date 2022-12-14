@@ -7,9 +7,12 @@ import (
 
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
+	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/go/packages"
 )
+
+type PackageLookup map[newtypes.PackageID]*packages.Package
 
 var loadMode = packages.NeedDeps |
 	packages.NeedFiles |
@@ -22,8 +25,11 @@ var loadMode = packages.NeedDeps |
 
 var goVersion = "go1.19"
 
+var Config = &packages.Config{}
+
 func makeConfig(root string) *packages.Config {
-	return &packages.Config{
+	// TODO: Hacks to get the config out...
+	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
 		Logf: nil,
@@ -32,10 +38,25 @@ func makeConfig(root string) *packages.Config {
 		// This greatly reduces memory usage when loading dependencies
 		Tests: true,
 	}
+
+	return Config
 }
 
-func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup map[string]*packages.Package, projectPackages map[string]*packages.Package, err error) {
-	pkgLookup = make(map[string]*packages.Package)
+func addImportsToPkgs(pkgLookup PackageLookup, opts *config.IndexOpts, pkg *packages.Package) {
+	if _, ok := pkgLookup[newtypes.GetID(pkg)]; ok {
+		return
+	}
+
+	normalizePackage(opts, pkg)
+	pkgLookup[newtypes.GetID(pkg)] = pkg
+
+	for _, imp := range pkg.Imports {
+		addImportsToPkgs(pkgLookup, opts, imp)
+	}
+}
+
+func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLookup, projectPackages PackageLookup, err error) {
+	pkgLookup = make(PackageLookup)
 	pkgLookup["builtin"] = &packages.Package{
 		Name:    "builtin",
 		PkgPath: "builtin",
@@ -45,7 +66,7 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup map[strin
 		},
 	}
 
-	projectPackages = make(map[string]*packages.Package)
+	projectPackages = make(PackageLookup)
 
 	if err := output.WithProgress("Loading Packages", func() error {
 		cfg := makeConfig(moduleRoot)
@@ -67,23 +88,12 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup map[strin
 		goVersion = "go" + thisPackage.GoVersion
 		output.Println("Using go version:", goVersion)
 
-		// github.com/golang/go/src/builtin/builtin.go
 		for _, pkg := range pkgs {
-			normalizePackage(&opts, pkg)
-			if existing, ok := pkgLookup[pkg.ID]; ok {
-				panic(fmt.Sprintf("Already contains package: %s %s | %s", pkg.PkgPath, existing.ID, pkg.ID))
-			}
-
-			pkgLookup[pkg.ID] = pkg
-
-			for _, imp := range pkg.Imports {
-				normalizePackage(&opts, imp)
-				pkgLookup[imp.ID] = imp
-			}
+			addImportsToPkgs(pkgLookup, &opts, pkg)
 		}
 
 		for _, pkg := range pkgs {
-			projectPackages[pkg.ID] = pkg
+			projectPackages[newtypes.GetID(pkg)] = pkg
 		}
 
 		return nil
@@ -154,7 +164,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 	if pkg.Module.Version == "" {
 		if pkg.Module.Path != opts.ModulePath {
-			panic(fmt.Sprintf("Unknown version for userland package: %s %s", pkg, pkg.Module.Path))
+			panic(fmt.Sprintf("Unknown version for userland package: %s %s", pkg.Module.Path, opts.ModulePath))
 		}
 
 		pkg.Module.Version = opts.ModuleVersion

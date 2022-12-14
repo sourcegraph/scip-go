@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/efritz/pentimento v0.0.0-20190429011147-ade47d831101
-	github.com/sourcegraph/scip v0.2.4-0.20221121150840-1a4eec46f3ef
+	github.com/sourcegraph/scip v0.2.4-0.20221213205653-aa0e511dcfef
 	golang.org/x/tools v0.2.0
 )
 

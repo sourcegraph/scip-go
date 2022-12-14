@@ -7,8 +7,10 @@ import (
 	"go/types"
 
 	"github.com/sourcegraph/scip-go/internal/document"
+	"github.com/sourcegraph/scip-go/internal/handler"
+	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
-	"github.com/sourcegraph/scip-go/internal/symbols"
+	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -16,7 +18,7 @@ func NewFileVisitor(
 	doc *document.Document,
 	pkg *packages.Package,
 	file *ast.File,
-	pkgLookup map[string]*packages.Package,
+	pkgLookup loader.PackageLookup,
 	pkgSymbols *lookup.Package,
 	globalSymbols *lookup.Global,
 ) *fileVisitor {
@@ -52,7 +54,7 @@ type fileVisitor struct {
 	file *ast.File
 
 	// soething
-	pkgLookup map[string]*packages.Package
+	pkgLookup loader.PackageLookup
 
 	// local definition position to symbol
 	locals map[token.Pos]string
@@ -99,8 +101,15 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			case *types.PkgName:
 				pos := ident.NamePos
 				position := v.pkg.Fset.Position(pos)
-				symbol := v.globalSymbols.GetPkgNameSymbol(sel.Imported().Path()).Symbol.Symbol
-				v.doc.AppendSymbolReference(symbol, scipRange(position, sel), nil)
+				pkgID := newtypes.GetFromTypesPackage(sel.Imported())
+				symbol := v.globalSymbols.GetPkgNameSymbolByID(pkgID)
+				if symbol == nil {
+					handler.ErrOrPanic("Missing symbol for package: %s", sel.Imported().Path())
+					return nil
+				}
+
+				symbolName := symbol.Symbol
+				v.doc.AppendSymbolReference(symbolName, scipRange(position, sel), nil)
 
 				// Then walk the selection
 				ast.Walk(v, node.Sel)
@@ -172,16 +181,26 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				var err error
 				symInfo, ok, err := v.globalSymbols.GetSymbolOfObject(ref)
 				if err != nil {
-					_, ok := v.pkgLookup[symbols.PkgPathFromObject(ref)]
-					if !ok {
-						panic(fmt.Sprintf("Failed to find a package for ref: |%+v|\n", ref))
-					}
+					// _, ok := v.pkgLookup[symbols.PkgPathFromObject(ref)]
+					// if !ok {
+					// 	if err := handler.ErrOrPanic(
+					// 		"Failed to find a package for ref: |%+v|\nNode: %s",
+					// 		ref,
+					// 		v.pkg.Fset.Position(node.Pos()),
+					// 	); err != nil {
+					// 		return v
+					// 	}
+					//
+					// }
 
-					panic(fmt.Sprintf(
-						"Unable to find symbol of object: %s\n%s",
+					if err := handler.ErrOrPanic(
+						"Unable to find symbol of object: %s\nNode Position -> %s\n\nPath: %s\n\n",
 						err,
 						v.pkg.Fset.Position(node.Pos()),
-					))
+						ref.Pkg().Path(),
+					); err != nil {
+						return v
+					}
 				}
 
 				if !ok {

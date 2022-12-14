@@ -12,8 +12,13 @@ import (
 	"golang.org/x/tools/go/vcs"
 )
 
-func ModuleName(dir, repo string) (moduleName string, isStdLib bool, err error) {
+func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err error) {
 	resolve := func() error {
+		if inName != "" {
+			moduleName = inName
+			return nil
+		}
+
 		name := repo
 
 		if !isModule(dir) {

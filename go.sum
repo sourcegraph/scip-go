@@ -296,6 +296,8 @@ github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d/go.mod h1
 github.com/smartystreets/goconvey v1.6.4/go.mod h1:syvi0/a8iFYH4r/RixwvyeAJjdLS9QV7WQ/tjFTllLA=
 github.com/sourcegraph/scip v0.2.4-0.20221121150840-1a4eec46f3ef h1:IPXwFKZwynw1nNwDyS5tDkrT9pMqNCVsHH9dBdcnNHI=
 github.com/sourcegraph/scip v0.2.4-0.20221121150840-1a4eec46f3ef/go.mod h1:ymcTuv+6D5OEZB/84TRPQvUpDK7v7zXnWBJl79hb7ns=
+github.com/sourcegraph/scip v0.2.4-0.20221213205653-aa0e511dcfef h1:fWPxLkDObzzKTGe9vb6wpzK0FYkwcfSxmxUBvAOc8aw=
+github.com/sourcegraph/scip v0.2.4-0.20221213205653-aa0e511dcfef/go.mod h1:ymcTuv+6D5OEZB/84TRPQvUpDK7v7zXnWBJl79hb7ns=
 github.com/sourcegraph/sourcegraph/lib v0.0.0-20220511160847-5a43d3ea24eb h1:D8ciD0FEcPNnVm6BC8vg7gWJ9VxoJe6k/4j+Qxparj0=
 github.com/sourcegraph/sourcegraph/lib v0.0.0-20220511160847-5a43d3ea24eb/go.mod h1:iFiGPqnhOvQziDZkpWasU+Uo1BaEt/Au9kNK4VpqyOw=
 github.com/spf13/afero v1.1.2/go.mod h1:j4pytiNVoe2o6bmDsKpLACNPDBIoEAkihy7loJ1B0CQ=

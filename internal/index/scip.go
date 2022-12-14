@@ -10,15 +10,17 @@ import (
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/funk"
+	"github.com/sourcegraph/scip-go/internal/handler"
 	impls "github.com/sourcegraph/scip-go/internal/implementations"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
+	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/visitors"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
 
-func GetPackages(opts config.IndexOpts) (current []string, deps []string, err error) {
+func GetPackages(opts config.IndexOpts) (current []newtypes.PackageID, deps []newtypes.PackageID, err error) {
 	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
 	if err != nil {
 		return nil, nil, err
@@ -120,12 +122,12 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 
 		globalSymbols.SetPkgName(pkg, pkgDeclaration)
 
-		if _, ok := pkgs[pkg.ID]; !ok {
+		if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
 			continue
 		}
 
 		// TODO: I don't think I need Symbol.Symbol anymore, could probably move that back
-		pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg.PkgPath).Symbol.Symbol
+		pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg).Symbol
 		for _, f := range pkg.Syntax {
 			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
 
@@ -204,10 +206,19 @@ func emitImportReference(
 	position token.Position,
 	importedPackage *packages.Package,
 ) {
-	pkgPath := importedPackage.PkgPath
-	scipRange := scipRangeFromName(position, pkgPath, true)
-	symbol := globalSymbols.GetPkgNameSymbol(pkgPath)
-	doc.AppendSymbolReference(symbol.Symbol.Symbol, scipRange, nil)
+	scipRange := scipRangeFromName(position, importedPackage.PkgPath, true)
+	symbol := globalSymbols.GetPkgNameSymbol(importedPackage)
+	if symbol == nil {
+		handler.ErrOrPanic("Missing symbol for package path: %s", importedPackage.ID)
+		return
+	}
+
+	if symbol == nil {
+		handler.ErrOrPanic("Missing symbol information for package: %s", importedPackage.ID)
+		return
+	}
+
+	doc.AppendSymbolReference(symbol.Symbol, scipRange, nil)
 }
 
 func scipRangeFromName(position token.Position, name string, adjust bool) []int32 {
