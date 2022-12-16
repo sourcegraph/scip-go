@@ -8,6 +8,7 @@ import (
 	"go/types"
 	"sync"
 
+	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
@@ -22,8 +23,8 @@ func NewPackageSymbols(pkg *packages.Package) *Package {
 
 func NewGlobalSymbols() *Global {
 	return &Global{
-		symbols:  map[string]*Package{},
-		pkgNames: map[string]*PackageName{},
+		symbols:  map[newtypes.PackageID]*Package{},
+		pkgNames: map[newtypes.PackageID]*PackageName{},
 	}
 }
 
@@ -73,19 +74,19 @@ type PackageName struct {
 
 type Global struct {
 	m        sync.Mutex
-	symbols  map[string]*Package
-	pkgNames map[string]*PackageName
+	symbols  map[newtypes.PackageID]*Package
+	pkgNames map[newtypes.PackageID]*PackageName
 }
 
 func (p *Global) Add(pkgSymbols *Package) {
 	p.m.Lock()
-	p.symbols[pkgSymbols.pkg.PkgPath] = pkgSymbols
+	p.symbols[newtypes.GetID(pkgSymbols.pkg)] = pkgSymbols
 	p.m.Unlock()
 }
 
 func (p *Global) SetPkgName(pkg *packages.Package, pkgDeclaration *ast.File) {
 	p.m.Lock()
-	p.pkgNames[pkg.PkgPath] = &PackageName{
+	p.pkgNames[newtypes.GetID(pkg)] = &PackageName{
 		Symbol: &scip.SymbolInformation{
 			Symbol: symbols.FromDescriptors(pkg, &scip.Descriptor{
 				Name:   pkg.PkgPath,
@@ -99,12 +100,21 @@ func (p *Global) SetPkgName(pkg *packages.Package, pkgDeclaration *ast.File) {
 	p.m.Unlock()
 }
 
-func (p *Global) GetPkgNameSymbol(pkgPath string) *PackageName {
-	return p.pkgNames[pkgPath]
+func (p *Global) GetPkgNameSymbolByID(pkgID newtypes.PackageID) *scip.SymbolInformation {
+	named, ok := p.pkgNames[pkgID]
+	if !ok {
+		return nil
+	}
+
+	return named.Symbol
+}
+
+func (p *Global) GetPkgNameSymbol(pkg *packages.Package) *scip.SymbolInformation {
+	return p.GetPkgNameSymbolByID(newtypes.GetID(pkg))
 }
 
 func (p *Global) GetPackage(pkg *packages.Package) *Package {
-	return p.symbols[pkg.PkgPath]
+	return p.symbols[newtypes.GetID(pkg)]
 }
 
 var skippedTypes = map[string]struct{}{}
@@ -139,15 +149,25 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 			return nil, false, nil
 		case *types.Builtin:
 			return nil, false, nil
+		case *types.Func:
+			if orig := obj.Origin(); orig != nil {
+				name := orig.FullName()
+				switch name {
+				case "(error).Error":
+					return nil, false, nil
+				}
+			}
 		}
 
 		panic(fmt.Sprintf("failed to create symbol for builtin obj: %T %+v | %s", obj, obj, obj.Id()))
 	}
 
 	pkgPath := pkg.Path()
-	symbol, ok := p.getSymbolInformationByPath(pkgPath, obj.Pos())
-	if ok {
-		return symbol, true, nil
+	for _, combination := range testPackageCombinations(pkgPath) {
+		symbol, _, ok := p.getSymbolInformationByPath(combination, obj.Pos())
+		if ok {
+			return symbol, true, nil
+		}
 	}
 
 	switch obj := obj.(type) {
@@ -156,23 +176,38 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 		return nil, false, errors.New(fmt.Sprintln("obj", obj, "| origin", obj.Origin()))
 	}
 
-	panic(fmt.Sprintf("failed to create symbol for obj: %T %+v", obj, obj))
+	// if !foundPkg {
+	// 	panic(fmt.Sprintf(
+	// 		"missing package (%s) for symbol: %T %+v\n%s",
+	// 		pkgPath,
+	// 		obj,
+	// 		obj,
+	// 		pkgFields.pkg.Fset.Position(obj.Pos()),
+	// 	))
+	// }
 
+	return nil, false, errors.New(fmt.Sprintf(
+		"failed to create symbol for obj: %T %+v\n%s",
+		obj,
+		obj,
+		// pkgFields.pkg.Fset.Position(obj.Pos()),
+		pkgPath,
+	))
 }
 
-func (p *Global) getSymbolInformationByPath(pkgPath string, pos token.Pos) (*scip.SymbolInformation, bool) {
-	pkgFields, ok := p.symbols[pkgPath]
+func (p *Global) getSymbolInformationByPath(pkgID newtypes.PackageID, pos token.Pos) (*scip.SymbolInformation, *Package, bool) {
+	pkgFields, ok := p.symbols[pkgID]
 	if !ok {
-		fmt.Println("whoa whoa whoa... missing package?", pkgPath)
-		return nil, false
+		return nil, nil, false
 	}
 
 	field, ok := pkgFields.Get(pos)
-	return field, ok
+	return field, pkgFields, ok
 }
 
 func (p *Global) GetSymbolInformation(pkg *packages.Package, pos token.Pos) (*scip.SymbolInformation, bool) {
-	return p.getSymbolInformationByPath(pkg.PkgPath, pos)
+	info, _, ok := p.getSymbolInformationByPath(newtypes.GetID(pkg), pos)
+	return info, ok
 }
 
 func (p *Global) GetSymbol(pkg *packages.Package, pos token.Pos) (string, bool) {
@@ -181,5 +216,13 @@ func (p *Global) GetSymbol(pkg *packages.Package, pos token.Pos) (string, bool) 
 		return field.Symbol, true
 	} else {
 		return "", false
+	}
+}
+
+func testPackageCombinations(pkgPath string) []newtypes.PackageID {
+	return []newtypes.PackageID{
+		newtypes.PackageID(pkgPath),
+		newtypes.PackageID(fmt.Sprintf("%s.test", pkgPath)),
+		newtypes.PackageID(fmt.Sprintf("%s [%s.test]", pkgPath, pkgPath)),
 	}
 }

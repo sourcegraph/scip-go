@@ -2,8 +2,6 @@ package output
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -29,7 +27,7 @@ type Options struct {
 
 var opts Options = Options{
 	Verbosity:      DefaultOutput,
-	ShowAnimations: true,
+	ShowAnimations: false,
 }
 
 // updateInterval is the duration between updates in withProgress.
@@ -47,17 +45,22 @@ var ticker = pentimento.NewAnimatedString([]string{
 // var failurePrefix = "✗"
 var successPrefix = "✔"
 
-// logger is used to log at the level -vv and above from multiple goroutines.
-var logger = log.New(os.Stdout, "", 0)
-
 // WithProgress prints a spinner while the given function is active.
-func WithProgress(name string, fn func()) {
-	ch := make(chan func(), 1)
+func WithProgress(name string, fn func() error) error {
+	ch := make(chan func() error, 1)
 	ch <- fn
 	close(ch)
 
-	wg, count := parallel.Run(ch)
+	wg, errCh, count := parallel.Run(ch)
 	WithProgressParallel(wg, name, count, 1)
+
+	// Handle any associated errors
+	select {
+	case err := <-errCh:
+		return err
+	default:
+		return nil
+	}
 }
 
 // WithProgressParallel will continuously print progress to stdout until the given wait group
@@ -146,7 +149,8 @@ func SetOutputOptions(verb Verbosity, animation bool) {
 }
 
 func Println(a ...any) {
+	// TODO: This doesn't work yet. Talk to eric later
 	if opts.Verbosity != NoOutput {
-		fmt.Println(a...)
+		// fmt.Println(a...)
 	}
 }

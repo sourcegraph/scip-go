@@ -7,9 +7,12 @@ import (
 
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
+	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/go/packages"
 )
+
+type PackageLookup map[newtypes.PackageID]*packages.Package
 
 var loadMode = packages.NeedDeps |
 	packages.NeedFiles |
@@ -22,8 +25,11 @@ var loadMode = packages.NeedDeps |
 
 var goVersion = "go1.19"
 
+var Config = &packages.Config{}
+
 func makeConfig(root string) *packages.Config {
-	return &packages.Config{
+	// TODO: Hacks to get the config out...
+	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
 		Logf: nil,
@@ -32,64 +38,70 @@ func makeConfig(root string) *packages.Config {
 		// This greatly reduces memory usage when loading dependencies
 		Tests: true,
 	}
+
+	return Config
 }
 
-func LoadPackages(opts config.IndexOpts, moduleRoot string) (map[string]*packages.Package, map[string]*packages.Package, error) {
-	cfg := makeConfig(moduleRoot)
-	pkgs, err := packages.Load(cfg, "./...")
-	if err != nil {
-		panic(err)
+func addImportsToPkgs(pkgLookup PackageLookup, opts *config.IndexOpts, pkg *packages.Package) {
+	if _, ok := pkgLookup[newtypes.GetID(pkg)]; ok {
+		return
 	}
 
-	modOutput, err := command.Run(moduleRoot, "go", "list", "-mod=readonly", "-m", "-json")
-	if err != nil {
-		err = fmt.Errorf("failed to list module info: %v\n", err)
-		return nil, nil, err
+	normalizePackage(opts, pkg)
+	pkgLookup[newtypes.GetID(pkg)] = pkg
+
+	for _, imp := range pkg.Imports {
+		addImportsToPkgs(pkgLookup, opts, imp)
 	}
+}
 
-	var thisPackage *packages.Module
-	if err := json.NewDecoder(strings.NewReader(modOutput)).Decode(&thisPackage); err != nil {
-		return nil, nil, err
-	}
-
-	goVersion = "go" + thisPackage.GoVersion
-
-	output.Println("Using go version:", goVersion)
-
-	// github.com/golang/go/src/builtin/builtin.go
-	pkgLookup := map[string]*packages.Package{
-		"builtin": {
-			Name:    "builtin",
-			PkgPath: "builtin",
-			Module: &packages.Module{
-				Path:    "github.com/golang/go/src/builtin",
-				Version: goVersion,
-			},
+func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLookup, projectPackages PackageLookup, err error) {
+	pkgLookup = make(PackageLookup)
+	pkgLookup["builtin"] = &packages.Package{
+		Name:    "builtin",
+		PkgPath: "builtin",
+		Module: &packages.Module{
+			Path:    "github.com/golang/go/src/builtin",
+			Version: goVersion,
 		},
 	}
 
-	for _, pkg := range pkgs {
-		normalizePackage(&opts, pkg)
-		pkgLookup[pkg.PkgPath] = pkg
+	projectPackages = make(PackageLookup)
 
-		for _, imp := range pkg.Imports {
-			normalizePackage(&opts, imp)
-			pkgLookup[imp.PkgPath] = imp
+	if err := output.WithProgress("Loading Packages", func() error {
+		cfg := makeConfig(moduleRoot)
+		pkgs, err := packages.Load(cfg, "./...")
+		if err != nil {
+			return err
 		}
-	}
 
-	projectPackages := map[string]*packages.Package{}
-	for _, pkg := range pkgs {
-		projectPackages[pkg.PkgPath] = pkg
+		modOutput, err := command.Run(moduleRoot, "go", "list", "-mod=readonly", "-m", "-json")
+		if err != nil {
+			return fmt.Errorf("failed to list module info: %v\n", err)
+		}
+
+		var thisPackage *packages.Module
+		if err := json.NewDecoder(strings.NewReader(modOutput)).Decode(&thisPackage); err != nil {
+			return err
+		}
+
+		goVersion = "go" + thisPackage.GoVersion
+		output.Println("Using go version:", goVersion)
+
+		for _, pkg := range pkgs {
+			addImportsToPkgs(pkgLookup, &opts, pkg)
+		}
+
+		for _, pkg := range pkgs {
+			projectPackages[newtypes.GetID(pkg)] = pkg
+		}
+
+		return nil
+	}); err != nil {
+		return nil, nil, err
 	}
 
 	return projectPackages, pkgLookup, nil
-
-	// allPackages := []*packages.Package{}
-	// for _, pkg := range pkgLookup {
-	// 	allPackages = append(allPackages, pkg)
-	// }
-	// return allPackages, pkgLookup, nil
 }
 
 func traversePackage(opts *config.IndexOpts, pkgLookup map[string]*packages.Package, pkg *packages.Package) {
@@ -152,7 +164,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 	if pkg.Module.Version == "" {
 		if pkg.Module.Path != opts.ModulePath {
-			panic(fmt.Sprintf("Unknown version for userland package: %s %s", pkg, pkg.Module.Path))
+			panic(fmt.Sprintf("Unknown version for userland package: %s %s", pkg.Module.Path, opts.ModulePath))
 		}
 
 		pkg.Module.Version = opts.ModuleVersion

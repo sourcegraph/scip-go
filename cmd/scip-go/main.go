@@ -10,6 +10,7 @@ import (
 	"github.com/alecthomas/kingpin"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/git"
+	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip-go/internal/modules"
 	"github.com/sourcegraph/scip-go/internal/output"
@@ -28,9 +29,13 @@ var (
 	repositoryRoot   string
 	repositoryRemote string
 	moduleVersion    string
+	moduleName       string
 	verbosity        int
 	noOutput         bool
 	animation        bool
+	devMode          bool
+
+	scipCommand string
 
 	// TODO: We should consider if we can avoid doing this in this iteration of scip-go
 	// depBatchSize          int
@@ -50,14 +55,18 @@ func init() {
 
 	// Repository remote and tag options (inferred by git)
 	app.Flag("repository-remote", "Specifies the canonical name of the repository remote.").Default(defaultRepositoryRemote.Value()).StringVar(&repositoryRemote)
+	app.Flag("module-name", "Specifies the name of the module defined by module-root.").StringVar(&moduleName)
 	app.Flag("module-version", "Specifies the version of the module defined by module-root.").Default(defaultModuleVersion.Value()).StringVar(&moduleVersion)
 
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
 	app.Flag("verbose", "Output debug logs.").Short('v').CounterVar(&verbosity)
-	app.Flag("animation", "Do not animate output.").Default("true").BoolVar(&animation)
+	app.Flag("animation", "Do not animate output.").Default("false").BoolVar(&animation)
+	app.Flag("dev", "Enable development mode.").Default("false").BoolVar(&devMode)
 
 	// app.Flag("dep-batch-size", "How many dependencies to load at once to limit memory usage (e.g. 100). 0 means load all at once.").Default("0").IntVar(&depBatchSize)
+
+	app.Flag("command", "Optionally specifies a command to run. Defaults to 'index'").Default("index").StringVar(&scipCommand)
 }
 
 func main() {
@@ -72,17 +81,65 @@ func mainErr() error {
 		return err
 	}
 
+	handler.SetDev(devMode)
+
 	output.SetOutputOptions(getVerbosity(), animation)
 	output.Println("scip-go")
 
-	moduleName, isStd, err := modules.ModuleName(moduleRoot, repositoryRemote)
-	fmt.Println(moduleName, isStd, err)
+	modulePath, isStd, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
+	if isStd {
+		panic("TODO: support stdlib. Check old lsif-go status")
+	}
 
-	index, err := index.Index(config.IndexOpts{
-		ModuleRoot:    moduleRoot,
-		ModuleVersion: moduleVersion,
-		ModulePath:    moduleName,
-	})
+	options := config.New(moduleRoot, moduleVersion, modulePath)
+
+	if strings.HasPrefix(scipCommand, "list-packages") {
+		var filter string
+		if strings.Contains(scipCommand, ":") {
+			filter = strings.Split(scipCommand, ":")[1]
+		}
+
+		current, deps, err := index.GetPackages(options)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Current packages")
+		for _, pkgID := range current {
+			pkg := string(pkgID)
+			if filter == "" || strings.Contains(pkg, filter) {
+				fmt.Println(pkg)
+			}
+		}
+
+		fmt.Println("Dependency packages")
+		for _, pkgID := range deps {
+			pkg := string(pkgID)
+			if filter == "" || strings.Contains(pkg, filter) {
+				fmt.Println(pkg)
+			}
+		}
+		return nil
+	}
+
+	if scipCommand == "list-missing" {
+		missing, err := index.ListMissing(options)
+		if err != nil {
+			return err
+		}
+
+		if len(missing) == 0 {
+			fmt.Println("No missing documents")
+		} else {
+			fmt.Println("Missing documents:")
+			for _, m := range missing {
+				fmt.Println(m)
+			}
+		}
+		return nil
+	}
+
+	index, err := index.Index(options)
 	if err != nil {
 		return err
 	}

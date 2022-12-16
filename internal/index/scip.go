@@ -4,24 +4,80 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
-	"go/types"
-	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
+	"github.com/sourcegraph/scip-go/internal/funk"
+	"github.com/sourcegraph/scip-go/internal/handler"
 	impls "github.com/sourcegraph/scip-go/internal/implementations"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
+	"github.com/sourcegraph/scip-go/internal/newtypes"
+	"github.com/sourcegraph/scip-go/internal/visitors"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
 
-func Index(opts config.IndexOpts) (*scip.Index, error) {
-	opts.ModuleRoot, _ = filepath.Abs(opts.ModuleRoot)
-	moduleRoot := opts.ModuleRoot
+func GetPackages(opts config.IndexOpts) (current []newtypes.PackageID, deps []newtypes.PackageID, err error) {
+	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	pkgs, pkgLookup, err := loader.LoadPackages(opts, moduleRoot)
+	for name := range pkgs {
+		current = append(current, name)
+	}
+
+	sort.Slice(current, func(i, j int) bool {
+		return current[i] < current[j]
+	})
+
+	for name := range pkgLookup {
+		deps = append(deps, name)
+	}
+
+	sort.Slice(deps, func(i, j int) bool {
+		return deps[i] < deps[j]
+	})
+
+	return
+}
+
+func ListMissing(opts config.IndexOpts) (missing []string, err error) {
+	pathToDocuments := map[string]*document.Document{}
+	globalSymbols := lookup.NewGlobalSymbols()
+
+	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
+	if err != nil {
+		return nil, err
+	}
+
+	lookupNames := funk.Keys(pkgLookup)
+	for _, pkgName := range lookupNames {
+		pkg := pkgLookup[pkgName]
+		visitors.VisitPackageDeclarations(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
+	}
+
+	pkgNames := funk.Keys(pkgs)
+	for _, name := range pkgNames {
+		pkg := pkgs[name]
+		for _, f := range pkg.Syntax {
+			docName := pkg.Fset.File(f.Package).Name()
+			doc := pathToDocuments[docName]
+			if doc == nil {
+				missing = append(missing, docName)
+			}
+
+		}
+	}
+
+	return missing, nil
+}
+
+func Index(opts config.IndexOpts) (*scip.Index, error) {
+	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +90,7 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 				Version:   "0.1",
 				Arguments: []string{},
 			},
-			ProjectRoot:          "file://" + moduleRoot,
+			ProjectRoot:          "file://" + opts.ModuleRoot,
 			TextDocumentEncoding: scip.TextEncoding_UTF8,
 		},
 		Documents:       []*scip.Document{},
@@ -49,10 +105,10 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 	//
 	// We don't want to visit in the same depth as file visitors though,
 	// so we do ONLY do this
-	for _, pkg := range pkgLookup {
-		fmt.Println("Attempting pkg:", pkg.PkgPath)
-
-		visitPackage(moduleRoot, pkg, pathToDocuments, globalSymbols)
+	lookupIDs := funk.Keys(pkgLookup)
+	for _, pkgID := range lookupIDs {
+		pkg := pkgLookup[pkgID]
+		visitors.VisitPackageDeclarations(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
 		// TODO: I don't like this
 		pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
@@ -66,24 +122,22 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 
 		globalSymbols.SetPkgName(pkg, pkgDeclaration)
 
-		if _, ok := pkgs[pkg.PkgPath]; !ok {
+		if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
 			continue
 		}
 
-		pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg.PkgPath).Symbol.Symbol
-
+		// TODO: I don't think I need Symbol.Symbol anymore, could probably move that back
+		pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg).Symbol
 		for _, f := range pkg.Syntax {
 			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
 
 			if pkgDeclaration != nil {
 				if f == pkgDeclaration {
-					fmt.Println("FOUND ONE FOR THIS PACKAGE", f.Name)
 					position := pkg.Fset.Position(f.Name.NamePos)
 					doc.SetNewSymbolForPos(pkgSymbol, nil, f.Name, f.Name.NamePos)
 					doc.NewDefinition(pkgSymbol, scipRangeFromName(position, f.Name.Name, false))
 				} else {
 					position := pkg.Fset.Position(f.Name.NamePos)
-					fmt.Println("Emit symbol:", pkgSymbol, position)
 					doc.AppendSymbolReference(pkgSymbol, scipRangeFromName(position, f.Name.Name, false), nil)
 				}
 			}
@@ -91,7 +145,9 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 
 	}
 
-	impls.AddImplementationRelationships(pkgs, globalSymbols)
+	if false {
+		impls.AddImplementationRelationships(pkgs, globalSymbols)
+	}
 
 	// NOTE:
 	// I'm not sure how to do this yet... but we basically need to iterate over
@@ -102,13 +158,20 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 		doc.DeclareSymbols()
 	}
 
-	for _, pkg := range pkgs {
+	pkgIDs := funk.Keys(pkgs)
+	for _, ID := range pkgIDs {
+		pkg := pkgs[ID]
+
 		pkgSymbols := globalSymbols.GetPackage(pkg)
 
 		for _, f := range pkg.Syntax {
 			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+			if doc == nil {
+				handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
+				continue
+			}
 
-			visitor := NewFileVisitor(
+			visitor := visitors.NewFileVisitor(
 				doc,
 				pkg,
 				f,
@@ -143,10 +206,19 @@ func emitImportReference(
 	position token.Position,
 	importedPackage *packages.Package,
 ) {
-	pkgPath := importedPackage.PkgPath
-	scipRange := scipRangeFromName(position, pkgPath, true)
-	symbol := globalSymbols.GetPkgNameSymbol(pkgPath)
-	doc.AppendSymbolReference(symbol.Symbol.Symbol, scipRange, nil)
+	scipRange := scipRangeFromName(position, importedPackage.PkgPath, true)
+	symbol := globalSymbols.GetPkgNameSymbol(importedPackage)
+	if symbol == nil {
+		handler.ErrOrPanic("Missing symbol for package path: %s", importedPackage.ID)
+		return
+	}
+
+	if symbol == nil {
+		handler.ErrOrPanic("Missing symbol information for package: %s", importedPackage.ID)
+		return
+	}
+
+	doc.AppendSymbolReference(symbol.Symbol, scipRange, nil)
 }
 
 func scipRangeFromName(position token.Position, name string, adjust bool) []int32 {
@@ -162,19 +234,6 @@ func scipRangeFromName(position token.Position, name string, adjust bool) []int3
 	return []int32{line, column + adjustment, column + n + adjustment}
 }
 
-func scipRange(position token.Position, obj types.Object) []int32 {
-	var adjustment int32 = 0
-	if pkgName, ok := obj.(*types.PkgName); ok && strings.HasPrefix(pkgName.Name(), `"`) {
-		adjustment = 1
-	}
-
-	line := int32(position.Line - 1)
-	column := int32(position.Column - 1)
-	n := int32(len(obj.Name()))
-
-	return []int32{line, column + adjustment, column + n - adjustment}
-}
-
 // packagePrefixes returns all prefix of the go package path. For example, the package
 // `foo/bar/baz` will return the slice containing `foo/bar/baz`, `foo/bar`, and `foo`.
 func packagePrefixes(packageName string) []string {
@@ -186,93 +245,4 @@ func packagePrefixes(packageName string) []string {
 	}
 
 	return prefixes
-}
-
-func visitPackage(
-	moduleRoot string,
-	pkg *packages.Package,
-	pathToDocuments map[string]*document.Document,
-	globalSymbols *lookup.Global,
-) {
-	pkgSymbols := lookup.NewPackageSymbols(pkg)
-	// Iterate over all the files, collect any global symbols
-	for _, f := range pkg.Syntax {
-
-		abs := pkg.Fset.File(f.Package).Name()
-		relative, _ := filepath.Rel(moduleRoot, abs)
-
-		doc := visitSyntax(pkg, pkgSymbols, f, relative)
-
-		// Save document for pass 2
-		pathToDocuments[abs] = doc
-	}
-
-	globalSymbols.Add(pkgSymbols)
-}
-
-func visitSyntax(pkg *packages.Package, pkgSymbols *lookup.Package, f *ast.File, relative string) *document.Document {
-	doc := document.NewDocument(relative, pkg, pkgSymbols)
-
-	// TODO: Maybe we should do this before? we have traverse all
-	// the fields first before, but now I think it's fine right here
-	// .... maybe
-	visitTypesInFile(doc, pkg, f)
-
-	for _, decl := range f.Decls {
-		switch decl := decl.(type) {
-		case *ast.BadDecl:
-			continue
-
-		case *ast.GenDecl:
-			switch decl.Tok {
-			case token.IMPORT:
-				// These do not create global symbols
-				continue
-
-			case token.TYPE:
-				// We do this via visitTypesInFile above
-
-			case token.VAR, token.CONST:
-				// visit var
-				visitVarDefinition(doc, pkg, decl)
-
-			default:
-				panic("Unhandled general declaration")
-			}
-
-		case *ast.FuncDecl:
-			visitFunctionDefinition(doc, pkg, decl)
-		}
-
-	}
-
-	return doc
-}
-
-func descriptorType(name string) *scip.Descriptor {
-	return &scip.Descriptor{
-		Name:   name,
-		Suffix: scip.Descriptor_Type,
-	}
-}
-
-func descriptorMethod(name string) *scip.Descriptor {
-	return &scip.Descriptor{
-		Name:   name,
-		Suffix: scip.Descriptor_Method,
-	}
-}
-
-func descriptorPackage(name string) *scip.Descriptor {
-	return &scip.Descriptor{
-		Name:   name,
-		Suffix: scip.Descriptor_Package,
-	}
-}
-
-func descriptorTerm(name string) *scip.Descriptor {
-	return &scip.Descriptor{
-		Name:   name,
-		Suffix: scip.Descriptor_Term,
-	}
 }

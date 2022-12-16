@@ -6,6 +6,7 @@ import (
 	"go/types"
 	"strings"
 
+	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"github.com/sourcegraph/scip/bindings/go/scip"
@@ -29,11 +30,11 @@ type ImplDef struct {
 	// IsAliasType     bool
 }
 
-func AddImplementationRelationships(pkgs map[string]*packages.Package, symbols *lookup.Global) {
-	output.WithProgress("Indexing Implementations", func() {
+func AddImplementationRelationships(pkgs loader.PackageLookup, symbols *lookup.Global) {
+	output.WithProgress("Indexing Implementations", func() error {
 		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
 		if err != nil {
-			return
+			return err
 		}
 
 		// Create a unique mapping of method -> int
@@ -110,8 +111,9 @@ func AddImplementationRelationships(pkgs map[string]*packages.Package, symbols *
 					})
 				}
 			}
-
 		}
+
+		return nil
 	})
 }
 
@@ -130,7 +132,7 @@ func implementationsForType(ty ImplDef, tyMethods *intsets.Sparse, interfaceToMe
 	return matching
 }
 
-func extractInterfacesAndConcreteTypes(pkgs map[string]*packages.Package, symbols *lookup.Global) (interfaces map[string]ImplDef, concreteTypes map[string]ImplDef, err error) {
+func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *lookup.Global) (interfaces map[string]ImplDef, concreteTypes map[string]ImplDef, err error) {
 	interfaces = map[string]ImplDef{}
 	concreteTypes = map[string]ImplDef{}
 
