@@ -15,3 +15,9 @@ func ErrOrPanic(format string, a ...any) error {
 
 	return fmt.Errorf(format, a...)
 }
+
+func Println(a ...any) {
+	if devMode {
+		fmt.Println(a...)
+	}
+}

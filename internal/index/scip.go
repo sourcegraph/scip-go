@@ -167,7 +167,7 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 		for _, f := range pkg.Syntax {
 			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
 			if doc == nil {
-				fmt.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
+				handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
 				continue
 			}
 

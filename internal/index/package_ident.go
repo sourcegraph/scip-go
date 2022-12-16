@@ -1,13 +1,13 @@
 package index
 
 import (
-	"fmt"
 	"go/ast"
 	"math"
 	"path"
 	"strings"
 
 	"github.com/agnivade/levenshtein"
+	"github.com/sourcegraph/scip-go/internal/handler"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -22,8 +22,7 @@ func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
 	}
 
 	if len(pkg.Syntax) == 0 {
-		fmt.Println("Missing |", pkg.ID, pkg.Module.Path)
-		// return nil, errors.New(fmt.Sprintf("must have at least one possible path: |%+v|", pkg))
+		handler.Println("Missing |", pkg.ID, pkg.Module.Path)
 		return nil, nil
 	}
 
