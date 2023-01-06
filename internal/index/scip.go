@@ -145,7 +145,7 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 
 	}
 
-	impls.AddImplementationRelationships(pkgs, globalSymbols)
+	impls.AddImplementationRelationships(pkgs, pkgLookup, globalSymbols)
 
 	// NOTE:
 	// I'm not sure how to do this yet... but we basically need to iterate over

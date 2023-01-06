@@ -30,88 +30,109 @@ type ImplDef struct {
 	// IsAliasType     bool
 }
 
-func AddImplementationRelationships(pkgs loader.PackageLookup, symbols *lookup.Global) {
+func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string]ImplDef, symbols *lookup.Global) {
+	// Create a unique mapping of method -> int
+	//	Then we'll use sparse sets to lookup whether things duck type or not
+	allMethods := map[canonicalMethod]int{}
+
+	for _, iface := range interfaces {
+		for method := range iface.Methods {
+			if _, ok := allMethods[method]; !ok {
+				allMethods[method] = len(allMethods)
+			}
+		}
+	}
+
+	for _, ty := range concreteTypes {
+		for method := range ty.Methods {
+			if _, ok := allMethods[method]; !ok {
+				allMethods[method] = len(allMethods)
+			}
+		}
+	}
+
+	// Create a map of method names to corresponding interfaces
+	interfaceToMethodSet := map[*scip.SymbolInformation]*intsets.Sparse{}
+	for _, iface := range interfaces {
+		if iface.Ident == nil {
+			continue
+		}
+
+		methodSet := &intsets.Sparse{}
+		for method := range iface.Methods {
+			methodSet.Insert(allMethods[method])
+		}
+
+		interfaceToMethodSet[iface.Symbol] = methodSet
+	}
+
+	for _, ty := range concreteTypes {
+		pos := ty.Ident.Pos()
+		sym, ok := symbols.GetSymbolInformation(ty.Pkg, pos)
+		if !ok {
+			panic(fmt.Sprintf("Could not find symbol for %s", ty.Symbol))
+		}
+
+		methodSet := &intsets.Sparse{}
+		for method := range ty.Methods {
+			methodSet.Insert(allMethods[method])
+		}
+
+		tyImpls := implementationsForType(ty, methodSet, interfaceToMethodSet)
+		for _, impl := range tyImpls {
+			implDef, ok := interfaces[impl.Symbol]
+			if !ok {
+				fmt.Println(fmt.Sprintf("Could not find interface %s", impl.Symbol))
+				continue
+			}
+
+			// Add implementation details for the struct & interface relationship
+			sym.Relationships = append(sym.Relationships, &scip.Relationship{
+				Symbol:           impl.Symbol,
+				IsImplementation: true,
+			})
+
+			// For all methods, add imlementation details as well
+			for name, implMethod := range implDef.Methods {
+				tyMethodInfo, ok := ty.Methods[name]
+				if !ok {
+					continue
+				}
+
+				tyMethodInfo.Relationships = append(tyMethodInfo.Relationships, &scip.Relationship{
+					Symbol:           implMethod.Symbol,
+					IsImplementation: true,
+				})
+			}
+		}
+	}
+}
+
+func AddImplementationRelationships(pkgs loader.PackageLookup, allPackages loader.PackageLookup, symbols *lookup.Global) {
 	output.WithProgress("Indexing Implementations", func() error {
 		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
 		if err != nil {
 			return err
 		}
 
-		// Create a unique mapping of method -> int
-		//	Then we'll use sparse sets to lookup whether things duck type or not
-		allMethods := map[canonicalMethod]int{}
-
-		for _, iface := range localInterfaces {
-			for method := range iface.Methods {
-				if _, ok := allMethods[method]; !ok {
-					allMethods[method] = len(allMethods)
-				}
-			}
-		}
-
-		for _, ty := range localTypes {
-			for method := range ty.Methods {
-				if _, ok := allMethods[method]; !ok {
-					allMethods[method] = len(allMethods)
-				}
-			}
-		}
-
-		// Create a map of method names to corresponding interfaces
-		interfaceToMethodSet := map[*scip.SymbolInformation]*intsets.Sparse{}
-		for _, iface := range localInterfaces {
-			if iface.Ident == nil {
+		remotePackages := make(loader.PackageLookup)
+		for pkgID, pkg := range allPackages {
+			if _, ok := pkgs[pkgID]; ok {
 				continue
 			}
 
-			methodSet := &intsets.Sparse{}
-			for method := range iface.Methods {
-				methodSet.Insert(allMethods[method])
-			}
-
-			interfaceToMethodSet[iface.Symbol] = methodSet
+			remotePackages[pkgID] = pkg
 		}
+		// remoteInterfaces, _, err := extractInterfacesAndConcreteTypes(remotePackages, symbols)
+		// if err != nil {
+		// 	return err
+		// }
 
-		for _, ty := range localTypes {
-			pos := ty.Ident.Pos()
-			sym, ok := symbols.GetSymbolInformation(ty.Pkg, pos)
-			if !ok {
-				panic(fmt.Sprintf("Could not find symbol for %s", ty.Symbol))
-			}
+		// local type -> local interface
+		findImplementations(localTypes, localInterfaces, symbols)
 
-			methodSet := &intsets.Sparse{}
-			for method := range ty.Methods {
-				methodSet.Insert(allMethods[method])
-			}
-
-			tyImpls := implementationsForType(ty, methodSet, interfaceToMethodSet)
-			for _, impl := range tyImpls {
-				implDef, ok := localInterfaces[impl.Symbol]
-				if !ok {
-					fmt.Println(fmt.Sprintf("Could not find interface %s", impl.Symbol))
-					continue
-				}
-
-				// Add implementation details for the struct & interface relationship
-				sym.Relationships = append(sym.Relationships, &scip.Relationship{
-					Symbol:           impl.Symbol,
-					IsImplementation: true,
-				})
-
-				// For all methods, add imlementation details as well
-				for name, implMethod := range implDef.Methods {
-					tyMethodInfo, ok := ty.Methods[name]
-					if !ok {
-						continue
-					}
-
-					tyMethodInfo.Relationships = append(tyMethodInfo.Relationships, &scip.Relationship{
-						Symbol:           implMethod.Symbol,
-						IsImplementation: true,
-					})
-				}
-			}
-		}
+		// local type -> remote interface
+		// findImplementations(localTypes, remoteInterfaces, symbols)
 
 		return nil
 	})
