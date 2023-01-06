@@ -111,6 +111,7 @@
 //     ^^^^^^ definition sg/initial/Struct#
 //     documentation ```go
 //     documentation ```go
+//     relationship sg/initial/Interface# implementation
    *Embedded
 //  ^^^^^^^^ definition sg/initial/Struct#Embedded.
 //  documentation ```go
@@ -146,6 +147,7 @@
 //         ^^^^^^ reference sg/initial/Struct#
 //                 ^^^^^^^^^^^^^^^^^^^ definition sg/initial/Struct#ImplementsInterface().
 //                 documentation ```go
+//                 relationship sg/initial/Interface#ImplementsInterface. implementation
   
   func (s *Struct) MachineLearning(
 //      ^ definition local 2

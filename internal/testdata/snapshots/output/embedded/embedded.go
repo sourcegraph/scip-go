@@ -12,6 +12,9 @@
 //     ^^^^^^^^^^^^^ definition sg/embedded/osExecCommand#
 //     documentation ```go
 //     documentation ```go
+//     relationship github.com/golang/go/src context/stringer# implementation
+//     relationship github.com/golang/go/src fmt/Stringer# implementation
+//     relationship github.com/golang/go/src runtime/stringer# implementation
    *exec.Cmd
 //  ^^^^ reference github.com/golang/go/src os/exec/
 //       ^^^ definition sg/embedded/osExecCommand#Cmd.
