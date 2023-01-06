@@ -1,4 +1,3 @@
 package gosrc
 
-func init() {
-}
+func init() {}

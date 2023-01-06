@@ -19,20 +19,13 @@
    panic("hmm")
   }
   
-  func init() {
+  func init() {}
 //     ^^^^ definition sg/testdata/duplicate_path_id/init().
 //     documentation ```go
-  }
-  
-  // two inits in the same file is legal
-  func init() {
+  func init() {}
 //     ^^^^ definition sg/testdata/duplicate_path_id/init().
 //     documentation ```go
-  }
-  
-  // three inits in the same file is legal
-  func init() {
+  func init() {}
 //     ^^^^ definition sg/testdata/duplicate_path_id/init().
 //     documentation ```go
-  }
   
