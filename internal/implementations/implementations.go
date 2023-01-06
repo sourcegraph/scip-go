@@ -135,6 +135,12 @@ func AddImplementationRelationships(pkgs loader.PackageLookup, allPackages loade
 		// local type -> remote interface
 		findImplementations(localTypes, remoteInterfaces, symbols)
 
+		// TOOD: We should consider what this would even look like?
+		//     I don't think this makes sense the current way that we are emitting
+		//     implementations. You wouldn't even catch these anyways when uploading
+		// remote type -> local interface
+		// findImplementations(remoteTypes, localInterfaces, symbols)
+
 		return nil
 	})
 }
@@ -216,7 +222,8 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				// sym, ok := pkgSymbols.Get(m.Obj().Pos())
 				sym, ok, err := symbols.GetSymbolOfObject(m.Obj())
 				if err != nil {
-					panic(fmt.Sprintf("Error while looking for symbol %s | %s", err, m.Obj()))
+					handler.ErrOrPanic("Error while looking for symbol %s | %s", err, m.Obj())
+					continue
 				}
 
 				if !ok {
