@@ -6,6 +6,7 @@ import (
 	"go/types"
 	"strings"
 
+	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/output"
@@ -123,16 +124,16 @@ func AddImplementationRelationships(pkgs loader.PackageLookup, allPackages loade
 
 			remotePackages[pkgID] = pkg
 		}
-		// remoteInterfaces, _, err := extractInterfacesAndConcreteTypes(remotePackages, symbols)
-		// if err != nil {
-		// 	return err
-		// }
+		remoteInterfaces, _, err := extractInterfacesAndConcreteTypes(remotePackages, symbols)
+		if err != nil {
+			return err
+		}
 
 		// local type -> local interface
 		findImplementations(localTypes, localInterfaces, symbols)
 
 		// local type -> remote interface
-		// findImplementations(localTypes, remoteInterfaces, symbols)
+		findImplementations(localTypes, remoteInterfaces, symbols)
 
 		return nil
 	})
@@ -195,7 +196,10 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 
 			symbol, ok := pkgSymbols.Get(obj.Pos())
 			if !ok {
-				fmt.Println("No symbol for:", ident.Name, obj.Id())
+				if obj.Exported() {
+					handler.Println("No symbol for:", ident.Name, obj.Pkg(), obj.Id())
+				}
+
 				continue
 			}
 
@@ -216,7 +220,8 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				}
 
 				if !ok {
-					panic(fmt.Sprintf("Could not find symbol for %s", m.Obj()))
+					// panic(fmt.Sprintf("Could not find symbol for %s", m.Obj()))
+					continue
 				}
 
 				canonicalizedMethods[canonicalizeMethod(m)] = sym

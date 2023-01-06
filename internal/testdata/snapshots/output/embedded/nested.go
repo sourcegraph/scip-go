@@ -8,6 +8,7 @@
 //     ^^^^^^^^^^^^^ definition sg/embedded/NestedHandler#
 //     documentation ```go
 //     documentation ```go
+//     relationship github.com/golang/go/src net/http/Handler# implementation
    http.Handler
 // ^^^^ reference github.com/golang/go/src net/http/
 //      ^^^^^^^ definition sg/embedded/NestedHandler#Handler.

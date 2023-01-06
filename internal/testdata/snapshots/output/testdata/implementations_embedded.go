@@ -17,6 +17,7 @@
 //     ^^^^^^ definition sg/testdata/TClose#
 //     documentation ```go
 //     documentation ```go
+//     relationship github.com/golang/go/src io/Closer# implementation
 //     relationship sg/testdata/I3# implementation
    io.Closer
 // ^^ reference github.com/golang/go/src io/

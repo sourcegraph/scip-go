@@ -89,6 +89,7 @@
   type Foo int
 //     ^^^ definition sg/testdata/Foo#
 //     documentation ```go
+//     relationship github.com/golang/go/src io/Closer# implementation
 //     relationship sg/testdata/I3# implementation
 //     relationship sg/testdata/InterfaceWithExportedMethod# implementation
 //     relationship sg/testdata/InterfaceWithNonExportedMethod# implementation
@@ -110,6 +111,7 @@
 //        ^^^ reference sg/testdata/Foo#
 //             ^^^^^ definition sg/testdata/Foo#Close().
 //             documentation ```go
+//             relationship github.com/golang/go/src io/Closer#Close. implementation
 //             relationship sg/testdata/I3#Close. implementation
   
   type SharedOne interface {
