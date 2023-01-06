@@ -1,7 +1,6 @@
 package visitors
 
 import (
-	"fmt"
 	"go/ast"
 	"go/token"
 	"go/types"
@@ -9,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/document"
+	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
@@ -149,6 +149,10 @@ func getIdentOfTypeExpr(pkg *packages.Package, ty ast.Expr) []*ast.Ident {
 	case *ast.UnaryExpr:
 		return getIdentOfTypeExpr(pkg, ty.X)
 
+	// TODO: This one does seem like something we should handle
+	case *ast.IndexListExpr:
+		return nil
+
 	// TODO: Should see if any of these need better ident finders
 	case *ast.InterfaceType:
 		return nil
@@ -164,6 +168,7 @@ func getIdentOfTypeExpr(pkg *packages.Package, ty ast.Expr) []*ast.Ident {
 		return nil
 
 	default:
-		panic(fmt.Sprintf("Unhandled named struct field: %T %+v\n%s", ty, ty, pkg.Fset.Position(ty.Pos())))
+		_ = handler.ErrOrPanic("Unhandled named struct field: %T %+v\n%s", ty, ty, pkg.Fset.Position(ty.Pos()))
+		return nil
 	}
 }
