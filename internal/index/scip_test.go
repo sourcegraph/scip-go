@@ -44,7 +44,7 @@ func TestSnapshots(t *testing.T) {
 				OnError:               func(err error) error { return err },
 				IncludeScheme:         func(scheme string) bool { return scheme == "local" },
 				IncludePackageManager: func(_ string) bool { return false },
-				IncludePackageName:    func(_ string) bool { return false },
+				IncludePackageName:    func(name string) bool { return !strings.HasPrefix(name, "sg/") },
 				IncludePackageVersion: func(_ string) bool { return true },
 				IncludeDescriptor:     func(_ string) bool { return true },
 			}

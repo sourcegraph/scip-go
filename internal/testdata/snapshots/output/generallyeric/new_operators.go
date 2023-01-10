@@ -2,19 +2,19 @@
 //        ^^^^^^^^^^^^^ reference 0.1.test sg/generallyeric/
   
   import "golang.org/x/exp/constraints"
-//        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/
+//        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference golang.org/x/exp v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/
   
   type Number interface {
 //     ^^^^^^ definition 0.1.test sg/generallyeric/Number#
 //     documentation ```go
 //     documentation ```go
    constraints.Float | constraints.Integer | constraints.Complex
-// ^^^^^^^^^^^ reference v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/
-//             ^^^^^ reference v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/Float#
-//                     ^^^^^^^^^^^ reference v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/
-//                                 ^^^^^^^ reference v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/Integer#
-//                                           ^^^^^^^^^^^ reference v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/
-//                                                       ^^^^^^^ reference v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/Complex#
+// ^^^^^^^^^^^ reference golang.org/x/exp v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/
+//             ^^^^^ reference golang.org/x/exp v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/Float#
+//                     ^^^^^^^^^^^ reference golang.org/x/exp v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/
+//                                 ^^^^^^^ reference golang.org/x/exp v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/Integer#
+//                                           ^^^^^^^^^^^ reference golang.org/x/exp v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/
+//                                                       ^^^^^^^ reference golang.org/x/exp v0.0.0-20221205204356-47842c84f3db golang.org/x/exp/constraints/Complex#
   }
   
   func Double[T Number](value T) T {

@@ -3,7 +3,7 @@
   
   import (
    "context"
-//  ^^^^^^^ reference v1.19 context/
+//  ^^^^^^^ reference github.com/golang/go/src v1.19 context/
   
    "sg/testdata/internal/secret"
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test sg/testdata/internal/secret/
@@ -20,8 +20,8 @@
 // ^^ definition 0.1.test sg/testdata/TestInterface#Do.
 // documentation ```go
 //    ^^^ definition local 0
-//        ^^^^^^^ reference v1.19 context/
-//                ^^^^^^^ reference v1.19 context/Context#
+//        ^^^^^^^ reference github.com/golang/go/src v1.19 context/
+//                ^^^^^^^ reference github.com/golang/go/src v1.19 context/Context#
 //                         ^^^^ definition local 1
 //                                       ^^^^^ definition local 2
   }
@@ -112,8 +112,8 @@
 //                      documentation ```go
 //                      documentation Doer is similar to the test interface (but not the same).
 //                           ^^^ definition local 4
-//                               ^^^^^^^ reference v1.19 context/
-//                                       ^^^^^^^ reference v1.19 context/Context#
+//                               ^^^^^^^ reference github.com/golang/go/src v1.19 context/
+//                                       ^^^^^^^ reference github.com/golang/go/src v1.19 context/Context#
 //                                                ^^^^ definition local 5
 //                                                              ^^^^^ definition local 6
 //                                                                         ^^^ definition local 7

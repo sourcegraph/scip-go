@@ -2,7 +2,7 @@
 //        ^^^^^^^ reference 0.1.test sg/initial/
   
   import "fmt"
-//        ^^^ reference v1.19 fmt/
+//        ^^^ reference github.com/golang/go/src v1.19 fmt/
   
   type MyStruct struct{ f, y int }
 //     ^^^^^^^^ definition 0.1.test sg/initial/MyStruct#
@@ -31,8 +31,8 @@
 //      ^^^^^^^^ reference 0.1.test sg/initial/MyStruct#
 //               ^ reference 0.1.test sg/initial/MyStruct#f.
    fmt.Println(s)
-// ^^^ reference v1.19 fmt/
-//     ^^^^^^^ reference v1.19 fmt/Println().
+// ^^^ reference github.com/golang/go/src v1.19 fmt/
+//     ^^^^^^^ reference github.com/golang/go/src v1.19 fmt/Println().
 //             ^ reference local 2
   }
   

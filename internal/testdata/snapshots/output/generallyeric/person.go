@@ -2,7 +2,7 @@
 //        ^^^^^^^^^^^^^ reference 0.1.test sg/generallyeric/
   
   import "fmt"
-//        ^^^ reference v1.19 fmt/
+//        ^^^ reference github.com/golang/go/src v1.19 fmt/
   
   type Person interface {
 //     ^^^^^^ definition 0.1.test sg/generallyeric/Person#
@@ -25,8 +25,8 @@
 //                documentation ```go
 //                relationship 0.1.test sg/generallyeric/Person#Work. implementation
    fmt.Printf("%s is working\n", w)
-// ^^^ reference v1.19 fmt/
-//     ^^^^^^ reference v1.19 fmt/Printf().
+// ^^^ reference github.com/golang/go/src v1.19 fmt/
+//     ^^^^^^ reference github.com/golang/go/src v1.19 fmt/Printf().
 //                               ^ reference local 0
   }
   
