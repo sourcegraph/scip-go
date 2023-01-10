@@ -1,51 +1,51 @@
   package impls
-//        ^^^^^ reference sg/impls/
+//        ^^^^^ reference 0.1.test sg/impls/
   
   import "net/http"
-//        ^^^^^^^^ reference github.com/golang/go/src net/http/
+//        ^^^^^^^^ reference v1.19 net/http/
   
   func Something(r http.ResponseWriter) {}
-//     ^^^^^^^^^ definition sg/impls/Something().
+//     ^^^^^^^^^ definition 0.1.test sg/impls/Something().
 //     documentation ```go
 //               ^ definition local 0
-//                 ^^^^ reference github.com/golang/go/src net/http/
-//                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src net/http/ResponseWriter#
+//                 ^^^^ reference v1.19 net/http/
+//                      ^^^^^^^^^^^^^^ reference v1.19 net/http/ResponseWriter#
   
   type MyWriter struct{}
-//     ^^^^^^^^ definition sg/impls/MyWriter#
+//     ^^^^^^^^ definition 0.1.test sg/impls/MyWriter#
 //     documentation ```go
 //     documentation ```go
-//     relationship github.com/golang/go/src io/Writer# implementation
-//     relationship github.com/golang/go/src net/http/ResponseWriter# implementation
+//     relationship v1.19 io/Writer# implementation
+//     relationship v1.19 net/http/ResponseWriter# implementation
   
   func (w MyWriter) Header() http.Header        { panic("") }
 //      ^ definition local 1
-//        ^^^^^^^^ reference sg/impls/MyWriter#
-//                  ^^^^^^ definition sg/impls/MyWriter#Header().
+//        ^^^^^^^^ reference 0.1.test sg/impls/MyWriter#
+//                  ^^^^^^ definition 0.1.test sg/impls/MyWriter#Header().
 //                  documentation ```go
-//                  relationship github.com/golang/go/src net/http/ResponseWriter#Header. implementation
-//                           ^^^^ reference github.com/golang/go/src net/http/
-//                                ^^^^^^ reference github.com/golang/go/src net/http/Header#
+//                  relationship v1.19 net/http/ResponseWriter#Header. implementation
+//                           ^^^^ reference v1.19 net/http/
+//                                ^^^^^^ reference v1.19 net/http/Header#
   func (w MyWriter) Write([]byte) (int, error)  { panic("") }
 //      ^ definition local 2
-//        ^^^^^^^^ reference sg/impls/MyWriter#
-//                  ^^^^^ definition sg/impls/MyWriter#Write().
+//        ^^^^^^^^ reference 0.1.test sg/impls/MyWriter#
+//                  ^^^^^ definition 0.1.test sg/impls/MyWriter#Write().
 //                  documentation ```go
-//                  relationship github.com/golang/go/src io/Writer#Write. implementation
-//                  relationship github.com/golang/go/src net/http/ResponseWriter#Write. implementation
+//                  relationship v1.19 io/Writer#Write. implementation
+//                  relationship v1.19 net/http/ResponseWriter#Write. implementation
   func (w MyWriter) WriteHeader(statusCode int) { panic("") }
 //      ^ definition local 3
-//        ^^^^^^^^ reference sg/impls/MyWriter#
-//                  ^^^^^^^^^^^ definition sg/impls/MyWriter#WriteHeader().
+//        ^^^^^^^^ reference 0.1.test sg/impls/MyWriter#
+//                  ^^^^^^^^^^^ definition 0.1.test sg/impls/MyWriter#WriteHeader().
 //                  documentation ```go
-//                  relationship github.com/golang/go/src net/http/ResponseWriter#WriteHeader. implementation
+//                  relationship v1.19 net/http/ResponseWriter#WriteHeader. implementation
 //                              ^^^^^^^^^^ definition local 4
   
   func Another() {
-//     ^^^^^^^ definition sg/impls/Another().
+//     ^^^^^^^ definition 0.1.test sg/impls/Another().
 //     documentation ```go
    Something(MyWriter{})
-// ^^^^^^^^^ reference sg/impls/Something().
-//           ^^^^^^^^ reference sg/impls/MyWriter#
+// ^^^^^^^^^ reference 0.1.test sg/impls/Something().
+//           ^^^^^^^^ reference 0.1.test sg/impls/MyWriter#
   }
   

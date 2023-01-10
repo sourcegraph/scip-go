@@ -1,97 +1,97 @@
   package embedded
-//        ^^^^^^^^ reference sg/embedded/
+//        ^^^^^^^^ reference 0.1.test sg/embedded/
   
   import (
    "fmt"
-//  ^^^ reference github.com/golang/go/src fmt/
+//  ^^^ reference v1.19 fmt/
    "os/exec"
-//  ^^^^^^^ reference github.com/golang/go/src os/exec/
+//  ^^^^^^^ reference v1.19 os/exec/
   )
   
   type osExecCommand struct {
-//     ^^^^^^^^^^^^^ definition sg/embedded/osExecCommand#
+//     ^^^^^^^^^^^^^ definition 0.1.test sg/embedded/osExecCommand#
 //     documentation ```go
 //     documentation ```go
-//     relationship github.com/golang/go/src context/stringer# implementation
-//     relationship github.com/golang/go/src fmt/Stringer# implementation
-//     relationship github.com/golang/go/src runtime/stringer# implementation
+//     relationship v1.19 context/stringer# implementation
+//     relationship v1.19 fmt/Stringer# implementation
+//     relationship v1.19 runtime/stringer# implementation
    *exec.Cmd
-//  ^^^^ reference github.com/golang/go/src os/exec/
-//       ^^^ definition sg/embedded/osExecCommand#Cmd.
+//  ^^^^ reference v1.19 os/exec/
+//       ^^^ definition 0.1.test sg/embedded/osExecCommand#Cmd.
 //       documentation ```go
-//       ^^^ reference github.com/golang/go/src os/exec/Cmd#
+//       ^^^ reference v1.19 os/exec/Cmd#
   }
   
   func wrapExecCommand(c *exec.Cmd) {
-//     ^^^^^^^^^^^^^^^ definition sg/embedded/wrapExecCommand().
+//     ^^^^^^^^^^^^^^^ definition 0.1.test sg/embedded/wrapExecCommand().
 //     documentation ```go
 //                     ^ definition local 0
-//                        ^^^^ reference github.com/golang/go/src os/exec/
-//                             ^^^ reference github.com/golang/go/src os/exec/Cmd#
+//                        ^^^^ reference v1.19 os/exec/
+//                             ^^^ reference v1.19 os/exec/Cmd#
    _ = &osExecCommand{Cmd: c}
-//      ^^^^^^^^^^^^^ reference sg/embedded/osExecCommand#
-//                    ^^^ reference sg/embedded/osExecCommand#Cmd.
+//      ^^^^^^^^^^^^^ reference 0.1.test sg/embedded/osExecCommand#
+//                    ^^^ reference 0.1.test sg/embedded/osExecCommand#Cmd.
 //                         ^ reference local 0
   }
   
   type Inner struct {
-//     ^^^^^ definition sg/embedded/Inner#
+//     ^^^^^ definition 0.1.test sg/embedded/Inner#
 //     documentation ```go
 //     documentation ```go
    X int
-// ^ definition sg/embedded/Inner#X.
+// ^ definition 0.1.test sg/embedded/Inner#X.
 // documentation ```go
    Y int
-// ^ definition sg/embedded/Inner#Y.
+// ^ definition 0.1.test sg/embedded/Inner#Y.
 // documentation ```go
    Z int
-// ^ definition sg/embedded/Inner#Z.
+// ^ definition 0.1.test sg/embedded/Inner#Z.
 // documentation ```go
   }
   
   type Outer struct {
-//     ^^^^^ definition sg/embedded/Outer#
+//     ^^^^^ definition 0.1.test sg/embedded/Outer#
 //     documentation ```go
 //     documentation ```go
    Inner
-// ^^^^^ definition sg/embedded/Outer#Inner.
+// ^^^^^ definition 0.1.test sg/embedded/Outer#Inner.
 // documentation ```go
-// ^^^^^ reference sg/embedded/Inner#
+// ^^^^^ reference 0.1.test sg/embedded/Inner#
    W int
-// ^ definition sg/embedded/Outer#W.
+// ^ definition 0.1.test sg/embedded/Outer#W.
 // documentation ```go
   }
   
   func useOfCompositeStructs() {
-//     ^^^^^^^^^^^^^^^^^^^^^ definition sg/embedded/useOfCompositeStructs().
+//     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/embedded/useOfCompositeStructs().
 //     documentation ```go
    o := Outer{
 // ^ definition local 1
-//      ^^^^^ reference sg/embedded/Outer#
+//      ^^^^^ reference 0.1.test sg/embedded/Outer#
     Inner: Inner{
-//  ^^^^^ reference sg/embedded/Outer#Inner.
-//         ^^^^^ reference sg/embedded/Inner#
+//  ^^^^^ reference 0.1.test sg/embedded/Outer#Inner.
+//         ^^^^^ reference 0.1.test sg/embedded/Inner#
      X: 1,
-//   ^ reference sg/embedded/Inner#X.
+//   ^ reference 0.1.test sg/embedded/Inner#X.
      Y: 2,
-//   ^ reference sg/embedded/Inner#Y.
+//   ^ reference 0.1.test sg/embedded/Inner#Y.
      Z: 3,
-//   ^ reference sg/embedded/Inner#Z.
+//   ^ reference 0.1.test sg/embedded/Inner#Z.
     },
     W: 4,
-//  ^ reference sg/embedded/Outer#W.
+//  ^ reference 0.1.test sg/embedded/Outer#W.
    }
   
    fmt.Printf("> %d\n", o.X)
-// ^^^ reference github.com/golang/go/src fmt/
-//     ^^^^^^ reference github.com/golang/go/src fmt/Printf().
+// ^^^ reference v1.19 fmt/
+//     ^^^^^^ reference v1.19 fmt/Printf().
 //                      ^ reference local 1
-//                        ^ reference sg/embedded/Inner#X.
+//                        ^ reference 0.1.test sg/embedded/Inner#X.
    fmt.Println(o.Inner.Y)
-// ^^^ reference github.com/golang/go/src fmt/
-//     ^^^^^^^ reference github.com/golang/go/src fmt/Println().
+// ^^^ reference v1.19 fmt/
+//     ^^^^^^^ reference v1.19 fmt/Println().
 //             ^ reference local 1
-//               ^^^^^ reference sg/embedded/Outer#Inner.
-//                     ^ reference sg/embedded/Inner#Y.
+//               ^^^^^ reference 0.1.test sg/embedded/Outer#Inner.
+//                     ^ reference 0.1.test sg/embedded/Inner#Y.
   }
   

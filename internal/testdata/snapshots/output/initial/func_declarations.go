@@ -1,14 +1,14 @@
   package initial
-//        ^^^^^^^ reference sg/initial/
+//        ^^^^^^^ reference 0.1.test sg/initial/
   
   func UsesLater() {
-//     ^^^^^^^^^ definition sg/initial/UsesLater().
+//     ^^^^^^^^^ definition 0.1.test sg/initial/UsesLater().
 //     documentation ```go
    DefinedLater()
-// ^^^^^^^^^^^^ reference sg/initial/DefinedLater().
+// ^^^^^^^^^^^^ reference 0.1.test sg/initial/DefinedLater().
   }
   
   func DefinedLater() {}
-//     ^^^^^^^^^^^^ definition sg/initial/DefinedLater().
+//     ^^^^^^^^^^^^ definition 0.1.test sg/initial/DefinedLater().
 //     documentation ```go
   

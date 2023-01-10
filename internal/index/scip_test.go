@@ -32,7 +32,7 @@ func TestSnapshots(t *testing.T) {
 
 			index, err := index.Index(config.IndexOpts{
 				ModuleRoot:    inputDirectory,
-				ModuleVersion: "0.1-test",
+				ModuleVersion: "0.1.test",
 				ModulePath:    "sg/" + filepath.Base(inputDirectory),
 			})
 
@@ -40,8 +40,14 @@ func TestSnapshots(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			symbolFormatter := scip.DescriptorOnlyFormatter
-			symbolFormatter.IncludePackageName = func(name string) bool { return !strings.HasPrefix(name, "sg/") }
+			symbolFormatter := scip.SymbolFormatter{
+				OnError:               func(err error) error { return err },
+				IncludeScheme:         func(scheme string) bool { return scheme == "local" },
+				IncludePackageManager: func(_ string) bool { return false },
+				IncludePackageName:    func(_ string) bool { return false },
+				IncludePackageVersion: func(_ string) bool { return true },
+				IncludeDescriptor:     func(_ string) bool { return true },
+			}
 
 			sourceFiles := []*scip.SourceFile{}
 			for _, doc := range index.Documents {

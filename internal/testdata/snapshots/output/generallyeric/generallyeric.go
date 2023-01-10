@@ -1,12 +1,12 @@
   // generallyeric -> generic for short
   package generallyeric
-//        ^^^^^^^^^^^^^ definition sg/generallyeric/
+//        ^^^^^^^^^^^^^ definition 0.1.test sg/generallyeric/
   
   import "fmt"
-//        ^^^ reference github.com/golang/go/src fmt/
+//        ^^^ reference v1.19 fmt/
   
   func Print[T any](s []T) {
-//     ^^^^^ definition sg/generallyeric/Print().
+//     ^^^^^ definition 0.1.test sg/generallyeric/Print().
 //     documentation ```go
 //           ^ definition local 0
 //                  ^ definition local 1
@@ -15,8 +15,8 @@
 //        ^ definition local 2
 //                   ^ reference local 1
     fmt.Print(v)
-//  ^^^ reference github.com/golang/go/src fmt/
-//      ^^^^^ reference github.com/golang/go/src fmt/Print().
+//  ^^^ reference v1.19 fmt/
+//      ^^^^^ reference v1.19 fmt/Print().
 //            ^ reference local 2
    }
   }

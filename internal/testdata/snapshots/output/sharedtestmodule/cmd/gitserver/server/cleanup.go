@@ -1,7 +1,7 @@
   package server
-//        ^^^^^^ reference sg/sharedtestmodule/cmd/gitserver/server/
+//        ^^^^^^ reference 0.1.test sg/sharedtestmodule/cmd/gitserver/server/
   
   func LiterallyAnything() {}
-//     ^^^^^^^^^^^^^^^^^ definition sg/sharedtestmodule/cmd/gitserver/server/LiterallyAnything().
+//     ^^^^^^^^^^^^^^^^^ definition 0.1.test sg/sharedtestmodule/cmd/gitserver/server/LiterallyAnything().
 //     documentation ```go
   

@@ -1,8 +1,8 @@
   package initial
-//        ^^^^^^^ reference sg/initial/
+//        ^^^^^^^ reference 0.1.test sg/initial/
   
   func UsesBuiltin() int {
-//     ^^^^^^^^^^^ definition sg/initial/UsesBuiltin().
+//     ^^^^^^^^^^^ definition 0.1.test sg/initial/UsesBuiltin().
 //     documentation ```go
    var x int = 5
 //     ^ definition local 0
