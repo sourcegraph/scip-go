@@ -1,7 +1,7 @@
   package server
-//        ^^^^^^ definition sg/sharedtestmodule/cmd/gitserver/server/
+//        ^^^^^^ definition 0.1.test sg/sharedtestmodule/cmd/gitserver/server/
   
   func AnythingAtAll() {}
-//     ^^^^^^^^^^^^^ definition sg/sharedtestmodule/cmd/gitserver/server/AnythingAtAll().
+//     ^^^^^^^^^^^^^ definition 0.1.test sg/sharedtestmodule/cmd/gitserver/server/AnythingAtAll().
 //     documentation ```go
   

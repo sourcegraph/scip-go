@@ -1,31 +1,31 @@
   package gosrc
-//        ^^^^^ reference sg/testdata/duplicate_path_id/
+//        ^^^^^ reference 0.1.test sg/testdata/duplicate_path_id/
   
   type importMeta struct{}
-//     ^^^^^^^^^^ definition sg/testdata/duplicate_path_id/importMeta#
+//     ^^^^^^^^^^ definition 0.1.test sg/testdata/duplicate_path_id/importMeta#
 //     documentation ```go
 //     documentation ```go
   
   type sourceMeta struct{}
-//     ^^^^^^^^^^ definition sg/testdata/duplicate_path_id/sourceMeta#
+//     ^^^^^^^^^^ definition 0.1.test sg/testdata/duplicate_path_id/sourceMeta#
 //     documentation ```go
 //     documentation ```go
   
   func fetchMeta() (string, *importMeta, *sourceMeta) {
-//     ^^^^^^^^^ definition sg/testdata/duplicate_path_id/fetchMeta().
+//     ^^^^^^^^^ definition 0.1.test sg/testdata/duplicate_path_id/fetchMeta().
 //     documentation ```go
-//                           ^^^^^^^^^^ reference sg/testdata/duplicate_path_id/importMeta#
-//                                        ^^^^^^^^^^ reference sg/testdata/duplicate_path_id/sourceMeta#
+//                           ^^^^^^^^^^ reference 0.1.test sg/testdata/duplicate_path_id/importMeta#
+//                                        ^^^^^^^^^^ reference 0.1.test sg/testdata/duplicate_path_id/sourceMeta#
    panic("hmm")
   }
   
   func init() {}
-//     ^^^^ definition sg/testdata/duplicate_path_id/init().
+//     ^^^^ definition 0.1.test sg/testdata/duplicate_path_id/init().
 //     documentation ```go
   func init() {}
-//     ^^^^ definition sg/testdata/duplicate_path_id/init().
+//     ^^^^ definition 0.1.test sg/testdata/duplicate_path_id/init().
 //     documentation ```go
   func init() {}
-//     ^^^^ definition sg/testdata/duplicate_path_id/init().
+//     ^^^^ definition 0.1.test sg/testdata/duplicate_path_id/init().
 //     documentation ```go
   

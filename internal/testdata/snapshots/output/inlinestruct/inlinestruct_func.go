@@ -1,17 +1,17 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ reference sg/inlinestruct/
+//        ^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/
   
   type InFuncSig struct {
-//     ^^^^^^^^^ definition sg/inlinestruct/InFuncSig#
+//     ^^^^^^^^^ definition 0.1.test sg/inlinestruct/InFuncSig#
 //     documentation ```go
 //     documentation ```go
    value bool
-// ^^^^^ definition sg/inlinestruct/InFuncSig#value.
+// ^^^^^ definition 0.1.test sg/inlinestruct/InFuncSig#value.
 // documentation ```go
   }
   
   var rowsCloseHook = func() func(InFuncSig, *error) { return nil }
-//    ^^^^^^^^^^^^^ definition rowsCloseHook.
+//    ^^^^^^^^^^^^^ definition 0.1.test rowsCloseHook.
 //    documentation ```go
-//                                ^^^^^^^^^ reference sg/inlinestruct/InFuncSig#
+//                                ^^^^^^^^^ reference 0.1.test sg/inlinestruct/InFuncSig#
   

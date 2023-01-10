@@ -1,36 +1,36 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ definition sg/inlinestruct/
+//        ^^^^^^^^^^^^ definition 0.1.test sg/inlinestruct/
   
   type FieldInterface interface {
-//     ^^^^^^^^^^^^^^ definition sg/inlinestruct/FieldInterface#
+//     ^^^^^^^^^^^^^^ definition 0.1.test sg/inlinestruct/FieldInterface#
 //     documentation ```go
 //     documentation ```go
    SomeMethod() string
-// ^^^^^^^^^^ definition sg/inlinestruct/FieldInterface#SomeMethod.
+// ^^^^^^^^^^ definition 0.1.test sg/inlinestruct/FieldInterface#SomeMethod.
 // documentation ```go
   }
   
   var MyInline = struct {
-//    ^^^^^^^^ definition MyInline.
+//    ^^^^^^^^ definition 0.1.test MyInline.
 //    documentation ```go
    privateField FieldInterface
-// ^^^^^^^^^^^^ definition sg/inlinestruct/MyInline:privateField.
+// ^^^^^^^^^^^^ definition 0.1.test sg/inlinestruct/MyInline:privateField.
 // documentation ```go
-//              ^^^^^^^^^^^^^^ reference sg/inlinestruct/FieldInterface#
+//              ^^^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/FieldInterface#
    PublicField  FieldInterface
-// ^^^^^^^^^^^ definition sg/inlinestruct/MyInline:PublicField.
+// ^^^^^^^^^^^ definition 0.1.test sg/inlinestruct/MyInline:PublicField.
 // documentation ```go
-//              ^^^^^^^^^^^^^^ reference sg/inlinestruct/FieldInterface#
+//              ^^^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/FieldInterface#
   }{}
   
   func MyFunc() {
-//     ^^^^^^ definition sg/inlinestruct/MyFunc().
+//     ^^^^^^ definition 0.1.test sg/inlinestruct/MyFunc().
 //     documentation ```go
    _ = MyInline.privateField
-//     ^^^^^^^^ reference MyInline.
-//              ^^^^^^^^^^^^ reference sg/inlinestruct/MyInline:privateField.
+//     ^^^^^^^^ reference 0.1.test MyInline.
+//              ^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/MyInline:privateField.
    _ = MyInline.PublicField
-//     ^^^^^^^^ reference MyInline.
-//              ^^^^^^^^^^^ reference sg/inlinestruct/MyInline:PublicField.
+//     ^^^^^^^^ reference 0.1.test MyInline.
+//              ^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/MyInline:PublicField.
   }
   

@@ -1,7 +1,7 @@
   package gosrc
-//        ^^^^^ definition sg/testdata/duplicate_path_id/
+//        ^^^^^ definition 0.1.test sg/testdata/duplicate_path_id/
   
   func init() {}
-//     ^^^^ definition sg/testdata/duplicate_path_id/init().
+//     ^^^^ definition 0.1.test sg/testdata/duplicate_path_id/init().
 //     documentation ```go
   

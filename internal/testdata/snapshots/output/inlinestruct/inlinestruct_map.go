@@ -1,7 +1,7 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ reference sg/inlinestruct/
+//        ^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/
   
   var testHook = func(map[string]string) {}
-//    ^^^^^^^^ definition testHook.
+//    ^^^^^^^^ definition 0.1.test testHook.
 //    documentation ```go
   
