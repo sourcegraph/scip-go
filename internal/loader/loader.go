@@ -155,11 +155,6 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 	// Follow replaced modules
 	if pkg.Module.Replace != nil {
-		// panic(fmt.Sprintf("replace... haven't truly handled yet:\nModule: %+v\nReplace: %+v\n", pkg.Module, pkg.Module.Replace))
-		fmt.Println("Replace directive:")
-		fmt.Printf("  Module: %+v %s\n", pkg.Module.Path, pkg.Module.Version)
-		fmt.Printf("  Replace: %+v %s\n\n", pkg.Module.Replace.Path, pkg.Module.Replace.Version)
-
 		pkg.Module = pkg.Module.Replace
 
 		// Local replaces for local files can have this happen,
