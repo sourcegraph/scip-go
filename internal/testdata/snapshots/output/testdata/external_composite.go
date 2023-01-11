@@ -1,21 +1,21 @@
   package testdata
-//        ^^^^^^^^ reference sg/testdata/
+//        ^^^^^^^^ reference 0.1.test sg/testdata/
   
   import "net/http"
-//        ^^^^^^^^ reference github.com/golang/go/src net/http/
+//        ^^^^^^^^ reference github.com/golang/go/src v1.19 net/http/
   
   type NestedHandler struct {
-//     ^^^^^^^^^^^^^ definition sg/testdata/NestedHandler#
+//     ^^^^^^^^^^^^^ definition 0.1.test sg/testdata/NestedHandler#
 //     documentation ```go
 //     documentation ```go
-//     relationship github.com/golang/go/src net/http/Handler# implementation
+//     relationship github.com/golang/go/src v1.19 net/http/Handler# implementation
    http.Handler
-// ^^^^ reference github.com/golang/go/src net/http/
-//      ^^^^^^^ definition sg/testdata/NestedHandler#Handler.
+// ^^^^ reference github.com/golang/go/src v1.19 net/http/
+//      ^^^^^^^ definition 0.1.test sg/testdata/NestedHandler#Handler.
 //      documentation ```go
-//      ^^^^^^^ reference github.com/golang/go/src net/http/Handler#
+//      ^^^^^^^ reference github.com/golang/go/src v1.19 net/http/Handler#
    Other int
-// ^^^^^ definition sg/testdata/NestedHandler#Other.
+// ^^^^^ definition 0.1.test sg/testdata/NestedHandler#Other.
 // documentation ```go
   }
   

@@ -150,9 +150,11 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 	}
 
+	// TODO: Handle `./lib` style
+	// TODO: Ensure that we copy version correclty
+
 	// Follow replaced modules
 	if pkg.Module.Replace != nil {
-		// panic(fmt.Sprintf("replace... haven't truly handled yet:\nModule: %+v\nReplace: %+v\n", pkg.Module, pkg.Module.Replace))
 		pkg.Module = pkg.Module.Replace
 
 		// Local replaces for local files can have this happen,

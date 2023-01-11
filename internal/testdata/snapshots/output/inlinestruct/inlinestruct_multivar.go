@@ -1,51 +1,51 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ reference sg/inlinestruct/
+//        ^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/
   
   type Params struct{}
-//     ^^^^^^ definition sg/inlinestruct/Params#
+//     ^^^^^^ definition 0.1.test sg/inlinestruct/Params#
 //     documentation ```go
 //     documentation ```go
   type HighlightedCode struct{}
-//     ^^^^^^^^^^^^^^^ definition sg/inlinestruct/HighlightedCode#
+//     ^^^^^^^^^^^^^^^ definition 0.1.test sg/inlinestruct/HighlightedCode#
 //     documentation ```go
 //     documentation ```go
   
   var Mocks, emptyMocks struct {
-//    ^^^^^ definition Mocks.
+//    ^^^^^ definition 0.1.test Mocks.
 //    documentation ```go
-//           ^^^^^^^^^^ definition emptyMocks.
+//           ^^^^^^^^^^ definition 0.1.test emptyMocks.
 //           documentation ```go
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
-// ^^^^ definition sg/inlinestruct/inline-30:Code.
+// ^^^^ definition 0.1.test sg/inlinestruct/inline-30:Code.
 // documentation ```go
 //           ^ definition local 0
-//             ^^^^^^ reference sg/inlinestruct/Params#
+//             ^^^^^^ reference 0.1.test sg/inlinestruct/Params#
 //                      ^^^^^^^^ definition local 1
-//                                ^^^^^^^^^^^^^^^ reference sg/inlinestruct/HighlightedCode#
+//                                ^^^^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/HighlightedCode#
 //                                                 ^^^^^^^ definition local 2
 //                                                               ^^^ definition local 3
   }
   
   var MocksSingle struct {
-//    ^^^^^^^^^^^ definition MocksSingle.
+//    ^^^^^^^^^^^ definition 0.1.test MocksSingle.
 //    documentation ```go
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
-// ^^^^ definition sg/inlinestruct/MocksSingle:Code.
+// ^^^^ definition 0.1.test sg/inlinestruct/MocksSingle:Code.
 // documentation ```go
 //           ^ definition local 4
-//             ^^^^^^ reference sg/inlinestruct/Params#
+//             ^^^^^^ reference 0.1.test sg/inlinestruct/Params#
 //                      ^^^^^^^^ definition local 5
-//                                ^^^^^^^^^^^^^^^ reference sg/inlinestruct/HighlightedCode#
+//                                ^^^^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/HighlightedCode#
 //                                                 ^^^^^^^ definition local 6
 //                                                               ^^^ definition local 7
   }
   
   var (
    okReply   interface{} = "OK"
-// ^^^^^^^ definition okReply.
+// ^^^^^^^ definition 0.1.test okReply.
 // documentation ```go
    pongReply interface{} = "PONG"
-// ^^^^^^^^^ definition pongReply.
+// ^^^^^^^^^ definition 0.1.test pongReply.
 // documentation ```go
   )
   

@@ -1,8 +1,8 @@
   package testdata
-//        ^^^^^^^^ reference sg/testdata/
+//        ^^^^^^^^ reference 0.1.test sg/testdata/
   
   func Switch(interfaceValue interface{}) bool {
-//     ^^^^^^ definition sg/testdata/Switch().
+//     ^^^^^^ definition 0.1.test sg/testdata/Switch().
 //     documentation ```go
 //            ^^^^^^^^^^^^^^ definition local 0
    switch concreteValue := interfaceValue.(type) {
