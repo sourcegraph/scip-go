@@ -2,7 +2,6 @@ package loader
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/config"
@@ -29,7 +28,7 @@ func makeConfig(root string) *packages.Config {
 	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
-		Logf: log.Printf,
+		Logf: nil,
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies
@@ -109,10 +108,10 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	//		Path string = "github.com/efritz/pentimento"
 	//		Version string = "v0.0.0-20190429011147-ade47d831101"
 
-	if IsStandardLib(pkg) {
+	if IsStandardLib(pkg) || opts.IsIndexingStdlib {
 		pkg.Module = &packages.Module{
 			Path:    "github.com/golang/go/src",
-			Version: "v1.19",
+			Version: opts.GoStdlibVersion,
 		}
 	} else {
 		if pkg.Module == nil {

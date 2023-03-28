@@ -91,18 +91,15 @@ func mainErr() error {
 	output.SetOutputOptions(getVerbosity(), animation)
 	output.Println("scip-go")
 
-	modulePath, isStd, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
-	if isStd {
-		panic("TODO: support stdlib. Check old lsif-go status")
-	}
+	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
 
 	output.Println("  Go standard library version: ", goVersion)
 	output.Println("  Resolved module name       : ", modulePath)
-	if isStd {
-		output.Println("  Resolved is stdlib         :", true)
+	if isStdLib {
+		output.Println("  Resolved as stdlib         :", true)
 	}
 
-	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion)
+	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion, isStdLib)
 
 	if strings.HasPrefix(scipCommand, "list-packages") {
 		var filter string

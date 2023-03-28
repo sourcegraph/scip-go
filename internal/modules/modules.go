@@ -41,6 +41,10 @@ func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err
 		return "", false, err
 	}
 
+	if moduleName == "std" {
+		isStdLib = true
+	}
+
 	return moduleName, isStdLib, err
 }
 
@@ -66,7 +70,8 @@ func resolveModuleName(repo, name string) (string, bool, error) {
 		return "", false, fmt.Errorf("%v\n\n%s", err, help)
 	}
 
-	return repoRepoRoot.Root + suffix, name == "std", nil
+	name = repoRepoRoot.Root + suffix
+	return name, name == "std", nil
 }
 
 // isModule returns true if there is a go.mod file in the given directory.
