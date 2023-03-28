@@ -1,11 +1,10 @@
 package loader
 
 import (
-	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 
-	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
@@ -23,8 +22,6 @@ var loadMode = packages.NeedDeps |
 	packages.NeedModule |
 	packages.NeedName
 
-var goVersion = "go1.19"
-
 var Config = &packages.Config{}
 
 func makeConfig(root string) *packages.Config {
@@ -32,7 +29,7 @@ func makeConfig(root string) *packages.Config {
 	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
-		Logf: nil,
+		Logf: log.Printf,
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies
@@ -62,7 +59,7 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLo
 		PkgPath: "builtin",
 		Module: &packages.Module{
 			Path:    "github.com/golang/go/src/builtin",
-			Version: goVersion,
+			Version: opts.GoStdlibVersion,
 		},
 	}
 
@@ -74,19 +71,6 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLo
 		if err != nil {
 			return err
 		}
-
-		modOutput, err := command.Run(moduleRoot, "go", "list", "-mod=readonly", "-m", "-json")
-		if err != nil {
-			return fmt.Errorf("failed to list module info: %v\n", err)
-		}
-
-		var thisPackage *packages.Module
-		if err := json.NewDecoder(strings.NewReader(modOutput)).Decode(&thisPackage); err != nil {
-			return err
-		}
-
-		goVersion = "go" + thisPackage.GoVersion
-		output.Println("Using go version:", goVersion)
 
 		for _, pkg := range pkgs {
 			addImportsToPkgs(pkgLookup, &opts, pkg)
@@ -102,15 +86,6 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLo
 	}
 
 	return projectPackages, pkgLookup, nil
-}
-
-func traversePackage(opts *config.IndexOpts, pkgLookup map[string]*packages.Package, pkg *packages.Package) {
-	// for _, imp := range pkg.Imports {
-	// 	if _, ok := pkgLookup
-	// 	pkgLookup[imp.PkgPath] = normalizePackage(opts, imp)
-	// }
-
-	pkgLookup[pkg.PkgPath] = pkg
 }
 
 func IsStandardLib(pkg *packages.Package) bool {
@@ -166,7 +141,13 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 	if pkg.Module.Version == "" {
 		if pkg.Module.Path != opts.ModulePath {
-			panic(fmt.Sprintf("Unknown version for userland package: %s %s", pkg.Module.Path, opts.ModulePath))
+			fmt.Printf("REPLACE: %+v\n", pkg.Module.Replace)
+
+			panic(fmt.Sprintf(
+				"Unknown version for userland package: %s %s",
+				pkg.Module.Path,
+				opts.ModulePath,
+			))
 		}
 
 		pkg.Module.Version = opts.ModuleVersion

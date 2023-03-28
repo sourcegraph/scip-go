@@ -19,17 +19,19 @@ func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err
 			return nil
 		}
 
-		name := repo
+		moduleName = repo
 
 		if !isModule(dir) {
 			log.Println("WARNING: No go.mod file found in current directory.")
 		} else {
-			if name, err = command.Run(dir, "go", "list", "-mod=readonly", "-m"); err != nil {
-				return fmt.Errorf("failed to list modules: %v\n%s", err, name)
+			if moduleName, err = command.Run(dir, "go", "list", "-mod=readonly", "-m"); err != nil {
+				return fmt.Errorf("failed to list modules: %v\n%s", err, moduleName)
 			}
+
+			return nil
 		}
 
-		moduleName, isStdLib, err = resolveModuleName(repo, name)
+		moduleName, isStdLib, err = resolveModuleName(repo, moduleName)
 
 		return nil
 	}

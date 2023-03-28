@@ -215,11 +215,11 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		}
 
 		if def == nil && ref == nil {
-			panic(fmt.Sprintf(
+			handler.ErrOrPanic(
 				"Neither def nor ref found: %s | %T | %s",
 				node.Name,
 				node,
-				v.pkg.Fset.Position(node.Pos())),
+				v.pkg.Fset.Position(node.Pos()),
 			)
 		}
 	}
