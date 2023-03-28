@@ -39,6 +39,14 @@ If this doesn't solve the problem, check the rest of the available flags in:
 scip-go --help
 ```
 
+### Common Problems:
+
+- Unable to navigate to Go standard library.
+  - To solve this, you may want to use the `--go-version=go1.X.Y` flag when indexing and then also index the go versions manually.
+  - To index the Go standard library, you'll want to check out https://github.com/golang/go, checkout the tag you want, navigate to the `src/` directory, and then run:
+    - `$ scip-go --go-version=go1.X.Y` and then upload that index to your local sourcegraph instance.
+    - After you've done this, you should be able to navigate to the standard library.
+
 
 (NOTE: Projects without a `go.mod` may experience challenges indexing. See next section for details)
 

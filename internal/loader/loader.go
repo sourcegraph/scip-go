@@ -113,6 +113,12 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			Path:    "github.com/golang/go/src",
 			Version: opts.GoStdlibVersion,
 		}
+
+		// When indexing the standard library, all packages are prefixed with `std/`.
+		//
+		// We strip that to standardize all the libraries to make sure we are able to jump-to-definition
+		// of the standard library.
+		pkg.PkgPath = strings.TrimPrefix(pkg.PkgPath, "std/")
 	} else {
 		if pkg.Module == nil {
 			panic(fmt.Sprintf(
