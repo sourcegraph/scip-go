@@ -149,8 +149,7 @@ func SetOutputOptions(verb Verbosity, animation bool) {
 }
 
 func Println(a ...any) {
-	// TODO: This doesn't work yet. Talk to eric later
 	if opts.Verbosity != NoOutput {
-		// fmt.Println(a...)
+		fmt.Println(a...)
 	}
 }

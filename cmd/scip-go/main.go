@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -8,12 +9,14 @@ import (
 	"strings"
 
 	"github.com/alecthomas/kingpin"
+	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/git"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip-go/internal/modules"
 	"github.com/sourcegraph/scip-go/internal/output"
+	"golang.org/x/tools/go/packages"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -30,6 +33,7 @@ var (
 	repositoryRemote string
 	moduleVersion    string
 	moduleName       string
+	goVersion        string
 	verbosity        int
 	noOutput         bool
 	animation        bool
@@ -57,6 +61,7 @@ func init() {
 	app.Flag("repository-remote", "Specifies the canonical name of the repository remote.").Default(defaultRepositoryRemote.Value()).StringVar(&repositoryRemote)
 	app.Flag("module-name", "Specifies the name of the module defined by module-root.").StringVar(&moduleName)
 	app.Flag("module-version", "Specifies the version of the module defined by module-root.").Default(defaultModuleVersion.Value()).StringVar(&moduleVersion)
+	app.Flag("go-version", "Specifies the version of the Go standard library to link to. Format: 'go1.XX'").Default(defaultGoVersion.Value()).StringVar(&goVersion)
 
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
@@ -91,7 +96,13 @@ func mainErr() error {
 		panic("TODO: support stdlib. Check old lsif-go status")
 	}
 
-	options := config.New(moduleRoot, moduleVersion, modulePath)
+	output.Println("  Go standard library version: ", goVersion)
+	output.Println("  Resolved module name       : ", modulePath)
+	if isStd {
+		output.Println("  Resolved is stdlib         :", true)
+	}
+
+	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion)
 
 	if strings.HasPrefix(scipCommand, "list-packages") {
 		var filter string
@@ -239,6 +250,20 @@ var defaultModuleVersion = newCachedString(func() string {
 	}
 
 	return ""
+})
+
+var defaultGoVersion = newCachedString(func() string {
+	modOutput, err := command.Run(moduleRoot, "go", "list", "-mod=readonly", "-m", "-json")
+	if err != nil {
+		return ""
+	}
+
+	var thisPackage *packages.Module
+	if err := json.NewDecoder(strings.NewReader(modOutput)).Decode(&thisPackage); err != nil {
+		return ""
+	}
+
+	return "go" + thisPackage.GoVersion
 })
 
 var verbosityLevels = map[int]output.Verbosity{
