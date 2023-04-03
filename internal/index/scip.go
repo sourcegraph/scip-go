@@ -3,7 +3,6 @@ package index
 import (
 	"fmt"
 	"go/ast"
-	"go/token"
 	"sort"
 	"strings"
 
@@ -15,9 +14,9 @@ import (
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip-go/internal/visitors"
 	"github.com/sourcegraph/scip/bindings/go/scip"
-	"golang.org/x/tools/go/packages"
 )
 
 func GetPackages(opts config.IndexOpts) (current []newtypes.PackageID, deps []newtypes.PackageID, err error) {
@@ -135,10 +134,10 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 				if f == pkgDeclaration {
 					position := pkg.Fset.Position(f.Name.NamePos)
 					doc.SetNewSymbolForPos(pkgSymbol, nil, f.Name, f.Name.NamePos)
-					doc.NewDefinition(pkgSymbol, scipRangeFromName(position, f.Name.Name, false))
+					doc.NewDefinition(pkgSymbol, symbols.RangeFromName(position, f.Name.Name, false))
 				} else {
 					position := pkg.Fset.Position(f.Name.NamePos)
-					doc.AppendSymbolReference(pkgSymbol, scipRangeFromName(position, f.Name.Name, false), nil)
+					doc.AppendSymbolReference(pkgSymbol, symbols.RangeFromName(position, f.Name.Name, false), nil)
 				}
 			}
 		}
@@ -178,58 +177,12 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 				globalSymbols,
 			)
 
-			// Generate import references
-			for _, spec := range f.Imports {
-				importedPackage := pkg.Imports[strings.Trim(spec.Path.Value, `"`)]
-				if importedPackage == nil {
-					fmt.Println("Could not find: ", spec.Path)
-					continue
-				}
-
-				position := pkg.Fset.Position(spec.Pos())
-				emitImportReference(globalSymbols, doc, position, importedPackage)
-			}
-
 			ast.Walk(visitor, f)
 			index.Documents = append(index.Documents, doc.Document)
 		}
 	}
 
 	return &index, nil
-}
-
-func emitImportReference(
-	globalSymbols *lookup.Global,
-	doc *document.Document,
-	position token.Position,
-	importedPackage *packages.Package,
-) {
-	scipRange := scipRangeFromName(position, importedPackage.PkgPath, true)
-	symbol := globalSymbols.GetPkgNameSymbol(importedPackage)
-	if symbol == nil {
-		handler.ErrOrPanic("Missing symbol for package path: %s", importedPackage.ID)
-		return
-	}
-
-	if symbol == nil {
-		handler.ErrOrPanic("Missing symbol information for package: %s", importedPackage.ID)
-		return
-	}
-
-	doc.AppendSymbolReference(symbol.Symbol, scipRange, nil)
-}
-
-func scipRangeFromName(position token.Position, name string, adjust bool) []int32 {
-	var adjustment int32 = 0
-	if adjust {
-		adjustment = 1
-	}
-
-	line := int32(position.Line - 1)
-	column := int32(position.Column - 1)
-	n := int32(len(name))
-
-	return []int32{line, column + adjustment, column + n + adjustment}
 }
 
 // packagePrefixes returns all prefix of the go package path. For example, the package
