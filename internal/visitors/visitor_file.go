@@ -96,7 +96,7 @@ func (f *fileVisitor) createNewLocalSymbol(pos token.Pos) string {
 	return f.locals[pos]
 }
 
-func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
+func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 	if n == nil {
 		return nil
 	}
