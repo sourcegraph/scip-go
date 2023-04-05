@@ -14,7 +14,7 @@
 //     documentation ```go
    Println(h.CanonicalHeaderKey("accept-encoding"))
 // ^^^^^^^ reference github.com/golang/go/src go1.19 fmt/Println().
-//         ^ reference github.com/golang/go/src go1.19 net/http/
+//         ^ reference local 0
 //           ^^^^^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.19 net/http/CanonicalHeaderKey().
   }
   

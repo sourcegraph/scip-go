@@ -41,10 +41,10 @@ func NewFileVisitor(
 		globalSymbols: globalSymbols,
 		overrides: struct {
 			caseClauses     map[token.Pos]types.Object
-			pkgNameOverride map[token.Pos]string
+			pkgNameOverride map[newtypes.PackageID]string
 		}{
 			caseClauses:     caseClauses,
-			pkgNameOverride: map[token.Pos]string{},
+			pkgNameOverride: map[newtypes.PackageID]string{},
 		},
 	}
 }
@@ -80,7 +80,7 @@ type fileVisitor struct {
 
 		// maps tokens for package declaration to a local var,
 		// if ImportSpec.Name is not nil. Otherwise, just use package directly
-		pkgNameOverride map[token.Pos]string
+		pkgNameOverride map[newtypes.PackageID]string
 	}
 }
 
@@ -114,7 +114,9 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			sym := v.createNewLocalSymbol(node.Name.Pos())
 			v.doc.NewDefinition(sym, symbols.RangeFromName(v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false))
 
-			v.overrides.pkgNameOverride[node.Path.Pos()] = sym
+			// Save package name override, so that we use the new local symbol
+			// within this file
+			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = sym
 		}
 
 		position := v.pkg.Fset.Position(node.Path.Pos())
@@ -133,13 +135,20 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				pos := ident.NamePos
 				position := v.pkg.Fset.Position(pos)
 				pkgID := newtypes.GetFromTypesPackage(sel.Imported())
-				symbol := v.globalSymbols.GetPkgNameSymbolByID(pkgID)
-				if symbol == nil {
-					handler.ErrOrPanic("Missing symbol for package: %s", sel.Imported().Path())
-					return nil
+
+				var symbolName string
+				if overrideSymbol, ok := v.overrides.pkgNameOverride[pkgID]; ok {
+					symbolName = overrideSymbol
+				} else {
+					symbol := v.globalSymbols.GetPkgNameSymbolByID(pkgID)
+					if symbol == nil {
+						handler.ErrOrPanic("Missing symbol for package: %s", sel.Imported().Path())
+						return nil
+					}
+
+					symbolName = symbol.Symbol
 				}
 
-				symbolName := symbol.Symbol
 				v.doc.AppendSymbolReference(symbolName, scipRange(position, sel), nil)
 
 				// Then walk the selection
