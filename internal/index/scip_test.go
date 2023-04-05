@@ -31,9 +31,10 @@ func TestSnapshots(t *testing.T) {
 			}
 
 			index, err := index.Index(config.IndexOpts{
-				ModuleRoot:    inputDirectory,
-				ModuleVersion: "0.1.test",
-				ModulePath:    "sg/" + filepath.Base(inputDirectory),
+				ModuleRoot:      inputDirectory,
+				ModuleVersion:   "0.1.test",
+				ModulePath:      "sg/" + filepath.Base(inputDirectory),
+				GoStdlibVersion: "go1.19",
 			})
 
 			if err != nil {
@@ -51,6 +52,11 @@ func TestSnapshots(t *testing.T) {
 
 			sourceFiles := []*scip.SourceFile{}
 			for _, doc := range index.Documents {
+				// Skip files outside of current directory
+				if strings.HasPrefix(doc.RelativePath, "..") {
+					continue
+				}
+
 				if *filter != "" && !strings.Contains(doc.RelativePath, *filter) {
 					continue
 				}

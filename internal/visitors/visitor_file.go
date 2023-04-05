@@ -5,12 +5,14 @@ import (
 	"go/ast"
 	"go/token"
 	"go/types"
+	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -35,9 +37,15 @@ func NewFileVisitor(
 		file:          file,
 		pkgLookup:     pkgLookup,
 		locals:        map[token.Pos]string{},
-		caseClauses:   caseClauses,
 		pkgSymbols:    pkgSymbols,
 		globalSymbols: globalSymbols,
+		overrides: struct {
+			caseClauses     map[token.Pos]types.Object
+			pkgNameOverride map[newtypes.PackageID]string
+		}{
+			caseClauses:     caseClauses,
+			pkgNameOverride: map[newtypes.PackageID]string{},
+		},
 	}
 }
 
@@ -59,14 +67,21 @@ type fileVisitor struct {
 	// local definition position to symbol
 	locals map[token.Pos]string
 
-	// case statement clauses
-	caseClauses map[token.Pos]types.Object
-
 	// field definition position to symbol for the package
 	pkgSymbols *lookup.Package
 
 	// field definition position to symbol for the entire compliation
 	globalSymbols *lookup.Global
+
+	// Overriding Definition Behvaior:
+	overrides struct {
+		// Case clauses have to map particular positions to different types
+		caseClauses map[token.Pos]types.Object
+
+		// maps tokens for package declaration to a local var,
+		// if ImportSpec.Name is not nil. Otherwise, just use package directly
+		pkgNameOverride map[newtypes.PackageID]string
+	}
 }
 
 // Implements ast.Visitor
@@ -81,14 +96,32 @@ func (f *fileVisitor) createNewLocalSymbol(pos token.Pos) string {
 	return f.locals[pos]
 }
 
-func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
+func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 	if n == nil {
 		return nil
 	}
 
 	switch node := n.(type) {
 	case *ast.ImportSpec:
-		// Skip imports
+		// Generate import references
+		importedPackage := v.pkg.Imports[strings.Trim(node.Path.Value, `"`)]
+		if importedPackage == nil {
+			fmt.Println("Could not find: ", node.Path)
+			return nil
+		}
+
+		if node.Name != nil && node.Name.Name != "." {
+			sym := v.createNewLocalSymbol(node.Name.Pos())
+			v.doc.NewDefinition(sym, symbols.RangeFromName(v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false))
+
+			// Save package name override, so that we use the new local symbol
+			// within this file
+			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = sym
+		}
+
+		position := v.pkg.Fset.Position(node.Path.Pos())
+		emitImportReference(v.globalSymbols, v.doc, position, importedPackage)
+
 		return nil
 
 	case *ast.SelectorExpr:
@@ -102,13 +135,20 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				pos := ident.NamePos
 				position := v.pkg.Fset.Position(pos)
 				pkgID := newtypes.GetFromTypesPackage(sel.Imported())
-				symbol := v.globalSymbols.GetPkgNameSymbolByID(pkgID)
-				if symbol == nil {
-					handler.ErrOrPanic("Missing symbol for package: %s", sel.Imported().Path())
-					return nil
+
+				var symbolName string
+				if overrideSymbol, ok := v.overrides.pkgNameOverride[pkgID]; ok {
+					symbolName = overrideSymbol
+				} else {
+					symbol := v.globalSymbols.GetPkgNameSymbolByID(pkgID)
+					if symbol == nil {
+						handler.ErrOrPanic("Missing symbol for package: %s", sel.Imported().Path())
+						return nil
+					}
+
+					symbolName = symbol.Symbol
 				}
 
-				symbolName := symbol.Symbol
 				v.doc.AppendSymbolReference(symbolName, scipRange(position, sel), nil)
 
 				// Then walk the selection
@@ -140,7 +180,7 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 		position := v.pkg.Fset.Position(pos)
 
 		// Short circuit on case clauses
-		if obj, ok := v.caseClauses[node.Pos()]; ok {
+		if obj, ok := v.overrides.caseClauses[node.Pos()]; ok {
 			sym := v.createNewLocalSymbol(obj.Pos())
 			v.doc.NewDefinition(sym, scipRange(position, obj))
 			return nil
@@ -174,7 +214,7 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			if localSymbol, ok := v.locals[ref.Pos()]; ok {
 				symbol = localSymbol
 
-				if _, ok := v.caseClauses[ref.Pos()]; ok {
+				if _, ok := v.overrides.caseClauses[ref.Pos()]; ok {
 					overrideType = v.pkg.TypesInfo.TypeOf(node)
 				}
 			} else {
@@ -225,4 +265,25 @@ func (v fileVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	}
 
 	return v
+}
+
+func emitImportReference(
+	globalSymbols *lookup.Global,
+	doc *document.Document,
+	position token.Position,
+	importedPackage *packages.Package,
+) {
+	scipRange := symbols.RangeFromName(position, importedPackage.PkgPath, true)
+	symbol := globalSymbols.GetPkgNameSymbol(importedPackage)
+	if symbol == nil {
+		handler.ErrOrPanic("Missing symbol for package path: %s", importedPackage.ID)
+		return
+	}
+
+	if symbol == nil {
+		handler.ErrOrPanic("Missing symbol information for package: %s", importedPackage.ID)
+		return
+	}
+
+	doc.AppendSymbolReference(symbol.Symbol, scipRange, nil)
 }
