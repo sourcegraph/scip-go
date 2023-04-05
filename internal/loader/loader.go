@@ -158,5 +158,13 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		pkg.Module.Version = opts.ModuleVersion
 	}
 
+	if pkg.Module.Path == "" {
+		pkg.Module.Path = "."
+	}
+
+	if pkg.Module.Version == "" {
+		pkg.Module.Version = "."
+	}
+
 	return pkg
 }

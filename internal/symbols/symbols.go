@@ -17,7 +17,6 @@ func FromDescriptors(pkg *packages.Package, descriptors ...*scip.Descriptor) str
 		Scheme: "scip-go",
 		Package: &scip.Package{
 			Manager: "gomod",
-			// TODO: We might not have a dep, so we should handle that
 			Name:    pkg.Module.Path,
 			Version: pkg.Module.Version,
 		},
