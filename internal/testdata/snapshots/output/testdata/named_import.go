@@ -3,10 +3,9 @@
   
   import (
    . "fmt"
-// ^ definition local 0
 //    ^^^ reference github.com/golang/go/src go1.19 fmt/
    h "net/http"
-// ^ definition local 1
+// ^ definition local 0
 //    ^^^^^^^^ reference github.com/golang/go/src go1.19 net/http/
   )
   
