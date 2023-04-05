@@ -52,6 +52,11 @@ func TestSnapshots(t *testing.T) {
 
 			sourceFiles := []*scip.SourceFile{}
 			for _, doc := range index.Documents {
+				// Skip files outside of current directory
+				if strings.HasPrefix(doc.RelativePath, "..") {
+					continue
+				}
+
 				if *filter != "" && !strings.Contains(doc.RelativePath, *filter) {
 					continue
 				}
