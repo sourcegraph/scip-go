@@ -104,7 +104,7 @@ func descriptorMethod(name string) *scip.Descriptor {
 func descriptorPackage(name string) *scip.Descriptor {
 	return &scip.Descriptor{
 		Name:   name,
-		Suffix: scip.Descriptor_Package,
+		Suffix: scip.Descriptor_Namespace,
 	}
 }
 
