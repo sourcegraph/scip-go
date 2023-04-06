@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/config"
+	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/go/packages"
@@ -52,6 +53,11 @@ func addImportsToPkgs(pkgLookup PackageLookup, opts *config.IndexOpts, pkg *pack
 }
 
 func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLookup, projectPackages PackageLookup, err error) {
+	// Force a module version, even if it's just a dot for non-cross repo look ups.
+	if opts.ModuleVersion == "" {
+		opts.ModuleVersion = "."
+	}
+
 	pkgLookup = make(PackageLookup)
 	pkgLookup["builtin"] = &packages.Package{
 		Name:    "builtin",
@@ -144,26 +150,23 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		}
 	}
 
-	if pkg.Module.Version == "" {
-		if pkg.Module.Path != opts.ModulePath {
-			fmt.Printf("REPLACE: %+v\n", pkg.Module.Replace)
-
-			panic(fmt.Sprintf(
-				"Unknown version for userland package: %s %s",
-				pkg.Module.Path,
-				opts.ModulePath,
-			))
-		}
-
-		pkg.Module.Version = opts.ModuleVersion
-	}
-
 	if pkg.Module.Path == "" {
 		pkg.Module.Path = "."
 	}
 
 	if pkg.Module.Version == "" {
-		pkg.Module.Version = "."
+		if pkg.Module.Path == opts.ModulePath {
+			pkg.Module.Version = opts.ModuleVersion
+		} else {
+			// Only panic when running in debug mode.
+			fmt.Println(handler.ErrOrPanic(
+				"Unknown version for userland package: %s %s",
+				pkg.Module.Path,
+				opts.ModulePath,
+			))
+
+			pkg.Module.Version = "."
+		}
 	}
 
 	return pkg
