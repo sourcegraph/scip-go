@@ -1,3 +1,10 @@
-FROM golang:1.20.3@sha256:bcc311ec9655c350df3899611fdf134806f97a3e3b2c06c2b5c0696428503814
+FROM golang:1.20.3-alpine as builder
 
-COPY scip-go /usr/bin/
+COPY . /sources
+WORKDIR /sources
+RUN go build -o scip-go ./cmd/scip-go
+
+FROM alpine:latest
+
+COPY --from=builder /sources/scip-go /usr/bin/
+CMD ["scip-go"]
