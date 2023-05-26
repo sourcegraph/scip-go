@@ -43,6 +43,7 @@ var (
 
 	// TODO: We should consider if we can avoid doing this in this iteration of scip-go
 	// depBatchSize          int
+	emitImplementations bool
 )
 
 func init() {
@@ -70,6 +71,7 @@ func init() {
 	app.Flag("dev", "Enable development mode.").Default("false").BoolVar(&devMode)
 
 	// app.Flag("dep-batch-size", "How many dependencies to load at once to limit memory usage (e.g. 100). 0 means load all at once.").Default("0").IntVar(&depBatchSize)
+	app.Flag("emit-implementations", "Emit implementations.").Default("true").BoolVar(&emitImplementations)
 
 	app.Flag("command", "Optionally specifies a command to run. Defaults to 'index'").Default("index").StringVar(&scipCommand)
 }
@@ -99,7 +101,7 @@ func mainErr() error {
 		output.Println("  Resolved as stdlib         :", true)
 	}
 
-	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion, isStdLib)
+	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion, isStdLib, emitImplementations)
 
 	if strings.HasPrefix(scipCommand, "list-packages") {
 		var filter string
