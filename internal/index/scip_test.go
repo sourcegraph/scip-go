@@ -31,10 +31,11 @@ func TestSnapshots(t *testing.T) {
 			}
 
 			index, err := index.Index(config.IndexOpts{
-				ModuleRoot:      inputDirectory,
-				ModuleVersion:   "0.1.test",
-				ModulePath:      "sg/" + filepath.Base(inputDirectory),
-				GoStdlibVersion: "go1.19",
+				ModuleRoot:          inputDirectory,
+				ModuleVersion:       "0.1.test",
+				ModulePath:          "sg/" + filepath.Base(inputDirectory),
+				GoStdlibVersion:     "go1.19",
+				EmitImplementations: true,
 			})
 
 			if err != nil {
