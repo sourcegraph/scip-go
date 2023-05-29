@@ -14,6 +14,7 @@ import (
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
+	"github.com/sourcegraph/scip-go/internal/output"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip-go/internal/visitors"
 	"github.com/sourcegraph/scip/bindings/go/scip"
@@ -144,7 +145,11 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 
 	}
 
-	impls.AddImplementationRelationships(pkgs, pkgLookup, globalSymbols)
+	if opts.EmitImplementations {
+		impls.AddImplementationRelationships(pkgs, pkgLookup, globalSymbols)
+	} else {
+		output.Println("Skipping implementation relationships")
+	}
 
 	// NOTE:
 	// I'm not sure how to do this yet... but we basically need to iterate over
