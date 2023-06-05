@@ -100,92 +100,96 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 	pathToDocuments := map[string]*document.Document{}
 	globalSymbols := lookup.NewGlobalSymbols()
 
-	// We have to visit all the packages to get the definition sites
-	// for all the symbols.
-	//
-	// We don't want to visit in the same depth as file visitors though,
-	// so we do ONLY do this
-	lookupIDs := funk.Keys(pkgLookup)
-	for _, pkgID := range lookupIDs {
-		pkg := pkgLookup[pkgID]
-		visitors.VisitPackageDeclarations(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
+	output.WithProgress("Visiting Packages", func() error {
+		// We have to visit all the packages to get the definition sites
+		// for all the symbols.
+		//
+		// We don't want to visit in the same depth as file visitors though,
+		// so we do ONLY do this
+		lookupIDs := funk.Keys(pkgLookup)
+		for _, pkgID := range lookupIDs {
+			pkg := pkgLookup[pkgID]
+			visitors.VisitPackageDeclarations(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
-		// TODO: I don't like this
-		pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
-		if err != nil {
-			panic(fmt.Sprintf("Unhandled package declaration: %s", err))
-		}
-
-		if pkgDeclaration == nil {
-			continue
-		}
-
-		globalSymbols.SetPkgName(pkg, pkgDeclaration)
-
-		if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
-			continue
-		}
-
-		// TODO: I don't think I need Symbol.Symbol anymore, could probably move that back
-		pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg).Symbol
-		for _, f := range pkg.Syntax {
-			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
-
-			if pkgDeclaration != nil {
-				if f == pkgDeclaration {
-					position := pkg.Fset.Position(f.Name.NamePos)
-					doc.SetNewSymbolForPos(pkgSymbol, nil, f.Name, f.Name.NamePos)
-					doc.NewDefinition(pkgSymbol, symbols.RangeFromName(position, f.Name.Name, false))
-				} else {
-					position := pkg.Fset.Position(f.Name.NamePos)
-					doc.AppendSymbolReference(pkgSymbol, symbols.RangeFromName(position, f.Name.Name, false), nil)
-				}
+			// TODO: I don't like this
+			pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
+			if err != nil {
+				panic(fmt.Sprintf("Unhandled package declaration: %s", err))
 			}
-		}
 
-	}
-
-	if opts.EmitImplementations {
-		impls.AddImplementationRelationships(pkgs, pkgLookup, globalSymbols)
-	} else {
-		output.Println("Skipping implementation relationships")
-	}
-
-	// NOTE:
-	// I'm not sure how to do this yet... but we basically need to iterate over
-	// all the possible implementations and other relationships. After doing so
-	// is when we can add the symbols itself to the documents. It seems a bit weird
-	// but I'll see if there's some other way to do it later.
-	for _, doc := range pathToDocuments {
-		doc.DeclareSymbols()
-	}
-
-	pkgIDs := funk.Keys(pkgs)
-	for _, ID := range pkgIDs {
-		pkg := pkgs[ID]
-
-		pkgSymbols := globalSymbols.GetPackage(pkg)
-
-		for _, f := range pkg.Syntax {
-			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
-			if doc == nil {
-				handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
+			if pkgDeclaration == nil {
 				continue
 			}
 
-			visitor := visitors.NewFileVisitor(
-				doc,
-				pkg,
-				f,
-				pkgLookup,
-				pkgSymbols,
-				globalSymbols,
-			)
+			globalSymbols.SetPkgName(pkg, pkgDeclaration)
 
-			ast.Walk(visitor, f)
-			index.Documents = append(index.Documents, doc.Document)
+			if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
+				continue
+			}
+
+			pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg).Symbol
+			for _, f := range pkg.Syntax {
+				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+
+				if pkgDeclaration != nil {
+					if f == pkgDeclaration {
+						position := pkg.Fset.Position(f.Name.NamePos)
+						doc.SetNewSymbolForPos(pkgSymbol, nil, f.Name, f.Name.NamePos)
+						doc.NewDefinition(pkgSymbol, symbols.RangeFromName(position, f.Name.Name, false))
+					} else {
+						position := pkg.Fset.Position(f.Name.NamePos)
+						doc.AppendSymbolReference(pkgSymbol, symbols.RangeFromName(position, f.Name.Name, false), nil)
+					}
+				}
+			}
+
 		}
+
+		return nil
+	})
+
+	if opts.SkipImplementations {
+		output.Println("Skipping implementation relationships\n")
+	} else {
+		impls.AddImplementationRelationships(pkgs, pkgLookup, globalSymbols)
 	}
+
+	output.WithProgress("Declaring Symbols for Documents", func() error {
+		for _, doc := range pathToDocuments {
+			doc.DeclareSymbols()
+		}
+		return nil
+	})
+
+	output.WithProgress("Visiting Project Files", func() error {
+		pkgIDs := funk.Keys(pkgs)
+		for _, ID := range pkgIDs {
+			pkg := pkgs[ID]
+
+			pkgSymbols := globalSymbols.GetPackage(pkg)
+
+			for _, f := range pkg.Syntax {
+				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+				if doc == nil {
+					handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
+					continue
+				}
+
+				visitor := visitors.NewFileVisitor(
+					doc,
+					pkg,
+					f,
+					pkgLookup,
+					pkgSymbols,
+					globalSymbols,
+				)
+
+				ast.Walk(visitor, f)
+				index.Documents = append(index.Documents, doc.Document)
+			}
+		}
+		return nil
+	})
 
 	return &index, nil
 }

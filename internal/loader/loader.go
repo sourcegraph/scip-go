@@ -24,16 +24,16 @@ var loadMode = packages.NeedDeps |
 
 var Config = &packages.Config{}
 
-func makeConfig(root string) *packages.Config {
+func getConfig(root string, opts config.IndexOpts) *packages.Config {
 	// TODO: Hacks to get the config out...
 	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
-		Logf: nil,
+		Logf: output.Printf,
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies
-		Tests: true,
+		Tests: !opts.SkipTests,
 	}
 
 	return Config
@@ -52,7 +52,10 @@ func addImportsToPkgs(pkgLookup PackageLookup, opts *config.IndexOpts, pkg *pack
 	}
 }
 
-func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLookup, projectPackages PackageLookup, err error) {
+func LoadPackages(
+	opts config.IndexOpts,
+	moduleRoot string,
+) (pkgLookup PackageLookup, projectPackages PackageLookup, err error) {
 	// Force a module version, even if it's just a dot for non-cross repo look ups.
 	if opts.ModuleVersion == "" {
 		opts.ModuleVersion = "."
@@ -71,7 +74,7 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLo
 	projectPackages = make(PackageLookup)
 
 	if err := output.WithProgress("Loading Packages", func() error {
-		cfg := makeConfig(moduleRoot)
+		cfg := getConfig(moduleRoot, opts)
 		pkgs, err := packages.Load(cfg, "./...")
 		if err != nil {
 			return err
@@ -103,8 +106,21 @@ func IsStandardLib(pkg *packages.Package) bool {
 	//	-> github.com/
 	//	-> false
 	base := strings.Split(pkg.PkgPath, "/")[0]
-	_, ok := stdPackages[base]
-	return ok
+	if _, ok := stdPackages[base]; ok {
+		return ok
+	}
+
+	noTestPackage := strings.Replace(base, "_test", "", -1)
+	if _, ok := stdPackages[noTestPackage]; ok {
+		return ok
+	}
+
+	noTestPsuedoPackage := strings.Replace(base, ".test", "", -1)
+	if _, ok := stdPackages[noTestPsuedoPackage]; ok {
+		return ok
+	}
+
+	return false
 }
 
 func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {

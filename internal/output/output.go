@@ -2,6 +2,7 @@ package output
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -151,5 +152,11 @@ func SetOutputOptions(verb Verbosity, animation bool) {
 func Println(a ...any) {
 	if opts.Verbosity != NoOutput {
 		fmt.Println(a...)
+	}
+}
+
+func Printf(format string, a ...any) {
+	if opts.Verbosity >= VerboseOutput {
+		log.Printf(format, a...)
 	}
 }
