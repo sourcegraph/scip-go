@@ -149,7 +149,8 @@ func Index(opts config.IndexOpts) (*scip.Index, error) {
 	})
 
 	if opts.SkipImplementations {
-		output.Println("Skipping implementation relationships\n")
+		output.Println("Skipping implementation relationships")
+		output.Println("")
 	} else {
 		impls.AddImplementationRelationships(pkgs, pkgLookup, globalSymbols)
 	}
