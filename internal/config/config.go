@@ -13,23 +13,25 @@ type IndexOpts struct {
 	GoStdlibVersion string
 
 	// Whether we should emit implementations
-	EmitImplementations bool
+	SkipImplementations bool
+	SkipTests           bool
 
 	IsIndexingStdlib bool
 }
 
-func New(moduleRoot, moduleVersion, modulePath, goVersion string, isIndexingStdlib bool, emitImplementations bool) IndexOpts {
-	moduleRoot, err := filepath.Abs(moduleRoot)
+func New(ModuleRoot, ModuleVersion, ModulePath, GoStdlibVersion string, IsIndexingStdlib bool, SkipImplementations bool, SkipTests bool) IndexOpts {
+	ModuleRoot, err := filepath.Abs(ModuleRoot)
 	if err != nil {
 		panic(err)
 	}
 
 	return IndexOpts{
-		moduleRoot,
-		moduleVersion,
-		modulePath,
-		goVersion,
-		isIndexingStdlib,
-		emitImplementations,
+		ModuleRoot:          ModuleRoot,
+		ModuleVersion:       ModuleVersion,
+		ModulePath:          ModulePath,
+		GoStdlibVersion:     GoStdlibVersion,
+		SkipImplementations: SkipImplementations,
+		SkipTests:           SkipTests,
+		IsIndexingStdlib:    IsIndexingStdlib,
 	}
 }
