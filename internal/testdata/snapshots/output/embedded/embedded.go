@@ -14,7 +14,6 @@
 //     documentation ```go
 //     relationship github.com/golang/go/src go1.19 context/stringer# implementation
 //     relationship github.com/golang/go/src go1.19 fmt/Stringer# implementation
-//     relationship github.com/golang/go/src go1.19 os/signal/stringer# implementation
 //     relationship github.com/golang/go/src go1.19 runtime/stringer# implementation
    *exec.Cmd
 //  ^^^^ reference github.com/golang/go/src go1.19 os/exec/
