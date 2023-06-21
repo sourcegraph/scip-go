@@ -13,6 +13,7 @@ import (
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip/bindings/go/scip/testutil"
+	"google.golang.org/protobuf/proto"
 )
 
 // Use "update-snapshots" to update snapshots
@@ -30,7 +31,19 @@ func TestSnapshots(t *testing.T) {
 				return []*scip.SourceFile{}
 			}
 
-			index, err := index.Index(config.IndexOpts{
+			scipIndex := scip.Index{}
+			writer := func(msg proto.Message) {
+				switch msg := msg.(type) {
+				case *scip.Metadata:
+					scipIndex.Metadata = msg
+				case *scip.Document:
+					scipIndex.Documents = append(scipIndex.Documents, msg)
+				case *scip.SymbolInformation:
+					scipIndex.ExternalSymbols = append(scipIndex.ExternalSymbols, msg)
+				}
+			}
+
+			err := index.Index(writer, config.IndexOpts{
 				ModuleRoot:      inputDirectory,
 				ModuleVersion:   "0.1.test",
 				ModulePath:      "sg/" + filepath.Base(inputDirectory),
@@ -51,7 +64,7 @@ func TestSnapshots(t *testing.T) {
 			}
 
 			sourceFiles := []*scip.SourceFile{}
-			for _, doc := range index.Documents {
+			for _, doc := range scipIndex.Documents {
 				// Skip files outside of current directory
 				if strings.HasPrefix(doc.RelativePath, "..") {
 					continue
@@ -61,7 +74,7 @@ func TestSnapshots(t *testing.T) {
 					continue
 				}
 
-				formatted, err := testutil.FormatSnapshot(doc, index, "//", symbolFormatter)
+				formatted, err := testutil.FormatSnapshot(doc, &scipIndex, "//", symbolFormatter)
 				if err != nil {
 					t.Errorf("Failed to format document: %s // %s", doc.RelativePath, err)
 				}

@@ -6,12 +6,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sourcegraph/scip-go/internal/config"
 	"golang.org/x/tools/go/packages"
 )
 
 func TestBuiltinFormat(t *testing.T) {
 	wd, _ := os.Getwd()
-	config := makeConfig(wd)
+	config := getConfig(wd, config.IndexOpts{})
 	config.Tests = false
 
 	pkgs, err := packages.Load(config, "fmt")
@@ -41,7 +42,7 @@ func TestPackageWithinModule(t *testing.T) {
 	wd, _ := os.Getwd()
 	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
 
-	config := makeConfig(root)
+	config := getConfig(root, config.IndexOpts{})
 	config.Tests = false
 
 	_, err := packages.Load(config, "./...")
@@ -55,7 +56,7 @@ func TestPentimentoPackage(t *testing.T) {
 	wd, _ := os.Getwd()
 	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
 
-	config := makeConfig(root)
+	config := getConfig(root, config.IndexOpts{})
 	config.Tests = false
 
 	// TODO: Could possibly just load this way as well :)

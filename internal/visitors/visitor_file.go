@@ -13,8 +13,12 @@ import (
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/symbols"
+	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
+
+const symbolDefinition = int32(scip.SymbolRole_Definition)
+const symbolReference = int32(scip.SymbolRole_ReadAccess)
 
 func NewFileVisitor(
 	doc *document.Document,
@@ -31,6 +35,11 @@ func NewFileVisitor(
 		}
 	}
 
+	// Package occurrence always goes into the list of occurrences for a document
+	occurrences := []*scip.Occurrence{
+		doc.PackageOccurrence,
+	}
+
 	return &fileVisitor{
 		doc:           doc,
 		pkg:           pkg,
@@ -39,6 +48,7 @@ func NewFileVisitor(
 		locals:        map[token.Pos]string{},
 		pkgSymbols:    pkgSymbols,
 		globalSymbols: globalSymbols,
+		occurrences:   occurrences,
 		overrides: struct {
 			caseClauses     map[token.Pos]types.Object
 			pkgNameOverride map[newtypes.PackageID]string
@@ -73,6 +83,9 @@ type fileVisitor struct {
 	// field definition position to symbol for the entire compliation
 	globalSymbols *lookup.Global
 
+	// occurrences in this file
+	occurrences []*scip.Occurrence
+
 	// Overriding Definition Behvaior:
 	overrides struct {
 		// Case clauses have to map particular positions to different types
@@ -96,7 +109,7 @@ func (f *fileVisitor) createNewLocalSymbol(pos token.Pos) string {
 	return f.locals[pos]
 }
 
-func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
+func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 	if n == nil {
 		return nil
 	}
@@ -112,7 +125,7 @@ func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 
 		if node.Name != nil && node.Name.Name != "." {
 			sym := v.createNewLocalSymbol(node.Name.Pos())
-			v.doc.NewDefinition(sym, symbols.RangeFromName(v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false))
+			v.NewDefinition(sym, symbols.RangeFromName(v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false))
 
 			// Save package name override, so that we use the new local symbol
 			// within this file
@@ -120,7 +133,7 @@ func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 		}
 
 		position := v.pkg.Fset.Position(node.Path.Pos())
-		emitImportReference(v.globalSymbols, v.doc, position, importedPackage)
+		v.emitImportReference(v.globalSymbols, v.doc, position, importedPackage)
 
 		return nil
 
@@ -149,7 +162,7 @@ func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 					symbolName = symbol.Symbol
 				}
 
-				v.doc.AppendSymbolReference(symbolName, scipRange(position, sel), nil)
+				v.AppendSymbolReference(symbolName, scipRange(position, sel), nil)
 
 				// Then walk the selection
 				ast.Walk(v, node.Sel)
@@ -182,7 +195,7 @@ func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 		// Short circuit on case clauses
 		if obj, ok := v.overrides.caseClauses[node.Pos()]; ok {
 			sym := v.createNewLocalSymbol(obj.Pos())
-			v.doc.NewDefinition(sym, scipRange(position, obj))
+			v.NewDefinition(sym, scipRange(position, obj))
 			return nil
 		}
 
@@ -200,7 +213,7 @@ func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 				sym = v.createNewLocalSymbol(def.Pos())
 			}
 
-			v.doc.NewDefinition(sym, scipRange(position, def))
+			v.NewDefinition(sym, scipRange(position, def))
 		}
 
 		// Emit Reference
@@ -251,7 +264,7 @@ func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 				symbol = symInfo.Symbol
 			}
 
-			v.doc.AppendSymbolReference(symbol, scipRange(position, ref), overrideType)
+			v.AppendSymbolReference(symbol, scipRange(position, ref), overrideType)
 		}
 
 		if def == nil && ref == nil {
@@ -267,7 +280,7 @@ func (v fileVisitor) Visit(n ast.Node) ast.Visitor {
 	return v
 }
 
-func emitImportReference(
+func (v *fileVisitor) emitImportReference(
 	globalSymbols *lookup.Global,
 	doc *document.Document,
 	position token.Position,
@@ -285,5 +298,47 @@ func emitImportReference(
 		return
 	}
 
-	doc.AppendSymbolReference(symbol.Symbol, scipRange, nil)
+	v.AppendSymbolReference(symbol.Symbol, scipRange, nil)
+}
+
+// NewDefinition emits a scip.Occurence ONLY. This will not emit a
+// new symbol. You must do that using DeclareNewSymbol[ForPos]
+func (v *fileVisitor) NewDefinition(symbol string, rng []int32) {
+	v.occurrences = append(v.occurrences, &scip.Occurrence{
+		Range:       rng,
+		Symbol:      symbol,
+		SymbolRoles: symbolDefinition,
+	})
+}
+
+func (v *fileVisitor) AppendSymbolReference(symbol string, rng []int32, overrideType types.Type) {
+	var documentation []string = nil
+	if overrideType != nil {
+		tyString := overrideType.String()
+		if tyString != "" {
+			documentation = append(documentation, symbols.FormatCode(tyString))
+		}
+	}
+
+	v.occurrences = append(v.occurrences, &scip.Occurrence{
+		Range:                 rng,
+		Symbol:                symbol,
+		SymbolRoles:           symbolReference,
+		OverrideDocumentation: documentation,
+	})
+}
+
+func (v *fileVisitor) ToScipDocument() *scip.Document {
+	documentFile := v.pkg.Fset.File(v.file.Pos())
+	if documentFile == nil {
+		panic("that shouldn't happend")
+	}
+
+	documentSymbols := v.pkgSymbols.SymbolsForFile(documentFile)
+	return &scip.Document{
+		Language:     "go",
+		RelativePath: v.doc.RelativePath,
+		Occurrences:  v.occurrences,
+		Symbols:      documentSymbols,
+	}
 }
