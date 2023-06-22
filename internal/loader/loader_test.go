@@ -12,10 +12,11 @@ import (
 
 func TestBuiltinFormat(t *testing.T) {
 	wd, _ := os.Getwd()
-	config := getConfig(wd, config.IndexOpts{})
-	config.Tests = false
+	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
+	pkgConfig := getConfig(root, config.IndexOpts{})
+	pkgConfig.Tests = false
 
-	pkgs, err := packages.Load(config, "fmt")
+	pkgs, err := packages.Load(pkgConfig, "fmt")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,7 +32,7 @@ func TestBuiltinFormat(t *testing.T) {
 	}
 
 	// TODO: don't use nil?
-	normalizePackage(nil, fmtPkg)
+	normalizePackage(&config.IndexOpts{}, fmtPkg)
 
 	if !IsStandardLib(fmtPkg) {
 		t.Fatal("Package was not a builtin package: post ensure")
