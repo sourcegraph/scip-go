@@ -11,7 +11,7 @@
   }
   
   var rowsCloseHook = func() func(InFuncSig, *error) { return nil }
-//    ^^^^^^^^^^^^^ definition 0.1.test rowsCloseHook.
+//    ^^^^^^^^^^^^^ definition 0.1.test sg/inlinestruct/rowsCloseHook.
 //    documentation ```go
 //                                ^^^^^^^^^ reference 0.1.test sg/inlinestruct/InFuncSig#
   

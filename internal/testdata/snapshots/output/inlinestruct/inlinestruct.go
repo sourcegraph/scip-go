@@ -11,7 +11,7 @@
   }
   
   var MyInline = struct {
-//    ^^^^^^^^ definition 0.1.test MyInline.
+//    ^^^^^^^^ definition 0.1.test sg/inlinestruct/MyInline.
 //    documentation ```go
    privateField FieldInterface
 // ^^^^^^^^^^^^ definition 0.1.test sg/inlinestruct/MyInline:privateField.
@@ -27,10 +27,10 @@
 //     ^^^^^^ definition 0.1.test sg/inlinestruct/MyFunc().
 //     documentation ```go
    _ = MyInline.privateField
-//     ^^^^^^^^ reference 0.1.test MyInline.
+//     ^^^^^^^^ reference 0.1.test sg/inlinestruct/MyInline.
 //              ^^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/MyInline:privateField.
    _ = MyInline.PublicField
-//     ^^^^^^^^ reference 0.1.test MyInline.
+//     ^^^^^^^^ reference 0.1.test sg/inlinestruct/MyInline.
 //              ^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/MyInline:PublicField.
   }
   

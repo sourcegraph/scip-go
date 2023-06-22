@@ -3,7 +3,7 @@
   
   // Const is a constant equal to 5. It's the best constant I've ever written. 😹
   const Const = 5
-//      ^^^^^ definition 0.1.test Const.
+//      ^^^^^ definition 0.1.test sg/initial/Const.
 //      documentation ```go
 //      documentation Const is a constant equal to 5. It's the best constant I've ever written. 😹
   
@@ -11,20 +11,20 @@
   const (
    // ConstBlock1 is a constant in a block.
    ConstBlock1 = 1
-// ^^^^^^^^^^^ definition 0.1.test ConstBlock1.
+// ^^^^^^^^^^^ definition 0.1.test sg/initial/ConstBlock1.
 // documentation ```go
 // documentation Docs for the const block itself.
   
    // ConstBlock2 is a constant in a block.
    ConstBlock2 = 2
-// ^^^^^^^^^^^ definition 0.1.test ConstBlock2.
+// ^^^^^^^^^^^ definition 0.1.test sg/initial/ConstBlock2.
 // documentation ```go
 // documentation Docs for the const block itself.
   )
   
   // Var is a variable interface.
   var Var Interface = &Struct{Field: "bar!"}
-//    ^^^ definition 0.1.test Var.
+//    ^^^ definition 0.1.test sg/initial/Var.
 //    documentation ```go
 //    documentation Var is a variable interface.
 //        ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
@@ -33,7 +33,7 @@
   
   // unexportedVar is an unexported variable interface.
   var unexportedVar Interface = &Struct{Field: "bar!"}
-//    ^^^^^^^^^^^^^ definition 0.1.test unexportedVar.
+//    ^^^^^^^^^^^^^ definition 0.1.test sg/initial/unexportedVar.
 //    documentation ```go
 //    documentation unexportedVar is an unexported variable interface.
 //                  ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
@@ -42,12 +42,12 @@
   
   // x has a builtin error type
   var x error
-//    ^ definition 0.1.test x.
+//    ^ definition 0.1.test sg/initial/x.
 //    documentation ```go
 //    documentation x has a builtin error type
   
   var BigVar Interface = &Struct{
-//    ^^^^^^ definition 0.1.test BigVar.
+//    ^^^^^^ definition 0.1.test sg/initial/BigVar.
 //    documentation ```go
 //           ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
 //                        ^^^^^^ reference 0.1.test sg/initial/Struct#
@@ -82,12 +82,12 @@
   var (
    // This has some docs
    VarBlock1 = "if you're reading this"
-// ^^^^^^^^^ definition 0.1.test VarBlock1.
+// ^^^^^^^^^ definition 0.1.test sg/initial/VarBlock1.
 // documentation ```go
 // documentation What are docs, really?
   
    VarBlock2 = "hi"
-// ^^^^^^^^^ definition 0.1.test VarBlock2.
+// ^^^^^^^^^ definition 0.1.test sg/initial/VarBlock2.
 // documentation ```go
 // documentation What are docs, really?
   )
@@ -217,15 +217,15 @@
 //                    ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
   
   var SortExportedFirst = 1
-//    ^^^^^^^^^^^^^^^^^ definition 0.1.test SortExportedFirst.
+//    ^^^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/SortExportedFirst.
 //    documentation ```go
   
   var sortUnexportedSecond = 2
-//    ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test sortUnexportedSecond.
+//    ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/sortUnexportedSecond.
 //    documentation ```go
   
   var _sortUnderscoreLast = 3
-//    ^^^^^^^^^^^^^^^^^^^ definition 0.1.test _sortUnderscoreLast.
+//    ^^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/_sortUnderscoreLast.
 //    documentation ```go
   
   // Yeah this is some Go magic incantation which is common.
