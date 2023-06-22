@@ -1,5 +1,6 @@
   package impls
 //        ^^^^^ definition 0.1.test sg/impls/
+//        documentation package impls
   
   type I1 interface {
 //     ^^ definition 0.1.test sg/impls/I1#

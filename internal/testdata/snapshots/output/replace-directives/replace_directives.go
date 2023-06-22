@@ -1,5 +1,6 @@
   package replacers
 //        ^^^^^^^^^ definition 0.1.test sg/replace-directives/
+//        documentation package replacers
   
   import (
    "fmt"
