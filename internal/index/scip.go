@@ -216,7 +216,7 @@ func indexVisitPackages(
 
 					role := int32(scip.SymbolRole_ReadAccess)
 					if f == pkgDeclaration {
-						doc.SetNewSymbolForPos(pkgSymbol, nil, f.Name, f.Name.NamePos)
+						doc.SetNewSymbolForPos(pkgSymbol, pkgDeclaration, f.Name, f.Name.NamePos)
 						role = int32(scip.SymbolRole_Definition)
 					}
 

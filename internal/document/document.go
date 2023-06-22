@@ -109,6 +109,12 @@ func (d *Document) SetNewSymbolForPos(
 
 func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 	switch v := node.(type) {
+	case *ast.File:
+		if v.Doc != nil {
+			return v.Doc.Text()
+		} else {
+			return fmt.Sprintf("package %s", v.Name.Name)
+		}
 	case *ast.FuncDecl:
 		return v.Doc.Text()
 	case *ast.GenDecl:

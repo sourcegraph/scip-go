@@ -1,6 +1,7 @@
   // generallyeric -> generic for short
   package generallyeric
 //        ^^^^^^^^^^^^^ definition 0.1.test sg/generallyeric/
+//        documentation generallyeric -> generic for short
   
   import "fmt"
 //        ^^^ reference github.com/golang/go/src go1.19 fmt/
