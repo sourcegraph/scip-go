@@ -1,0 +1,3 @@
+package packagedocumentation
+
+func AlsoExporter() {}
