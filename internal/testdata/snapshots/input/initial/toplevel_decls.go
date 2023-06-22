@@ -6,3 +6,5 @@ const OTHER_THING = MY_THING
 func usesMyThing() {
 	_ = MY_THING
 }
+
+var initFunctions = map[string]int{}
