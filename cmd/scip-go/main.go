@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/alecthomas/kingpin"
+	"github.com/pkg/profile"
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/git"
@@ -16,6 +19,7 @@ import (
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip-go/internal/modules"
 	"github.com/sourcegraph/scip-go/internal/output"
+	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 	"google.golang.org/protobuf/proto"
 )
@@ -23,7 +27,7 @@ import (
 var app = kingpin.New(
 	"scip-go",
 	"scip-go is an SCIP indexer for Go.",
-).Version("0.1")
+).Version(index.SCIP_GO_VERSION)
 
 var (
 	outFile          string
@@ -39,12 +43,16 @@ var (
 	animation        bool
 	devMode          bool
 
+	// fUnNy cOmMaNd
 	scipCommand string
 
 	// TODO: We should consider if we can avoid doing this in this iteration of scip-go
 	// depBatchSize          int
 	skipImplementations bool
 	skipTests           bool
+
+	// Debugging flag to turn on profiling
+	profileRate int
 )
 
 func init() {
@@ -76,6 +84,8 @@ func init() {
 	app.Flag("skip-tests", "Skip compiling tests. Will not generate scip indexes over your or your dependencies tests").Default("false").BoolVar(&skipTests)
 
 	app.Flag("command", "Optionally specifies a command to run. Defaults to 'index'").Default("index").StringVar(&scipCommand)
+
+	app.Flag("profile", "Turn on debug profiling. This will reduce performance. Do not turn on unless debugging. Set to number of milliseconds per sample").Default("0").IntVar(&profileRate)
 }
 
 func main() {
@@ -88,6 +98,11 @@ func main() {
 func mainErr() error {
 	if err := parseArgs(os.Args[1:]); err != nil {
 		return err
+	}
+
+	if profileRate > 0 {
+		p := profile.MemProfileRate(profileRate)
+		defer profile.Start(p).Stop()
 	}
 
 	handler.SetDev(devMode)
@@ -155,17 +170,48 @@ func mainErr() error {
 		return nil
 	}
 
-	index, err := index.Index(options)
+	file, err := os.Create(outFile)
 	if err != nil {
+		log.Fatal("Failed to create scip index file")
+	}
+	defer file.Close()
+
+	var fileMutex sync.Mutex
+	writer := func(msg proto.Message) {
+		index := &scip.Index{}
+
+		switch msg := msg.(type) {
+		case *scip.Metadata:
+			index.Metadata = msg
+		case *scip.Document:
+			index.Documents = append(index.Documents, msg)
+		case *scip.SymbolInformation:
+			index.ExternalSymbols = append(index.ExternalSymbols, msg)
+		default:
+			panic("invalid msg type")
+		}
+
+		b, err := proto.Marshal(index)
+		if err != nil {
+			log.Fatal("Failed to marshal a protobuf message")
+		}
+
+		// Lock for writing to the file, to make sure that we don't race to
+		// write things (serializing can be done before locking)
+		fileMutex.Lock()
+		defer fileMutex.Unlock()
+
+		// Serialize to file. Items can now be discarded
+		if _, err := file.Write(b); err != nil {
+			log.Fatal("Failed to write to scip index file")
+		}
+	}
+
+	if err := index.Index(writer, options); err != nil {
 		return err
 	}
 
-	b, err := proto.Marshal(index)
-	if err != nil {
-		return err
-	}
-
-	return os.WriteFile(outFile, b, 0644)
+	return nil
 }
 
 func parseArgs(args []string) (err error) {

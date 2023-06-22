@@ -29,7 +29,7 @@ func getConfig(root string, opts config.IndexOpts) *packages.Config {
 	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
-		Logf: output.Printf,
+		Logf: output.Logf,
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies
@@ -98,13 +98,13 @@ func LoadPackages(
 
 func IsStandardLib(pkg *packages.Package) bool {
 	// for example:
-	//	PkgPath = net/http
-	//	-> net
-	//	-> true
+	//  PkgPath = net/http
+	//  -> net
+	//  -> true
 	//
-	//	PkgPath = github.com/sourcegraph/scip-go/...
-	//	-> github.com/
-	//	-> false
+	//  PkgPath = github.com/sourcegraph/scip-go/...
+	//  -> github.com/
+	//  -> false
 	base := strings.Split(pkg.PkgPath, "/")[0]
 	if _, ok := stdPackages[base]; ok {
 		return ok

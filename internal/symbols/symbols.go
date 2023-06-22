@@ -36,3 +36,22 @@ func RangeFromName(position token.Position, name string, adjust bool) []int32 {
 
 	return []int32{line, column + adjustment, column + n + adjustment}
 }
+
+func FormatCode(v string) string {
+	if v == "" {
+		return ""
+	}
+
+	return fmt.Sprintf("```go\n%s\n```", v)
+}
+
+func FormatMarkdown(v string) string {
+	if v == "" {
+		return ""
+	}
+
+	// var buf bytes.Buffer
+	// doc.ToMarkdown(&buf, v, nil)
+	// return buf.String()
+	return v
+}

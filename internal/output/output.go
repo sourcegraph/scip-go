@@ -160,3 +160,9 @@ func Printf(format string, a ...any) {
 		log.Printf(format, a...)
 	}
 }
+
+func Logf(format string, a ...any) {
+	if opts.Verbosity >= VeryVeryVerboseOutput {
+		log.Printf(format, a...)
+	}
+}

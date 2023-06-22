@@ -6,15 +6,17 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sourcegraph/scip-go/internal/config"
 	"golang.org/x/tools/go/packages"
 )
 
 func TestBuiltinFormat(t *testing.T) {
 	wd, _ := os.Getwd()
-	config := makeConfig(wd)
-	config.Tests = false
+	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
+	pkgConfig := getConfig(root, config.IndexOpts{})
+	pkgConfig.Tests = false
 
-	pkgs, err := packages.Load(config, "fmt")
+	pkgs, err := packages.Load(pkgConfig, "fmt")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -30,7 +32,7 @@ func TestBuiltinFormat(t *testing.T) {
 	}
 
 	// TODO: don't use nil?
-	normalizePackage(nil, fmtPkg)
+	normalizePackage(&config.IndexOpts{}, fmtPkg)
 
 	if !IsStandardLib(fmtPkg) {
 		t.Fatal("Package was not a builtin package: post ensure")
@@ -41,7 +43,7 @@ func TestPackageWithinModule(t *testing.T) {
 	wd, _ := os.Getwd()
 	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
 
-	config := makeConfig(root)
+	config := getConfig(root, config.IndexOpts{})
 	config.Tests = false
 
 	_, err := packages.Load(config, "./...")
@@ -55,7 +57,7 @@ func TestPentimentoPackage(t *testing.T) {
 	wd, _ := os.Getwd()
 	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
 
-	config := makeConfig(root)
+	config := getConfig(root, config.IndexOpts{})
 	config.Tests = false
 
 	// TODO: Could possibly just load this way as well :)
