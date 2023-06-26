@@ -2,12 +2,14 @@ package loader
 
 import (
 	"fmt"
+	"io/ioutil"
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
+	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -152,9 +154,6 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 	}
 
-	// TODO: Handle `./lib` style
-	// TODO: Ensure that we copy version correclty
-
 	// Follow replaced modules
 	if pkg.Module.Replace != nil {
 		pkg.Module = pkg.Module.Replace
@@ -163,6 +162,34 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		// so short circuit the check here (the following versions should not be able to fail)
 		if pkg.Module.Version == "" {
 			pkg.Module.Version = opts.ModuleVersion
+		}
+	}
+
+	// Replace **local** directives with the resolved go package.
+	// Attempt to parse the go.mod file (with the builtin `modfile` package) and
+	// then update the module path appropriately
+	if strings.HasPrefix(pkg.Module.Path, ".") {
+		if pkg.Module.GoMod != "" {
+			contents, err := ioutil.ReadFile(pkg.Module.GoMod)
+
+			if err != nil {
+				handler.ErrOrPanic("Failed to read go mod file: %s", err)
+			} else {
+				parsed, err := modfile.ParseLax(pkg.Module.GoMod, contents, nil)
+				if err != nil {
+					handler.ErrOrPanic("Failed to parse go mod file: %s", err)
+				}
+
+				output.Logf("[scip.loader] Replacing module path: '%s' with '%s'", pkg.Module.Path, parsed.Module.Mod.Path)
+				pkg.Module.Path = parsed.Module.Mod.Path
+
+				// If we have a version specified in this go.mod, we'll use that.
+				// Otherwise we'll fall back to whatever the version was previous set to.
+				if parsed.Module.Mod.Version != "" {
+					output.Logf("[scip.loader] Replacing module version: '%s' with '%s'", pkg.Module.Version, parsed.Module.Mod.Version)
+					pkg.Module.Version = parsed.Module.Mod.Version
+				}
+			}
 		}
 	}
 
