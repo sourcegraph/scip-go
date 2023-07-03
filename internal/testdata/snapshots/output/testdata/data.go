@@ -118,10 +118,8 @@
 //                                       ^^^^^^^ reference github.com/golang/go/src go1.19 context/Context#
 //                                                ^^^^ definition 0.1.test sg/testdata/TestStruct#Doer().(data)
 //                                                documentation ```go
-//                                                              ^^^^^ definition 0.1.test sg/testdata/TestStruct#Doer().(score)
-//                                                              documentation ```go
-//                                                                         ^^^ definition 0.1.test sg/testdata/TestStruct#Doer().(err)
-//                                                                         documentation ```go
+//                                                              ^^^^^ definition local 4
+//                                                                         ^^^ definition local 5
    return Score, nil
 //        ^^^^^ reference 0.1.test sg/testdata/Score.
   }

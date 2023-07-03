@@ -4,9 +4,10 @@
   import "context"
 //        ^^^^^^^ reference github.com/golang/go/src go1.19 context/
   
-  func Target() interface {
+  func Target() (bananas interface {
 //     ^^^^^^ definition 0.1.test sg/inlinestruct/Target().
 //     documentation ```go
+//               ^^^^^^^ definition local 0
    OID(context.Context) (int, error)
 // ^^^ definition 0.1.test sg/inlinestruct/Target().OID().
 // documentation ```go
@@ -27,7 +28,7 @@
 // documentation ```go
 //      ^^^^^^^ reference github.com/golang/go/src go1.19 context/
 //              ^^^^^^^ reference github.com/golang/go/src go1.19 context/Context#
-  } {
+  }) {
    panic("not implemented")
   }
   
@@ -35,10 +36,10 @@
 //     ^^^^^^^^^ definition 0.1.test sg/inlinestruct/something().
 //     documentation ```go
    x := Target()
-// ^ definition local 0
+// ^ definition local 1
 //      ^^^^^^ reference 0.1.test sg/inlinestruct/Target().
    x.OID(context.Background())
-// ^ reference local 0
+// ^ reference local 1
 //   ^^^ reference 0.1.test sg/inlinestruct/Target().OID().
 //       ^^^^^^^ reference github.com/golang/go/src go1.19 context/
 //               ^^^^^^^^^^ reference github.com/golang/go/src go1.19 context/Background().
