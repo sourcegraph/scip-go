@@ -119,8 +119,10 @@ func (p *Global) GetPackage(pkg *packages.Package) *Package {
 	return p.symbols[newtypes.GetID(pkg)]
 }
 
-var skippedTypes = map[string]struct{}{}
-var builtinSymbols = map[string]*scip.SymbolInformation{}
+var (
+	skippedTypes   = map[string]struct{}{}
+	builtinSymbols = map[string]*scip.SymbolInformation{}
+)
 
 // GetSymbolOfObject returns a symbol and whether we were successful at finding.
 //
@@ -188,13 +190,13 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 	// 	))
 	// }
 
-	return nil, false, errors.New(fmt.Sprintf(
+	return nil, false, fmt.Errorf(
 		"failed to create symbol for obj: %T %+v\n%s",
 		obj,
 		obj,
 		// pkgFields.pkg.Fset.Position(obj.Pos()),
 		pkgPath,
-	))
+	)
 }
 
 func (p *Global) getSymbolInformationByPath(pkgID newtypes.PackageID, pos token.Pos) (*scip.SymbolInformation, *Package, bool) {

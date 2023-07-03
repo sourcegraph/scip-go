@@ -71,7 +71,7 @@ func (d *Document) SetNewSymbol(
 
 // SetNewSymbolForPos declares a new symbol and tracks it within a Document
 // but allows for an override of the position. Generally speaking, you should use
-// DeclareNewSymbol instead (since it will calculate the pos for most cases)
+// SetNewSymbol instead (since it will calculate the pos for most cases)
 //
 // NOTE: Does NOT emit a new occurrence
 func (d *Document) SetNewSymbolForPos(

@@ -17,9 +17,6 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-const symbolDefinition = int32(scip.SymbolRole_Definition)
-const symbolReference = int32(scip.SymbolRole_ReadAccess)
-
 func NewFileVisitor(
 	doc *document.Document,
 	pkg *packages.Package,
@@ -302,12 +299,12 @@ func (v *fileVisitor) emitImportReference(
 }
 
 // NewDefinition emits a scip.Occurence ONLY. This will not emit a
-// new symbol. You must do that using DeclareNewSymbol[ForPos]
+// new symbol. You must do that using SetNewSymbol[ForPos]
 func (v *fileVisitor) NewDefinition(symbol string, rng []int32) {
 	v.occurrences = append(v.occurrences, &scip.Occurrence{
 		Range:       rng,
 		Symbol:      symbol,
-		SymbolRoles: symbolDefinition,
+		SymbolRoles: int32(scip.SymbolRole_Definition),
 	})
 }
 
@@ -323,7 +320,7 @@ func (v *fileVisitor) AppendSymbolReference(symbol string, rng []int32, override
 	v.occurrences = append(v.occurrences, &scip.Occurrence{
 		Range:                 rng,
 		Symbol:                symbol,
-		SymbolRoles:           symbolReference,
+		SymbolRoles:           int32(scip.SymbolRole_ReadAccess),
 		OverrideDocumentation: documentation,
 	})
 }

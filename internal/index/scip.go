@@ -10,7 +10,6 @@ import (
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip-go/internal/funk"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	impls "github.com/sourcegraph/scip-go/internal/implementations"
 	"github.com/sourcegraph/scip-go/internal/loader"
@@ -20,6 +19,8 @@ import (
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip-go/internal/visitors"
 	"github.com/sourcegraph/scip/bindings/go/scip"
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -61,13 +62,15 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 		return nil, err
 	}
 
-	lookupNames := funk.Keys(pkgLookup)
+	lookupNames := maps.Keys(pkgLookup)
+	slices.Sort(lookupNames)
 	for _, pkgName := range lookupNames {
 		pkg := pkgLookup[pkgName]
 		visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 	}
 
-	pkgNames := funk.Keys(pkgs)
+	pkgNames := maps.Keys(pkgs)
+	slices.Sort(pkgNames)
 	for _, name := range pkgNames {
 		pkg := pkgs[name]
 		for _, f := range pkg.Syntax {
@@ -111,7 +114,8 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 		impls.AddImplementationRelationships(pkgs, allPackages, globalSymbols)
 	}
 
-	pkgIDs := funk.Keys(pkgs)
+	pkgIDs := maps.Keys(pkgs)
+	slices.Sort(pkgIDs)
 	pkgLen := len(pkgIDs)
 
 	var count uint64
@@ -173,7 +177,8 @@ func indexVisitPackages(
 	var wg sync.WaitGroup
 	wg.Add(1)
 
-	lookupIDs := funk.Keys(pkgLookup)
+	lookupIDs := maps.Keys(pkgLookup)
+	slices.Sort(lookupIDs)
 
 	// We have to visit all the packages to get the definition sites
 	// for all the symbols.

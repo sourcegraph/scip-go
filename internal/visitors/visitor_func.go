@@ -32,8 +32,7 @@ func (v funcVisitor) Visit(n ast.Node) ast.Visitor {
 		v.doc.SetNewSymbol(symbol, node, node.Name)
 
 		// Any associated declarations should be generated with the scope of this method
-		v.scope.push("func", scip.Descriptor_Meta)
-		v.scope.push(node.Name.Name, scip.Descriptor_Meta)
+		v.scope.push(node.Name.Name, scip.Descriptor_Method)
 		ast.Walk(v, node.Type)
 		v.scope.pop()
 
@@ -56,6 +55,10 @@ func (v funcVisitor) Visit(n ast.Node) ast.Visitor {
 			ast.Walk(v, node.Results)
 		}
 
+		if node.Params != nil {
+			ast.Walk(v, node.Params)
+		}
+
 		return nil
 
 	case *ast.BlockStmt:
@@ -72,10 +75,15 @@ func (v funcVisitor) Visit(n ast.Node) ast.Visitor {
 
 		return nil
 
+	case *ast.Field:
+		for _, name := range node.Names {
+			symbol := v.scope.makeSymbol(v.pkg, name.Name, scip.Descriptor_Parameter)
+			v.doc.SetNewSymbol(symbol, name, name)
+		}
+		return v
 	default:
 		return v
 	}
-
 }
 
 func visitFunctionDefinition(doc *document.Document, pkg *packages.Package, node *ast.FuncDecl) {

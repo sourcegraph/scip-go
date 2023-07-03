@@ -69,7 +69,6 @@ func visitSyntax(pkg *packages.Package, pkgSymbols *lookup.Package, f *ast.File,
 		case *ast.FuncDecl:
 			visitFunctionDefinition(doc, pkg, decl)
 		}
-
 	}
 
 	return doc
