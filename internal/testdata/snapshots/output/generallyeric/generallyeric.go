@@ -10,15 +10,16 @@
 //     ^^^^^ definition 0.1.test sg/generallyeric/Print().
 //     documentation ```go
 //           ^ definition local 0
-//                  ^ definition local 1
+//                  ^ definition 0.1.test sg/generallyeric/Print().(s)
+//                  documentation ```go
 //                      ^ reference local 0
    for _, v := range s {
-//        ^ definition local 2
-//                   ^ reference local 1
+//        ^ definition local 1
+//                   ^ reference 0.1.test sg/generallyeric/Print().(s)
     fmt.Print(v)
 //  ^^^ reference github.com/golang/go/src go1.19 fmt/
 //      ^^^^^ reference github.com/golang/go/src go1.19 fmt/Print().
-//            ^ reference local 2
+//            ^ reference local 1
    }
   }
   

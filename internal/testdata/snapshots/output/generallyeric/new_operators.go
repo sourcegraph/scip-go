@@ -22,34 +22,35 @@
 //     documentation ```go
 //            ^ definition local 0
 //              ^^^^^^ reference 0.1.test sg/generallyeric/Number#
-//                      ^^^^^ definition local 1
+//                      ^^^^^ definition 0.1.test sg/generallyeric/Double().(value)
+//                      documentation ```go
 //                            ^ reference local 0
 //                               ^ reference local 0
    return value * 2
-//        ^^^^^ reference local 1
+//        ^^^^^ reference 0.1.test sg/generallyeric/Double().(value)
   }
   
   type Box[T any] struct {
 //     ^^^ definition 0.1.test sg/generallyeric/Box#
 //     documentation ```go
 //     documentation ```go
-//         ^ definition local 2
+//         ^ definition local 1
    Something T
 // ^^^^^^^^^ definition 0.1.test sg/generallyeric/Box#Something.
 // documentation ```go
-//           ^ reference local 2
+//           ^ reference local 1
   }
   
   type handler[T any] struct {
 //     ^^^^^^^ definition 0.1.test sg/generallyeric/handler#
 //     documentation ```go
 //     documentation ```go
-//             ^ definition local 3
+//             ^ definition local 2
    Box[T]
 // ^^^ definition 0.1.test sg/generallyeric/handler#Box.
 // documentation ```go
 // ^^^ reference 0.1.test sg/generallyeric/Box#
-//     ^ reference local 3
+//     ^ reference local 2
    Another string
 // ^^^^^^^ definition 0.1.test sg/generallyeric/handler#Another.
 // documentation ```go

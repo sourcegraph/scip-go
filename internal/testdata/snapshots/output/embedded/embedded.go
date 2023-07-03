@@ -25,13 +25,14 @@
   func wrapExecCommand(c *exec.Cmd) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test sg/embedded/wrapExecCommand().
 //     documentation ```go
-//                     ^ definition local 0
+//                     ^ definition 0.1.test sg/embedded/wrapExecCommand().(c)
+//                     documentation ```go
 //                        ^^^^ reference github.com/golang/go/src go1.19 os/exec/
 //                             ^^^ reference github.com/golang/go/src go1.19 os/exec/Cmd#
    _ = &osExecCommand{Cmd: c}
 //      ^^^^^^^^^^^^^ reference 0.1.test sg/embedded/osExecCommand#
 //                    ^^^ reference 0.1.test sg/embedded/osExecCommand#Cmd.
-//                         ^ reference local 0
+//                         ^ reference 0.1.test sg/embedded/wrapExecCommand().(c)
   }
   
   type Inner struct {
@@ -66,7 +67,7 @@
 //     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/embedded/useOfCompositeStructs().
 //     documentation ```go
    o := Outer{
-// ^ definition local 1
+// ^ definition local 0
 //      ^^^^^ reference 0.1.test sg/embedded/Outer#
     Inner: Inner{
 //  ^^^^^ reference 0.1.test sg/embedded/Outer#Inner.
@@ -85,12 +86,12 @@
    fmt.Printf("> %d\n", o.X)
 // ^^^ reference github.com/golang/go/src go1.19 fmt/
 //     ^^^^^^ reference github.com/golang/go/src go1.19 fmt/Printf().
-//                      ^ reference local 1
+//                      ^ reference local 0
 //                        ^ reference 0.1.test sg/embedded/Inner#X.
    fmt.Println(o.Inner.Y)
 // ^^^ reference github.com/golang/go/src go1.19 fmt/
 //     ^^^^^^^ reference github.com/golang/go/src go1.19 fmt/Println().
-//             ^ reference local 1
+//             ^ reference local 0
 //               ^^^^^ reference 0.1.test sg/embedded/Outer#Inner.
 //                     ^ reference 0.1.test sg/embedded/Inner#Y.
   }

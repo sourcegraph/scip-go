@@ -20,22 +20,23 @@
   func Switch(interfaceValue interface{}) bool {
 //     ^^^^^^ definition 0.1.test sg/switches/Switch().
 //     documentation ```go
-//            ^^^^^^^^^^^^^^ definition local 1
+//            ^^^^^^^^^^^^^^ definition 0.1.test sg/switches/Switch().(interfaceValue)
+//            documentation ```go
    switch concreteValue := interfaceValue.(type) {
-//        ^^^^^^^^^^^^^ definition local 2
-//                         ^^^^^^^^^^^^^^ reference local 1
+//        ^^^^^^^^^^^^^ definition local 1
+//                         ^^^^^^^^^^^^^^ reference 0.1.test sg/switches/Switch().(interfaceValue)
    case int:
     return concreteValue*3 > 10
-//         ^^^^^^^^^^^^^ reference local 2
+//         ^^^^^^^^^^^^^ reference local 1
 //         override_documentation ```go
    case bool:
     return !concreteValue
-//          ^^^^^^^^^^^^^ reference local 2
+//          ^^^^^^^^^^^^^ reference local 1
 //          override_documentation ```go
    case CustomSwitch:
 //      ^^^^^^^^^^^^ reference 0.1.test sg/switches/CustomSwitch#
     return concreteValue.Something()
-//         ^^^^^^^^^^^^^ reference local 2
+//         ^^^^^^^^^^^^^ reference local 1
 //         override_documentation ```go
 //                       ^^^^^^^^^ reference 0.1.test sg/switches/CustomSwitch#Something().
    default:

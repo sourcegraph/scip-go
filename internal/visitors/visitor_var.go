@@ -157,7 +157,6 @@ func (v *varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			}
 		}
 		return nil
-
 	default:
 		return v
 	}

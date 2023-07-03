@@ -30,10 +30,11 @@
 //         ^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/ProcessImpl#
 //                      ^^^^^^^ definition 0.1.test sg/inlinestruct/ProcessImpl#Process().
 //                      documentation ```go
-//                              ^^^^^^^ definition local 3
+//                              ^^^^^^^ definition 0.1.test sg/inlinestruct/ProcessImpl#Process().(payload)
+//                              documentation ```go
 //                                      ^^^^^ reference 0.1.test sg/inlinestruct/Limit#
   func (p *ProcessImpl) ProcessorType() string { panic("not implemented") }
-//      ^ definition local 4
+//      ^ definition local 3
 //         ^^^^^^^^^^^ reference 0.1.test sg/inlinestruct/ProcessImpl#
 //                      ^^^^^^^^^^^^^ definition 0.1.test sg/inlinestruct/ProcessImpl#ProcessorType().
 //                      documentation ```go

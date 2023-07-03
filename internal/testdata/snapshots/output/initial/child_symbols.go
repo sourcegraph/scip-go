@@ -155,7 +155,8 @@
 //                 ^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/Struct#MachineLearning().
 //                 documentation ```go
    param1 float32, // It's ML, I can't describe what this param is.
-// ^^^^^^ definition local 3
+// ^^^^^^ definition 0.1.test sg/initial/Struct#MachineLearning().(param1)
+// documentation ```go
   
    // We call the below hyperparameters because, uhh, well:
    //
@@ -172,32 +173,34 @@
    //     `--'   `--'
    //
    hyperparam2 float32,
-// ^^^^^^^^^^^ definition local 4
+// ^^^^^^^^^^^ definition 0.1.test sg/initial/Struct#MachineLearning().(hyperparam2)
+// documentation ```go
    hyperparam3 float32,
-// ^^^^^^^^^^^ definition local 5
+// ^^^^^^^^^^^ definition 0.1.test sg/initial/Struct#MachineLearning().(hyperparam3)
+// documentation ```go
   ) float32 {
    // varShouldNotHaveDocs is in a function, should not have docs emitted.
    var varShouldNotHaveDocs int32
-//     ^^^^^^^^^^^^^^^^^^^^ definition local 6
+//     ^^^^^^^^^^^^^^^^^^^^ definition local 3
   
    // constShouldNotHaveDocs is in a function, should not have docs emitted.
    const constShouldNotHaveDocs = 5
-//       ^^^^^^^^^^^^^^^^^^^^^^ definition local 7
+//       ^^^^^^^^^^^^^^^^^^^^^^ definition local 4
   
    // typeShouldNotHaveDocs is in a function, should not have docs emitted.
    type typeShouldNotHaveDocs struct{ a string }
-//      ^^^^^^^^^^^^^^^^^^^^^ definition local 8
-//                                    ^ definition local 9
+//      ^^^^^^^^^^^^^^^^^^^^^ definition local 5
+//                                    ^ definition local 6
   
    // funcShouldNotHaveDocs is in a function, should not have docs emitted.
    funcShouldNotHaveDocs := func(a string) string { return "hello" }
-// ^^^^^^^^^^^^^^^^^^^^^ definition local 10
-//                               ^ definition local 11
+// ^^^^^^^^^^^^^^^^^^^^^ definition local 7
+//                               ^ definition local 8
   
    return param1 + (hyperparam2 * *hyperparam3) // lol is this all ML is? I'm gonna be rich
-//        ^^^^^^ reference local 3
-//                  ^^^^^^^^^^^ reference local 4
-//                                 ^^^^^^^^^^^ reference local 5
+//        ^^^^^^ reference 0.1.test sg/initial/Struct#MachineLearning().(param1)
+//                  ^^^^^^^^^^^ reference 0.1.test sg/initial/Struct#MachineLearning().(hyperparam2)
+//                                 ^^^^^^^^^^^ reference 0.1.test sg/initial/Struct#MachineLearning().(hyperparam3)
   }
   
   // Interface has docs too

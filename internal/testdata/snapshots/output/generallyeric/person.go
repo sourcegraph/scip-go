@@ -35,13 +35,14 @@
 //     documentation ```go
 //            ^ definition local 1
 //              ^^^^^^ reference 0.1.test sg/generallyeric/Person#
-//                      ^^^^^^ definition local 2
+//                      ^^^^^^ definition 0.1.test sg/generallyeric/DoWork().(things)
+//                      documentation ```go
 //                               ^ reference local 1
    for _, v := range things {
-//        ^ definition local 3
-//                   ^^^^^^ reference local 2
+//        ^ definition local 2
+//                   ^^^^^^ reference 0.1.test sg/generallyeric/DoWork().(things)
     v.Work()
-//  ^ reference local 3
+//  ^ reference local 2
 //    ^^^^ reference 0.1.test sg/generallyeric/Person#Work.
    }
   }
@@ -50,21 +51,21 @@
 //     ^^^^ definition 0.1.test sg/generallyeric/main().
 //     documentation ```go
    var a, b, c worker
-//     ^ definition local 4
-//        ^ definition local 5
-//           ^ definition local 6
+//     ^ definition local 3
+//        ^ definition local 4
+//           ^ definition local 5
 //             ^^^^^^ reference 0.1.test sg/generallyeric/worker#
    a = "A"
-// ^ reference local 4
+// ^ reference local 3
    b = "B"
-// ^ reference local 5
+// ^ reference local 4
    c = "C"
-// ^ reference local 6
+// ^ reference local 5
    DoWork([]worker{a, b, c})
 // ^^^^^^ reference 0.1.test sg/generallyeric/DoWork().
 //          ^^^^^^ reference 0.1.test sg/generallyeric/worker#
-//                 ^ reference local 4
-//                    ^ reference local 5
-//                       ^ reference local 6
+//                 ^ reference local 3
+//                    ^ reference local 4
+//                       ^ reference local 5
   }
   

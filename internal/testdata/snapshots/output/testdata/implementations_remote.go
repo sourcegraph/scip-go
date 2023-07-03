@@ -31,16 +31,18 @@
 //                        ^^^^^^^^^^^ definition 0.1.test sg/testdata/implementsWriter#WriteHeader().
 //                        documentation ```go
 //                        relationship github.com/golang/go/src go1.19 net/http/ResponseWriter#WriteHeader. implementation
-//                                    ^^^^^^^^^^ definition local 0
+//                                    ^^^^^^^^^^ definition 0.1.test sg/testdata/implementsWriter#WriteHeader().(statusCode)
+//                                    documentation ```go
   
   func ShowsInSignature(respWriter http.ResponseWriter) {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test sg/testdata/ShowsInSignature().
 //     documentation ```go
-//                      ^^^^^^^^^^ definition local 1
+//                      ^^^^^^^^^^ definition 0.1.test sg/testdata/ShowsInSignature().(respWriter)
+//                      documentation ```go
 //                                 ^^^^ reference github.com/golang/go/src go1.19 net/http/
 //                                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.19 net/http/ResponseWriter#
    respWriter.WriteHeader(1)
-// ^^^^^^^^^^ reference local 1
+// ^^^^^^^^^^ reference 0.1.test sg/testdata/ShowsInSignature().(respWriter)
 //            ^^^^^^^^^^^ reference github.com/golang/go/src go1.19 net/http/ResponseWriter#WriteHeader.
   }
   

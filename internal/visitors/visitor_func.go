@@ -32,8 +32,7 @@ func (v funcVisitor) Visit(n ast.Node) ast.Visitor {
 		v.doc.SetNewSymbol(symbol, node, node.Name)
 
 		// Any associated declarations should be generated with the scope of this method
-		v.scope.push("func", scip.Descriptor_Meta)
-		v.scope.push(node.Name.Name, scip.Descriptor_Meta)
+		v.scope.push(node.Name.Name, scip.Descriptor_Method)
 		ast.Walk(v, node.Type)
 		v.scope.pop()
 
@@ -42,18 +41,32 @@ func (v funcVisitor) Visit(n ast.Node) ast.Visitor {
 	case *ast.FuncType:
 		// Should not need to declare any non-local definitions in the type params
 		// if node.TypeParams != nil {
-		// 	Walk(v, node.TypeParams)
-		// }
-
-		// Should not need to declare any non-local definitions in the params
-		// if node.Params != nil {
-		// 	Walk(v, node.Params)
+		// 	ast.Walk(v, node.TypeParams)
 		// }
 
 		// Types can create new interfaces and/or types,
 		// so we need to visit them and potentially declare new non-local symbols
 		if node.Results != nil {
-			ast.Walk(v, node.Results)
+			// TODO: for now skip named return idents as theyre not modeled in SCIP,
+			// but we also don't have handeling for attaching hovers to locals in scip-go yet.
+			for _, field := range node.Results.List {
+				if field.Doc != nil {
+					ast.Walk(v, field.Doc)
+				}
+				if field.Type != nil {
+					ast.Walk(v, field.Type)
+				}
+				if field.Tag != nil {
+					ast.Walk(v, field.Tag)
+				}
+				if field.Comment != nil {
+					ast.Walk(v, field.Comment)
+				}
+			}
+		}
+
+		if node.Params != nil {
+			ast.Walk(v, node.Params)
 		}
 
 		return nil
@@ -72,10 +85,15 @@ func (v funcVisitor) Visit(n ast.Node) ast.Visitor {
 
 		return nil
 
+	case *ast.Field:
+		for _, name := range node.Names {
+			symbol := v.scope.makeSymbol(v.pkg, name.Name, scip.Descriptor_Parameter)
+			v.doc.SetNewSymbol(symbol, name, name)
+		}
+		return v
 	default:
 		return v
 	}
-
 }
 
 func visitFunctionDefinition(doc *document.Document, pkg *packages.Package, node *ast.FuncDecl) {
