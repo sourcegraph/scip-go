@@ -7,7 +7,8 @@
   func Something(r http.ResponseWriter) {}
 //     ^^^^^^^^^ definition 0.1.test sg/impls/Something().
 //     documentation ```go
-//               ^ definition local 0
+//               ^ definition 0.1.test sg/impls/Something().(r)
+//               documentation ```go
 //                 ^^^^ reference github.com/golang/go/src go1.19 net/http/
 //                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.19 net/http/ResponseWriter#
   
@@ -20,7 +21,7 @@
 //     relationship github.com/golang/go/src go1.19 net/http/ResponseWriter# implementation
   
   func (w MyWriter) Header() http.Header        { panic("") }
-//      ^ definition local 1
+//      ^ definition local 0
 //        ^^^^^^^^ reference 0.1.test sg/impls/MyWriter#
 //                  ^^^^^^ definition 0.1.test sg/impls/MyWriter#Header().
 //                  documentation ```go
@@ -28,7 +29,7 @@
 //                           ^^^^ reference github.com/golang/go/src go1.19 net/http/
 //                                ^^^^^^ reference github.com/golang/go/src go1.19 net/http/Header#
   func (w MyWriter) Write([]byte) (int, error)  { panic("") }
-//      ^ definition local 2
+//      ^ definition local 1
 //        ^^^^^^^^ reference 0.1.test sg/impls/MyWriter#
 //                  ^^^^^ definition 0.1.test sg/impls/MyWriter#Write().
 //                  documentation ```go
@@ -36,12 +37,13 @@
 //                  relationship github.com/golang/go/src go1.19 io/Writer#Write. implementation
 //                  relationship github.com/golang/go/src go1.19 net/http/ResponseWriter#Write. implementation
   func (w MyWriter) WriteHeader(statusCode int) { panic("") }
-//      ^ definition local 3
+//      ^ definition local 2
 //        ^^^^^^^^ reference 0.1.test sg/impls/MyWriter#
 //                  ^^^^^^^^^^^ definition 0.1.test sg/impls/MyWriter#WriteHeader().
 //                  documentation ```go
 //                  relationship github.com/golang/go/src go1.19 net/http/ResponseWriter#WriteHeader. implementation
-//                              ^^^^^^^^^^ definition local 4
+//                              ^^^^^^^^^^ definition 0.1.test sg/impls/MyWriter#WriteHeader().(statusCode)
+//                              documentation ```go
   
   func Another() {
 //     ^^^^^^^ definition 0.1.test sg/impls/Another().

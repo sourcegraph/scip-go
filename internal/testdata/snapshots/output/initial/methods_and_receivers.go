@@ -18,21 +18,22 @@
 //        ^^^^^^^^ reference 0.1.test sg/initial/MyStruct#
 //                  ^^^^^^^^^^^^ definition 0.1.test sg/initial/MyStruct#RecvFunction().
 //                  documentation ```go
-//                               ^ definition local 1
+//                               ^ definition 0.1.test sg/initial/MyStruct#RecvFunction().(b)
+//                               documentation ```go
 //                                                   ^ reference local 0
 //                                                     ^ reference 0.1.test sg/initial/MyStruct#f.
-//                                                         ^ reference local 1
+//                                                         ^ reference 0.1.test sg/initial/MyStruct#RecvFunction().(b)
   
   func SomethingElse() {
 //     ^^^^^^^^^^^^^ definition 0.1.test sg/initial/SomethingElse().
 //     documentation ```go
    s := MyStruct{f: 0}
-// ^ definition local 2
+// ^ definition local 1
 //      ^^^^^^^^ reference 0.1.test sg/initial/MyStruct#
 //               ^ reference 0.1.test sg/initial/MyStruct#f.
    fmt.Println(s)
 // ^^^ reference github.com/golang/go/src go1.19 fmt/
 //     ^^^^^^^ reference github.com/golang/go/src go1.19 fmt/Println().
-//             ^ reference local 2
+//             ^ reference local 1
   }
   

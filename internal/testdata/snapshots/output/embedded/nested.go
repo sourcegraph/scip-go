@@ -25,17 +25,18 @@
   func NestedExample(n NestedHandler) {
 //     ^^^^^^^^^^^^^ definition 0.1.test sg/embedded/NestedExample().
 //     documentation ```go
-//                   ^ definition local 0
+//                   ^ definition 0.1.test sg/embedded/NestedExample().(n)
+//                   documentation ```go
 //                     ^^^^^^^^^^^^^ reference 0.1.test sg/embedded/NestedHandler#
    _ = n.Handler.ServeHTTP
-//     ^ reference local 0
+//     ^ reference 0.1.test sg/embedded/NestedExample().(n)
 //       ^^^^^^^ reference 0.1.test sg/embedded/NestedHandler#Handler.
 //               ^^^^^^^^^ reference github.com/golang/go/src go1.19 net/http/Handler#ServeHTTP.
    _ = n.ServeHTTP
-//     ^ reference local 0
+//     ^ reference 0.1.test sg/embedded/NestedExample().(n)
 //       ^^^^^^^^^ reference github.com/golang/go/src go1.19 net/http/Handler#ServeHTTP.
    _ = n.Other
-//     ^ reference local 0
+//     ^ reference 0.1.test sg/embedded/NestedExample().(n)
 //       ^^^^^ reference 0.1.test sg/embedded/NestedHandler#Other.
   }
   

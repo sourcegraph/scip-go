@@ -112,12 +112,16 @@
 //                      ^^^^ definition 0.1.test sg/testdata/TestStruct#Doer().
 //                      documentation ```go
 //                      documentation Doer is similar to the test interface (but not the same).
-//                           ^^^ definition local 4
+//                           ^^^ definition 0.1.test sg/testdata/TestStruct#Doer().(ctx)
+//                           documentation ```go
 //                               ^^^^^^^ reference github.com/golang/go/src go1.19 context/
 //                                       ^^^^^^^ reference github.com/golang/go/src go1.19 context/Context#
-//                                                ^^^^ definition local 5
-//                                                              ^^^^^ definition local 6
-//                                                                         ^^^ definition local 7
+//                                                ^^^^ definition 0.1.test sg/testdata/TestStruct#Doer().(data)
+//                                                documentation ```go
+//                                                              ^^^^^ definition 0.1.test sg/testdata/TestStruct#Doer().(score)
+//                                                              documentation ```go
+//                                                                         ^^^ definition 0.1.test sg/testdata/TestStruct#Doer().(err)
+//                                                                         documentation ```go
    return Score, nil
 //        ^^^^^ reference 0.1.test sg/testdata/Score.
   }

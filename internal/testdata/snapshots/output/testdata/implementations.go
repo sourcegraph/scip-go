@@ -165,10 +165,11 @@
   func shouldShow(shared SharedOne) {
 //     ^^^^^^^^^^ definition 0.1.test sg/testdata/shouldShow().
 //     documentation ```go
-//                ^^^^^^ definition local 6
+//                ^^^^^^ definition 0.1.test sg/testdata/shouldShow().(shared)
+//                documentation ```go
 //                       ^^^^^^^^^ reference 0.1.test sg/testdata/SharedOne#
    shared.Shared()
-// ^^^^^^ reference local 6
+// ^^^^^^ reference 0.1.test sg/testdata/shouldShow().(shared)
 //        ^^^^^^ reference 0.1.test sg/testdata/SharedOne#Shared.
   }
   
