@@ -16,7 +16,6 @@ import (
 type PackageLookup map[newtypes.PackageID]*packages.Package
 
 var loadMode = packages.NeedDeps |
-	packages.NeedFiles |
 	packages.NeedImports |
 	packages.NeedSyntax |
 	packages.NeedTypes |
