@@ -119,20 +119,24 @@ func (p *Global) GetPackage(pkg *packages.Package) *Package {
 	return p.symbols[newtypes.GetID(pkg)]
 }
 
-var skippedTypes = map[string]struct{}{}
-var builtinSymbols = map[string]*scip.SymbolInformation{}
+var skippedTypes sync.Map
+
+// var builtinSymbols = map[string]*scip.SymbolInformation{}
 
 // GetSymbolOfObject returns a symbol and whether we were successful at finding.
 //
 // We can return an empty string if this object should be ignored.
 func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, bool, error) {
-	if _, ok := skippedTypes[obj.Id()]; ok {
+	if _, ok := skippedTypes.Load(obj.Id()); ok {
 		return nil, false, nil
 	}
 
-	if sym, ok := builtinSymbols[obj.Id()]; ok {
-		return sym, true, nil
-	}
+	// TODO: This appears to not be used anymore -- we are exclusively using
+	// the above skippedTypes map instead.
+	//
+	// if sym, ok := builtinSymbols[obj.Id()]; ok {
+	// 	return sym, true, nil
+	// }
 
 	switch obj := obj.(type) {
 	case *types.PkgName:
@@ -145,7 +149,7 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 	if pkg == nil {
 		switch obj := obj.(type) {
 		case *types.TypeName:
-			skippedTypes[obj.Id()] = struct{}{}
+			skippedTypes.Store(obj.Id(), struct{}{})
 			return nil, false, nil
 		case *types.Const:
 			return nil, false, nil

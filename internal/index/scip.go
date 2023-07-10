@@ -3,11 +3,14 @@ package index
 import (
 	"fmt"
 	"go/ast"
+	"runtime"
 	"sort"
 	"strings"
 	"sync"
 	"sync/atomic"
 
+	"github.com/pkg/profile"
+	"github.com/sourcegraph/conc/iter"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/funk"
@@ -111,52 +114,76 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 		impls.AddImplementationRelationships(pkgs, allPackages, globalSymbols)
 	}
 
+	// p := profile.MemProfileRate(profileRate)
+	// runtime.SetBlockProfileRate(1)
+	defer profile.Start(profile.BlockProfile).Stop()
+	err = indexVisitProjectFiles(writer, pkgs, allPackages, globalSymbols, pathToDocuments)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func indexVisitProjectFiles(
+	writer func(proto.Message),
+	pkgs loader.PackageLookup,
+	allPackages loader.PackageLookup,
+	globalSymbols *lookup.Global,
+	pathToDocuments map[string]*document.Document,
+) error {
 	pkgIDs := funk.Keys(pkgs)
-	pkgLen := len(pkgIDs)
+	// pkgLen := len(pkgIDs)
 
-	var count uint64
-	var wg sync.WaitGroup
-	wg.Add(1)
+	iterator := iter.Iterator[newtypes.PackageID]{
+		MaxGoroutines: runtime.GOMAXPROCS(0),
+	}
 
-	go func() {
-		defer wg.Done()
+	iterator.ForEach(pkgIDs, func(v *newtypes.PackageID) {
+		pkg := pkgs[*v]
+		pkgSymbols := globalSymbols.GetPackage(pkg)
 
-		for _, ID := range pkgIDs {
-			pkg := pkgs[ID]
-			pkgSymbols := globalSymbols.GetPackage(pkg)
-
-			for _, f := range pkg.Syntax {
-				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
-				if doc == nil {
-					handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
-					continue
-				}
-
-				// If possible, any state required for created a scip document
-				// should be contained in the visitor. This makes sure that we can
-				// garbage collect everything that's there after each loop,
-				// rather than holding on to every occurrence and piece of data
-				visitor := visitors.NewFileVisitor(
-					doc,
-					pkg,
-					f,
-					allPackages,
-					pkgSymbols,
-					globalSymbols,
-				)
-
-				// Traverse the file
-				ast.Walk(visitor, f)
-
-				// Write the document
-				writer(visitor.ToScipDocument())
+		for _, f := range pkg.Syntax {
+			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+			if doc == nil {
+				handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
+				continue
 			}
 
-			atomic.AddUint64(&count, 1)
-		}
-	}()
+			// If possible, any state required for created a scip document
+			// should be contained in the visitor. This makes sure that we can
+			// garbage collect everything that's there after each loop,
+			// rather than holding on to every occurrence and piece of data
+			visitor := visitors.NewFileVisitor(
+				doc,
+				pkg,
+				f,
+				allPackages,
+				pkgSymbols,
+				globalSymbols,
+			)
 
-	output.WithProgressParallel(&wg, "Visiting Project Files: ", &count, uint64(pkgLen))
+			// Traverse the file
+			ast.Walk(visitor, f)
+
+			// Write the document
+			writer(visitor.ToScipDocument())
+		}
+	})
+
+	// var count uint64
+	// var wg sync.WaitGroup
+	// wg.Add(1)
+	//
+	// go func() {
+	// 	defer wg.Done()
+	//
+	// 	for _, ID := range pkgIDs {
+	// 		atomic.AddUint64(&count, 1)
+	// 	}
+	// }()
+	//
+	// output.WithProgressParallel(&wg, "Visiting Project Files: ", &count, uint64(pkgLen))
 
 	return nil
 }
