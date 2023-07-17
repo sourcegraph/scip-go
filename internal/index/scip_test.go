@@ -73,9 +73,10 @@ func TestSnapshots(t *testing.T) {
 					continue
 				}
 
-				formatted, err := testutil.FormatSnapshot(doc, &scipIndex, "//", symbolFormatter, doc.RelativePath)
+				sourcePath := filepath.Join(scipIndex.Metadata.ProjectRoot, doc.RelativePath)
+				formatted, err := testutil.FormatSnapshot(doc, &scipIndex, "//", symbolFormatter, sourcePath)
 				if err != nil {
-					t.Errorf("Failed to format document: %s // %s", doc.RelativePath, err)
+					t.Errorf("Failed to format document: %s // %s", sourcePath, err)
 				}
 
 				sourceFiles = append(sourceFiles, scip.NewSourceFile(
