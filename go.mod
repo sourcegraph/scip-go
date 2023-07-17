@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/efritz/pentimento v0.0.0-20190429011147-ade47d831101
-	github.com/sourcegraph/scip v0.2.4-0.20230404133011-b687c6adbfef
+	github.com/sourcegraph/scip v0.3.1-0.20230717142743-94fdc9215b88
 	golang.org/x/tools v0.2.0
 )
 
@@ -68,7 +68,7 @@ require (
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/exp v0.0.0-20221205204356-47842c84f3db
-	golang.org/x/mod v0.6.0 // indirect
+	golang.org/x/mod v0.6.0
 	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/term v0.1.0 // indirect
