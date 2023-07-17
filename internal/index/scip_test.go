@@ -49,7 +49,6 @@ func TestSnapshots(t *testing.T) {
 				ModulePath:      "sg/" + filepath.Base(inputDirectory),
 				GoStdlibVersion: "go1.19",
 			})
-
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -74,7 +73,7 @@ func TestSnapshots(t *testing.T) {
 					continue
 				}
 
-				formatted, err := testutil.FormatSnapshot(doc, &scipIndex, "//", symbolFormatter)
+				formatted, err := testutil.FormatSnapshot(doc, &scipIndex, "//", symbolFormatter, doc.RelativePath)
 				if err != nil {
 					t.Errorf("Failed to format document: %s // %s", doc.RelativePath, err)
 				}
