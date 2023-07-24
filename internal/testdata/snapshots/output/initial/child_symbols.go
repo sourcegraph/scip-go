@@ -1,9 +1,9 @@
   package initial
-//        ^^^^^^^ reference 0.1.test sg/initial/
+//        ^^^^^^^ reference 0.1.test `sg/initial`/
   
   // Const is a constant equal to 5. It's the best constant I've ever written. 😹
   const Const = 5
-//      ^^^^^ definition 0.1.test sg/initial/Const.
+//      ^^^^^ definition 0.1.test `sg/initial`/Const.
 //      documentation ```go
 //      documentation Const is a constant equal to 5. It's the best constant I've ever written. 😹
   
@@ -11,61 +11,61 @@
   const (
    // ConstBlock1 is a constant in a block.
    ConstBlock1 = 1
-// ^^^^^^^^^^^ definition 0.1.test sg/initial/ConstBlock1.
+// ^^^^^^^^^^^ definition 0.1.test `sg/initial`/ConstBlock1.
 // documentation ```go
 // documentation Docs for the const block itself.
   
    // ConstBlock2 is a constant in a block.
    ConstBlock2 = 2
-// ^^^^^^^^^^^ definition 0.1.test sg/initial/ConstBlock2.
+// ^^^^^^^^^^^ definition 0.1.test `sg/initial`/ConstBlock2.
 // documentation ```go
 // documentation Docs for the const block itself.
   )
   
   // Var is a variable interface.
   var Var Interface = &Struct{Field: "bar!"}
-//    ^^^ definition 0.1.test sg/initial/Var.
+//    ^^^ definition 0.1.test `sg/initial`/Var.
 //    documentation ```go
 //    documentation Var is a variable interface.
-//        ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
-//                     ^^^^^^ reference 0.1.test sg/initial/Struct#
-//                            ^^^^^ reference 0.1.test sg/initial/Struct#Field.
+//        ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
+//                     ^^^^^^ reference 0.1.test `sg/initial`/Struct#
+//                            ^^^^^ reference 0.1.test `sg/initial`/Struct#Field.
   
   // unexportedVar is an unexported variable interface.
   var unexportedVar Interface = &Struct{Field: "bar!"}
-//    ^^^^^^^^^^^^^ definition 0.1.test sg/initial/unexportedVar.
+//    ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/unexportedVar.
 //    documentation ```go
 //    documentation unexportedVar is an unexported variable interface.
-//                  ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
-//                               ^^^^^^ reference 0.1.test sg/initial/Struct#
-//                                      ^^^^^ reference 0.1.test sg/initial/Struct#Field.
+//                  ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
+//                               ^^^^^^ reference 0.1.test `sg/initial`/Struct#
+//                                      ^^^^^ reference 0.1.test `sg/initial`/Struct#Field.
   
   // x has a builtin error type
   var x error
-//    ^ definition 0.1.test sg/initial/x.
+//    ^ definition 0.1.test `sg/initial`/x.
 //    documentation ```go
 //    documentation x has a builtin error type
   
   var BigVar Interface = &Struct{
-//    ^^^^^^ definition 0.1.test sg/initial/BigVar.
+//    ^^^^^^ definition 0.1.test `sg/initial`/BigVar.
 //    documentation ```go
-//           ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
-//                        ^^^^^^ reference 0.1.test sg/initial/Struct#
+//           ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
+//                        ^^^^^^ reference 0.1.test `sg/initial`/Struct#
    Field: "bar!",
-// ^^^^^ reference 0.1.test sg/initial/Struct#Field.
+// ^^^^^ reference 0.1.test `sg/initial`/Struct#Field.
    Anonymous: struct {
-// ^^^^^^^^^ reference 0.1.test sg/initial/Struct#Anonymous.
+// ^^^^^^^^^ reference 0.1.test `sg/initial`/Struct#Anonymous.
     FieldA int
-//  ^^^^^^ definition 0.1.test sg/initial/BigVar:FieldA.
+//  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldA.
 //  documentation ```go
     FieldB int
-//  ^^^^^^ definition 0.1.test sg/initial/BigVar:FieldB.
+//  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldB.
 //  documentation ```go
     FieldC int
-//  ^^^^^^ definition 0.1.test sg/initial/BigVar:FieldC.
+//  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldC.
 //  documentation ```go
    }{FieldA: 1337},
-//   ^^^^^^ reference 0.1.test sg/initial/BigVar:FieldA.
+//   ^^^^^^ reference 0.1.test `sg/initial`/BigVar:FieldA.
   }
   
   // What are docs, really?
@@ -82,54 +82,54 @@
   var (
    // This has some docs
    VarBlock1 = "if you're reading this"
-// ^^^^^^^^^ definition 0.1.test sg/initial/VarBlock1.
+// ^^^^^^^^^ definition 0.1.test `sg/initial`/VarBlock1.
 // documentation ```go
 // documentation What are docs, really?
   
    VarBlock2 = "hi"
-// ^^^^^^^^^ definition 0.1.test sg/initial/VarBlock2.
+// ^^^^^^^^^ definition 0.1.test `sg/initial`/VarBlock2.
 // documentation ```go
 // documentation What are docs, really?
   )
   
   // Embedded is a struct, to be embedded in another struct.
   type Embedded struct {
-//     ^^^^^^^^ definition 0.1.test sg/initial/Embedded#
+//     ^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#
 //     documentation ```go
 //     documentation Embedded is a struct, to be embedded in another struct.
 //     documentation ```go
    // EmbeddedField has some docs!
    EmbeddedField string
-// ^^^^^^^^^^^^^ definition 0.1.test sg/initial/Embedded#EmbeddedField.
+// ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#EmbeddedField.
 // documentation ```go
    Field         string // conflicts with parent "Field"
-// ^^^^^ definition 0.1.test sg/initial/Embedded#Field.
+// ^^^^^ definition 0.1.test `sg/initial`/Embedded#Field.
 // documentation ```go
   }
   
   type Struct struct {
-//     ^^^^^^ definition 0.1.test sg/initial/Struct#
+//     ^^^^^^ definition 0.1.test `sg/initial`/Struct#
 //     documentation ```go
 //     documentation ```go
-//     relationship 0.1.test sg/initial/Interface# implementation
+//     relationship 0.1.test `sg/initial`/Interface# implementation
    *Embedded
-//  ^^^^^^^^ definition 0.1.test sg/initial/Struct#Embedded.
+//  ^^^^^^^^ definition 0.1.test `sg/initial`/Struct#Embedded.
 //  documentation ```go
-//  ^^^^^^^^ reference 0.1.test sg/initial/Embedded#
+//  ^^^^^^^^ reference 0.1.test `sg/initial`/Embedded#
    Field     string
-// ^^^^^ definition 0.1.test sg/initial/Struct#Field.
+// ^^^^^ definition 0.1.test `sg/initial`/Struct#Field.
 // documentation ```go
    Anonymous struct {
-// ^^^^^^^^^ definition 0.1.test sg/initial/Struct#Anonymous.
+// ^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.
 // documentation ```go
     FieldA int
-//  ^^^^^^ definition 0.1.test sg/initial/Struct#Anonymous.FieldA.
+//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.FieldA.
 //  documentation ```go
     FieldB int
-//  ^^^^^^ definition 0.1.test sg/initial/Struct#Anonymous.FieldB.
+//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.FieldB.
 //  documentation ```go
     FieldC int
-//  ^^^^^^ definition 0.1.test sg/initial/Struct#Anonymous.FieldC.
+//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.FieldC.
 //  documentation ```go
    }
   }
@@ -137,22 +137,22 @@
   // StructMethod has some docs!
   func (s *Struct) StructMethod() {}
 //      ^ definition local 0
-//         ^^^^^^ reference 0.1.test sg/initial/Struct#
-//                 ^^^^^^^^^^^^ definition 0.1.test sg/initial/Struct#StructMethod().
+//         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
+//                 ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#StructMethod().
 //                 documentation ```go
 //                 documentation StructMethod has some docs!
   
   func (s *Struct) ImplementsInterface() string { return "hi!" }
 //      ^ definition local 1
-//         ^^^^^^ reference 0.1.test sg/initial/Struct#
-//                 ^^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/Struct#ImplementsInterface().
+//         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
+//                 ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#ImplementsInterface().
 //                 documentation ```go
-//                 relationship 0.1.test sg/initial/Interface#ImplementsInterface. implementation
+//                 relationship 0.1.test `sg/initial`/Interface#ImplementsInterface. implementation
   
   func (s *Struct) MachineLearning(
 //      ^ definition local 2
-//         ^^^^^^ reference 0.1.test sg/initial/Struct#
-//                 ^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/Struct#MachineLearning().
+//         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
+//                 ^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#MachineLearning().
 //                 documentation ```go
    param1 float32, // It's ML, I can't describe what this param is.
 // ^^^^^^ definition local 3
@@ -202,30 +202,30 @@
   
   // Interface has docs too
   type Interface interface {
-//     ^^^^^^^^^ definition 0.1.test sg/initial/Interface#
+//     ^^^^^^^^^ definition 0.1.test `sg/initial`/Interface#
 //     documentation ```go
 //     documentation Interface has docs too
 //     documentation ```go
    ImplementsInterface() string
-// ^^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/Interface#ImplementsInterface.
+// ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Interface#ImplementsInterface.
 // documentation ```go
   }
   
   func NewInterface() Interface { return nil }
-//     ^^^^^^^^^^^^ definition 0.1.test sg/initial/NewInterface().
+//     ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/NewInterface().
 //     documentation ```go
-//                    ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
+//                    ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
   
   var SortExportedFirst = 1
-//    ^^^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/SortExportedFirst.
+//    ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SortExportedFirst.
 //    documentation ```go
   
   var sortUnexportedSecond = 2
-//    ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/sortUnexportedSecond.
+//    ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/sortUnexportedSecond.
 //    documentation ```go
   
   var _sortUnderscoreLast = 3
-//    ^^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/initial/_sortUnderscoreLast.
+//    ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/_sortUnderscoreLast.
 //    documentation ```go
   
   // Yeah this is some Go magic incantation which is common.
@@ -241,8 +241,8 @@
   //  || |-_\__   /
   // ((_/`(____,-'
   var _ = Interface(&Struct{})
-//        ^^^^^^^^^ reference 0.1.test sg/initial/Interface#
-//                   ^^^^^^ reference 0.1.test sg/initial/Struct#
+//        ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
+//                   ^^^^^^ reference 0.1.test `sg/initial`/Struct#
   
   type _ = struct{}
   
@@ -254,22 +254,22 @@
   type (
    // And confusing
    X struct {
-// ^ definition 0.1.test sg/initial/X#
+// ^ definition 0.1.test `sg/initial`/X#
 // documentation ```go
 // documentation Go can be fun
 // documentation ```go
     bar string
-//  ^^^ definition 0.1.test sg/initial/X#bar.
+//  ^^^ definition 0.1.test `sg/initial`/X#bar.
 //  documentation ```go
    }
   
    Y struct {
-// ^ definition 0.1.test sg/initial/Y#
+// ^ definition 0.1.test `sg/initial`/Y#
 // documentation ```go
 // documentation Go can be fun
 // documentation ```go
     baz float64
-//  ^^^ definition 0.1.test sg/initial/Y#baz.
+//  ^^^ definition 0.1.test `sg/initial`/Y#baz.
 //  documentation ```go
    }
   )

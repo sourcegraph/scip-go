@@ -3,6 +3,7 @@ package index_test
 import (
 	"flag"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -49,7 +50,6 @@ func TestSnapshots(t *testing.T) {
 				ModulePath:      "sg/" + filepath.Base(inputDirectory),
 				GoStdlibVersion: "go1.19",
 			})
-
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -61,6 +61,8 @@ func TestSnapshots(t *testing.T) {
 				IncludePackageName:    func(name string) bool { return !strings.HasPrefix(name, "sg/") },
 				IncludePackageVersion: func(_ string) bool { return true },
 				IncludeDescriptor:     func(_ string) bool { return true },
+				IncludeRawDescriptor:  func(descriptor *scip.Descriptor) bool { return true },
+				IncludeDisambiguator:  func(_ string) bool { return true },
 			}
 
 			sourceFiles := []*scip.SourceFile{}
@@ -74,9 +76,11 @@ func TestSnapshots(t *testing.T) {
 					continue
 				}
 
-				formatted, err := testutil.FormatSnapshot(doc, &scipIndex, "//", symbolFormatter)
+				sourcePath, _ := url.JoinPath(scipIndex.Metadata.ProjectRoot, doc.RelativePath)
+				sourceUrl, _ := url.Parse(sourcePath)
+				formatted, err := testutil.FormatSnapshot(doc, &scipIndex, "//", symbolFormatter, sourceUrl.Path)
 				if err != nil {
-					t.Errorf("Failed to format document: %s // %s", doc.RelativePath, err)
+					t.Errorf("Failed to format document: %s // %s", sourceUrl.Path, err)
 				}
 
 				sourceFiles = append(sourceFiles, scip.NewSourceFile(

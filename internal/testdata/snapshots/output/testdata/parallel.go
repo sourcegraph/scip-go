@@ -1,5 +1,5 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test sg/testdata/
+//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
   
   import (
    "context"
@@ -11,7 +11,7 @@
   // ParallelizableFunc is a function that can be called concurrently with other instances
   // of this function type.
   type ParallelizableFunc func(ctx context.Context) error
-//     ^^^^^^^^^^^^^^^^^^ definition 0.1.test sg/testdata/ParallelizableFunc#
+//     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ParallelizableFunc#
 //     documentation ParallelizableFunc is a function that can be called concurrently with other instances
 //     documentation ```go
 //                             ^^^ definition local 0
@@ -21,14 +21,14 @@
   // Parallel invokes each of the given parallelizable functions in their own goroutines and
   // returns the first error to occur. This method will block until all goroutines have returned.
   func Parallel(ctx context.Context, fns ...ParallelizableFunc) error {
-//     ^^^^^^^^ definition 0.1.test sg/testdata/Parallel().
+//     ^^^^^^^^ definition 0.1.test `sg/testdata`/Parallel().
 //     documentation ```go
 //     documentation Parallel invokes each of the given parallelizable functions in their own goroutines and
 //              ^^^ definition local 1
 //                  ^^^^^^^ reference github.com/golang/go/src go1.19 context/
 //                          ^^^^^^^ reference github.com/golang/go/src go1.19 context/Context#
 //                                   ^^^ definition local 2
-//                                          ^^^^^^^^^^^^^^^^^^ reference 0.1.test sg/testdata/ParallelizableFunc#
+//                                          ^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/ParallelizableFunc#
    var wg sync.WaitGroup
 //     ^^ definition local 3
 //        ^^^^ reference github.com/golang/go/src go1.19 sync/
@@ -46,7 +46,7 @@
   
     go func(fn ParallelizableFunc) {
 //          ^^ definition local 6
-//             ^^^^^^^^^^^^^^^^^^ reference 0.1.test sg/testdata/ParallelizableFunc#
+//             ^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/ParallelizableFunc#
      errs <- fn(ctx)
 //   ^^^^ reference local 4
 //           ^^ reference local 6
