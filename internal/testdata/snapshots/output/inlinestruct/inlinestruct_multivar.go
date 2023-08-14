@@ -16,7 +16,7 @@
 //           ^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/emptyMocks.
 //           documentation ```go
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
-// ^^^^ definition 0.1.test `sg/inlinestruct`/inline-30:Code.
+// ^^^^ definition 0.1.test `sg/inlinestruct`/inline-27:Code.
 // documentation ```go
 //           ^ definition local 0
 //             ^^^^^^ reference 0.1.test `sg/inlinestruct`/Params#

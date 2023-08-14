@@ -4,7 +4,7 @@
   
   import (
    "fmt"
-//  ^^^ reference github.com/golang/go/src go1.19 fmt/
+//  ^^^ reference github.com/golang/go/src go1.21 fmt/
    "sg/embedded"
 //  ^^^^^^^^^^^ reference 0.1.test `sg/embedded`/
   )
@@ -25,8 +25,8 @@
 //                                ^^^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.
 //                                        ^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.
      fmt.Println(author.Name)
-//   ^^^ reference github.com/golang/go/src go1.19 fmt/
-//       ^^^^^^^ reference github.com/golang/go/src go1.19 fmt/Println().
+//   ^^^ reference github.com/golang/go/src go1.21 fmt/
+//       ^^^^^^^ reference github.com/golang/go/src go1.21 fmt/Println().
 //               ^^^^^^ reference local 2
 //                      ^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Name.
     }

@@ -113,8 +113,7 @@
 //     documentation ```go
 //     relationship 0.1.test `sg/initial`/Interface# implementation
    *Embedded
-//  ^^^^^^^^ definition 0.1.test `sg/initial`/Struct#Embedded.
-//  documentation ```go
+//  ^^^^^^^^ definition local 0
 //  ^^^^^^^^ reference 0.1.test `sg/initial`/Embedded#
    Field     string
 // ^^^^^ definition 0.1.test `sg/initial`/Struct#Field.
@@ -136,26 +135,26 @@
   
   // StructMethod has some docs!
   func (s *Struct) StructMethod() {}
-//      ^ definition local 0
+//      ^ definition local 1
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#StructMethod().
 //                 documentation ```go
 //                 documentation StructMethod has some docs!
   
   func (s *Struct) ImplementsInterface() string { return "hi!" }
-//      ^ definition local 1
+//      ^ definition local 2
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#ImplementsInterface().
 //                 documentation ```go
 //                 relationship 0.1.test `sg/initial`/Interface#ImplementsInterface. implementation
   
   func (s *Struct) MachineLearning(
-//      ^ definition local 2
+//      ^ definition local 3
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#MachineLearning().
 //                 documentation ```go
    param1 float32, // It's ML, I can't describe what this param is.
-// ^^^^^^ definition local 3
+// ^^^^^^ definition local 4
   
    // We call the below hyperparameters because, uhh, well:
    //
@@ -172,32 +171,32 @@
    //     `--'   `--'
    //
    hyperparam2 float32,
-// ^^^^^^^^^^^ definition local 4
-   hyperparam3 float32,
 // ^^^^^^^^^^^ definition local 5
+   hyperparam3 float32,
+// ^^^^^^^^^^^ definition local 6
   ) float32 {
    // varShouldNotHaveDocs is in a function, should not have docs emitted.
    var varShouldNotHaveDocs int32
-//     ^^^^^^^^^^^^^^^^^^^^ definition local 6
+//     ^^^^^^^^^^^^^^^^^^^^ definition local 7
   
    // constShouldNotHaveDocs is in a function, should not have docs emitted.
    const constShouldNotHaveDocs = 5
-//       ^^^^^^^^^^^^^^^^^^^^^^ definition local 7
+//       ^^^^^^^^^^^^^^^^^^^^^^ definition local 8
   
    // typeShouldNotHaveDocs is in a function, should not have docs emitted.
    type typeShouldNotHaveDocs struct{ a string }
-//      ^^^^^^^^^^^^^^^^^^^^^ definition local 8
-//                                    ^ definition local 9
+//      ^^^^^^^^^^^^^^^^^^^^^ definition local 9
+//                                    ^ definition local 10
   
    // funcShouldNotHaveDocs is in a function, should not have docs emitted.
    funcShouldNotHaveDocs := func(a string) string { return "hello" }
-// ^^^^^^^^^^^^^^^^^^^^^ definition local 10
-//                               ^ definition local 11
+// ^^^^^^^^^^^^^^^^^^^^^ definition local 11
+//                               ^ definition local 12
   
    return param1 + (hyperparam2 * *hyperparam3) // lol is this all ML is? I'm gonna be rich
-//        ^^^^^^ reference local 3
-//                  ^^^^^^^^^^^ reference local 4
-//                                 ^^^^^^^^^^^ reference local 5
+//        ^^^^^^ reference local 4
+//                  ^^^^^^^^^^^ reference local 5
+//                                 ^^^^^^^^^^^ reference local 6
   }
   
   // Interface has docs too
