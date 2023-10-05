@@ -72,7 +72,7 @@ go install github.com/sourcegraph/scip-go/cmd/scip-go@latest
 scip-go
 
 # Upload index with any necessary tokens (shown here using GitHub workflow syntax)
-src lsif upload -github-token='${{ secrets.GITHUB_TOKEN }}' -no-progress
+src code-intel upload -github-token='${{ secrets.GITHUB_TOKEN }}' -no-progress
 ```
 
 
