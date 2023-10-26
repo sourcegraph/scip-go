@@ -1,6 +1,7 @@
 package index
 
 import (
+	_ "embed"
 	"fmt"
 	"go/ast"
 	"sort"
@@ -23,7 +24,9 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const SCIP_GO_VERSION = "0.1.4"
+//go:embed version.txt
+var versionFile string
+var ScipGoVersion string = strings.TrimSpace(versionFile)
 
 type documentLookup = map[string]*document.Document
 
@@ -90,7 +93,7 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 		Version: 0,
 		ToolInfo: &scip.ToolInfo{
 			Name:      "scip-go",
-			Version:   "0.1",
+			Version:   ScipGoVersion,
 			Arguments: []string{},
 		},
 		ProjectRoot:          "file://" + opts.ModuleRoot,
