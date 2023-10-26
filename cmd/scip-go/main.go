@@ -27,7 +27,7 @@ import (
 var app = kingpin.New(
 	"scip-go",
 	"scip-go is an SCIP indexer for Go.",
-).Version(index.SCIP_GO_VERSION)
+).Version(index.ScipGoVersion)
 
 var (
 	outFile          string

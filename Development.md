@@ -2,9 +2,13 @@
 
 ## Cutting releases
 
-Push a tag to the `main` branch of the form `vM.N.P`.
+1. Land a PR with the following changes:
 
-```
-git checkout main
-NEW_VERSION="vM.N.P" bash -c "git tag $NEW_VERSION && git push $NEW_VERSION"
-```
+   - A ChangeLog entry with `## vM.N.P`
+   - Updated version in `internal/index/version.txt`
+
+2. On the `main` branch, run the following:
+
+    ```bash
+    NEW_VERSION="M.N.P" ./dev/publish-release.sh
+    ```
