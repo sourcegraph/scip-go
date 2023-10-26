@@ -207,7 +207,20 @@ func mainErr() error {
 		}
 	}
 
+	removeOutFileIfPresent := func() {
+		if fileInfo, err := os.Stat(outFile); err == nil && fileInfo.Mode().IsRegular() {
+			os.RemoveAll(outFile)
+		}
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			removeOutFileIfPresent()
+		}
+	}()
+
 	if err := index.Index(writer, options); err != nil {
+		removeOutFileIfPresent()
 		return err
 	}
 

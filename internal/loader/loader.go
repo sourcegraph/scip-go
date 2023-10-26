@@ -74,7 +74,12 @@ func LoadPackages(
 
 	projectPackages = make(PackageLookup)
 
-	if err := output.WithProgress("Loading Packages", func() error {
+	var panicResult any
+	err = output.WithProgress("Loading Packages", func() error {
+		defer func() {
+			panicResult = recover()
+		}()
+
 		cfg := getConfig(moduleRoot, opts)
 		pkgs, err := packages.Load(cfg, "./...")
 		if err != nil {
@@ -90,7 +95,12 @@ func LoadPackages(
 		}
 
 		return nil
-	}); err != nil {
+	})
+	if err == nil && panicResult != nil {
+		err = fmt.Errorf("during package loading: %v", panicResult)
+	}
+
+	if err != nil {
 		return nil, nil, err
 	}
 
