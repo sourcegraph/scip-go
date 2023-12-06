@@ -23,7 +23,7 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: 1.19.x
       - uses: azure/docker-login@v1
