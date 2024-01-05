@@ -21,7 +21,8 @@
 //     relationship 0.1.test `sg/testdata`/I3# implementation
    io.Closer
 // ^^ reference github.com/golang/go/src go1.21 io/
-//    ^^^^^^ definition local 0
+//    ^^^^^^ definition 0.1.test `sg/testdata`/TClose#Closer.
+//    documentation ```go
 //    ^^^^^^ reference github.com/golang/go/src go1.21 io/Closer#
   }
   

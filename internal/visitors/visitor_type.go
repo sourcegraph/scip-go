@@ -110,7 +110,7 @@ func (v typeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 
 				// In this odd scenario, the definition is at embedded field level,
 				// not wherever the name is. So that messes up our lookup table.
-				v.doc.SetNewSymbolForPos(embeddedSymbol, node, name, node.Pos())
+				v.doc.SetNewSymbolForPos(embeddedSymbol, node, name, name.Pos())
 			}
 		} else {
 			for _, name := range node.Names {
