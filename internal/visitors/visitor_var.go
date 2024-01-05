@@ -60,9 +60,8 @@ func (v *varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			if len(node.Names) == 1 {
 				scopeName = node.Names[0].Name
 			} else {
-				scopeName = fmt.Sprintf("inline-%d", inlineCount)
-				inlineCount += 1
-
+				position := v.pkg.Fset.Position(node.Pos())
+				scopeName = fmt.Sprintf("inline-%d-%d", position.Line, position.Column)
 			}
 
 			v.scope.push(scopeName, scip.Descriptor_Meta)

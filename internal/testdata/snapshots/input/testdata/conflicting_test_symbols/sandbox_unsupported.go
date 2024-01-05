@@ -1,5 +1,5 @@
-//go:build !linux
-// +build !linux
+//go:build !linux && !darwin
+// +build !linux,!darwin
 
 // From https://github.com/moby/moby/blob/master/libnetwork/osl/sandbox_unsupported.go
 

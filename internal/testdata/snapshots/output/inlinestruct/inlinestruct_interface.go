@@ -2,7 +2,7 @@
 //        ^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/
   
   import "context"
-//        ^^^^^^^ reference github.com/golang/go/src go1.19 context/
+//        ^^^^^^^ reference github.com/golang/go/src go1.21 context/
   
   func Target() interface {
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Target().
@@ -10,23 +10,23 @@
    OID(context.Context) (int, error)
 // ^^^ definition 0.1.test `sg/inlinestruct`/func:Target:OID().
 // documentation ```go
-//     ^^^^^^^ reference github.com/golang/go/src go1.19 context/
-//             ^^^^^^^ reference github.com/golang/go/src go1.19 context/Context#
+//     ^^^^^^^ reference github.com/golang/go/src go1.21 context/
+//             ^^^^^^^ reference github.com/golang/go/src go1.21 context/Context#
    AbbreviatedOID(context.Context) (string, error)
 // ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:AbbreviatedOID().
 // documentation ```go
-//                ^^^^^^^ reference github.com/golang/go/src go1.19 context/
-//                        ^^^^^^^ reference github.com/golang/go/src go1.19 context/Context#
+//                ^^^^^^^ reference github.com/golang/go/src go1.21 context/
+//                        ^^^^^^^ reference github.com/golang/go/src go1.21 context/Context#
    Commit(context.Context) (string, error)
 // ^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Commit().
 // documentation ```go
-//        ^^^^^^^ reference github.com/golang/go/src go1.19 context/
-//                ^^^^^^^ reference github.com/golang/go/src go1.19 context/Context#
+//        ^^^^^^^ reference github.com/golang/go/src go1.21 context/
+//                ^^^^^^^ reference github.com/golang/go/src go1.21 context/Context#
    Type(context.Context) (int, error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Type().
 // documentation ```go
-//      ^^^^^^^ reference github.com/golang/go/src go1.19 context/
-//              ^^^^^^^ reference github.com/golang/go/src go1.19 context/Context#
+//      ^^^^^^^ reference github.com/golang/go/src go1.21 context/
+//              ^^^^^^^ reference github.com/golang/go/src go1.21 context/Context#
   } {
    panic("not implemented")
   }
@@ -40,7 +40,7 @@
    x.OID(context.Background())
 // ^ reference local 0
 //   ^^^ reference 0.1.test `sg/inlinestruct`/func:Target:OID().
-//       ^^^^^^^ reference github.com/golang/go/src go1.19 context/
-//               ^^^^^^^^^^ reference github.com/golang/go/src go1.19 context/Background().
+//       ^^^^^^^ reference github.com/golang/go/src go1.21 context/
+//               ^^^^^^^^^^ reference github.com/golang/go/src go1.21 context/Background().
   }
   

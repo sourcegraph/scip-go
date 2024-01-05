@@ -2,7 +2,7 @@
 //        ^^^^^^^^ reference 0.1.test `sg/embedded`/
   
   import "fmt"
-//        ^^^ reference github.com/golang/go/src go1.19 fmt/
+//        ^^^ reference github.com/golang/go/src go1.21 fmt/
   
   type RecentCommittersResults struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#
