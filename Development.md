@@ -1,5 +1,19 @@
 # Development docs
 
+## Run tests
+
+Run all tests:
+
+```bash
+go test ./...
+```
+
+Update snapshot tests:
+
+```bash
+go test ./internal/index -update-snapshots
+```
+
 ## Cutting releases
 
 1. Land a PR with the following changes:
