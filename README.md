@@ -84,8 +84,6 @@ the following command:
 docker build -t scip-go:latest .
 ```
 
-
-
 # Contributing
 
 Contributors should follow the [Sourcegraph Community Code of Conduct](https://handbook.sourcegraph.com/company-info-and-process/community/code_of_conduct/).
