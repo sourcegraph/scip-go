@@ -2,19 +2,20 @@ package loader
 
 import (
 	"fmt"
+	"io/ioutil"
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
+	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/packages"
 )
 
 type PackageLookup map[newtypes.PackageID]*packages.Package
 
 var loadMode = packages.NeedDeps |
-	packages.NeedFiles |
 	packages.NeedImports |
 	packages.NeedSyntax |
 	packages.NeedTypes |
@@ -24,16 +25,16 @@ var loadMode = packages.NeedDeps |
 
 var Config = &packages.Config{}
 
-func makeConfig(root string) *packages.Config {
+func getConfig(root string, opts config.IndexOpts) *packages.Config {
 	// TODO: Hacks to get the config out...
 	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
-		Logf: nil,
+		Logf: output.Logf,
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies
-		Tests: true,
+		Tests: !opts.SkipTests,
 	}
 
 	return Config
@@ -52,7 +53,10 @@ func addImportsToPkgs(pkgLookup PackageLookup, opts *config.IndexOpts, pkg *pack
 	}
 }
 
-func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLookup, projectPackages PackageLookup, err error) {
+func LoadPackages(
+	opts config.IndexOpts,
+	moduleRoot string,
+) (pkgLookup PackageLookup, projectPackages PackageLookup, err error) {
 	// Force a module version, even if it's just a dot for non-cross repo look ups.
 	if opts.ModuleVersion == "" {
 		opts.ModuleVersion = "."
@@ -70,8 +74,13 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLo
 
 	projectPackages = make(PackageLookup)
 
-	if err := output.WithProgress("Loading Packages", func() error {
-		cfg := makeConfig(moduleRoot)
+	var panicResult any
+	err = output.WithProgress("Loading Packages", func() error {
+		defer func() {
+			panicResult = recover()
+		}()
+
+		cfg := getConfig(moduleRoot, opts)
 		pkgs, err := packages.Load(cfg, "./...")
 		if err != nil {
 			return err
@@ -86,7 +95,12 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLo
 		}
 
 		return nil
-	}); err != nil {
+	})
+	if err == nil && panicResult != nil {
+		err = fmt.Errorf("during package loading: %v", panicResult)
+	}
+
+	if err != nil {
 		return nil, nil, err
 	}
 
@@ -95,16 +109,29 @@ func LoadPackages(opts config.IndexOpts, moduleRoot string) (pkgLookup PackageLo
 
 func IsStandardLib(pkg *packages.Package) bool {
 	// for example:
-	//	PkgPath = net/http
-	//	-> net
-	//	-> true
+	//  PkgPath = net/http
+	//  -> net
+	//  -> true
 	//
-	//	PkgPath = github.com/sourcegraph/scip-go/...
-	//	-> github.com/
-	//	-> false
+	//  PkgPath = github.com/sourcegraph/scip-go/...
+	//  -> github.com/
+	//  -> false
 	base := strings.Split(pkg.PkgPath, "/")[0]
-	_, ok := stdPackages[base]
-	return ok
+	if _, ok := stdPackages[base]; ok {
+		return ok
+	}
+
+	noTestPackage := strings.Replace(base, "_test", "", -1)
+	if _, ok := stdPackages[noTestPackage]; ok {
+		return ok
+	}
+
+	noTestPsuedoPackage := strings.Replace(base, ".test", "", -1)
+	if _, ok := stdPackages[noTestPsuedoPackage]; ok {
+		return ok
+	}
+
+	return false
 }
 
 func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {
@@ -136,9 +163,6 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 	}
 
-	// TODO: Handle `./lib` style
-	// TODO: Ensure that we copy version correclty
-
 	// Follow replaced modules
 	if pkg.Module.Replace != nil {
 		pkg.Module = pkg.Module.Replace
@@ -147,6 +171,34 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		// so short circuit the check here (the following versions should not be able to fail)
 		if pkg.Module.Version == "" {
 			pkg.Module.Version = opts.ModuleVersion
+		}
+	}
+
+	// Replace **local** directives with the resolved go package.
+	// Attempt to parse the go.mod file (with the builtin `modfile` package) and
+	// then update the module path appropriately
+	if strings.HasPrefix(pkg.Module.Path, ".") {
+		if pkg.Module.GoMod != "" {
+			contents, err := ioutil.ReadFile(pkg.Module.GoMod)
+
+			if err != nil {
+				handler.ErrOrPanic("Failed to read go mod file: %s", err)
+			} else {
+				parsed, err := modfile.ParseLax(pkg.Module.GoMod, contents, nil)
+				if err != nil {
+					handler.ErrOrPanic("Failed to parse go mod file: %s", err)
+				}
+
+				output.Logf("[scip.loader] Replacing module path: '%s' with '%s'", pkg.Module.Path, parsed.Module.Mod.Path)
+				pkg.Module.Path = parsed.Module.Mod.Path
+
+				// If we have a version specified in this go.mod, we'll use that.
+				// Otherwise we'll fall back to whatever the version was previous set to.
+				if parsed.Module.Mod.Version != "" {
+					output.Logf("[scip.loader] Replacing module version: '%s' with '%s'", pkg.Module.Version, parsed.Module.Mod.Version)
+					pkg.Module.Version = parsed.Module.Mod.Version
+				}
+			}
 		}
 	}
 

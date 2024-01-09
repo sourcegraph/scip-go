@@ -1,10 +1,13 @@
 package index
 
 import (
+	_ "embed"
 	"fmt"
 	"go/ast"
 	"sort"
 	"strings"
+	"sync"
+	"sync/atomic"
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
@@ -14,10 +17,18 @@ import (
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
+	"github.com/sourcegraph/scip-go/internal/output"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip-go/internal/visitors"
 	"github.com/sourcegraph/scip/bindings/go/scip"
+	"google.golang.org/protobuf/proto"
 )
+
+//go:embed version.txt
+var versionFile string
+var ScipGoVersion string = strings.TrimSpace(versionFile)
+
+type documentLookup = map[string]*document.Document
 
 func GetPackages(opts config.IndexOpts) (current []newtypes.PackageID, deps []newtypes.PackageID, err error) {
 	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
@@ -56,7 +67,7 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 	lookupNames := funk.Keys(pkgLookup)
 	for _, pkgName := range lookupNames {
 		pkg := pkgLookup[pkgName]
-		visitors.VisitPackageDeclarations(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
+		visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 	}
 
 	pkgNames := funk.Keys(pkgs)
@@ -75,114 +86,158 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 	return missing, nil
 }
 
-func Index(opts config.IndexOpts) (*scip.Index, error) {
-	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
-	if err != nil {
-		return nil, err
-	}
-
-	index := scip.Index{
-		Metadata: &scip.Metadata{
-			Version: 0,
-			ToolInfo: &scip.ToolInfo{
-				Name:      "scip-go",
-				Version:   "0.1",
-				Arguments: []string{},
-			},
-			ProjectRoot:          "file://" + opts.ModuleRoot,
-			TextDocumentEncoding: scip.TextEncoding_UTF8,
+func Index(writer func(proto.Message), opts config.IndexOpts) error {
+	// Emit Metadata.
+	//   NOTE: Must be the first field emitted
+	writer(&scip.Metadata{
+		Version: 0,
+		ToolInfo: &scip.ToolInfo{
+			Name:      "scip-go",
+			Version:   ScipGoVersion,
+			Arguments: []string{},
 		},
-		Documents:       []*scip.Document{},
-		ExternalSymbols: []*scip.SymbolInformation{},
+		ProjectRoot:          "file://" + opts.ModuleRoot,
+		TextDocumentEncoding: scip.TextEncoding_UTF8,
+	})
+
+	pkgs, allPackages, err := loader.LoadPackages(opts, opts.ModuleRoot)
+	if err != nil {
+		return err
 	}
 
-	pathToDocuments := map[string]*document.Document{}
+	pathToDocuments, globalSymbols := indexVisitPackages(opts, pkgs, allPackages)
+
+	if opts.SkipImplementations {
+		output.Println("Skipping implementation relationships")
+		output.Println("")
+	} else {
+		impls.AddImplementationRelationships(pkgs, allPackages, globalSymbols)
+	}
+
+	pkgIDs := funk.Keys(pkgs)
+	pkgLen := len(pkgIDs)
+
+	var count uint64
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+
+		for _, ID := range pkgIDs {
+			pkg := pkgs[ID]
+			pkgSymbols := globalSymbols.GetPackage(pkg)
+
+			for _, f := range pkg.Syntax {
+				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+				if doc == nil {
+					handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
+					continue
+				}
+
+				// If possible, any state required for created a scip document
+				// should be contained in the visitor. This makes sure that we can
+				// garbage collect everything that's there after each loop,
+				// rather than holding on to every occurrence and piece of data
+				visitor := visitors.NewFileVisitor(
+					doc,
+					pkg,
+					f,
+					allPackages,
+					pkgSymbols,
+					globalSymbols,
+				)
+
+				// Traverse the file
+				ast.Walk(visitor, f)
+
+				// Write the document
+				writer(visitor.ToScipDocument())
+			}
+
+			atomic.AddUint64(&count, 1)
+		}
+	}()
+
+	output.WithProgressParallel(&wg, "Visiting Project Files: ", &count, uint64(pkgLen))
+
+	return nil
+}
+
+func indexVisitPackages(
+	opts config.IndexOpts,
+	pkgs loader.PackageLookup,
+	pkgLookup loader.PackageLookup,
+) (documentLookup, *lookup.Global) {
+	pathToDocuments := documentLookup{}
 	globalSymbols := lookup.NewGlobalSymbols()
+
+	var count uint64
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	lookupIDs := funk.Keys(pkgLookup)
 
 	// We have to visit all the packages to get the definition sites
 	// for all the symbols.
 	//
 	// We don't want to visit in the same depth as file visitors though,
 	// so we do ONLY do this
-	lookupIDs := funk.Keys(pkgLookup)
-	for _, pkgID := range lookupIDs {
-		pkg := pkgLookup[pkgID]
-		visitors.VisitPackageDeclarations(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
+	go func() {
+		defer wg.Done()
 
-		// TODO: I don't like this
-		pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
-		if err != nil {
-			panic(fmt.Sprintf("Unhandled package declaration: %s", err))
-		}
+		for _, pkgID := range lookupIDs {
+			pkg := pkgLookup[pkgID]
+			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
-		if pkgDeclaration == nil {
-			continue
-		}
-
-		globalSymbols.SetPkgName(pkg, pkgDeclaration)
-
-		if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
-			continue
-		}
-
-		// TODO: I don't think I need Symbol.Symbol anymore, could probably move that back
-		pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg).Symbol
-		for _, f := range pkg.Syntax {
-			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
-
-			if pkgDeclaration != nil {
-				if f == pkgDeclaration {
-					position := pkg.Fset.Position(f.Name.NamePos)
-					doc.SetNewSymbolForPos(pkgSymbol, nil, f.Name, f.Name.NamePos)
-					doc.NewDefinition(pkgSymbol, symbols.RangeFromName(position, f.Name.Name, false))
-				} else {
-					position := pkg.Fset.Position(f.Name.NamePos)
-					doc.AppendSymbolReference(pkgSymbol, symbols.RangeFromName(position, f.Name.Name, false), nil)
-				}
+			// Handle that packages can have many files for one package.
+			// This finds the "definitive" package declaration
+			pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
+			if err != nil {
+				panic(fmt.Sprintf("Unhandled package declaration: %s", err))
 			}
-		}
 
-	}
-
-	impls.AddImplementationRelationships(pkgs, pkgLookup, globalSymbols)
-
-	// NOTE:
-	// I'm not sure how to do this yet... but we basically need to iterate over
-	// all the possible implementations and other relationships. After doing so
-	// is when we can add the symbols itself to the documents. It seems a bit weird
-	// but I'll see if there's some other way to do it later.
-	for _, doc := range pathToDocuments {
-		doc.DeclareSymbols()
-	}
-
-	pkgIDs := funk.Keys(pkgs)
-	for _, ID := range pkgIDs {
-		pkg := pkgs[ID]
-
-		pkgSymbols := globalSymbols.GetPackage(pkg)
-
-		for _, f := range pkg.Syntax {
-			doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
-			if doc == nil {
-				handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
+			if pkgDeclaration == nil {
+				atomic.AddUint64(&count, 1)
 				continue
 			}
 
-			visitor := visitors.NewFileVisitor(
-				doc,
-				pkg,
-				f,
-				pkgLookup,
-				pkgSymbols,
-				globalSymbols,
-			)
+			globalSymbols.SetPkgName(pkg, pkgDeclaration)
 
-			ast.Walk(visitor, f)
-			index.Documents = append(index.Documents, doc.Document)
+			// If we don't have this package anywhere, don't try to create a new symbol
+			if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
+				atomic.AddUint64(&count, 1)
+				continue
+			}
+
+			pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg).Symbol
+			for _, f := range pkg.Syntax {
+				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+
+				if pkgDeclaration != nil {
+					position := pkg.Fset.Position(f.Name.NamePos)
+
+					role := int32(scip.SymbolRole_ReadAccess)
+					if f == pkgDeclaration {
+						doc.SetNewSymbolForPos(pkgSymbol, pkgDeclaration, f.Name, f.Name.NamePos)
+						role = int32(scip.SymbolRole_Definition)
+					}
+
+					doc.PackageOccurrence = &scip.Occurrence{
+						Range:       symbols.RangeFromName(position, f.Name.Name, false),
+						Symbol:      pkgSymbol,
+						SymbolRoles: role,
+					}
+				}
+			}
+
+			atomic.AddUint64(&count, 1)
 		}
-	}
+	}()
 
-	return &index, nil
+	output.WithProgressParallel(&wg, "Visiting Packages", &count, uint64(len(lookupIDs)))
+
+	return pathToDocuments, globalSymbols
 }
 
 // packagePrefixes returns all prefix of the go package path. For example, the package

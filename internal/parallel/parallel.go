@@ -14,8 +14,9 @@ func Run(ch <-chan func() error) (*sync.WaitGroup, chan error, *uint64) {
 	var count uint64
 	var wg sync.WaitGroup
 
-	errCh := make(chan error)
-	for i := 0; i < runtime.GOMAXPROCS(0); i++ {
+	maxRoutines := runtime.GOMAXPROCS(0)
+	errCh := make(chan error, maxRoutines) // each goroutine returns at most one error
+	for i := 0; i < maxRoutines; i++ {
 		wg.Add(1)
 
 		go func() {

@@ -12,20 +12,26 @@ type IndexOpts struct {
 	// Go version. Used for linking to the Go standard library
 	GoStdlibVersion string
 
+	// Whether we should emit implementations
+	SkipImplementations bool
+	SkipTests           bool
+
 	IsIndexingStdlib bool
 }
 
-func New(moduleRoot, moduleVersion, modulePath, goVersion string, isIndexingStdlib bool) IndexOpts {
-	moduleRoot, err := filepath.Abs(moduleRoot)
+func New(ModuleRoot, ModuleVersion, ModulePath, GoStdlibVersion string, IsIndexingStdlib bool, SkipImplementations bool, SkipTests bool) IndexOpts {
+	ModuleRoot, err := filepath.Abs(ModuleRoot)
 	if err != nil {
 		panic(err)
 	}
 
 	return IndexOpts{
-		moduleRoot,
-		moduleVersion,
-		modulePath,
-		goVersion,
-		isIndexingStdlib,
+		ModuleRoot:          ModuleRoot,
+		ModuleVersion:       ModuleVersion,
+		ModulePath:          ModulePath,
+		GoStdlibVersion:     GoStdlibVersion,
+		SkipImplementations: SkipImplementations,
+		SkipTests:           SkipTests,
+		IsIndexingStdlib:    IsIndexingStdlib,
 	}
 }

@@ -33,6 +33,17 @@ type Package struct {
 	fields map[token.Pos]*scip.SymbolInformation
 }
 
+func (p *Package) SymbolsForFile(file *token.File) []*scip.SymbolInformation {
+	var documentSymbols []*scip.SymbolInformation = nil
+	for pos, symbol := range p.fields {
+		if p.pkg.Fset.File(pos) == file {
+			documentSymbols = append(documentSymbols, symbol)
+		}
+	}
+
+	return documentSymbols
+}
+
 func (p *Package) Set(pos token.Pos, symbol *scip.SymbolInformation) {
 	// TODO: Could remove this once we are 100% confident we're not overlapping...
 	if original, ok := p.fields[pos]; ok {
@@ -56,15 +67,6 @@ func (p *Package) GetSymbol(pos token.Pos) (string, bool) {
 	} else {
 		return "", false
 	}
-}
-
-// TODO: Don't love that this copies everything... :'(
-func (p *Package) Symbols() []*scip.SymbolInformation {
-	symbols := make([]*scip.SymbolInformation, 0, len(p.fields))
-	for _, symbol := range p.fields {
-		symbols = append(symbols, symbol)
-	}
-	return symbols
 }
 
 type PackageName struct {

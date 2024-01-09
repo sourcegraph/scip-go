@@ -15,7 +15,7 @@ import (
 var inlineCount = 0
 
 func visitVarDefinition(doc *document.Document, pkg *packages.Package, decl *ast.GenDecl) {
-	ast.Walk(varVisitor{
+	ast.Walk(&varVisitor{
 		doc:   doc,
 		pkg:   pkg,
 		scope: NewScope(pkg.PkgPath),
@@ -32,7 +32,7 @@ type varVisitor struct {
 
 var _ ast.Visitor = &varVisitor{}
 
-func (v varVisitor) Visit(n ast.Node) (w ast.Visitor) {
+func (v *varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	if n == nil {
 		return nil
 	}
@@ -51,7 +51,7 @@ func (v varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 	case *ast.ValueSpec:
 		// Iterate over names, which are the only thing that can be definitions
 		for _, name := range node.Names {
-			symbol := symbols.FromDescriptors(v.pkg, descriptorTerm(name.Name))
+			symbol := v.makeSymbol(descriptorTerm(name.Name))
 			v.doc.SetNewSymbol(symbol, v.curDecl, name)
 		}
 
@@ -60,9 +60,8 @@ func (v varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 			if len(node.Names) == 1 {
 				scopeName = node.Names[0].Name
 			} else {
-				scopeName = fmt.Sprintf("inline-%d", inlineCount)
-				inlineCount += 1
-
+				position := v.pkg.Fset.Position(node.Pos())
+				scopeName = fmt.Sprintf("inline-%d-%d", position.Line, position.Column)
 			}
 
 			v.scope.push(scopeName, scip.Descriptor_Meta)

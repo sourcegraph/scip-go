@@ -14,7 +14,7 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func VisitPackageDeclarations(
+func VisitPackageSyntax(
 	moduleRoot string,
 	pkg *packages.Package,
 	pathToDocuments map[string]*document.Document,

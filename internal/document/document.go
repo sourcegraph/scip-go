@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/lookup"
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
@@ -23,21 +24,24 @@ func NewDocument(
 	pkgSymbols *lookup.Package,
 ) *Document {
 	return &Document{
-		Document: &scip.Document{
-			Language:     "go",
-			RelativePath: relative,
-			Occurrences:  []*scip.Occurrence{},
-			Symbols:      []*scip.SymbolInformation{},
-		},
-		pkg:        pkg,
-		pkgSymbols: pkgSymbols,
+		RelativePath: relative,
+		pkg:          pkg,
+		pkgSymbols:   pkgSymbols,
 
 		docPkg: &doc.Package{},
 	}
 }
 
 type Document struct {
-	*scip.Document
+	// Document relative path. To be used for scip.Document
+	RelativePath string
+
+	// The occurrence for `package foo` at the top of a Go file.
+	//   It could be a definition or a reference, depending on the package structure.
+	//   It doesn't get traversed in the same way as other parts of the tree,
+	//   so we special case it here. It must get added to the occurences when
+	//   creating a visitors.fileVisitor
+	PackageOccurrence *scip.Occurrence
 
 	// The package this document is contained in
 	pkg *packages.Package
@@ -48,12 +52,7 @@ type Document struct {
 	// pkgSymbols maps positions to symbol names within
 	// this document.
 	pkgSymbols *lookup.Package
-
-	symbolMap map[token.Pos]*scip.SymbolInformation
 }
-
-const symbolDefinition = int32(scip.SymbolRole_Definition)
-const symbolReference = int32(scip.SymbolRole_ReadAccess)
 
 func (d *Document) GetSymbol(pos token.Pos) (string, bool) {
 	return d.pkgSymbols.GetSymbol(pos)
@@ -91,13 +90,13 @@ func (d *Document) SetNewSymbolForPos(
 		}
 
 		if signature != "" {
-			documentation = append(documentation, formatCode(signature))
+			documentation = append(documentation, symbols.FormatCode(signature))
 		}
 		if hover != "" {
-			documentation = append(documentation, formatMarkdown(hover))
+			documentation = append(documentation, symbols.FormatMarkdown(hover))
 		}
 		if extra != "" {
-			documentation = append(documentation, formatCode(extra))
+			documentation = append(documentation, symbols.FormatCode(extra))
 		}
 	}
 
@@ -108,42 +107,14 @@ func (d *Document) SetNewSymbolForPos(
 	})
 }
 
-// DeclareSymbols will put all of the symbol information into the scip document itself.
-func (d *Document) DeclareSymbols() {
-	for _, sym := range d.pkgSymbols.Symbols() {
-		d.Document.Symbols = append(d.Document.Symbols, sym)
-	}
-}
-
-// NewDefinition emits a scip.Occurence ONLY. This will not emit a
-// new symbol. You must do that using DeclareNewSymbol[ForPos]
-func (d *Document) NewDefinition(symbol string, rng []int32) {
-	d.Occurrences = append(d.Occurrences, &scip.Occurrence{
-		Range:       rng,
-		Symbol:      symbol,
-		SymbolRoles: symbolDefinition,
-	})
-}
-
-func (d *Document) AppendSymbolReference(symbol string, rng []int32, overrideType types.Type) {
-	var documentation []string = nil
-	if overrideType != nil {
-		tyString := overrideType.String()
-		if tyString != "" {
-			documentation = append(documentation, formatCode(tyString))
-		}
-	}
-
-	d.Occurrences = append(d.Occurrences, &scip.Occurrence{
-		Range:                 rng,
-		Symbol:                symbol,
-		SymbolRoles:           symbolReference,
-		OverrideDocumentation: documentation,
-	})
-}
-
 func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 	switch v := node.(type) {
+	case *ast.File:
+		if v.Doc != nil {
+			return v.Doc.Text()
+		} else {
+			return fmt.Sprintf("package %s", v.Name.Name)
+		}
 	case *ast.FuncDecl:
 		return v.Doc.Text()
 	case *ast.GenDecl:
@@ -176,25 +147,6 @@ func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 	}
 
 	return ""
-}
-
-func formatCode(v string) string {
-	if v == "" {
-		return ""
-	}
-
-	return fmt.Sprintf("```go\n%s\n```", v)
-}
-
-func formatMarkdown(v string) string {
-	if v == "" {
-		return ""
-	}
-
-	// var buf bytes.Buffer
-	// doc.ToMarkdown(&buf, v, nil)
-	// return buf.String()
-	return v
 }
 
 // packageQualifier returns an empty string in order to remove the leading package

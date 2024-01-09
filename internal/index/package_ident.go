@@ -16,7 +16,7 @@ func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
 		return nil, nil
 	}
 
-	// Unsafe?...
+	// Unsafe is special case for builtin
 	if pkg.PkgPath == "unsafe" {
 		return nil, nil
 	}
