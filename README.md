@@ -75,6 +75,14 @@ scip-go
 src code-intel upload -github-token='${{ secrets.GITHUB_TOKEN }}' -no-progress
 ```
 
+## Docker
+
+To build a self-contained Docker container with the indexer, use 
+the following command:
+
+```bash
+docker build -t scip-go:latest .
+```
 
 # Contributing
 
