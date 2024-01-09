@@ -11,7 +11,7 @@
 # MediaType: application/vnd.docker.distribution.manifest.list.v2+json
 # Digest:    sha256:4db4aac30880b978cae5445dd4a706215249ad4f43d28bd7cdf7906e9be8dd6b
 # And use this digest in FROM
-FROM golang:1.21.5@sha256:4db4aac30880b978cae5445dd4a706215249ad4f43d28bd7cdf7906e9be8dd6b
+FROM golang:1.21.5@sha256:672a2286da3ee7a854c3e0a56e0838918d0dbb1c18652992930293312de898a6
 
 COPY . /sources
 WORKDIR /sources
