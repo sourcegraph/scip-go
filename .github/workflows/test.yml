@@ -28,6 +28,13 @@ jobs:
       - name: Test
         run: go test -v ./...
 
+      - name: Goreleaser checks
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --snapshot --clean
+
   docker-build:
     runs-on: ubuntu-latest
     steps:
@@ -40,3 +47,4 @@ jobs:
           docker run local-scip-go scip-go --help
           docker run --volume .:/sources --workdir /sources local-scip-go scip-go
           file index.scip
+
