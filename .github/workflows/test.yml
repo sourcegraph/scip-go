@@ -38,3 +38,5 @@ jobs:
         run: |
           docker build -t local-scip-go .
           docker run local-scip-go scip-go --help
+          docker run --volume .:/sources --workdir /sources local-scip-go scip-go
+          file index.scip
