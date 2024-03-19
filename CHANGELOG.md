@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v0.1.12
+
+- Fixes the Dockerfile for the indexer. Due to a bug in the Dockerfile,
+  the v0.1.11 release does not have any accompanying Docker image.
+  (https://github.com/sourcegraph/scip-go/pull/86)
+
 ## v0.1.11
 
 - Updates the indexer to build using Go 1.22.1.
