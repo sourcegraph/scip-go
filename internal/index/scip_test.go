@@ -48,7 +48,7 @@ func TestSnapshots(t *testing.T) {
 				ModuleRoot:      inputDirectory,
 				ModuleVersion:   "0.1.test",
 				ModulePath:      "sg/" + filepath.Base(inputDirectory),
-				GoStdlibVersion: "go1.21",
+				GoStdlibVersion: "go1.22",
 			})
 			if err != nil {
 				t.Fatal(err)
