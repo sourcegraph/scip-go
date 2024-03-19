@@ -41,6 +41,11 @@ dockers:
     - "sourcegraph/scip-go:v{{ .Major }}"
     - "sourcegraph/scip-go:v{{ .Major }}.{{ .Minor }}"
     - "sourcegraph/scip-go:latest"
+    extra_files:
+    - go.mod
+    - go.sum
+    - cmd
+    - internal
 
 changelog:
   sort: asc
