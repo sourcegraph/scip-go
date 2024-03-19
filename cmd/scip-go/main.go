@@ -76,7 +76,7 @@ func init() {
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
 	app.Flag("verbose", "Output debug logs.").Short('v').CounterVar(&verbosity)
-	app.Flag("animation", "Do not animate output.").Default("false").BoolVar(&animation)
+	app.Flag("animation", "Show animated output.").Default("false").BoolVar(&animation)
 	app.Flag("dev", "Enable development mode.").Default("false").BoolVar(&devMode)
 
 	// app.Flag("dep-batch-size", "How many dependencies to load at once to limit memory usage (e.g. 100). 0 means load all at once.").Default("0").IntVar(&depBatchSize)
