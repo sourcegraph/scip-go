@@ -15,7 +15,6 @@
 #    <other stuff to ignore>
 # And use this digest in FROM
 FROM golang:1.22.1@sha256:0b55ab82ac2a54a6f8f85ec8b943b9e470c39e32c109b766bbc1b801f3fa8d3b as builder
-# TODO: Add CI check to prevent someone from accidentally using a Manifest digest here.
 
 COPY . /sources
 WORKDIR /sources
