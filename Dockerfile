@@ -21,7 +21,8 @@ COPY . /sources
 WORKDIR /sources
 RUN go build -o scip-go ./cmd/scip-go
 
-FROM alpine:latest
+# Keep in sync with builder image
+FROM golang:1.22.1@sha256:0b55ab82ac2a54a6f8f85ec8b943b9e470c39e32c109b766bbc1b801f3fa8d3b as final
 
 COPY --from=builder /sources/scip-go /usr/bin/
 CMD ["scip-go"]
