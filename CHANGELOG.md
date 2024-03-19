@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.11
+
+- Updates the indexer to build using Go 1.22.1.
+  (https://github.com/sourcegraph/scip-go/pull/81)
+
 ## v0.1.10
 
 - Updates the indexer to build using Go 1.21.5.
