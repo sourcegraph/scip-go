@@ -27,3 +27,16 @@ jobs:
 
       - name: Test
         run: go test -v ./...
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Check Dockerfile is well-formed'
+        run: ./scripts/dockerfile_checks.sh
+      - name: 'Build Docker image'
+        run: |
+          docker build -t local-scip-go .
+          docker run local-scip-go scip-go --help
+          docker run --volume .:/sources --workdir /sources local-scip-go scip-go
+          file index.scip
