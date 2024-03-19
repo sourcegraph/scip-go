@@ -22,10 +22,15 @@ jobs:
           fi
         env:
           TAG: ${{ github.ref_name }}
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.21.x
+
+      - name: Install ASDF
+        uses: asdf-vm/actions/setup@v3
+
+      - name: Install matching Go toolchain
+        run: |
+          asdf plugin add golang
+          asdf install golang
+
       - uses: azure/docker-login@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}

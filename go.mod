@@ -1,11 +1,12 @@
 module github.com/sourcegraph/scip-go
 
-go 1.21
+go 1.22
 
 require (
 	github.com/efritz/pentimento v0.0.0-20190429011147-ade47d831101
 	github.com/sourcegraph/scip v0.3.1-0.20230717142743-94fdc9215b88
-	golang.org/x/tools v0.2.0
+	golang.org/x/tools v0.19.0
+	golang.org/x/tools/go/vcs v0.1.0-deprecated
 )
 
 require (
@@ -66,13 +67,13 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
-	golang.org/x/crypto v0.1.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/exp v0.0.0-20221205204356-47842c84f3db
-	golang.org/x/mod v0.6.0
-	golang.org/x/net v0.1.0 // indirect
-	golang.org/x/sys v0.1.0 // indirect
-	golang.org/x/term v0.1.0 // indirect
-	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/mod v0.16.0
+	golang.org/x/net v0.22.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/term v0.18.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20220414192740-2d67ff6cf2b4 // indirect
 	google.golang.org/grpc v1.45.0 // indirect
 	google.golang.org/protobuf v1.28.0
