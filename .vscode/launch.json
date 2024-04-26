@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run SCIP-GO",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "cmd/scip-go",
+      "cwd": "${input:path}", 
+    }
+  ],
+  "inputs": [
+    {
+      "id": "path",
+      "description": "Please enter the path to the project to index",
+      "default": "",
+      "type": "promptString"
+    }
+  ]
+}
