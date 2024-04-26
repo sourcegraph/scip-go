@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/sourcegraph/scip-go/internal/newtypes"
+	"github.com/sourcegraph/scip-go/internal/output"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
@@ -45,10 +46,15 @@ func (p *Package) SymbolsForFile(file *token.File) []*scip.SymbolInformation {
 }
 
 func (p *Package) Set(pos token.Pos, symbol *scip.SymbolInformation) {
-	// TODO: Could remove this once we are 100% confident we're not overlapping...
 	if original, ok := p.fields[pos]; ok {
 		if original != symbol {
-			panic(fmt.Sprintf("Cannot add pos to new symbol: %s %s", original, symbol))
+			// This is a temporary fix to allow overriding of symbols to handle a conflict
+			// when processing anonymous structs. Today, anonymous structs are named by the associated field name.
+			// But defining multiple fields with the same struct leads to this conflict. By allowing overriding,
+			// the last field name seen will be picked to be the type name for the struct.
+			// The right fix longer term is to change the way we name anonymous structs tracked here
+			// https://github.com/sourcegraph/scip-go/issues/95
+			output.Logf("[scip.lookup] Overriding original symbol %s with %s at %s", original.Symbol, symbol.Symbol, p.pkg.Fset.Position(pos))
 		}
 	}
 
