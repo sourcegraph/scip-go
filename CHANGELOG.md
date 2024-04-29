@@ -1,5 +1,17 @@
 # ChangeLog
 
+## v0.1.13
+
+- Adds workaround for a panic triggerd by the presence of multiple
+  field definitions with the same anonymous type.
+  (https://github.com/sourcegraph/scip-go/pull/96)
+
+  ```go
+  type T struct {
+      A, B struct { B int }
+  }
+  ```
+
 ## v0.1.12
 
 - Fixes the Dockerfile for the indexer. Due to a bug in the Dockerfile,
