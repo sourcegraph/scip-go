@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/sourcegraph/scip-go/internal/newtypes"
+	"github.com/sourcegraph/scip-go/internal/output"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
@@ -44,11 +45,23 @@ func (p *Package) SymbolsForFile(file *token.File) []*scip.SymbolInformation {
 	return documentSymbols
 }
 
+var emittedLogLine = map[token.Pos]struct{}{}
+var emittedLogLineMu sync.Mutex
+
 func (p *Package) Set(pos token.Pos, symbol *scip.SymbolInformation) {
-	// TODO: Could remove this once we are 100% confident we're not overlapping...
 	if original, ok := p.fields[pos]; ok {
 		if original != symbol {
-			panic(fmt.Sprintf("Cannot add pos to new symbol: %s %s", original, symbol))
+			// Workaround for handling symbol names when multiple
+			// fields are defined in the same statement with the same anonymous
+			// struct type. By ignoring this case, the last field name will
+			// be used for the type name.
+			// Ideal fix: https://github.com/sourcegraph/scip-go/issues/95
+			emittedLogLineMu.Lock()
+			if _, ok := emittedLogLine[pos]; !ok {
+				output.Logf("[scip.lookup] Overriding original symbol %s with %s at %v", original.Symbol, symbol.Symbol, p.pkg.Fset.Position(pos))
+				emittedLogLine[pos] = struct{}{}
+			}
+			emittedLogLineMu.Unlock()
 		}
 	}
 
