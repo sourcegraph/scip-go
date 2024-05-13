@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/sourcegraph/scip-go/internal/config"
+	"golang.org/x/mod/module"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -36,6 +37,34 @@ func TestBuiltinFormat(t *testing.T) {
 
 	if !IsStandardLib(fmtPkg) {
 		t.Fatal("Package was not a builtin package: post ensure")
+	}
+}
+
+func TestPseudoVersion(t *testing.T) {
+	wd, _ := os.Getwd()
+	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
+	pkgConfig := getConfig(root, config.IndexOpts{})
+	pkgConfig.Tests = false
+
+	pkgs, err := packages.Load(pkgConfig, "github.com/efritz/pentimento")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(pkgs) != 1 {
+		t.Fatalf("Too many packages: %s", pkgs)
+	}
+
+	pkg := pkgs[0]
+
+	if !module.IsPseudoVersion(pkg.Module.Version) {
+		t.Fatal("Package did not have a pseudo version: pre ensure")
+	}
+
+	normalizePackage(&config.IndexOpts{}, pkg)
+
+	if pkg.Module.Version != "ade47d831101" {
+		t.Fatal("Package pseudo-version was not extracted into a sha: post ensure")
 	}
 }
 
