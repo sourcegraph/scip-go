@@ -10,6 +10,7 @@ import (
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
+	"golang.org/x/mod/module"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -218,6 +219,23 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			))
 
 			pkg.Module.Version = "."
+		}
+	}
+
+	// Check if the module version is a pseudo-version.
+	// If it is, we will grab just the sha from it
+	if module.IsPseudoVersion(pkg.Module.Version) {
+		rev, err := module.PseudoVersionRev(pkg.Module.Version)
+		if err != nil {
+			// Only panic when running in debug mode.
+			fmt.Println(handler.ErrOrPanic(
+				"Unable to find rev from pseudo-version: %s %s",
+				pkg.Module.Path,
+				pkg.Module.Version,
+			))
+
+		} else {
+			pkg.Module.Version = rev
 		}
 	}
 
