@@ -40,7 +40,63 @@ func TestBuiltinFormat(t *testing.T) {
 	}
 }
 
-func TestPseudoVersion(t *testing.T) {
+type normalizeTestCase struct {
+	Raw        string
+	Normalized string
+}
+
+func TestNormalizePackageModuleVersion(t *testing.T) {
+	cases := []normalizeTestCase{
+		{
+			Raw:        "v0.0.0-20180920160851-f15b22f93c73",
+			Normalized: "f15b22f93c73",
+		},
+		{
+			Raw:        "v0.3.1-0.20230414160720-beea233bdc0b",
+			Normalized: "beea233bdc0b",
+		},
+		{
+			Raw:        "v2.0.0-20180818164646-67afb5ed74ec",
+			Normalized: "67afb5ed74ec",
+		},
+		{
+			Raw:        "v1.1.1",
+			Normalized: "v1.1.1",
+		},
+		{
+			Raw:        "v1.0.0-beta.1",
+			Normalized: "v1.0.0-beta.1",
+		},
+		{
+			Raw:        "v0.0.0",
+			Normalized: "v0.0.0",
+		},
+		{
+			Raw:        "v2.0.0+incompatible",
+			Normalized: "v2.0.0+incompatible",
+		},
+		{
+			Raw:        "",
+			Normalized: ".",
+		},
+	}
+
+	for _, testCase := range cases {
+		pkg := &packages.Package{
+			PkgPath: "github.com/fake_name/fake_module/fake_package",
+			Module: &packages.Module{
+				Path:    "github.com/fake_name/fake_module",
+				Version: testCase.Raw,
+			},
+		}
+		normalizePackage(&config.IndexOpts{}, pkg)
+		if pkg.Module.Version != testCase.Normalized {
+			t.Errorf("Got: %s, Expected: %s", pkg.Module.Version, testCase.Normalized)
+		}
+	}
+}
+
+func TestPackagePseudoVersion(t *testing.T) {
 	wd, _ := os.Getwd()
 	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
 	pkgConfig := getConfig(root, config.IndexOpts{})
