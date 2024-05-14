@@ -8,7 +8,7 @@ import (
 
 // InferModuleVersion returns the version of the module declared in the given
 // directory. This will be either the work tree commit's tag, or it will be the
-// most recent tag with a short revhash appended to it.
+// short revhash of the HEAD commit.
 func InferModuleVersion(dir string) (string, error) {
 	version, err := command.Run(dir, "git", "tag", "-l", "--points-at", "HEAD")
 	if err != nil {
