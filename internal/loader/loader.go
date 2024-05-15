@@ -220,11 +220,13 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 			pkg.Module.Version = "."
 		}
-	}
-
-	// Check if the module version is a pseudo-version.
-	// If it is, we will grab just the sha from it
-	if module.IsPseudoVersion(pkg.Module.Version) {
+	} else if module.IsPseudoVersion(pkg.Module.Version) {
+		// Check if the module version is a pseudo-version.
+		// If it is, we will grab just the sha from it
+		// Note: According to the go mod spec (https://go.dev/ref/mod#versions) we expect
+		// versions to always follow semantic versions (either tagged version or pseudo-version).
+		// Go tidy will ensure that the version is a valid semantic version
+		// and replace non-canonical versions with v0.0.0
 		rev, err := module.PseudoVersionRev(pkg.Module.Version)
 		if err != nil {
 			// Only panic when running in debug mode.
@@ -233,7 +235,6 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 				pkg.Module.Path,
 				pkg.Module.Version,
 			))
-
 		} else {
 			pkg.Module.Version = rev
 		}

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/sourcegraph/scip-go/internal/config"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/mod/module"
 	"golang.org/x/tools/go/packages"
 )
@@ -90,9 +91,8 @@ func TestNormalizePackageModuleVersion(t *testing.T) {
 			},
 		}
 		normalizePackage(&config.IndexOpts{}, pkg)
-		if pkg.Module.Version != testCase.Normalized {
-			t.Errorf("Got: %s, Expected: %s", pkg.Module.Version, testCase.Normalized)
-		}
+
+		require.Equal(t, testCase.Normalized, pkg.Module.Version)
 	}
 }
 
@@ -103,25 +103,17 @@ func TestPackagePseudoVersion(t *testing.T) {
 	pkgConfig.Tests = false
 
 	pkgs, err := packages.Load(pkgConfig, "github.com/efritz/pentimento")
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.Nil(t, err)
 
-	if len(pkgs) != 1 {
-		t.Fatalf("Too many packages: %s", pkgs)
-	}
+	require.Equal(t, 1, len(pkgs), "Too many packages")
 
 	pkg := pkgs[0]
 
-	if !module.IsPseudoVersion(pkg.Module.Version) {
-		t.Fatal("Package did not have a pseudo version: pre ensure")
-	}
+	require.True(t, module.IsPseudoVersion(pkg.Module.Version), "Package did not have a pseudo version: pre ensure")
 
 	normalizePackage(&config.IndexOpts{}, pkg)
 
-	if pkg.Module.Version != "ade47d831101" {
-		t.Fatal("Package pseudo-version was not extracted into a sha: post ensure")
-	}
+	require.Equal(t, "ade47d831101", pkg.Module.Version, "Package pseudo-version was not extracted into a sha: post ensure")
 }
 
 func TestPackageWithinModule(t *testing.T) {
