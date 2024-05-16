@@ -239,6 +239,9 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			pkg.Module.Version = rev
 		}
 	} else if build := semver.Build(pkg.Module.Version); build != "" {
+		// The revision can also have build metadata following a `+`. Drop that,
+		// similar to official Go tooling. (https://go.dev/ref/mod#versions)
+		// > The build metadata suffix is ignored for the purpose of comparing versions
 		pkg.Module.Version = strings.TrimSuffix(pkg.Module.Version, build)
 	}
 
