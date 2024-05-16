@@ -222,7 +222,6 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			pkg.Module.Version = "."
 		}
 	} else if module.IsPseudoVersion(pkg.Module.Version) {
-
 		// Unpublished versions of dependencies have pseudo-versions in go.mod.
 		// When the dependency itself is indexed, only the revision will be used.
 		// For correct cross-repo navigation to such dependencies, only use
