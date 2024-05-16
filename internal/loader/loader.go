@@ -10,6 +10,8 @@ import (
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
+	"golang.org/x/mod/module"
+	"golang.org/x/mod/semver"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -219,6 +221,27 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 
 			pkg.Module.Version = "."
 		}
+	} else if module.IsPseudoVersion(pkg.Module.Version) {
+		// Unpublished versions of dependencies have pseudo-versions in go.mod.
+		// When the dependency itself is indexed, only the revision will be used.
+		// For correct cross-repo navigation to such dependencies, only use
+		// the revision from a pseudo-version.
+		rev, err := module.PseudoVersionRev(pkg.Module.Version)
+		if err != nil {
+			// Only panic when running in debug mode.
+			fmt.Println(handler.ErrOrPanic(
+				"Unable to find rev from pseudo-version: %s %s",
+				pkg.Module.Path,
+				pkg.Module.Version,
+			))
+		} else {
+			pkg.Module.Version = rev
+		}
+	} else if build := semver.Build(pkg.Module.Version); build != "" {
+		// The revision can also have build metadata following a `+`. Drop that,
+		// similar to official Go tooling. (https://go.dev/ref/mod#versions)
+		// > The build metadata suffix is ignored for the purpose of comparing versions
+		pkg.Module.Version = strings.TrimSuffix(pkg.Module.Version, build)
 	}
 
 	return pkg
