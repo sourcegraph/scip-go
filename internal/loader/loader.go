@@ -243,7 +243,9 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		// similar to official Go tooling. (https://go.dev/ref/mod#versions)
 		// > The build metadata suffix is ignored for the purpose of comparing versions
 		build := semver.Build(pkg.Module.Version)
-		pkg.Module.Version = strings.TrimSuffix(pkg.Module.Version, build)
+		if build != "" {
+			pkg.Module.Version = strings.TrimSuffix(pkg.Module.Version, build)
+		}
 	}
 
 	return pkg
