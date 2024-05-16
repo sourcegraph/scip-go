@@ -74,7 +74,7 @@ func TestNormalizePackageModuleVersion(t *testing.T) {
 		},
 		{
 			Raw:        "v2.0.0+incompatible",
-			Normalized: "v2.0.0+incompatible",
+			Normalized: "v2.0.0",
 		},
 		{
 			Raw:        "",

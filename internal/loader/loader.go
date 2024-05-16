@@ -11,6 +11,7 @@ import (
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
+	"golang.org/x/mod/semver"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -221,12 +222,11 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			pkg.Module.Version = "."
 		}
 	} else if module.IsPseudoVersion(pkg.Module.Version) {
-		// Check if the module version is a pseudo-version.
-		// If it is, we will grab just the sha from it
-		// Note: According to the go mod spec (https://go.dev/ref/mod#versions) we expect
-		// versions to always follow semantic versions (either tagged version or pseudo-version).
-		// Go tidy will ensure that the version is a valid semantic version
-		// and replace non-canonical versions with v0.0.0
+
+		// Unpublished versions of dependencies have pseudo-versions in go.mod.
+		// When the dependency itself is indexed, only the revision will be used.
+		// For correct cross-repo navigation to such dependencies, only use
+		// the revision from a pseudo-version.
 		rev, err := module.PseudoVersionRev(pkg.Module.Version)
 		if err != nil {
 			// Only panic when running in debug mode.
@@ -238,6 +238,12 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		} else {
 			pkg.Module.Version = rev
 		}
+	} else {
+		// The revision can also have build metadata following a `+`. Drop that,
+		// similar to official Go tooling. (https://go.dev/ref/mod#versions)
+		// > The build metadata suffix is ignored for the purpose of comparing versions
+		build := semver.Build(pkg.Module.Version)
+		pkg.Module.Version = strings.TrimSuffix(pkg.Module.Version, build)
 	}
 
 	return pkg
