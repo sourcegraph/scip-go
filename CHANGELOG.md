@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v0.1.14
+
+- Fixes a bug with cross-repo navigation when depending
+  on unpublished versions of libraries.
+  (https://github.com/sourcegraph/scip-go/pull/99)
+
 ## v0.1.13
 
 - Adds workaround for a panic triggerd by the presence of multiple
