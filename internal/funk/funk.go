@@ -14,7 +14,7 @@ func SortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
 }
 
 func Map[T any, V any](l []T, f func(T) V) []V {
-	vals := make([]V, len(l))
+	vals := make([]V, 0, len(l))
 	for i, v := range l {
 		vals[i] = f(v)
 	}
