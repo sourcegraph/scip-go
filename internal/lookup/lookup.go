@@ -191,21 +191,10 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 		return nil, false, errors.New(fmt.Sprintln("obj", obj, "| origin", obj.Origin()))
 	}
 
-	// if !foundPkg {
-	// 	panic(fmt.Sprintf(
-	// 		"missing package (%s) for symbol: %T %+v\n%s",
-	// 		pkgPath,
-	// 		obj,
-	// 		obj,
-	// 		pkgFields.pkg.Fset.Position(obj.Pos()),
-	// 	))
-	// }
-
 	return nil, false, errors.New(fmt.Sprintf(
 		"failed to create symbol for obj: %T %+v\n%s",
 		obj,
 		obj,
-		// pkgFields.pkg.Fset.Position(obj.Pos()),
 		pkgPath,
 	))
 }

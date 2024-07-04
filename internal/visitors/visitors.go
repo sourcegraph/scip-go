@@ -87,27 +87,6 @@ func walkDeclList(v ast.Visitor, list []ast.Decl) {
 	}
 }
 
-func descriptorType(name string) *scip.Descriptor {
-	return &scip.Descriptor{
-		Name:   name,
-		Suffix: scip.Descriptor_Type,
-	}
-}
-
-func descriptorMethod(name string) *scip.Descriptor {
-	return &scip.Descriptor{
-		Name:   name,
-		Suffix: scip.Descriptor_Method,
-	}
-}
-
-func descriptorPackage(name string) *scip.Descriptor {
-	return &scip.Descriptor{
-		Name:   name,
-		Suffix: scip.Descriptor_Namespace,
-	}
-}
-
 func descriptorTerm(name string) *scip.Descriptor {
 	return &scip.Descriptor{
 		Name:   name,
