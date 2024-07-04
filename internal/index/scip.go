@@ -64,13 +64,13 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 		return nil, err
 	}
 
-	lookupNames := funk.Keys(pkgLookup)
+	lookupNames := funk.SortedKeys(pkgLookup)
 	for _, pkgName := range lookupNames {
 		pkg := pkgLookup[pkgName]
 		visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 	}
 
-	pkgNames := funk.Keys(pkgs)
+	pkgNames := funk.SortedKeys(pkgs)
 	for _, name := range pkgNames {
 		pkg := pkgs[name]
 		for _, f := range pkg.Syntax {
@@ -114,7 +114,7 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 		impls.AddImplementationRelationships(pkgs, allPackages, globalSymbols)
 	}
 
-	pkgIDs := funk.Keys(pkgs)
+	pkgIDs := funk.SortedKeys(pkgs)
 	pkgLen := len(pkgIDs)
 
 	var count uint64
@@ -176,7 +176,7 @@ func indexVisitPackages(
 	var wg sync.WaitGroup
 	wg.Add(1)
 
-	lookupIDs := funk.Keys(pkgLookup)
+	lookupIDs := funk.SortedKeys(pkgLookup)
 
 	// We have to visit all the packages to get the definition sites
 	// for all the symbols.
