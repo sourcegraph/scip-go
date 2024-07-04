@@ -12,8 +12,6 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-var inlineCount = 0
-
 func visitVarDefinition(doc *document.Document, pkg *packages.Package, decl *ast.GenDecl) {
 	ast.Walk(&varVisitor{
 		doc:   doc,

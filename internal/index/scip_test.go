@@ -93,19 +93,6 @@ func TestSnapshots(t *testing.T) {
 			return sourceFiles
 		},
 	)
-
-	// snapshots := map[string]string{}
-	// for _, doc := range index.Documents {
-	// 	snapshot, err := testutil.FormatSnapshot(doc, index, "//", scip.VerboseSymbolFormatter)
-	// 	if err != nil {
-	// 		// t.Fatal(fmt.Sprintf("failed to process %s due to %s", doc.RelativePath, err))
-	// 		fmt.Println(fmt.Sprintf("failed to process %s due to %s", doc.RelativePath, err))
-	// 	}
-	//
-	// 	snapshots[doc.RelativePath] = snapshot
-	// }
-	//
-	// fmt.Println(snapshotRoot)
 }
 
 // getTestdataRoot returns the absolute path to the testdata directory of this repository.

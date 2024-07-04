@@ -43,7 +43,6 @@ var ticker = pentimento.NewAnimatedString([]string{
 	"⠙", "⠹",
 }, updateInterval)
 
-// var failurePrefix = "✗"
 var successPrefix = "✔"
 
 // WithProgress prints a spinner while the given function is active.
@@ -152,12 +151,6 @@ func SetOutputOptions(verb Verbosity, animation bool) {
 func Println(a ...any) {
 	if opts.Verbosity != NoOutput {
 		fmt.Println(a...)
-	}
-}
-
-func Printf(format string, a ...any) {
-	if opts.Verbosity >= VerboseOutput {
-		log.Printf(format, a...)
 	}
 }
 

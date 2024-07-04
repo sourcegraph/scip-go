@@ -16,7 +16,6 @@ import (
 )
 
 type canonicalMethod string
-type scipSymbol string
 
 type ImplDef struct {
 	// The corresponding scip symbol, generated via previous iteration over the AST
@@ -25,10 +24,6 @@ type ImplDef struct {
 	Pkg     *packages.Package
 	Ident   *ast.Ident
 	Methods map[canonicalMethod]*scip.SymbolInformation
-
-	// IsExportedIdent bool
-	// IsExportedType  bool
-	// IsAliasType     bool
 }
 
 func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string]ImplDef, symbols *lookup.Global) {
@@ -135,7 +130,7 @@ func AddImplementationRelationships(pkgs loader.PackageLookup, allPackages loade
 		// local type -> remote interface
 		findImplementations(localTypes, remoteInterfaces, symbols)
 
-        // TODO(author: tjdevries, issue: https://github.com/sourcegraph/scip-go/issues/64)
+		// TODO(author: tjdevries, issue: https://github.com/sourcegraph/scip-go/issues/64)
 		// We should consider what this would even look like?
 		// I don't think this makes sense the current way that we are emitting
 		// implementations. You wouldn't even catch these anyways when uploading

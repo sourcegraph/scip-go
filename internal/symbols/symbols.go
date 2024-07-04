@@ -44,14 +44,3 @@ func FormatCode(v string) string {
 
 	return fmt.Sprintf("```go\n%s\n```", v)
 }
-
-func FormatMarkdown(v string) string {
-	if v == "" {
-		return ""
-	}
-
-	// var buf bytes.Buffer
-	// doc.ToMarkdown(&buf, v, nil)
-	// return buf.String()
-	return v
-}

@@ -93,7 +93,7 @@ func (d *Document) SetNewSymbolForPos(
 			documentation = append(documentation, symbols.FormatCode(signature))
 		}
 		if hover != "" {
-			documentation = append(documentation, symbols.FormatMarkdown(hover))
+			documentation = append(documentation, hover)
 		}
 		if extra != "" {
 			documentation = append(documentation, symbols.FormatCode(extra))
@@ -152,15 +152,6 @@ func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 // packageQualifier returns an empty string in order to remove the leading package
 // name from all identifiers in the return value of types.ObjectString.
 func packageQualifier(*types.Package) string { return "" }
-
-func typeStringForType(typ types.Type) string {
-	// switch ty := typ.Underlying().(type) {
-	// case *types.Array:
-	// 	return fmt.Sprintf("[]%s", typeStringForType(ty.Elem()))
-	// }
-
-	return typ.String()
-}
 
 func typeStringForObject(obj types.Object) (signature string, extra string) {
 	switch v := obj.(type) {
