@@ -1,4 +1,5 @@
 project_name: scip-go
+version: 2
 
 dist: release
 
