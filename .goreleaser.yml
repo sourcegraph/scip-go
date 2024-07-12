@@ -28,10 +28,6 @@ builds:
 archives:
 - id: tarball
   format: tar.gz
-- id: bin
-  format: binary
-  wrap_in_directory: false
-  name_template: "src_{{ .Os }}_{{ .Arch }}"
 
 dockers:
   - ids:
