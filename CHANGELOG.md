@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.15
+
+- Updates the Dockerfile to use Go 1.22.5.
+  (https://github.com/sourcegraph/scip-go/pull/111)
+
 ## v0.1.14
 
 - Fixes a bug with cross-repo navigation when depending
