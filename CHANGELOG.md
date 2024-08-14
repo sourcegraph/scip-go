@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.16
+
+- Updates the indexer and Dockerfile for Go 1.23.0
+  (https://github.com/sourcegraph/scip-go/pull/116)
+
 ## v0.1.15
 
 - Updates the Dockerfile to use Go 1.22.5.
