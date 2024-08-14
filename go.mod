@@ -1,6 +1,6 @@
 module github.com/sourcegraph/scip-go
 
-go 1.22
+go 1.23
 
 require (
 	github.com/efritz/pentimento v0.0.0-20190429011147-ade47d831101
