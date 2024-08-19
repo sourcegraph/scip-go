@@ -12,8 +12,13 @@
   // of this function type.
   type ParallelizableFunc func(ctx context.Context) error
 //     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ParallelizableFunc#
-//     documentation ParallelizableFunc is a function that can be called concurrently with other instances
-//     documentation ```go
+//     documentation
+//     > ParallelizableFunc is a function that can be called concurrently with other instances
+//     > of this function type.
+//     documentation
+//     > ```go
+//     > func(ctx Context) error
+//     > ```
 //                             ^^^ definition local 0
 //                                 ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                                         ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
@@ -22,8 +27,13 @@
   // returns the first error to occur. This method will block until all goroutines have returned.
   func Parallel(ctx context.Context, fns ...ParallelizableFunc) error {
 //     ^^^^^^^^ definition 0.1.test `sg/testdata`/Parallel().
-//     documentation ```go
-//     documentation Parallel invokes each of the given parallelizable functions in their own goroutines and
+//     documentation
+//     > ```go
+//     > func Parallel(ctx Context, fns ...ParallelizableFunc) error
+//     > ```
+//     documentation
+//     > Parallel invokes each of the given parallelizable functions in their own goroutines and
+//     > returns the first error to occur. This method will block until all goroutines have returned.
 //              ^^^ definition local 1
 //                  ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                          ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#

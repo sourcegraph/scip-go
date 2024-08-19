@@ -6,25 +6,40 @@
   
   func Target() interface {
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Target().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func Target() interface{AbbreviatedOID(Context) (string, error); Commit(Context) (string, error); OID(Context) (int, error); Type(Context) (int, error)}
+//     > ```
    OID(context.Context) (int, error)
 // ^^^ definition 0.1.test `sg/inlinestruct`/func:Target:OID().
-// documentation ```go
+// documentation
+// > ```go
+// > func (interface).OID(Context) (int, error)
+// > ```
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //             ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    AbbreviatedOID(context.Context) (string, error)
 // ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:AbbreviatedOID().
-// documentation ```go
+// documentation
+// > ```go
+// > func (interface).AbbreviatedOID(Context) (string, error)
+// > ```
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                        ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Commit(context.Context) (string, error)
 // ^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Commit().
-// documentation ```go
+// documentation
+// > ```go
+// > func (interface).Commit(Context) (string, error)
+// > ```
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Type(context.Context) (int, error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Type().
-// documentation ```go
+// documentation
+// > ```go
+// > func (interface).Type(Context) (int, error)
+// > ```
 //      ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //              ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
   } {
@@ -33,7 +48,10 @@
   
   func something() {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/something().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func something()
+//     > ```
    x := Target()
 // ^ definition local 0
 //      ^^^^^^ reference 0.1.test `sg/inlinestruct`/Target().

@@ -78,7 +78,7 @@ func TestSnapshots(t *testing.T) {
 
 				sourcePath, _ := url.JoinPath(scipIndex.Metadata.ProjectRoot, doc.RelativePath)
 				sourceUrl, _ := url.Parse(sourcePath)
-				formatted, err := testutil.FormatSnapshot(doc, &scipIndex, "//", symbolFormatter, sourceUrl.Path)
+				formatted, err := testutil.FormatSnapshot(doc, "//", symbolFormatter, sourceUrl.Path)
 				if err != nil {
 					t.Errorf("Failed to format document: %s // %s", sourceUrl.Path, err)
 				}

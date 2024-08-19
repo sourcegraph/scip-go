@@ -6,8 +6,16 @@
   
   type Number interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Number#
-//     documentation ```go
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > type Number interface
+//     > ```
+//     documentation
+//     > ```go
+//     > interface {
+//     >     Float | Integer | Complex
+//     > }
+//     > ```
    constraints.Float | constraints.Integer | constraints.Complex
 // ^^^^^^^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/
 //             ^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/Float#
@@ -19,7 +27,10 @@
   
   func Double[T Number](value T) T {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Double().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func Double[T Number](value T) T
+//     > ```
 //            ^ definition local 0
 //              ^^^^^^ reference 0.1.test `sg/generallyeric`/Number#
 //                      ^^^^^ definition local 1
@@ -31,27 +42,53 @@
   
   type Box[T any] struct {
 //     ^^^ definition 0.1.test `sg/generallyeric`/Box#
-//     documentation ```go
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > type Box struct
+//     > ```
+//     documentation
+//     > ```go
+//     > struct {
+//     >     Something T
+//     > }
+//     > ```
 //         ^ definition local 2
    Something T
 // ^^^^^^^^^ definition 0.1.test `sg/generallyeric`/Box#Something.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field Something T
+// > ```
 //           ^ reference local 2
   }
   
   type handler[T any] struct {
 //     ^^^^^^^ definition 0.1.test `sg/generallyeric`/handler#
-//     documentation ```go
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > type handler struct
+//     > ```
+//     documentation
+//     > ```go
+//     > struct {
+//     >     Box[T]
+//     >     Another string
+//     > }
+//     > ```
 //             ^ definition local 3
    Box[T]
 // ^^^ definition 0.1.test `sg/generallyeric`/handler#Box.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field Box sg/generallyeric.Box[T]
+// > ```
 // ^^^ reference 0.1.test `sg/generallyeric`/Box#
 //     ^ reference local 3
    Another string
 // ^^^^^^^ definition 0.1.test `sg/generallyeric`/handler#Another.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field Another string
+// > ```
   }
   
