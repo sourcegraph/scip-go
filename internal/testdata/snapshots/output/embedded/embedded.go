@@ -10,21 +10,35 @@
   
   type osExecCommand struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/osExecCommand#
-//     documentation ```go
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > type osExecCommand struct
+//     > ```
+//     documentation
+//     > ```go
+//     > struct {
+//     >     *Cmd
+//     > }
+//     > ```
 //     relationship github.com/golang/go/src go1.22 context/stringer# implementation
 //     relationship github.com/golang/go/src go1.22 fmt/Stringer# implementation
 //     relationship github.com/golang/go/src go1.22 runtime/stringer# implementation
    *exec.Cmd
 //  ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
 //       ^^^ definition 0.1.test `sg/embedded`/osExecCommand#Cmd.
-//       documentation ```go
+//       documentation
+//       > ```go
+//       > struct field Cmd *os/exec.Cmd
+//       > ```
 //       ^^^ reference github.com/golang/go/src go1.22 `os/exec`/Cmd#
   }
   
   func wrapExecCommand(c *exec.Cmd) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/wrapExecCommand().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func wrapExecCommand(c *Cmd)
+//     > ```
 //                     ^ definition local 0
 //                        ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
 //                             ^^^ reference github.com/golang/go/src go1.22 `os/exec`/Cmd#
@@ -36,35 +50,72 @@
   
   type Inner struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Inner#
-//     documentation ```go
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > type Inner struct
+//     > ```
+//     documentation
+//     > ```go
+//     > struct {
+//     >     X int
+//     >     Y int
+//     >     Z int
+//     > }
+//     > ```
    X int
 // ^ definition 0.1.test `sg/embedded`/Inner#X.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field X int
+// > ```
    Y int
 // ^ definition 0.1.test `sg/embedded`/Inner#Y.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field Y int
+// > ```
    Z int
 // ^ definition 0.1.test `sg/embedded`/Inner#Z.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field Z int
+// > ```
   }
   
   type Outer struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Outer#
-//     documentation ```go
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > type Outer struct
+//     > ```
+//     documentation
+//     > ```go
+//     > struct {
+//     >     Inner
+//     >     W int
+//     > }
+//     > ```
    Inner
 // ^^^^^ definition 0.1.test `sg/embedded`/Outer#Inner.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field Inner sg/embedded.Inner
+// > ```
 // ^^^^^ reference 0.1.test `sg/embedded`/Inner#
    W int
 // ^ definition 0.1.test `sg/embedded`/Outer#W.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field W int
+// > ```
   }
   
   func useOfCompositeStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/useOfCompositeStructs().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func useOfCompositeStructs()
+//     > ```
    o := Outer{
 // ^ definition local 1
 //      ^^^^^ reference 0.1.test `sg/embedded`/Outer#

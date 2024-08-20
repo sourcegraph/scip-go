@@ -3,7 +3,10 @@
   
   func UsesBuiltin() int {
 //     ^^^^^^^^^^^ definition 0.1.test `sg/initial`/UsesBuiltin().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func UsesBuiltin() int
+//     > ```
    var x int = 5
 //     ^ definition local 0
    return x

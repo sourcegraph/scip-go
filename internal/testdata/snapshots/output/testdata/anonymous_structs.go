@@ -6,35 +6,78 @@
   
   type TypeContainingAnonymousStructs struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
-//     documentation ```go
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > type TypeContainingAnonymousStructs struct
+//     > ```
+//     documentation
+//     > ```go
+//     > struct {
+//     >     a struct {
+//     >         x int
+//     >         y string
+//     >     }
+//     >     b struct {
+//     >         x int
+//     >         y string
+//     >     }
+//     >     c struct {
+//     >         X int
+//     >         Y string
+//     >     }
+//     > }
+//     > ```
    a, b struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field a struct{x int; y string}
+// > ```
 //    ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.
-//    documentation ```go
+//    documentation
+//    > ```go
+//    > struct field b struct{x int; y string}
+//    > ```
     x int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.x.
-//  documentation ```go
+//  documentation
+//  > ```go
+//  > struct field x int
+//  > ```
     y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.y.
-//  documentation ```go
+//  documentation
+//  > ```go
+//  > struct field y string
+//  > ```
    }
    c struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-// documentation ```go
+// documentation
+// > ```go
+// > struct field c struct{X int; Y string}
+// > ```
     X int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.X.
-//  documentation ```go
+//  documentation
+//  > ```go
+//  > struct field X int
+//  > ```
     Y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
-//  documentation ```go
+//  documentation
+//  > ```go
+//  > struct field Y string
+//  > ```
    }
   }
   
   func funcContainingAnonymousStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func funcContainingAnonymousStructs()
+//     > ```
    d := struct {
 // ^ definition local 0
     x int

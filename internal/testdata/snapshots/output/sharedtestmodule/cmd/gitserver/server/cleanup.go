@@ -3,5 +3,8 @@
   
   func LiterallyAnything() {}
 //     ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/LiterallyAnything().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func LiterallyAnything()
+//     > ```
   

@@ -8,7 +8,10 @@
   
   func f(xs []int) int {
 //     ^ definition 0.1.test `sg/initial`/f().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func f(xs []int) int
+//     > ```
 //       ^^ definition local 0
     for _, x := range slices.All(xs) {
 //         ^ definition local 1

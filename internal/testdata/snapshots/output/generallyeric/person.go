@@ -6,23 +6,40 @@
   
   type Person interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Person#
-//     documentation ```go
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > type Person interface
+//     > ```
+//     documentation
+//     > ```go
+//     > interface {
+//     >     Work()
+//     > }
+//     > ```
    Work()
 // ^^^^ definition 0.1.test `sg/generallyeric`/Person#Work.
-// documentation ```go
+// documentation
+// > ```go
+// > func (Person).Work()
+// > ```
   }
   
   type worker string
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/worker#
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > string
+//     > ```
 //     relationship 0.1.test `sg/generallyeric`/Person# implementation
   
   func (w worker) Work() {
 //      ^ definition local 0
 //        ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
 //                ^^^^ definition 0.1.test `sg/generallyeric`/worker#Work().
-//                documentation ```go
+//                documentation
+//                > ```go
+//                > func (worker).Work()
+//                > ```
 //                relationship 0.1.test `sg/generallyeric`/Person#Work. implementation
    fmt.Printf("%s is working\n", w)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
@@ -32,7 +49,10 @@
   
   func DoWork[T Person](things []T) {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/DoWork().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func DoWork[T Person](things []T)
+//     > ```
 //            ^ definition local 1
 //              ^^^^^^ reference 0.1.test `sg/generallyeric`/Person#
 //                      ^^^^^^ definition local 2
@@ -48,7 +68,10 @@
   
   func main() {
 //     ^^^^ definition 0.1.test `sg/generallyeric`/main().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func main()
+//     > ```
    var a, b, c worker
 //     ^ definition local 4
 //        ^ definition local 5

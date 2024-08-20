@@ -1,6 +1,7 @@
   package replacers
 //        ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/
-//        documentation package replacers
+//        documentation
+//        > package replacers
   
   import (
    "fmt"
@@ -12,7 +13,10 @@
   
   func Something() {
 //     ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/Something().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func Something()
+//     > ```
    fmt.Println(gologin.DefaultCookieConfig)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().

@@ -1,6 +1,7 @@
   package nested_internal
 //        ^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded/internal`/
-//        documentation package nested_internal
+//        documentation
+//        > package nested_internal
   
   import (
    "fmt"
@@ -11,7 +12,10 @@
   
   func Something(recent embedded.RecentCommittersResults) {
 //     ^^^^^^^^^ definition 0.1.test `sg/embedded/internal`/Something().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func Something(recent RecentCommittersResults)
+//     > ```
 //               ^^^^^^ definition local 0
 //                      ^^^^^^^^ reference 0.1.test `sg/embedded`/
 //                               ^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#

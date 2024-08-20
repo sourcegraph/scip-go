@@ -3,12 +3,18 @@
   
   func UsesLater() {
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/UsesLater().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func UsesLater()
+//     > ```
    DefinedLater()
 // ^^^^^^^^^^^^ reference 0.1.test `sg/initial`/DefinedLater().
   }
   
   func DefinedLater() {}
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DefinedLater().
-//     documentation ```go
+//     documentation
+//     > ```go
+//     > func DefinedLater()
+//     > ```
   
