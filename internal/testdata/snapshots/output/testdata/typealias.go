@@ -11,7 +11,7 @@
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/SecretBurger#
 //     documentation
 //     > ```go
-//     > type SecretBurger struct
+//     > type SecretBurger = secret.Burger
 //     > ```
 //     documentation
 //     > Type aliased doc
@@ -28,7 +28,7 @@
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/BadBurger#
 //     documentation
 //     > ```go
-//     > type BadBurger struct
+//     > type BadBurger = struct
 //     > ```
 //     documentation
 //     > ```go

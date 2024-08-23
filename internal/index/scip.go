@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"go/ast"
+	"os"
 	"sort"
 	"strings"
 	"sync"
@@ -87,6 +88,12 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 }
 
 func Index(writer func(proto.Message), opts config.IndexOpts) error {
+	if os.Getenv("GODEBUG") == "" {
+		// TODO: Remove this after upgrading to Go 1.23.1
+		// See https://github.com/golang/go/issues/68894
+		os.Setenv("GODEBUG", "gotypesalias=0")
+	}
+
 	// Emit Metadata.
 	//   NOTE: Must be the first field emitted
 	writer(&scip.Metadata{
