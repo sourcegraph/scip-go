@@ -6,7 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install ASDF
         uses: asdf-vm/actions/setup@v3
@@ -38,7 +38,7 @@ jobs:
   test-gotip:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install ASDF
         uses: asdf-vm/actions/setup@v3
@@ -69,7 +69,7 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: 'Check Dockerfile is well-formed'
         run: ./scripts/dockerfile_checks.sh
       - name: 'Build Docker image'
