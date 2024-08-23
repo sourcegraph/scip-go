@@ -3,7 +3,7 @@ name: Run go tests
 on: [push]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -34,6 +34,37 @@ jobs:
           distribution: goreleaser
           version: latest
           args: release --snapshot --clean
+
+  test-gotip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install ASDF
+        uses: asdf-vm/actions/setup@v3
+
+      - name: Install matching Go toolchain
+        run: |
+          asdf plugin add golang
+          asdf install golang
+
+      - name: Install gotip
+        run: |
+          go install golang.org/dl/gotip@latest
+          asdf reshim
+          gotip download
+
+      - name: Go version
+        run: gotip version
+
+      - name: Install dependencies
+        run: gotip get ./...
+
+      - name: Build
+        run: gotip build -v ./...
+
+      - name: Test
+        run: gotip test -v ./...
 
   docker-build:
     runs-on: ubuntu-latest
