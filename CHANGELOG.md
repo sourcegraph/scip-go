@@ -1,9 +1,19 @@
 # ChangeLog
 
+## v0.1.17
+
+- Fixes panic due to alias types in v0.1.16.
+  (https://github.com/sourcegraph/scip-go/pull/121)
+
 ## v0.1.16
+
+NOTE: This release panics on alias types due to
+upstream Go bug [68877](https://github.com/golang/go/issues/68877);
+you can work around that by using `GODEBUG=gotypesalias=0`.
 
 - Updates the indexer and Dockerfile for Go 1.23.0
   (https://github.com/sourcegraph/scip-go/pull/116)
+
 
 ## v0.1.15
 
