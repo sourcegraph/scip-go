@@ -244,7 +244,7 @@
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestEqualsStruct#
 //     documentation
 //     > ```go
-//     > type TestEqualsStruct struct
+//     > type TestEqualsStruct = struct
 //     > ```
 //     documentation
 //     > ```go

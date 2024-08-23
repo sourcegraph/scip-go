@@ -69,6 +69,8 @@
 //            > func (T1).F1()
 //            > ```
 //            relationship 0.1.test `sg/testdata`/I1#F1. implementation
+//            relationship 0.1.test `sg/testdata`/I1#F1. implementation
+//            relationship 0.1.test `sg/testdata`/I1#F1. implementation
   
   type T2 int
 //     ^^ definition 0.1.test `sg/testdata`/T2#
@@ -104,6 +106,7 @@
 //     > ```go
 //     > int
 //     > ```
+//     relationship 0.1.test `sg/testdata`/I1# implementation
 //          ^^ reference 0.1.test `sg/testdata`/T1#
   type A12 = A1
 //     ^^^ definition 0.1.test `sg/testdata`/A12#
@@ -111,6 +114,7 @@
 //     > ```go
 //     > int
 //     > ```
+//     relationship 0.1.test `sg/testdata`/I1# implementation
 //           ^^ reference 0.1.test `sg/testdata`/A1#
   
   type InterfaceWithNonExportedMethod interface {
