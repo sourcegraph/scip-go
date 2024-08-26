@@ -2,11 +2,11 @@ package modules
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/charmbracelet/log"
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/go/vcs"
@@ -22,7 +22,7 @@ func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err
 		moduleName = repo
 
 		if !isModule(dir) {
-			log.Println("WARNING: No go.mod file found in current directory.")
+			log.Warn("No go.mod file found in current directory.")
 		} else {
 			if moduleName, err = command.Run(dir, "go", "list", "-mod=readonly", "-m"); err != nil {
 				return fmt.Errorf("failed to list modules: %v\n%s", err, moduleName)
