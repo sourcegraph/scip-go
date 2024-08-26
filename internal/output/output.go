@@ -2,11 +2,11 @@ package output
 
 import (
 	"fmt"
-	"log"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/efritz/pentimento"
 	"github.com/sourcegraph/scip-go/internal/parallel"
 )
