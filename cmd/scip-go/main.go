@@ -38,6 +38,7 @@ var (
 	moduleVersion    string
 	moduleName       string
 	goVersion        string
+	autoIndex        bool
 	verbosity        int
 	noOutput         bool
 	animation        bool
@@ -72,7 +73,7 @@ func init() {
 	app.Flag("module-name", "Specifies the name of the module defined by module-root.").StringVar(&moduleName)
 	app.Flag("module-version", "Specifies the version of the module defined by module-root.").Default(defaultModuleVersion.Value()).StringVar(&moduleVersion)
 	app.Flag("go-version", "Specifies the version of the Go standard library to link to. Format: 'go1.XX'").Default(defaultGoVersion.Value()).StringVar(&goVersion)
-
+	app.Flag("auto-index", "Specifies if this should operate in auto-indexing mode, allowing for filesystem-modifying operations. For Sourcegraph-use only; the behavior may change without warning.").Default("false").BoolVar(&autoIndex)
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
 	app.Flag("verbose", "Output debug logs.").Short('v').CounterVar(&verbosity)
@@ -84,7 +85,6 @@ func init() {
 	app.Flag("skip-tests", "Skip compiling tests. Will not generate scip indexes over your or your dependencies tests").Default("false").BoolVar(&skipTests)
 
 	app.Flag("command", "Optionally specifies a command to run. Defaults to 'index'").Default("index").StringVar(&scipCommand)
-
 	app.Flag("profile", "Turn on debug profiling. This will reduce performance. Do not turn on unless debugging. Set to number of milliseconds per sample").Default("0").IntVar(&profileRate)
 }
 
@@ -109,6 +109,13 @@ func mainErr() error {
 
 	output.SetOutputOptions(getVerbosity(), animation)
 	output.Println("scip-go")
+	if autoIndex {
+		output.Println("Auto-indexing enabled")
+		err := git.FetchTagsIfMissing(moduleRoot)
+		if err != nil {
+			log.Error("error when fetching tags: %s", err.Error())
+		}
+	}
 
 	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
 

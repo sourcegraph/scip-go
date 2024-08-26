@@ -27,4 +27,4 @@ RUN go build -o scip-go ./cmd/scip-go
 FROM golang:1.23.0@sha256:${base_sha} as final
 
 COPY --from=builder /sources/scip-go /usr/bin/
-CMD ["scip-go"]
+CMD ["scip-go", "--auto-index"]
