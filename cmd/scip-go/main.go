@@ -284,13 +284,37 @@ func sanitizeRepositoryRoot() (err error) {
 //
 // Validators
 
+func realPath(path string) (string, error) {
+	// See https://github.com/golang/go/issues/42201#issue-729110184
+	//
+	// The suggested solution is more complex for Windows, so skip that
+	// for now.
+	p, err := filepath.EvalSymlinks(path)
+	if err != nil {
+		return p, err
+	}
+	return filepath.Abs(p)
+}
+
 func validatePaths() error {
-	if !strings.HasPrefix(projectRoot, repositoryRoot) {
-		return errors.New("project root is outside the repository")
+	cmpProjectRoot := projectRoot
+	if realProjectRoot, err := realPath(projectRoot); err == nil {
+		cmpProjectRoot = realProjectRoot
+	}
+	cmpRepoRoot := repositoryRoot
+	if realRepoRoot, err := realPath(repositoryRoot); err == nil {
+		cmpRepoRoot = realRepoRoot
+	}
+	if !strings.HasPrefix(cmpProjectRoot, cmpRepoRoot) {
+		return errors.New(fmt.Sprintf("project root is outside the repository (project root = %q, repository root = %q)", cmpProjectRoot, cmpRepoRoot))
 	}
 
-	if !strings.HasPrefix(moduleRoot, repositoryRoot) {
-		return errors.New("module root is outside the repository")
+	cmpModuleRoot := moduleRoot
+	if realModuleRoot, err := realPath(moduleRoot); err == nil {
+		cmpModuleRoot = realModuleRoot
+	}
+	if !strings.HasPrefix(cmpModuleRoot, cmpRepoRoot) {
+		return errors.New(fmt.Sprintf("module root is outside the repository (module root = %q, repository root = %q)", cmpModuleRoot, cmpRepoRoot))
 	}
 
 	return nil
