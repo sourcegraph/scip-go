@@ -144,14 +144,18 @@ func printProgress(printer *pentimento.Printer, name string, c *uint64, n uint64
 }
 
 func SetOutputOptions(verb Verbosity, animation bool) {
+	switch verb {
+	case NoOutput:
+		log.SetLevel(log.FatalLevel)
+	case DefaultOutput:
+		log.SetLevel(log.WarnLevel)
+	case VerboseOutput:
+		log.SetLevel(log.InfoLevel)
+	case VeryVerboseOutput, VeryVeryVerboseOutput:
+		log.SetLevel(log.DebugLevel)
+	}
 	opts.Verbosity = verb
 	opts.ShowAnimations = animation
-}
-
-func Println(a ...any) {
-	if opts.Verbosity != NoOutput {
-		fmt.Println(a...)
-	}
 }
 
 func Logf(format string, a ...any) {

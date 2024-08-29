@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/charmbracelet/log"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
@@ -213,7 +214,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			pkg.Module.Version = opts.ModuleVersion
 		} else {
 			// Only panic when running in debug mode.
-			fmt.Println(handler.ErrOrPanic(
+			log.Error(handler.ErrOrPanic(
 				"Unknown version for userland package: %s %s",
 				pkg.Module.Path,
 				opts.ModulePath,
@@ -229,7 +230,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		rev, err := module.PseudoVersionRev(pkg.Module.Version)
 		if err != nil {
 			// Only panic when running in debug mode.
-			fmt.Println(handler.ErrOrPanic(
+			log.Error(handler.ErrOrPanic(
 				"Unable to find rev from pseudo-version: %s %s",
 				pkg.Module.Path,
 				pkg.Module.Version,

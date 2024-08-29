@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/agnivade/levenshtein"
-	"github.com/sourcegraph/scip-go/internal/handler"
+	"github.com/charmbracelet/log"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -22,7 +22,7 @@ func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
 	}
 
 	if len(pkg.Syntax) == 0 {
-		handler.Println("Missing |", pkg.ID, pkg.Module.Path)
+		log.Warn("package does not contain any ASTs", "path", pkg.PkgPath)
 		return nil, nil
 	}
 

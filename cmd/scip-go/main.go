@@ -108,21 +108,33 @@ func mainErr() error {
 	handler.SetDev(devMode)
 
 	output.SetOutputOptions(getVerbosity(), animation)
-	output.Println("scip-go")
+	// The default formatting also prints the date, which is generally not needed.
+	log.SetTimeFormat("15:04:05")
+	log.SetStyles(func() *log.Styles {
+		// The default styles will print 'DEBU' and 'ERRO' to line
+		// up with 'INFO' and 'WARN', instead of 'DEBUG' and 'ERROR'
+		s := log.DefaultStyles()
+		for lvl, style := range s.Levels {
+			s.Levels[lvl] = style.UnsetMaxWidth()
+		}
+		return s
+	}())
 
 	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
 
-	output.Println("  Go standard library version: ", goVersion)
-	output.Println("  Resolved module name       : ", modulePath)
+	log.Info("Go standard library version: ", "version", goVersion)
+	log.Info("Resolved module name: ", "module", modulePath)
 	if isStdLib {
-		output.Println("  Resolved as stdlib         :", true)
+		log.Info("Resolved as stdlib: true")
+	}
+	if skipImplementations {
+		log.Info("Skipping implementations")
+	}
+	if skipTests {
+		log.Info("Skipping tests")
 	}
 
 	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion, isStdLib, skipImplementations, skipTests)
-	output.Println("")
-	output.Println("Configuration:")
-	output.Println("  Skip Implementations:", options.SkipImplementations)
-	output.Println("  Skip Test           :", options.SkipTests)
 
 	if strings.HasPrefix(scipCommand, "list-packages") {
 		var filter string
@@ -172,7 +184,8 @@ func mainErr() error {
 
 	file, err := os.Create(outFile)
 	if err != nil {
-		log.Fatal("Failed to create scip index file")
+		log.Fatal("Failed to create scip index file", "path", outFile)
+		return err
 	}
 	defer file.Close()
 
@@ -193,7 +206,7 @@ func mainErr() error {
 
 		b, err := proto.Marshal(index)
 		if err != nil {
-			log.Fatal("Failed to marshal a protobuf message")
+			log.Fatal("Failed to marshal SCIP index to Protobuf")
 		}
 
 		// Lock for writing to the file, to make sure that we don't race to

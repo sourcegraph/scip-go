@@ -6,6 +6,7 @@ import (
 	"go/types"
 	"strings"
 
+	"github.com/charmbracelet/log"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
@@ -78,7 +79,7 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 		for _, impl := range tyImpls {
 			implDef, ok := interfaces[impl.Symbol]
 			if !ok {
-				fmt.Println(fmt.Sprintf("Could not find interface %s", impl.Symbol))
+				log.Error("Could not find interface", "symbol", impl.Symbol)
 				continue
 			}
 
@@ -88,7 +89,7 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 				IsImplementation: true,
 			})
 
-			// For all methods, add imlementation details as well
+			// For all methods, add implementation details as well
 			for name, implMethod := range implDef.Methods {
 				tyMethodInfo, ok := ty.Methods[name]
 				if !ok {
@@ -173,7 +174,7 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 
 		pkgSymbols := symbols.GetPackage(pkg)
 		if pkgSymbols == nil {
-			fmt.Println("No symbols for package:", pkg.Name)
+			log.Warn("No symbols for package", "path", pkg.PkgPath)
 			continue
 		}
 
@@ -199,7 +200,9 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 			symbol, ok := pkgSymbols.Get(obj.Pos())
 			if !ok {
 				if obj.Exported() {
-					handler.Println("No symbol for:", ident.Name, obj.Pkg(), obj.Id())
+					// TODO: Look into whether this is a bug or not
+					// https://linear.app/sourcegraph/issue/GRAPH-852
+					// log.Debug("No symbol for:", "identifier", ident.Name, "package", obj.Pkg(), "id", obj.Id())
 				}
 
 				continue
