@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v0.1.18
+
+- Adds more detailed logging for diagnosing hangs
+  during indexing.
+  (https://github.com/sourcegraph/scip-go/pull/126)
+
 ## v0.1.17
 
 - Fixes panic due to alias types in v0.1.16.
