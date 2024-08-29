@@ -10,10 +10,10 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/charmbracelet/log"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/funk"
-	"github.com/sourcegraph/scip-go/internal/handler"
 	impls "github.com/sourcegraph/scip-go/internal/implementations"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
@@ -114,10 +114,7 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 
 	pathToDocuments, globalSymbols := indexVisitPackages(opts, pkgs, allPackages)
 
-	if opts.SkipImplementations {
-		output.Println("Skipping implementation relationships")
-		output.Println("")
-	} else {
+	if !opts.SkipImplementations {
 		impls.AddImplementationRelationships(pkgs, allPackages, globalSymbols)
 	}
 
@@ -138,7 +135,6 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 			for _, f := range pkg.Syntax {
 				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
 				if doc == nil {
-					handler.Println("doc is nil for:", pkg.Fset.File(f.Package).Name())
 					continue
 				}
 
@@ -195,6 +191,7 @@ func indexVisitPackages(
 
 		for _, pkgID := range lookupIDs {
 			pkg := pkgLookup[pkgID]
+			log.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
 			// Handle that packages can have many files for one package.
