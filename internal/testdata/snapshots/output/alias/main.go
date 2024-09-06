@@ -23,7 +23,7 @@
 // ^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
 // documentation
 // > ```go
-// > type U = T
+// > type U struct
 // > ```
 // documentation
 // > Check that we don't panic
