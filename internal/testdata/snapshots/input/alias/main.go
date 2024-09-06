@@ -5,5 +5,9 @@ package main
 type (
 	T struct{}
 	U = T
+	V = U
 	S U
+	Z int32
 )
+
+func f(u U) {}

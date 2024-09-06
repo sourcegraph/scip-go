@@ -7,8 +7,11 @@ import (
 	"go/doc"
 	"go/token"
 	"go/types"
+	"os"
 	"strings"
+	"sync"
 
+	"github.com/charmbracelet/log"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip/bindings/go/scip"
@@ -169,7 +172,6 @@ func typeStringForObject(obj types.Object) (signature string, extra string) {
 
 	case *types.Const:
 		return fmt.Sprintf("%s = %s", types.ObjectString(v, packageQualifier), v.Val()), ""
-
 		// TODO: We had this case in previous iterations
 		// case *PkgDeclaration:
 		// 	return fmt.Sprintf("package %s", v.name), ""
@@ -181,23 +183,44 @@ func typeStringForObject(obj types.Object) (signature string, extra string) {
 	return types.ObjectString(obj, packageQualifier), ""
 }
 
+var loggedGODEBUGWarning sync.Once
+
 // formatTypeSignature returns a brief description of the given struct or interface type.
 func formatTypeSignature(obj *types.TypeName) string {
 	switch obj.Type().Underlying().(type) {
 	case *types.Struct:
 		if obj.IsAlias() {
-			switch obj.Type().(type) {
-			case *types.Named:
-				original := obj.Type().(*types.Named).Obj()
-				var pkg string
-				if obj.Pkg().Name() != original.Pkg().Name() {
-					pkg = original.Pkg().Name() + "."
+			switch ty := obj.Type().(type) {
+			case *types.Alias:
+				switch rhs := ty.Rhs().(type) {
+				case *types.Alias:
+					original := rhs.Obj()
+					var pkg string
+					if obj.Pkg().Name() != original.Pkg().Name() {
+						pkg = original.Pkg().Name() + "."
+					}
+					return fmt.Sprintf("type %s = %s%s", obj.Name(), pkg, original.Name())
+				case *types.Named:
+					original := rhs.Obj()
+					var pkg string
+					if obj.Pkg().Name() != original.Pkg().Name() {
+						pkg = original.Pkg().Name() + "."
+					}
+					return fmt.Sprintf("type %s = %s%s", obj.Name(), pkg, original.Name())
+				case *types.Struct:
+					return fmt.Sprintf("type %s = struct", obj.Name())
 				}
-				return fmt.Sprintf("type %s = %s%s", obj.Name(), pkg, original.Name())
-
-			case *types.Struct:
-				return fmt.Sprintf("type %s = struct", obj.Name())
+			default:
+				if val := os.Getenv("GODEBUG"); strings.Contains(val, "gotypealias=0") {
+					loggedGODEBUGWarning.Do(func() {
+						log.Warn("Running with GODEBUG=gotypealias=0, this may cause incorrect hover docs")
+					})
+				} else {
+					log.Warn("IsAlias() is true but Type() is not Alias; please report this as a bug",
+						"obj", obj.String(), "obj.Type()", ty.String())
+				}
 			}
+
 		}
 
 		return fmt.Sprintf("type %s struct", obj.Name())
