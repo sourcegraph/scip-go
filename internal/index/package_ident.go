@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/agnivade/levenshtein"
-	"github.com/charmbracelet/log"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -22,7 +21,8 @@ func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
 	}
 
 	if len(pkg.Syntax) == 0 {
-		log.Warn("package does not contain any ASTs", "path", pkg.PkgPath)
+		// This case can be triggered when a package directory only contains `_test.go` files,
+		// as those files will be compiled as part of a separate _test package.
 		return nil, nil
 	}
 
