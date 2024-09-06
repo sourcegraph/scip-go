@@ -1,5 +1,12 @@
 # ChangeLog
 
+## v0.1.19
+
+- Upgrades Dockerfile to use Go 1.23.1 (released on Sept 05 2024).
+- Removes incorrect warning about missing ASTs for packages
+  only containing test files.
+  (https://github.com/sourcegraph/scip-go/pull/129)
+
 ## v0.1.18
 
 - Adds more detailed logging for diagnosing hangs
