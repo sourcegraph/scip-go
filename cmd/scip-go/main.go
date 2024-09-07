@@ -96,6 +96,18 @@ func main() {
 }
 
 func mainErr() error {
+	// The default formatting also prints the date, which is generally not needed.
+	log.SetTimeFormat("15:04:05")
+	log.SetStyles(func() *log.Styles {
+		// The default styles will print 'DEBU' and 'ERRO' to line
+		// up with 'INFO' and 'WARN', instead of 'DEBUG' and 'ERROR'
+		s := log.DefaultStyles()
+		for lvl, style := range s.Levels {
+			s.Levels[lvl] = style.UnsetMaxWidth()
+		}
+		return s
+	}())
+
 	if err := parseArgs(os.Args[1:]); err != nil {
 		return err
 	}
@@ -108,17 +120,6 @@ func mainErr() error {
 	handler.SetDev(devMode)
 
 	output.SetOutputOptions(getVerbosity(), animation)
-	// The default formatting also prints the date, which is generally not needed.
-	log.SetTimeFormat("15:04:05")
-	log.SetStyles(func() *log.Styles {
-		// The default styles will print 'DEBU' and 'ERRO' to line
-		// up with 'INFO' and 'WARN', instead of 'DEBUG' and 'ERROR'
-		s := log.DefaultStyles()
-		for lvl, style := range s.Levels {
-			s.Levels[lvl] = style.UnsetMaxWidth()
-		}
-		return s
-	}())
 
 	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
 
