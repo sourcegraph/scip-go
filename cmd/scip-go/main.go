@@ -64,14 +64,14 @@ func init() {
 
 	// Path options (inferred by presence of go.mod; git)
 	app.Flag("project-root", "Specifies the directory to index.").Default(".").StringVar(&projectRoot)
-	app.Flag("module-root", "Specifies the directory containing the go.mod file.").Default(defaultModuleRoot.Value()).StringVar(&moduleRoot)
-	app.Flag("repository-root", "Specifies the top-level directory of the git repository.").Default(defaultRepositoryRoot.Value()).StringVar(&repositoryRoot)
+	app.Flag("module-root", "Specifies the directory containing the go.mod file.").Default(defaultModuleRoot()).StringVar(&moduleRoot)
+	app.Flag("repository-root", "Specifies the top-level directory of the git repository.").Default(defaultRepositoryRoot()).StringVar(&repositoryRoot)
 
 	// Repository remote and tag options (inferred by git)
-	app.Flag("repository-remote", "Specifies the canonical name of the repository remote.").Default(defaultRepositoryRemote.Value()).StringVar(&repositoryRemote)
+	app.Flag("repository-remote", "Specifies the canonical name of the repository remote.").Default(defaultRepositoryRemote()).StringVar(&repositoryRemote)
 	app.Flag("module-name", "Specifies the name of the module defined by module-root.").StringVar(&moduleName)
-	app.Flag("module-version", "Specifies the version of the module defined by module-root.").Default(defaultModuleVersion.Value()).StringVar(&moduleVersion)
-	app.Flag("go-version", "Specifies the version of the Go standard library to link to. Format: 'go1.XX'").Default(defaultGoVersion.Value()).StringVar(&goVersion)
+	app.Flag("module-version", "Specifies the version of the module defined by module-root.").Default(defaultModuleVersion()).StringVar(&moduleVersion)
+	app.Flag("go-version", "Specifies the version of the Go standard library to link to. Format: 'go1.XX'").Default(defaultGoVersion()).StringVar(&goVersion)
 
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
@@ -305,31 +305,31 @@ func validatePaths() error {
 //
 // Defaults
 
-var defaultModuleRoot = newCachedString(func() string {
-	return searchForGoMod(wd.Value(), toplevel.Value())
+var defaultModuleRoot = sync.OnceValue(func() string {
+	return searchForGoMod(wd(), toplevel())
 })
 
-var defaultRepositoryRoot = newCachedString(func() string {
-	return rel(toplevel.Value())
+var defaultRepositoryRoot = sync.OnceValue(func() string {
+	return rel(toplevel())
 })
 
-var defaultRepositoryRemote = newCachedString(func() string {
-	if repo, err := git.InferRepo(defaultModuleRoot.Value()); err == nil {
+var defaultRepositoryRemote = sync.OnceValue(func() string {
+	if repo, err := git.InferRepo(defaultModuleRoot()); err == nil {
 		return repo
 	}
 
 	return ""
 })
 
-var defaultModuleVersion = newCachedString(func() string {
-	if version, err := git.InferModuleVersion(defaultModuleRoot.Value()); err == nil {
+var defaultModuleVersion = sync.OnceValue(func() string {
+	if version, err := git.InferModuleVersion(defaultModuleRoot()); err == nil {
 		return version
 	}
 
 	return ""
 })
 
-var defaultGoVersion = newCachedString(func() string {
+var defaultGoVersion = sync.OnceValue(func() string {
 	modOutput, err := command.Run(moduleRoot, "go", "list", "-mod=readonly", "-m", "-json")
 	if err != nil {
 		return ""
