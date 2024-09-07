@@ -4,11 +4,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/sourcegraph/scip-go/internal/git"
 )
 
-var wd = newCachedString(func() string {
+var wd = sync.OnceValue(func() string {
 	if wd, err := os.Getwd(); err == nil {
 		return wd
 	}
@@ -16,7 +17,7 @@ var wd = newCachedString(func() string {
 	return ""
 })
 
-var toplevel = newCachedString(func() string {
+var toplevel = sync.OnceValue(func() string {
 	if toplevel, err := git.TopLevel("."); err == nil {
 		return toplevel
 	}
@@ -46,7 +47,7 @@ func searchForGoMod(path, repositoryRoot string) string {
 }
 
 func rel(path string) string {
-	relative, err := filepath.Rel(wd.Value(), path)
+	relative, err := filepath.Rel(wd(), path)
 	if err != nil {
 		return "."
 	}
