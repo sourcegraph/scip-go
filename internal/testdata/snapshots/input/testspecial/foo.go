@@ -1,0 +1,3 @@
+package testspecial
+
+func Foo() {}
