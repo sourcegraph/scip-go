@@ -44,7 +44,27 @@ func getConfig(root string, opts config.IndexOpts) *packages.Config {
 }
 
 func addImportsToPkgs(pkgLookup PackageLookup, opts *config.IndexOpts, pkg *packages.Package) {
-	if _, ok := pkgLookup[newtypes.GetID(pkg)]; ok {
+	// NOTE(id: special-test-handling): When Go code is compiled, tests
+	// have special support. There are two forms of adding tests:
+	//
+	// - Having _test.go files with 'package mypkg' (white-box testing)
+	// - Having _test.go files with 'package mypkg_test' (black-box testing)
+	//
+	// When using the white-box testing approach, the compiler ends up loading
+	// two different packages, 'mypkg' and 'mypkg.test', with the latter also
+	// including _test.go files with 'package mypkg'. Hence, if 'mypkg.test'
+	// exists, then it will have the same PkgPath as 'mypkg', but it may have
+	// more files.
+	//
+	// If it does have more files, then prefer it over the base package.
+	// Ideally, we would check that we're actually using a '.test' package,
+	// but the IDs are meant to be treated opaquely, so there is no reasonable
+	// API to detect this.
+	//
+	// Apart from the special "_test" suffix, using different package names within
+	// the same directory is an error, so we don't need to worry about accidentally
+	// dropping information if there are unrelated packages at the same path.
+	if gotPkg, ok := pkgLookup[newtypes.GetID(pkg)]; ok && len(pkg.Syntax) <= len(gotPkg.Syntax) {
 		return
 	}
 
