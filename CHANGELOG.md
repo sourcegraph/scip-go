@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.21
+
+- Upgrades Dockerfile to use Go 1.23.2 (released Oct 1 2024).
+  (https://github.com/sourcegraph/scip-go/pull/136)
+
 ## v0.1.20
 
 - Fixes a bug which caused test files using the same package name
