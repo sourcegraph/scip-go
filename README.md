@@ -20,6 +20,8 @@ scip-go --version
 
 ## Indexing a Go project
 
+### Standard `go.mod` project
+
 From the root of your project, you can run:
 
 ```
@@ -39,6 +41,18 @@ If this doesn't solve the problem, check the rest of the available flags in:
 scip-go --help
 ```
 
+### Other build systems
+
+The other build systems Buck/Bazel/Please/etc are supported via [Go Packages Driver Protocol](https://pkg.go.dev/golang.org/x/tools/go/packages#hdr-The_driver_protocol).
+
+
+Usage:
+```
+GOPACKAGESDRIVER=your_driver scip-go
+```
+
+Note: Due to the current protocol design cross-repo navigation will not work.
+
 ### Common Problems:
 
 - Unable to navigate to Go standard library.
@@ -54,7 +68,7 @@ scip-go --help
 
 `scip-go` by default uses a few different `go` commands from the command line to
 gain information about the project and module. To avoid running `go` directly
-(perhaps you have some other build system), you will need to supply the folling args.
+(perhaps you have some other build system), you will need to supply the following args.
 
 ```
 scip-go --module-name="<my modules name here>"

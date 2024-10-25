@@ -169,6 +169,28 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	//		Path string = "github.com/efritz/pentimento"
 	//		Version string = "v0.0.0-20190429011147-ade47d831101"
 
+	if opts.IsGoPackagesDriverSet {
+		// As of golang.org/x/tools v0.26, the JSON object for representing packages
+		// does not have a Module field:
+		//   https://github.com/golang/tools/blob/v0.26.0/go/packages/packages.go#L609-L627
+		// which means that cross-repo navigation may not work out-of-the-box
+		// for 3rd party build systems like Bazel, Buck2, Please etc. using GOPACKAGESDRIVER
+		pkg.Module = &packages.Module{
+			Path:    ".",
+			Version: ".",
+		}
+
+		if opts.ModulePath != "" {
+			pkg.Module.Path = opts.ModulePath
+		}
+
+		if opts.ModuleVersion != "" {
+			pkg.Module.Version = opts.ModuleVersion
+		}
+
+		return pkg
+	}
+
 	if IsStandardLib(pkg) || opts.IsIndexingStdlib {
 		pkg.Module = &packages.Module{
 			Path:    "github.com/golang/go/src",
@@ -188,7 +210,6 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 				pkg.PkgPath,
 			))
 		}
-
 	}
 
 	// Follow replaced modules
