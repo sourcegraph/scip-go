@@ -104,7 +104,12 @@ func LoadPackages(
 		}()
 
 		cfg := getConfig(moduleRoot, opts)
-		pkgs, err := packages.Load(cfg, "./...")
+		patterns := opts.PackagePatterns
+		if len(patterns) == 0 {
+			patterns = append(patterns, "./...")
+			log.Warn("No target patterns provided using default './...'")
+		}
+		pkgs, err := packages.Load(cfg, patterns...)
 		if err != nil {
 			return err
 		}
