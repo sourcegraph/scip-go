@@ -53,6 +53,9 @@ var (
 
 	// Debugging flag to turn on profiling
 	profileRate int
+
+	// Package patterns to index
+	packagePatterns []string
 )
 
 func init() {
@@ -86,6 +89,8 @@ func init() {
 	app.Flag("command", "Optionally specifies a command to run. Defaults to 'index'").Default("index").StringVar(&scipCommand)
 
 	app.Flag("profile", "Turn on debug profiling. This will reduce performance. Do not turn on unless debugging. Set to number of milliseconds per sample").Default("0").IntVar(&profileRate)
+
+	app.Arg("package-patterns", "Package patterns to index. Default: './...' which indexes all packages in the current directory recursively. For the full syntax of allowed package patterns, see https://pkg.go.dev/cmd/go#hdr-Package_lists_and_patterns").Default("./...").StringsVar(&packagePatterns)
 }
 
 func main() {
@@ -135,7 +140,7 @@ func mainErr() error {
 		log.Info("Skipping tests")
 	}
 
-	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion, isStdLib, skipImplementations, skipTests)
+	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion, isStdLib, skipImplementations, skipTests, packagePatterns)
 
 	if strings.HasPrefix(scipCommand, "list-packages") {
 		var filter string
