@@ -164,6 +164,23 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	//		Path string = "github.com/efritz/pentimento"
 	//		Version string = "v0.0.0-20190429011147-ade47d831101"
 
+	if opts.IsGoPackagesDriverSet {
+		pkg.Module = &packages.Module{
+			Path:    ".",
+			Version: ".",
+		}
+
+		if opts.ModulePath != "" {
+			pkg.Module.Path = opts.ModulePath
+		}
+
+		if opts.ModuleVersion != "" {
+			pkg.Module.Version = opts.ModuleVersion
+		}
+
+		return pkg
+	}
+
 	if IsStandardLib(pkg) || opts.IsIndexingStdlib {
 		pkg.Module = &packages.Module{
 			Path:    "github.com/golang/go/src",
@@ -183,7 +200,6 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 				pkg.PkgPath,
 			))
 		}
-
 	}
 
 	// Follow replaced modules
