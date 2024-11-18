@@ -1,5 +1,16 @@
 # ChangeLog
 
+## v0.1.22
+
+- Fixes a panic when using a custom GOPACKAGESDRIVER along
+  with a build system other than the default Go build system
+  (https://github.com/sourcegraph/scip-go/pull/138)
+- Optionally allows passing package patterns to scip-go for
+  only indexing a subset of packages.
+  (https://github.com/sourcegraph/scip-go/pull/139)
+- Upgrades Dockerfile to use Go 1.23.3 (released Oct 1 2024).
+  (https://github.com/sourcegraph/scip-go/pull/141)
+
 ## v0.1.21
 
 - Upgrades Dockerfile to use Go 1.23.2 (released Oct 1 2024).
