@@ -1,6 +1,9 @@
 package config
 
-import "path/filepath"
+import (
+	"os"
+	"path/filepath"
+)
 
 type IndexOpts struct {
 	ModuleRoot    string
@@ -8,6 +11,8 @@ type IndexOpts struct {
 
 	// Path for the current module we are indexing. Same as packages.Package.Module.Path
 	ModulePath string
+
+	IsGoPackagesDriverSet bool
 
 	// Go version. Used for linking to the Go standard library
 	GoStdlibVersion string
@@ -28,14 +33,18 @@ func New(ModuleRoot, ModuleVersion, ModulePath, GoStdlibVersion string, IsIndexi
 		panic(err)
 	}
 
+	driver := os.Getenv("GOPACKAGESDRIVER")
+	isGoPackagesDriverSet := driver != "" && driver != "off"
+
 	return IndexOpts{
-		ModuleRoot:          ModuleRoot,
-		ModuleVersion:       ModuleVersion,
-		ModulePath:          ModulePath,
-		GoStdlibVersion:     GoStdlibVersion,
-		SkipImplementations: SkipImplementations,
-		SkipTests:           SkipTests,
-		IsIndexingStdlib:    IsIndexingStdlib,
-		PackagePatterns:     PackagePatterns,
+		ModuleRoot:            ModuleRoot,
+		ModuleVersion:         ModuleVersion,
+		ModulePath:            ModulePath,
+		GoStdlibVersion:       GoStdlibVersion,
+		SkipImplementations:   SkipImplementations,
+		SkipTests:             SkipTests,
+		IsIndexingStdlib:      IsIndexingStdlib,
+		PackagePatterns:       PackagePatterns,
+		IsGoPackagesDriverSet: isGoPackagesDriverSet,
 	}
 }
