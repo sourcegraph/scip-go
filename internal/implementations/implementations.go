@@ -168,8 +168,9 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 			continue
 		}
 
-		if pkg == nil || pkg.TypesInfo == nil {
-			panic(fmt.Sprintf("nill types info %s", pkg.Name))
+		if pkg.TypesInfo == nil {
+			log.Warn("No types for package", "path", pkg.PkgPath)
+			continue
 		}
 
 		pkgSymbols := symbols.GetPackage(pkg)
