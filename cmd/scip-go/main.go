@@ -100,7 +100,7 @@ func main() {
 	}
 }
 
-func mainErr() error {
+func mainErr() (err error) {
 	// The default formatting also prints the date, which is generally not needed.
 	log.SetTimeFormat("15:04:05")
 	log.SetStyles(func() *log.Styles {
@@ -235,6 +235,7 @@ func mainErr() error {
 	defer func() {
 		if r := recover(); r != nil {
 			removeOutFileIfPresent()
+			err = fmt.Errorf("Index panicked, recovered value: %v", r)
 		}
 	}()
 
