@@ -1,5 +1,10 @@
 # ChangeLog
 
+## Unreleased
+
+- Upgrades Dockerfile to use Go 1.24.0 (released Feb 11 2025).
+  (https://github.com/sourcegraph/scip-go/pull/146)
+
 ## v0.1.22
 
 - Fixes a panic when using a custom GOPACKAGESDRIVER along
