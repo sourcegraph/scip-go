@@ -100,7 +100,7 @@ func main() {
 	}
 }
 
-func mainErr() error {
+func mainErr() (err error) {
 	// The default formatting also prints the date, which is generally not needed.
 	log.SetTimeFormat("15:04:05")
 	log.SetStyles(func() *log.Styles {
@@ -113,7 +113,7 @@ func mainErr() error {
 		return s
 	}())
 
-	if err := parseArgs(os.Args[1:]); err != nil {
+	if err = parseArgs(os.Args[1:]); err != nil {
 		return err
 	}
 
@@ -235,10 +235,11 @@ func mainErr() error {
 	defer func() {
 		if r := recover(); r != nil {
 			removeOutFileIfPresent()
+			err = fmt.Errorf("panic during indexing: %v", r)
 		}
 	}()
 
-	if err := index.Index(writer, options); err != nil {
+	if err = index.Index(writer, options); err != nil {
 		removeOutFileIfPresent()
 		return err
 	}
