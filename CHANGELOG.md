@@ -1,5 +1,12 @@
 # ChangeLog
 
+## v0.1.24
+
+- Upgrades Dockerfile to use Go 1.24.3 (released May 6 2025).
+- Sets `GOTOOLCHAIN=auto` in Dockerfile by default, to allow
+  for transparent toolchain upgrading if the network
+  configuration allows it.
+
 ## v0.1.23
 
 - Upgrades Dockerfile to use Go 1.24.0 (released Feb 11 2025).
