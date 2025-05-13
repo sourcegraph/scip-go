@@ -15,16 +15,17 @@
 #    <other stuff to ignore>
 # And use this digest in FROM
 
-ARG base_sha=2b1cbf278ce05a2a310a3d695ebb176420117a8cfcfcc4e5e68a1bef5f6354da
+ARG base_sha=39d9e7d9c5d9c9e4baf0d8fff579f06d5032c0f4425cdec9e86732e8e4e374dc
 
-FROM golang:1.24.0@sha256:${base_sha} AS builder
+FROM golang:1.24.3@sha256:${base_sha} AS builder
 
 COPY . /sources
 WORKDIR /sources
 RUN go build -o scip-go ./cmd/scip-go
 
 # Keep in sync with builder image
-FROM golang:1.24.0@sha256:${base_sha} AS final
+FROM golang:1.24.3@sha256:${base_sha} AS final
 
 COPY --from=builder /sources/scip-go /usr/bin/
+ENV GOTOOLCHAIN=auto
 CMD ["scip-go"]
