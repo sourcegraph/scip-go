@@ -1,5 +1,10 @@
 # ChangeLog
 
+
+## v0.1.25
+
+- Upgrades Dockerfile to use Go 1.25.0 (released Aug 12 2025)
+
 ## v0.1.24
 
 - Upgrades Dockerfile to use Go 1.24.3 (released May 6 2025).
