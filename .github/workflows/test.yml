@@ -13,13 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install ASDF
-        uses: asdf-vm/actions/setup@v3
-
-      - name: Install matching Go toolchain
-        run: |
-          asdf plugin add golang
-          asdf install golang
+      # mise-action will install appropriate Go toolchain version
+      - name: Install mise
+        uses: jdx/mise-action@v2.4.4
+        with:
+          version: 2025.8.10
 
       - name: Go version
         run: go version
@@ -45,18 +43,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install ASDF
-        uses: asdf-vm/actions/setup@v3
-
-      - name: Install matching Go toolchain
-        run: |
-          asdf plugin add golang
-          asdf install golang
+      # mise-action will install appropriate Go toolchain version
+      - name: Install mise
+        uses: jdx/mise-action@v2.4.4
+        with:
+          version: 2025.8.10
 
       - name: Install gotip
         run: |
           go install golang.org/dl/gotip@latest
-          asdf reshim
           gotip download
 
       - name: Go version

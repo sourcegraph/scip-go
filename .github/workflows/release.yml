@@ -23,13 +23,11 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
 
-      - name: Install ASDF
-        uses: asdf-vm/actions/setup@v3
-
-      - name: Install matching Go toolchain
-        run: |
-          asdf plugin add golang
-          asdf install golang
+      # mise-action will install appropriate Go toolchain version
+      - name: Install mise
+        uses: jdx/mise-action@v2.4.4
+        with:
+          version: 2025.8.10
 
       - uses: azure/docker-login@v1
         with:

@@ -14,17 +14,21 @@
 # Manifests:
 #    <other stuff to ignore>
 # And use this digest in FROM
+#
+# If you have the skopeo CLI, you can use:
+#
+# $ skopeo inspect --raw docker://golang:1.25.0 | sha256sum
 
-ARG base_sha=39d9e7d9c5d9c9e4baf0d8fff579f06d5032c0f4425cdec9e86732e8e4e374dc
+ARG base_sha=5502b0e56fca23feba76dbc5387ba59c593c02ccc2f0f7355871ea9a0852cebe
 
-FROM golang:1.24.3@sha256:${base_sha} AS builder
+FROM golang:1.25.0@sha256:${base_sha} AS builder
 
 COPY . /sources
 WORKDIR /sources
 RUN go build -o scip-go ./cmd/scip-go
 
 # Keep in sync with builder image
-FROM golang:1.24.3@sha256:${base_sha} AS final
+FROM golang:1.25.0@sha256:${base_sha} AS final
 
 COPY --from=builder /sources/scip-go /usr/bin/
 ENV GOTOOLCHAIN=auto
