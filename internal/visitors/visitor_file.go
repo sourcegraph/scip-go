@@ -23,6 +23,14 @@ const (
 	symbolReference  = int32(scip.SymbolRole_ReadAccess)
 )
 
+// localSymbolInfo contains information about a local symbol including its type
+type localSymbolInfo struct {
+	symbol     string
+	typeString string
+	name       string
+	kind       string // "var" or "const" (only these are valid for local symbols)
+}
+
 func NewFileVisitor(
 	doc *document.Document,
 	pkg *packages.Package,
@@ -48,7 +56,7 @@ func NewFileVisitor(
 		pkg:           pkg,
 		file:          file,
 		pkgLookup:     pkgLookup,
-		locals:        map[token.Pos]string{},
+		locals:        map[token.Pos]*localSymbolInfo{},
 		pkgSymbols:    pkgSymbols,
 		globalSymbols: globalSymbols,
 		occurrences:   occurrences,
@@ -77,8 +85,8 @@ type fileVisitor struct {
 	// soething
 	pkgLookup loader.PackageLookup
 
-	// local definition position to symbol
-	locals map[token.Pos]string
+	// local definition position to symbol and its type information
+	locals map[token.Pos]*localSymbolInfo
 
 	// field definition position to symbol for the package
 	pkgSymbols *lookup.Package
@@ -103,13 +111,39 @@ type fileVisitor struct {
 // Implements ast.Visitor
 var _ ast.Visitor = &fileVisitor{}
 
-func (f *fileVisitor) createNewLocalSymbol(pos token.Pos) string {
+func (f *fileVisitor) createNewLocalSymbol(pos token.Pos, obj types.Object) string {
 	if _, ok := f.locals[pos]; ok {
 		panic("Cannot create a new local symbol for an ident that has already been created")
 	}
 
-	f.locals[pos] = fmt.Sprintf("local %d", len(f.locals))
-	return f.locals[pos]
+	symbol := fmt.Sprintf("local %d", len(f.locals))
+	var typeString string
+	var name string
+	var kind string
+
+	if obj != nil {
+		name = obj.Name()
+
+		if typ := obj.Type(); typ != nil {
+			typeString = typ.String()
+		}
+
+		switch obj.(type) {
+		case *types.Const:
+			kind = "const"
+		case *types.Var:
+			kind = "var"
+		}
+	}
+
+	f.locals[pos] = &localSymbolInfo{
+		symbol:     symbol,
+		typeString: typeString,
+		name:       name,
+		kind:       kind,
+	}
+
+	return symbol
 }
 
 func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
@@ -127,7 +161,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		}
 
 		if node.Name != nil && node.Name.Name != "." {
-			sym := v.createNewLocalSymbol(node.Name.Pos())
+			sym := v.createNewLocalSymbol(node.Name.Pos(), nil)
 			v.NewDefinition(sym, symbols.RangeFromName(v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false))
 
 			// Save package name override, so that we use the new local symbol
@@ -197,7 +231,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 
 		// Short circuit on case clauses
 		if obj, ok := v.overrides.caseClauses[node.Pos()]; ok {
-			sym := v.createNewLocalSymbol(obj.Pos())
+			sym := v.createNewLocalSymbol(obj.Pos(), obj)
 			v.NewDefinition(sym, scipRange(position, obj))
 			return nil
 		}
@@ -213,7 +247,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			} else if globalSymbol, ok := v.globalSymbols.GetSymbol(v.pkg, def.Pos()); ok {
 				sym = globalSymbol
 			} else {
-				sym = v.createNewLocalSymbol(def.Pos())
+				sym = v.createNewLocalSymbol(def.Pos(), def)
 			}
 
 			v.NewDefinition(sym, scipRange(position, def))
@@ -228,7 +262,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			)
 
 			if localSymbol, ok := v.locals[ref.Pos()]; ok {
-				symbol = localSymbol
+				symbol = localSymbol.symbol
 
 				if _, ok := v.overrides.caseClauses[ref.Pos()]; ok {
 					overrideType = v.pkg.TypesInfo.TypeOf(node)
@@ -339,9 +373,33 @@ func (v *fileVisitor) ToScipDocument() *scip.Document {
 
 	documentSymbols := v.pkgSymbols.SymbolsForFile(documentFile)
 	for _, localSymbol := range v.locals {
-		documentSymbols = append(documentSymbols, &scip.SymbolInformation{
-			Symbol: localSymbol,
-		})
+		symbolInfo := &scip.SymbolInformation{
+			Symbol:      localSymbol.symbol,
+			DisplayName: localSymbol.name,
+		}
+
+		var signatureText string
+		if localSymbol.name != "" {
+			if localSymbol.kind != "" {
+				signatureText = fmt.Sprintf("%s ", localSymbol.kind)
+			}
+			signatureText += localSymbol.name
+		}
+		if localSymbol.typeString != "" {
+			if signatureText != "" {
+				signatureText += " "
+			}
+			signatureText += localSymbol.typeString
+		}
+
+		if signatureText != "" {
+			symbolInfo.SignatureDocumentation = &scip.Document{
+				Language: "go",
+				Text:     signatureText,
+			}
+		}
+
+		documentSymbols = append(documentSymbols, symbolInfo)
 	}
 
 	return &scip.Document{
