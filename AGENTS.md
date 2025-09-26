@@ -9,6 +9,17 @@
 - **Install**: `go install ./cmd/scip-go`
 - **Version check**: `go version` (uses Go 1.24.3)
 
+## Testing
+
+- **Snapshot testing**: Primary testing method using
+  `internal/testdata/snapshots` directory with `internal/index/scip_test.go` as
+  the test runner
+- **Test data**: Located in `internal/testdata/` with test cases as
+  subdirectories
+- **Update snapshots**: Run with `-update-snapshots` flag to regenerate expected
+  outputs
+- **Filter tests**: Use `-filter <name>` to run specific test cases
+
 ## Architecture
 
 SCIP (Source Code Intelligence Protocol) indexer for Go. Main entry point is
