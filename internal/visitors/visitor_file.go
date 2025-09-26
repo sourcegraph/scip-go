@@ -18,8 +18,10 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-const symbolDefinition = int32(scip.SymbolRole_Definition)
-const symbolReference = int32(scip.SymbolRole_ReadAccess)
+const (
+	symbolDefinition = int32(scip.SymbolRole_Definition)
+	symbolReference  = int32(scip.SymbolRole_ReadAccess)
+)
 
 func NewFileVisitor(
 	doc *document.Document,
@@ -336,6 +338,12 @@ func (v *fileVisitor) ToScipDocument() *scip.Document {
 	}
 
 	documentSymbols := v.pkgSymbols.SymbolsForFile(documentFile)
+	for _, localSymbol := range v.locals {
+		documentSymbols = append(documentSymbols, &scip.SymbolInformation{
+			Symbol: localSymbol,
+		})
+	}
+
 	return &scip.Document{
 		Language:     "go",
 		RelativePath: v.doc.RelativePath,
