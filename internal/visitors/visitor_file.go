@@ -133,7 +133,8 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		}
 
 		if node.Name != nil && node.Name.Name != "." {
-			symName := v.createNewLocalSymbol(node.Name.Pos(), nil)
+			pkgAlias := v.pkg.TypesInfo.Defs[node.Name]
+			symName := v.createNewLocalSymbol(node.Name.Pos(), pkgAlias)
 			rangeFromName := symbols.RangeFromName(
 				v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false)
 			v.NewDefinition(symName, rangeFromName)

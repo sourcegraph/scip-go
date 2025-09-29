@@ -19,10 +19,11 @@ func (l *Local) SignatureText() string {
 
 	var parts []string
 
-	// local symbol can only represent const or var
 	switch l.Obj.(type) {
 	case *types.Const:
 		parts = append(parts, "const")
+	case *types.PkgName:
+		parts = append(parts, "import")
 	case *types.Var:
 		parts = append(parts, "var")
 	}
@@ -31,9 +32,16 @@ func (l *Local) SignatureText() string {
 		parts = append(parts, name)
 	}
 
-	if t := l.Obj.Type(); t != nil {
-		if ts := t.String(); ts != "" {
-			parts = append(parts, ts)
+	// For PkgName, append the package path instead of type
+	if pkgName, isPkgName := l.Obj.(*types.PkgName); isPkgName {
+		if imported := pkgName.Imported(); imported != nil {
+			parts = append(parts, imported.Path())
+		}
+	} else {
+		if t := l.Obj.Type(); t != nil {
+			if ts := t.String(); ts != "" {
+				parts = append(parts, ts)
+			}
 		}
 	}
 
