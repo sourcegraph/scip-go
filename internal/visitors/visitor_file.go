@@ -48,7 +48,7 @@ func NewFileVisitor(
 		pkg:           pkg,
 		file:          file,
 		pkgLookup:     pkgLookup,
-		locals:        map[token.Pos]*lookup.Local{},
+		locals:        map[token.Pos]lookup.Local{},
 		pkgSymbols:    pkgSymbols,
 		globalSymbols: globalSymbols,
 		occurrences:   occurrences,
@@ -78,7 +78,7 @@ type fileVisitor struct {
 	pkgLookup loader.PackageLookup
 
 	// local definition position to symbol and its type information
-	locals map[token.Pos]*lookup.Local
+	locals map[token.Pos]lookup.Local
 
 	// field definition position to symbol for the package
 	pkgSymbols *lookup.Package
@@ -110,7 +110,7 @@ func (v *fileVisitor) createNewLocalSymbol(pos token.Pos, obj types.Object) stri
 
 	symbol := fmt.Sprintf("local %d", len(v.locals))
 
-	v.locals[pos] = &lookup.Local{
+	v.locals[pos] = lookup.Local{
 		Symbol: symbol,
 		Obj:    obj,
 	}
@@ -345,14 +345,14 @@ func (v *fileVisitor) ToScipDocument() *scip.Document {
 	}
 
 	documentSymbols := v.pkgSymbols.SymbolsForFile(documentFile)
-	for _, localSymbol := range v.locals {
+	for _, local := range v.locals {
 		symbolInfo := &scip.SymbolInformation{
-			Symbol: localSymbol.Symbol,
+			Symbol: local.Symbol,
 		}
 
-		if obj := localSymbol.Obj; obj != nil {
+		if obj := local.Obj; obj != nil {
 			symbolInfo.DisplayName = obj.Name()
-			if txt := localSymbol.SignatureText(); txt != "" {
+			if txt := local.SignatureText(); txt != "" {
 				symbolInfo.SignatureDocumentation = &scip.Document{
 					Language: "go",
 					Text:     txt,
