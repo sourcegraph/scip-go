@@ -1,6 +1,10 @@
 # ChangeLog
 
 
+## v0.1.26
+
+- Add information about local symbols to generated index
+
 ## v0.1.25
 
 - Upgrades Dockerfile to use Go 1.25.0 (released Aug 12 2025)
