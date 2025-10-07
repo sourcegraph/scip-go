@@ -45,6 +45,7 @@
 //              ^^^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/FieldInterface#
   }{}
   
+//⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/MyFunc().
   func MyFunc() {
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/MyFunc().
 //     documentation
@@ -58,4 +59,5 @@
 //     ^^^^^^^^ reference 0.1.test `sg/inlinestruct`/MyInline.
 //              ^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/MyInline:PublicField.
   }
+//⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/MyFunc().
   

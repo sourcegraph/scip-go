@@ -25,6 +25,7 @@
   
   // Parallel invokes each of the given parallelizable functions in their own goroutines and
   // returns the first error to occur. This method will block until all goroutines have returned.
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Parallel().
   func Parallel(ctx context.Context, fns ...ParallelizableFunc) error {
 //     ^^^^^^^^ definition 0.1.test `sg/testdata`/Parallel().
 //     documentation
@@ -84,4 +85,5 @@
   
    return nil
   }
+//⌃ enclosing_range_end 0.1.test `sg/testdata`/Parallel().
   

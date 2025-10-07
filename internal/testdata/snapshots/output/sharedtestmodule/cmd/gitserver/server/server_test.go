@@ -4,6 +4,7 @@
   import "testing"
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
   
+//⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
   func TestExecRequest(t *testing.T) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
 //     documentation
@@ -17,7 +18,9 @@
 // ^ reference local 0
 //   ^^^ reference github.com/golang/go/src go1.22 testing/common#Log().
   }
+//⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
   
+//⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
   func runCmd(t *testing.T, dir string, cmd string, arg ...string) {}
 //     ^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
 //     documentation
@@ -30,4 +33,5 @@
 //                          ^^^ definition local 2
 //                                      ^^^ definition local 3
 //                                                  ^^^ definition local 4
+//                                                                  ⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
   

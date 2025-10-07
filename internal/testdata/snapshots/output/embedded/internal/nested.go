@@ -10,6 +10,7 @@
 //  ^^^^^^^^^^^ reference 0.1.test `sg/embedded`/
   )
   
+//⌄ enclosing_range_start 0.1.test `sg/embedded/internal`/Something().
   func Something(recent embedded.RecentCommittersResults) {
 //     ^^^^^^^^^ definition 0.1.test `sg/embedded/internal`/Something().
 //     documentation
@@ -36,4 +37,5 @@
     }
    }
   }
+//⌃ enclosing_range_end 0.1.test `sg/embedded/internal`/Something().
   

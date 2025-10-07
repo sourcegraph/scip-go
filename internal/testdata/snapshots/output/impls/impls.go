@@ -79,6 +79,7 @@
 //     relationship 0.1.test `sg/impls`/I1# implementation
 //     relationship 0.1.test `sg/impls`/I1Clone# implementation
   
+//⌄ enclosing_range_start 0.1.test `sg/impls`/T1#F1().
   func (r T1) F1() {}
 //      ^ definition local 0
 //        ^^ reference 0.1.test `sg/impls`/T1#
@@ -89,6 +90,7 @@
 //            > ```
 //            relationship 0.1.test `sg/impls`/I1#F1. implementation
 //            relationship 0.1.test `sg/impls`/I1Clone#F1. implementation
+//                  ⌃ enclosing_range_end 0.1.test `sg/impls`/T1#F1().
   
   type T2 int
 //     ^^ definition 0.1.test `sg/impls`/T2#
@@ -99,6 +101,7 @@
 //     relationship 0.1.test `sg/impls`/I1# implementation
 //     relationship 0.1.test `sg/impls`/I1Clone# implementation
   
+//⌄ enclosing_range_start 0.1.test `sg/impls`/T2#F1().
   func (r T2) F1() {}
 //      ^ definition local 1
 //        ^^ reference 0.1.test `sg/impls`/T2#
@@ -109,6 +112,8 @@
 //            > ```
 //            relationship 0.1.test `sg/impls`/I1#F1. implementation
 //            relationship 0.1.test `sg/impls`/I1Clone#F1. implementation
+//                  ⌃ enclosing_range_end 0.1.test `sg/impls`/T2#F1().
+//⌄ enclosing_range_start 0.1.test `sg/impls`/T2#F2().
   func (r T2) F2() {}
 //      ^ definition local 2
 //        ^^ reference 0.1.test `sg/impls`/T2#
@@ -117,4 +122,5 @@
 //            > ```go
 //            > func (T2).F2()
 //            > ```
+//                  ⌃ enclosing_range_end 0.1.test `sg/impls`/T2#F2().
   

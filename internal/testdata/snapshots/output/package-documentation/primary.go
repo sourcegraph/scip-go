@@ -4,10 +4,12 @@
 //        documentation
 //        > This is documentation for this package.
   
+//⌄ enclosing_range_start github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/package-documentation`/Exported().
   func Exported() {}
 //     ^^^^^^^^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/package-documentation`/Exported().
 //     documentation
 //     > ```go
 //     > func Exported()
 //     > ```
+//                 ⌃ enclosing_range_end github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/package-documentation`/Exported().
   

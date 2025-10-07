@@ -4,6 +4,7 @@
   import "testing"
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
   
+//⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestStuff().
   func TestStuff(t *testing.T) {
 //     ^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestStuff().
 //     documentation
@@ -24,4 +25,5 @@
 //           ^^ reference local 1
 //                              ^^^^ reference local 2
   }
+//⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestStuff().
   

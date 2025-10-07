@@ -40,10 +40,12 @@
 //     > struct{}
 //     > ```
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata/cmd/minimal_main`/main().
   func main() {}
 //     ^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/main().
 //     documentation
 //     > ```go
 //     > func main()
 //     > ```
+//             ⌃ enclosing_range_end 0.1.test `sg/testdata/cmd/minimal_main`/main().
   

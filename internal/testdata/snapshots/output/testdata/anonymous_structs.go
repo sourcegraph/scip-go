@@ -72,6 +72,7 @@
    }
   }
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
   func funcContainingAnonymousStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
 //     documentation
@@ -177,4 +178,5 @@
 //                                   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
 //                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
   }
+//⌃ enclosing_range_end 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
   

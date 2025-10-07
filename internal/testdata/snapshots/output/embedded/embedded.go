@@ -33,6 +33,7 @@
 //       ^^^ reference github.com/golang/go/src go1.22 `os/exec`/Cmd#
   }
   
+//⌄ enclosing_range_start 0.1.test `sg/embedded`/wrapExecCommand().
   func wrapExecCommand(c *exec.Cmd) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/wrapExecCommand().
 //     documentation
@@ -47,6 +48,7 @@
 //                    ^^^ reference 0.1.test `sg/embedded`/osExecCommand#Cmd.
 //                         ^ reference local 0
   }
+//⌃ enclosing_range_end 0.1.test `sg/embedded`/wrapExecCommand().
   
   type Inner struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Inner#
@@ -110,6 +112,7 @@
 // > ```
   }
   
+//⌄ enclosing_range_start 0.1.test `sg/embedded`/useOfCompositeStructs().
   func useOfCompositeStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/useOfCompositeStructs().
 //     documentation
@@ -145,4 +148,5 @@
 //               ^^^^^ reference 0.1.test `sg/embedded`/Outer#Inner.
 //                     ^ reference 0.1.test `sg/embedded`/Inner#Y.
   }
+//⌃ enclosing_range_end 0.1.test `sg/embedded`/useOfCompositeStructs().
   

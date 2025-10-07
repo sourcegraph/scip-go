@@ -38,6 +38,7 @@
 // > ```
   }
   
+//⌄ enclosing_range_start 0.1.test `sg/embedded`/NestedExample().
   func NestedExample(n NestedHandler) {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/NestedExample().
 //     documentation
@@ -57,4 +58,5 @@
 //     ^ reference local 0
 //       ^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#Other.
   }
+//⌃ enclosing_range_end 0.1.test `sg/embedded`/NestedExample().
   

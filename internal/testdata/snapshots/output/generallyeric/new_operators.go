@@ -25,6 +25,7 @@
 //                                                       ^^^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/Complex#
   }
   
+//⌄ enclosing_range_start 0.1.test `sg/generallyeric`/Double().
   func Double[T Number](value T) T {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Double().
 //     documentation
@@ -39,6 +40,7 @@
    return value * 2
 //        ^^^^^ reference local 1
   }
+//⌃ enclosing_range_end 0.1.test `sg/generallyeric`/Double().
   
   type Box[T any] struct {
 //     ^^^ definition 0.1.test `sg/generallyeric`/Box#

@@ -72,6 +72,7 @@
 // > ```
   )
   
+//⌄ enclosing_range_start github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
   func f(u U) {}
 //     ^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
 //     documentation
@@ -80,4 +81,5 @@
 //     > ```
 //       ^ definition local 0
 //         ^ reference github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
+//             ⌃ enclosing_range_end github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
   
