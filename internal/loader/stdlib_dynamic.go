@@ -1,7 +1,6 @@
 package loader
 
 import (
-	"maps"
 	"os"
 	"os/exec"
 	"strings"
@@ -17,17 +16,13 @@ var (
 
 func getStdlibPackages() map[string]struct{} {
 	stdlibOnce.Do(func() {
-		// Start with hardcoded fallback from generated stdlib.go
-		stdlibMap = make(map[string]struct{})
-		maps.Copy(stdlibMap, stdPackages)
+		stdlibMap = stdPackages
 
-		// Don't use dynamic loading with GOPACKAGESDRIVER (Bazel)
 		if os.Getenv("GOPACKAGESDRIVER") != "" {
 			log.Debug("GOPACKAGESDRIVER is set, using hardcoded stdlib list")
 			return
 		}
 
-		// Try dynamic loading with go list std
 		cmd, err := exec.LookPath("go")
 		if err != nil {
 			log.Debug("go command not found, using hardcoded stdlib list")
@@ -40,7 +35,7 @@ func getStdlibPackages() map[string]struct{} {
 			return
 		}
 
-		// Parse output and update the map
+		stdlibMap = make(map[string]struct{})
 		packages := strings.SplitSeq(strings.TrimSpace(string(output)), "\n")
 		for pkg := range packages {
 			if pkg == "" {
