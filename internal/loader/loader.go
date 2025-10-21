@@ -145,21 +145,8 @@ func IsStandardLib(pkg *packages.Package) bool {
 	//  -> github.com/
 	//  -> false
 	base := strings.Split(pkg.PkgPath, "/")[0]
-	if _, ok := stdPackages[base]; ok {
-		return ok
-	}
-
-	noTestPackage := strings.Replace(base, "_test", "", -1)
-	if _, ok := stdPackages[noTestPackage]; ok {
-		return ok
-	}
-
-	noTestPsuedoPackage := strings.Replace(base, ".test", "", -1)
-	if _, ok := stdPackages[noTestPsuedoPackage]; ok {
-		return ok
-	}
-
-	return false
+	_, ok := stdPackages[base]
+	return ok
 }
 
 func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {
