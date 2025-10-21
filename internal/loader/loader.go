@@ -145,7 +145,7 @@ func IsStandardLib(pkg *packages.Package) bool {
 	//  -> github.com/
 	//  -> false
 	base := strings.Split(pkg.PkgPath, "/")[0]
-	_, ok := stdPackages[base]
+	_, ok := getStdlibPackages()[base]
 	return ok
 }
 
