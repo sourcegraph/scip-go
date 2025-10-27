@@ -25,13 +25,14 @@ func getStdlibPackages() map[string]struct{} {
 
 		cmd, err := exec.LookPath("go")
 		if err != nil {
-			log.Debug("go command not found, using hardcoded stdlib list")
+			log.Warn("go command not found, using hardcoded stdlib list")
 			return
 		}
 
 		output, err := exec.Command(cmd, "list", "std").Output()
 		if err != nil {
-			log.Debug("Failed to run 'go list std', using hardcoded stdlib list", "error", err)
+			log.Warn(
+				"Failed to run 'go list std', using hardcoded stdlib list", "error", err)
 			return
 		}
 
