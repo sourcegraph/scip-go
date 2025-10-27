@@ -3,6 +3,7 @@ package loader
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/charmbracelet/log"
@@ -145,21 +146,8 @@ func IsStandardLib(pkg *packages.Package) bool {
 	//  -> github.com/
 	//  -> false
 	base := strings.Split(pkg.PkgPath, "/")[0]
-	if _, ok := stdPackages[base]; ok {
-		return ok
-	}
-
-	noTestPackage := strings.Replace(base, "_test", "", -1)
-	if _, ok := stdPackages[noTestPackage]; ok {
-		return ok
-	}
-
-	noTestPsuedoPackage := strings.Replace(base, ".test", "", -1)
-	if _, ok := stdPackages[noTestPsuedoPackage]; ok {
-		return ok
-	}
-
-	return false
+	_, ok := getStdlibPackages()[base]
+	return ok
 }
 
 func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {
@@ -204,11 +192,14 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		pkg.PkgPath = strings.TrimPrefix(pkg.PkgPath, "std/")
 	} else {
 		if pkg.Module == nil {
-			panic(fmt.Sprintf(
-				"Should not be possible to have nil module for userland package: %s %s",
-				pkg,
-				pkg.PkgPath,
-			))
+			log.Warn("Package has nil Module, using fallback",
+				"package", pkg.PkgPath,
+				"driver", os.Getenv("GOPACKAGESDRIVER"))
+			
+			pkg.Module = &packages.Module{
+				Path:    ".",
+				Version: ".",
+			}
 		}
 	}
 
