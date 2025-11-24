@@ -9,6 +9,7 @@
 //    ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
   )
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Example().
   func Example() {
 //     ^^^^^^^ definition 0.1.test `sg/testdata`/Example().
 //     documentation
@@ -20,4 +21,5 @@
 //         ^ reference local 0
 //           ^^^^^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/CanonicalHeaderKey().
   }
+//⌃ enclosing_range_end 0.1.test `sg/testdata`/Example().
   

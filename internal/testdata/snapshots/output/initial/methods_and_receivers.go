@@ -28,6 +28,7 @@
 //                         > struct field y int
 //                         > ```
   
+//⌄ enclosing_range_start 0.1.test `sg/initial`/MyStruct#RecvFunction().
   func (m MyStruct) RecvFunction(b int) int { return m.f + b }
 //      ^ definition local 0
 //        ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
@@ -40,7 +41,9 @@
 //                                                   ^ reference local 0
 //                                                     ^ reference 0.1.test `sg/initial`/MyStruct#f.
 //                                                         ^ reference local 1
+//                                                           ⌃ enclosing_range_end 0.1.test `sg/initial`/MyStruct#RecvFunction().
   
+//⌄ enclosing_range_start 0.1.test `sg/initial`/SomethingElse().
   func SomethingElse() {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SomethingElse().
 //     documentation
@@ -56,4 +59,5 @@
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().
 //             ^ reference local 2
   }
+//⌃ enclosing_range_end 0.1.test `sg/initial`/SomethingElse().
   

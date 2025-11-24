@@ -4,6 +4,7 @@
   import "context"
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
   
+//⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/Target().
   func Target() interface {
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Target().
 //     documentation
@@ -45,7 +46,9 @@
   } {
    panic("not implemented")
   }
+//⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/Target().
   
+//⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/something().
   func something() {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/something().
 //     documentation
@@ -61,4 +64,5 @@
 //       ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //               ^^^^^^^^^^ reference github.com/golang/go/src go1.22 context/Background().
   }
+//⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/something().
   

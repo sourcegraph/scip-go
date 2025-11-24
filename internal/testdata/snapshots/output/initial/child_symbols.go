@@ -247,6 +247,7 @@
   }
   
   // StructMethod has some docs!
+//⌄ enclosing_range_start 0.1.test `sg/initial`/Struct#StructMethod().
   func (s *Struct) StructMethod() {}
 //      ^ definition local 0
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
@@ -257,7 +258,9 @@
 //                 > ```
 //                 documentation
 //                 > StructMethod has some docs!
+//                                 ⌃ enclosing_range_end 0.1.test `sg/initial`/Struct#StructMethod().
   
+//⌄ enclosing_range_start 0.1.test `sg/initial`/Struct#ImplementsInterface().
   func (s *Struct) ImplementsInterface() string { return "hi!" }
 //      ^ definition local 1
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
@@ -267,7 +270,9 @@
 //                 > func (*Struct).ImplementsInterface() string
 //                 > ```
 //                 relationship 0.1.test `sg/initial`/Interface#ImplementsInterface. implementation
+//                                                             ⌃ enclosing_range_end 0.1.test `sg/initial`/Struct#ImplementsInterface().
   
+//⌄ enclosing_range_start 0.1.test `sg/initial`/Struct#MachineLearning().
   func (s *Struct) MachineLearning(
 //      ^ definition local 2
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
@@ -321,6 +326,7 @@
 //                  ^^^^^^^^^^^ reference local 4
 //                                 ^^^^^^^^^^^ reference local 5
   }
+//⌃ enclosing_range_end 0.1.test `sg/initial`/Struct#MachineLearning().
   
   // Interface has docs too
   type Interface interface {
@@ -345,6 +351,7 @@
 // > ```
   }
   
+//⌄ enclosing_range_start 0.1.test `sg/initial`/NewInterface().
   func NewInterface() Interface { return nil }
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/NewInterface().
 //     documentation
@@ -352,6 +359,7 @@
 //     > func NewInterface() Interface
 //     > ```
 //                    ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
+//                                           ⌃ enclosing_range_end 0.1.test `sg/initial`/NewInterface().
   
   var SortExportedFirst = 1
 //    ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SortExportedFirst.

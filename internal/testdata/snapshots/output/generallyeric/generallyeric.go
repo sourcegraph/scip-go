@@ -7,6 +7,7 @@
   import "fmt"
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
+//⌄ enclosing_range_start 0.1.test `sg/generallyeric`/Print().
   func Print[T any](s []T) {
 //     ^^^^^ definition 0.1.test `sg/generallyeric`/Print().
 //     documentation
@@ -25,4 +26,5 @@
 //            ^ reference local 2
    }
   }
+//⌃ enclosing_range_end 0.1.test `sg/generallyeric`/Print().
   

@@ -60,6 +60,7 @@
 //     > ```
 //     relationship 0.1.test `sg/testdata`/I1# implementation
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/T1#F1().
   func (r T1) F1() {}
 //      ^ definition local 0
 //        ^^ reference 0.1.test `sg/testdata`/T1#
@@ -69,6 +70,7 @@
 //            > func (T1).F1()
 //            > ```
 //            relationship 0.1.test `sg/testdata`/I1#F1. implementation
+//                  ⌃ enclosing_range_end 0.1.test `sg/testdata`/T1#F1().
   
   type T2 int
 //     ^^ definition 0.1.test `sg/testdata`/T2#
@@ -79,6 +81,7 @@
 //     relationship 0.1.test `sg/testdata`/I1# implementation
 //     relationship 0.1.test `sg/testdata`/I2# implementation
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/T2#F1().
   func (r T2) F1() {}
 //      ^ definition local 1
 //        ^^ reference 0.1.test `sg/testdata`/T2#
@@ -88,6 +91,8 @@
 //            > func (T2).F1()
 //            > ```
 //            relationship 0.1.test `sg/testdata`/I1#F1. implementation
+//                  ⌃ enclosing_range_end 0.1.test `sg/testdata`/T2#F1().
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/T2#F2().
   func (r T2) F2() {}
 //      ^ definition local 2
 //        ^^ reference 0.1.test `sg/testdata`/T2#
@@ -97,6 +102,7 @@
 //            > func (T2).F2()
 //            > ```
 //            relationship 0.1.test `sg/testdata`/I2#F2. implementation
+//                  ⌃ enclosing_range_end 0.1.test `sg/testdata`/T2#F2().
   
   type A1 = T1
 //     ^^ definition 0.1.test `sg/testdata`/A1#
@@ -164,6 +170,7 @@
 //     relationship 0.1.test `sg/testdata`/InterfaceWithExportedMethod# implementation
 //     relationship 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod# implementation
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Foo#nonExportedMethod().
   func (r Foo) nonExportedMethod() {}
 //      ^ definition local 3
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
@@ -173,6 +180,8 @@
 //             > func (Foo).nonExportedMethod()
 //             > ```
 //             relationship 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod#nonExportedMethod. implementation
+//                                  ⌃ enclosing_range_end 0.1.test `sg/testdata`/Foo#nonExportedMethod().
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Foo#ExportedMethod().
   func (r Foo) ExportedMethod()    {}
 //      ^ definition local 4
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
@@ -182,6 +191,8 @@
 //             > func (Foo).ExportedMethod()
 //             > ```
 //             relationship 0.1.test `sg/testdata`/InterfaceWithExportedMethod#ExportedMethod. implementation
+//                                  ⌃ enclosing_range_end 0.1.test `sg/testdata`/Foo#ExportedMethod().
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Foo#Close().
   func (r Foo) Close() error       { return nil }
 //      ^ definition local 5
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
@@ -192,6 +203,7 @@
 //             > ```
 //             relationship github.com/golang/go/src go1.22 io/Closer#Close. implementation
 //             relationship 0.1.test `sg/testdata`/I3#Close. implementation
+//                                              ⌃ enclosing_range_end 0.1.test `sg/testdata`/Foo#Close().
   
   type SharedOne interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/SharedOne#
@@ -260,6 +272,7 @@
 //     relationship 0.1.test `sg/testdata`/SharedOne# implementation
 //     relationship 0.1.test `sg/testdata`/SharedTwo# implementation
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Between#Shared().
   func (Between) Shared()   {}
 //      ^^^^^^^ reference 0.1.test `sg/testdata`/Between#
 //               ^^^^^^ definition 0.1.test `sg/testdata`/Between#Shared().
@@ -269,6 +282,8 @@
 //               > ```
 //               relationship 0.1.test `sg/testdata`/SharedOne#Shared. implementation
 //               relationship 0.1.test `sg/testdata`/SharedTwo#Shared. implementation
+//                           ⌃ enclosing_range_end 0.1.test `sg/testdata`/Between#Shared().
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Between#Distinct().
   func (Between) Distinct() {}
 //      ^^^^^^^ reference 0.1.test `sg/testdata`/Between#
 //               ^^^^^^^^ definition 0.1.test `sg/testdata`/Between#Distinct().
@@ -277,6 +292,8 @@
 //               > func (Between).Distinct()
 //               > ```
 //               relationship 0.1.test `sg/testdata`/SharedOne#Distinct. implementation
+//                           ⌃ enclosing_range_end 0.1.test `sg/testdata`/Between#Distinct().
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Between#Unique().
   func (Between) Unique()   {}
 //      ^^^^^^^ reference 0.1.test `sg/testdata`/Between#
 //               ^^^^^^ definition 0.1.test `sg/testdata`/Between#Unique().
@@ -285,7 +302,9 @@
 //               > func (Between).Unique()
 //               > ```
 //               relationship 0.1.test `sg/testdata`/SharedTwo#Unique. implementation
+//                           ⌃ enclosing_range_end 0.1.test `sg/testdata`/Between#Unique().
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/shouldShow().
   func shouldShow(shared SharedOne) {
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/shouldShow().
 //     documentation
@@ -298,4 +317,5 @@
 // ^^^^^^ reference local 6
 //        ^^^^^^ reference 0.1.test `sg/testdata`/SharedOne#Shared.
   }
+//⌃ enclosing_range_end 0.1.test `sg/testdata`/shouldShow().
   

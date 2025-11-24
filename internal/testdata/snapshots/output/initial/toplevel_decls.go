@@ -15,6 +15,7 @@
 //      > ```
 //                    ^^^^^^^^ reference 0.1.test `sg/initial`/MY_THING.
   
+//⌄ enclosing_range_start 0.1.test `sg/initial`/usesMyThing().
   func usesMyThing() {
 //     ^^^^^^^^^^^ definition 0.1.test `sg/initial`/usesMyThing().
 //     documentation
@@ -24,6 +25,7 @@
    _ = MY_THING
 //     ^^^^^^^^ reference 0.1.test `sg/initial`/MY_THING.
   }
+//⌃ enclosing_range_end 0.1.test `sg/initial`/usesMyThing().
   
   var initFunctions = map[string]int{}
 //    ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/initFunctions.

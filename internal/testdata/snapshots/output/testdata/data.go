@@ -191,6 +191,7 @@
 //                    ^^^^^^^^^^^ reference 0.1.test `sg/testdata`/StringAlias#
   
   // Doer is similar to the test interface (but not the same).
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/TestStruct#Doer().
   func (ts *TestStruct) Doer(ctx context.Context, data string) (score int, err error) {
 //      ^^ definition local 3
 //          ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TestStruct#
@@ -210,6 +211,7 @@
    return Score, nil
 //        ^^^^^ reference 0.1.test `sg/testdata`/Score.
   }
+//⌃ enclosing_range_end 0.1.test `sg/testdata`/TestStruct#Doer().
   
   // StructTagRegression is a struct that caused panic in the wild. Added here to
   // support a regression test.

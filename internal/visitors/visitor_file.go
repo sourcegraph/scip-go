@@ -59,6 +59,7 @@ func NewFileVisitor(
 			caseClauses:     caseClauses,
 			pkgNameOverride: map[newtypes.PackageID]string{},
 		},
+		enclosingNodeMap: enclosingNodeMap(file),
 	}
 }
 
@@ -98,6 +99,10 @@ type fileVisitor struct {
 		// if ImportSpec.Name is not nil. Otherwise, just use package directly
 		pkgNameOverride map[newtypes.PackageID]string
 	}
+
+	// enclosingNodeMap maps certain nodes to their enclosing nodes for
+	// enclosing range computation.
+	enclosingNodeMap map[*ast.Ident]ast.Node
 }
 
 // Implements ast.Visitor
@@ -137,7 +142,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			symName := v.createNewLocalSymbol(node.Name.Pos(), pkgAlias)
 			rangeFromName := symbols.RangeFromName(
 				v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false)
-			v.NewDefinition(symName, rangeFromName)
+			v.NewDefinition(symName, rangeFromName, nil)
 
 			// Save package name override, so that we use the new local symbol
 			// within this file
@@ -157,8 +162,8 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			// compared to almost every other construct in the language.
 			switch sel := use.(type) {
 			case *types.PkgName:
-				pos := ident.NamePos
-				position := v.pkg.Fset.Position(pos)
+				startPosition := v.pkg.Fset.Position(ident.Pos())
+				endPosition := v.pkg.Fset.Position(ident.End())
 				pkgID := newtypes.GetFromTypesPackage(sel.Imported())
 
 				var symbolName string
@@ -174,7 +179,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 					symbolName = symbol.Symbol
 				}
 
-				v.AppendSymbolReference(symbolName, scipRange(position, sel), nil)
+				v.AppendSymbolReference(symbolName, scipRange(startPosition, endPosition, sel), nil)
 
 				// Then walk the selection
 				ast.Walk(v, node.Sel)
@@ -201,13 +206,13 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			return nil
 		}
 
-		pos := node.NamePos
-		position := v.pkg.Fset.Position(pos)
+		startPosition := v.pkg.Fset.Position(node.Pos())
+		endPosition := v.pkg.Fset.Position(node.End())
 
 		// Short circuit on case clauses
 		if obj, ok := v.overrides.caseClauses[node.Pos()]; ok {
 			symName := v.createNewLocalSymbol(obj.Pos(), obj)
-			v.NewDefinition(symName, scipRange(position, obj))
+			v.NewDefinition(symName, scipRange(startPosition, endPosition, obj), nil)
 			return nil
 		}
 
@@ -225,7 +230,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				symName = v.createNewLocalSymbol(def.Pos(), def)
 			}
 
-			v.NewDefinition(symName, scipRange(position, def))
+			v.NewDefinition(symName, scipRange(startPosition, endPosition, def), v.enclosingRange(node))
 		}
 
 		// Emit Reference
@@ -276,7 +281,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				symbol = symInfo.Symbol
 			}
 
-			v.AppendSymbolReference(symbol, scipRange(position, ref), overrideType)
+			v.AppendSymbolReference(symbol, scipRange(startPosition, endPosition, ref), overrideType)
 		}
 
 		if def == nil && ref == nil {
@@ -314,11 +319,12 @@ func (v *fileVisitor) emitImportReference(
 
 // NewDefinition emits a scip.Occurence ONLY. This will not emit a
 // new symbol. You must do that using DeclareNewSymbol[ForPos]
-func (v *fileVisitor) NewDefinition(symbol string, rng []int32) {
+func (v *fileVisitor) NewDefinition(symbol string, rng []int32, enclRng []int32) {
 	v.occurrences = append(v.occurrences, &scip.Occurrence{
-		Range:       rng,
-		Symbol:      symbol,
-		SymbolRoles: symbolDefinition,
+		Range:          rng,
+		Symbol:         symbol,
+		SymbolRoles:    symbolDefinition,
+		EnclosingRange: enclRng,
 	})
 }
 
@@ -370,4 +376,35 @@ func (v *fileVisitor) ToScipDocument() *scip.Document {
 		Occurrences:  v.occurrences,
 		Symbols:      documentSymbols,
 	}
+}
+
+func (v *fileVisitor) enclosingRange(n *ast.Ident) []int32 {
+	if n == nil {
+		return nil
+	}
+
+	enclosingNode, ok := v.enclosingNodeMap[n]
+	if !ok {
+		return nil
+	}
+
+	startPosition := v.pkg.Fset.Position(enclosingNode.Pos())
+	endPosition := v.pkg.Fset.Position(enclosingNode.End())
+	return scipRange(startPosition, endPosition, v.pkg.TypesInfo.Defs[n])
+}
+
+// enclosingNodeMap builds a map from [ast.Ident] to its enclosing node for enclosing range computation.
+// Currently only supports mapping [ast.Ident] to its enclosing [ast.FuncDecl].
+func enclosingNodeMap(root ast.Node) map[*ast.Ident]ast.Node {
+	enclNodes := map[*ast.Ident]ast.Node{}
+	ast.PreorderStack(root, nil, func(n ast.Node, stack []ast.Node) bool {
+		if ident, ok := n.(*ast.Ident); ok && len(stack) > 1 {
+			if funcDecl, ok := stack[len(stack)-1].(*ast.FuncDecl); ok {
+				enclNodes[ident] = funcDecl
+				return false
+			}
+		}
+		return true
+	})
+	return enclNodes
 }

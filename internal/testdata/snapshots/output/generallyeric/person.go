@@ -32,6 +32,7 @@
 //     > ```
 //     relationship 0.1.test `sg/generallyeric`/Person# implementation
   
+//⌄ enclosing_range_start 0.1.test `sg/generallyeric`/worker#Work().
   func (w worker) Work() {
 //      ^ definition local 0
 //        ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
@@ -46,7 +47,9 @@
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
 //                               ^ reference local 0
   }
+//⌃ enclosing_range_end 0.1.test `sg/generallyeric`/worker#Work().
   
+//⌄ enclosing_range_start 0.1.test `sg/generallyeric`/DoWork().
   func DoWork[T Person](things []T) {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/DoWork().
 //     documentation
@@ -65,7 +68,9 @@
 //    ^^^^ reference 0.1.test `sg/generallyeric`/Person#Work.
    }
   }
+//⌃ enclosing_range_end 0.1.test `sg/generallyeric`/DoWork().
   
+//⌄ enclosing_range_start 0.1.test `sg/generallyeric`/main().
   func main() {
 //     ^^^^ definition 0.1.test `sg/generallyeric`/main().
 //     documentation
@@ -90,4 +95,5 @@
 //                    ^ reference local 5
 //                       ^ reference local 6
   }
+//⌃ enclosing_range_end 0.1.test `sg/generallyeric`/main().
   

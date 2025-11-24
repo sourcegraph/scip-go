@@ -18,6 +18,7 @@
 //     > ```
   
   // Something does some things... and stuff
+//⌄ enclosing_range_start 0.1.test `sg/switches`/CustomSwitch#Something().
   func (c *CustomSwitch) Something() bool { return false }
 //      ^ definition local 0
 //         ^^^^^^^^^^^^ reference 0.1.test `sg/switches`/CustomSwitch#
@@ -28,7 +29,9 @@
 //                       > ```
 //                       documentation
 //                       > Something does some things... and stuff
+//                                                       ⌃ enclosing_range_end 0.1.test `sg/switches`/CustomSwitch#Something().
   
+//⌄ enclosing_range_start 0.1.test `sg/switches`/Switch().
   func Switch(interfaceValue interface{}) bool {
 //     ^^^^^^ definition 0.1.test `sg/switches`/Switch().
 //     documentation
@@ -66,4 +69,5 @@
     return false
    }
   }
+//⌃ enclosing_range_end 0.1.test `sg/switches`/Switch().
   

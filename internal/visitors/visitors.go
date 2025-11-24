@@ -94,17 +94,20 @@ func descriptorTerm(name string) *scip.Descriptor {
 	}
 }
 
-func scipRange(position token.Position, obj types.Object) []int32 {
+func scipRange(start, end token.Position, obj types.Object) []int32 {
 	var adjustment int32 = 0
 	if pkgName, ok := obj.(*types.PkgName); ok && strings.HasPrefix(pkgName.Name(), `"`) {
 		adjustment = 1
 	}
 
-	line := int32(position.Line - 1)
-	column := int32(position.Column - 1)
-	n := int32(len(obj.Name()))
-
-	return []int32{line, column + adjustment, column + n - adjustment}
+	startLine := int32(start.Line - 1)
+	startColumn := int32(start.Column - 1)
+	endLine := int32(end.Line - 1)
+	endColumn := int32(end.Column - 1)
+	if startLine != endLine {
+		return []int32{startLine, startColumn + adjustment, endLine, endColumn - adjustment}
+	}
+	return []int32{startLine, startColumn + adjustment, endColumn - adjustment}
 }
 
 func getIdentOfTypeExpr(pkg *packages.Package, ty ast.Expr) []*ast.Ident {

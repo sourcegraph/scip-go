@@ -1,6 +1,7 @@
   package testdata
 //        ^^^^^^^^ reference 0.1.test `sg/testdata`/
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Switch().
   func Switch(interfaceValue interface{}) bool {
 //     ^^^^^^ definition 0.1.test `sg/testdata`/Switch().
 //     documentation
@@ -29,4 +30,5 @@
     return false
    }
   }
+//⌃ enclosing_range_end 0.1.test `sg/testdata`/Switch().
   

@@ -22,6 +22,7 @@
 //                        ^^^^^^ reference github.com/golang/go/src go1.22 errors/
 //                               ^^^ reference github.com/golang/go/src go1.22 errors/New().
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
   func newKey(t *testing.T) (string, error) {
 //     ^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
 //     documentation
@@ -34,7 +35,9 @@
    return "", ErrNotImplemented
 //            ^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata/conflicting_test_symbols`/ErrNotImplemented.
   }
+//⌃ enclosing_range_end 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
   
+//⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
   func verifySandbox(t *testing.T, s string) {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
 //     documentation
@@ -47,4 +50,5 @@
 //                                 ^ definition local 2
    return
   }
+//⌃ enclosing_range_end 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
   

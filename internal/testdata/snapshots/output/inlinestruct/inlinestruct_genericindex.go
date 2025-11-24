@@ -49,6 +49,7 @@
 //     > struct{}
 //     > ```
   
+//⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/ProcessImpl#Process().
   func (p *ProcessImpl) Process(payload Limit) { panic("not implemented") }
 //      ^ definition local 2
 //         ^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/ProcessImpl#
@@ -59,6 +60,8 @@
 //                      > ```
 //                              ^^^^^^^ definition local 3
 //                                      ^^^^^ reference 0.1.test `sg/inlinestruct`/Limit#
+//                                                                        ⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/ProcessImpl#Process().
+//⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/ProcessImpl#ProcessorType().
   func (p *ProcessImpl) ProcessorType() string { panic("not implemented") }
 //      ^ definition local 4
 //         ^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/ProcessImpl#
@@ -67,6 +70,7 @@
 //                      > ```go
 //                      > func (*ProcessImpl).ProcessorType() string
 //                      > ```
+//                                                                        ⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/ProcessImpl#ProcessorType().
   
   var _ Processor[Limit] = &ProcessImpl{}
 //      ^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/Processor#
