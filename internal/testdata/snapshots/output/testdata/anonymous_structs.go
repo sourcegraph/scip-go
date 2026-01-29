@@ -6,6 +6,7 @@
   
   type TypeContainingAnonymousStructs struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type TypeContainingAnonymousStructs struct
@@ -29,23 +30,27 @@
 //     > ```
    a, b struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
+// kind Field
 // documentation
 // > ```go
 // > struct field a struct{x int; y string}
 // > ```
 //    ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.
+//    kind Field
 //    documentation
 //    > ```go
 //    > struct field b struct{x int; y string}
 //    > ```
     x int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.x.
+//  kind Field
 //  documentation
 //  > ```go
 //  > struct field x int
 //  > ```
     y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.y.
+//  kind Field
 //  documentation
 //  > ```go
 //  > struct field y string
@@ -53,18 +58,21 @@
    }
    c struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
+// kind Field
 // documentation
 // > ```go
 // > struct field c struct{X int; Y string}
 // > ```
     X int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.X.
+//  kind Field
 //  documentation
 //  > ```go
 //  > struct field X int
 //  > ```
     Y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
+//  kind Field
 //  documentation
 //  > ```go
 //  > struct field Y string
@@ -75,16 +83,20 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
   func funcContainingAnonymousStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func funcContainingAnonymousStructs()
 //     > ```
    d := struct {
 // ^ definition local 0
+// kind Variable
     x int
 //  ^ definition local 1
+//  kind Field
     y string
 //  ^ definition local 2
+//  kind Field
    }{
     x: 1,
 //  ^ reference local 1
@@ -94,10 +106,13 @@
   
    var e struct {
 //     ^ definition local 3
+//     kind Variable
     x int
 //  ^ definition local 4
+//  kind Field
     y string
 //  ^ definition local 5
+//  kind Field
    }
   
    e.x = 2
@@ -109,6 +124,7 @@
   
    var f TypeContainingAnonymousStructs
 //     ^ definition local 6
+//     kind Variable
 //       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
    f.a.x = 3
 // ^ reference local 6

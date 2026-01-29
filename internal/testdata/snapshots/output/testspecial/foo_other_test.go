@@ -14,6 +14,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testspecial_test`/TestFoo_Blackbox().
   func TestFoo_Blackbox(*testing.T) { testspecial.Foo() }
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testspecial_test`/TestFoo_Blackbox().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func TestFoo_Blackbox(*T)

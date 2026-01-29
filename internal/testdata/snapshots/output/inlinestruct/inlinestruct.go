@@ -5,6 +5,7 @@
   
   type FieldInterface interface {
 //     ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/FieldInterface#
+//     kind Interface
 //     documentation
 //     > ```go
 //     > type FieldInterface interface
@@ -17,6 +18,7 @@
 //     > ```
    SomeMethod() string
 // ^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/FieldInterface#SomeMethod.
+// kind Method
 // documentation
 // > ```go
 // > func (FieldInterface).SomeMethod() string
@@ -25,12 +27,14 @@
   
   var MyInline = struct {
 //    ^^^^^^^^ definition 0.1.test `sg/inlinestruct`/MyInline.
+//    kind Variable
 //    documentation
 //    > ```go
 //    > var MyInline struct{privateField FieldInterface; PublicField FieldInterface}
 //    > ```
    privateField FieldInterface
 // ^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/MyInline:privateField.
+// kind Field
 // documentation
 // > ```go
 // > struct field privateField sg/inlinestruct.FieldInterface
@@ -38,6 +42,7 @@
 //              ^^^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/FieldInterface#
    PublicField  FieldInterface
 // ^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/MyInline:PublicField.
+// kind Field
 // documentation
 // > ```go
 // > struct field PublicField sg/inlinestruct.FieldInterface
@@ -48,6 +53,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/MyFunc().
   func MyFunc() {
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/MyFunc().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func MyFunc()

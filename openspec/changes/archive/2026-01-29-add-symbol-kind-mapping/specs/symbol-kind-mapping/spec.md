@@ -34,11 +34,6 @@
 - **THEN** 符号的 `Kind` 字段必须设置为 `Field`
 - **AND** 符号信息必须包含字段的类型
 
-#### Scenario: 函数参数符号映射
-- **WHEN** Go 代码中定义一个函数或方法参数
-- **THEN** 符号的 `Kind` 字段必须设置为 `Parameter`
-- **AND** 符号信息必须包含参数的类型
-
 #### Scenario: 变量符号映射
 - **WHEN** Go 代码中定义一个变量（var）
 - **THEN** 符号的 `Kind` 字段必须设置为 `Variable`

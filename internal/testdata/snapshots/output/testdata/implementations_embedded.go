@@ -6,6 +6,7 @@
   
   type I3 interface {
 //     ^^ definition 0.1.test `sg/testdata`/I3#
+//     kind Interface
 //     documentation
 //     > ```go
 //     > type I3 interface
@@ -18,6 +19,7 @@
 //     > ```
    Close() error
 // ^^^^^ definition 0.1.test `sg/testdata`/I3#Close.
+// kind Method
 // documentation
 // > ```go
 // > func (I3).Close() error
@@ -26,6 +28,7 @@
   
   type TClose struct {
 //     ^^^^^^ definition 0.1.test `sg/testdata`/TClose#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type TClose struct
@@ -41,6 +44,7 @@
    io.Closer
 // ^^ reference github.com/golang/go/src go1.22 io/
 //    ^^^^^^ definition 0.1.test `sg/testdata`/TClose#Closer.
+//    kind Field
 //    documentation
 //    > ```go
 //    > struct field Closer io.Closer

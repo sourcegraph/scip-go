@@ -3,6 +3,7 @@
   
   type InFuncSig struct {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/InFuncSig#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type InFuncSig struct
@@ -15,6 +16,7 @@
 //     > ```
    value bool
 // ^^^^^ definition 0.1.test `sg/inlinestruct`/InFuncSig#value.
+// kind Field
 // documentation
 // > ```go
 // > struct field value bool
@@ -23,6 +25,7 @@
   
   var rowsCloseHook = func() func(InFuncSig, *error) { return nil }
 //    ^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/rowsCloseHook.
+//    kind Variable
 //    documentation
 //    > ```go
 //    > var rowsCloseHook func() func(InFuncSig, *error)

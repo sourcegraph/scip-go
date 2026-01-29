@@ -6,6 +6,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testspecial`/Foo().
   func Foo() {}
 //     ^^^ definition 0.1.test `sg/testspecial`/Foo().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func Foo()

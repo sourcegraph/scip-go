@@ -4,6 +4,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/LiterallyAnything().
   func LiterallyAnything() {}
 //     ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/LiterallyAnything().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func LiterallyAnything()

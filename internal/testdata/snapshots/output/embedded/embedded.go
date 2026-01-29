@@ -10,6 +10,7 @@
   
   type osExecCommand struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/osExecCommand#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type osExecCommand struct
@@ -26,6 +27,7 @@
    *exec.Cmd
 //  ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
 //       ^^^ definition 0.1.test `sg/embedded`/osExecCommand#Cmd.
+//       kind Field
 //       documentation
 //       > ```go
 //       > struct field Cmd *os/exec.Cmd
@@ -36,11 +38,13 @@
 //⌄ enclosing_range_start 0.1.test `sg/embedded`/wrapExecCommand().
   func wrapExecCommand(c *exec.Cmd) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/wrapExecCommand().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func wrapExecCommand(c *Cmd)
 //     > ```
 //                     ^ definition local 0
+//                     kind Variable
 //                        ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
 //                             ^^^ reference github.com/golang/go/src go1.22 `os/exec`/Cmd#
    _ = &osExecCommand{Cmd: c}
@@ -52,6 +56,7 @@
   
   type Inner struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Inner#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type Inner struct
@@ -66,18 +71,21 @@
 //     > ```
    X int
 // ^ definition 0.1.test `sg/embedded`/Inner#X.
+// kind Field
 // documentation
 // > ```go
 // > struct field X int
 // > ```
    Y int
 // ^ definition 0.1.test `sg/embedded`/Inner#Y.
+// kind Field
 // documentation
 // > ```go
 // > struct field Y int
 // > ```
    Z int
 // ^ definition 0.1.test `sg/embedded`/Inner#Z.
+// kind Field
 // documentation
 // > ```go
 // > struct field Z int
@@ -86,6 +94,7 @@
   
   type Outer struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Outer#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type Outer struct
@@ -99,6 +108,7 @@
 //     > ```
    Inner
 // ^^^^^ definition 0.1.test `sg/embedded`/Outer#Inner.
+// kind Field
 // documentation
 // > ```go
 // > struct field Inner sg/embedded.Inner
@@ -106,6 +116,7 @@
 // ^^^^^ reference 0.1.test `sg/embedded`/Inner#
    W int
 // ^ definition 0.1.test `sg/embedded`/Outer#W.
+// kind Field
 // documentation
 // > ```go
 // > struct field W int
@@ -115,12 +126,14 @@
 //⌄ enclosing_range_start 0.1.test `sg/embedded`/useOfCompositeStructs().
   func useOfCompositeStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/useOfCompositeStructs().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func useOfCompositeStructs()
 //     > ```
    o := Outer{
 // ^ definition local 1
+// kind Variable
 //      ^^^^^ reference 0.1.test `sg/embedded`/Outer#
     Inner: Inner{
 //  ^^^^^ reference 0.1.test `sg/embedded`/Outer#Inner.

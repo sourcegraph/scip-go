@@ -5,6 +5,7 @@
    // HoverTypeList is a cool struct
    HoverTypeList struct{}
 // ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/HoverTypeList#
+// kind Class
 // documentation
 // > ```go
 // > type HoverTypeList struct
@@ -18,6 +19,7 @@
   // This should show up as well
   type HoverType struct{}
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/HoverType#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type HoverType struct

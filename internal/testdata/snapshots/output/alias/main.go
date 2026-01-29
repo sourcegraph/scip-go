@@ -8,6 +8,7 @@
   type (
    T struct{}
 // ^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/T#
+// kind Class
 // documentation
 // > ```go
 // > type T struct
@@ -21,6 +22,7 @@
 // > ```
    U = T
 // ^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
+// kind Class
 // documentation
 // > ```go
 // > type U = T
@@ -35,6 +37,7 @@
 //     ^ reference github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/T#
    V = U
 // ^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/V#
+// kind Class
 // documentation
 // > ```go
 // > type V = U
@@ -49,6 +52,7 @@
 //     ^ reference github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
    S U
 // ^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/S#
+// kind Class
 // documentation
 // > ```go
 // > type S struct
@@ -63,6 +67,7 @@
 //   ^ reference github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
    Z int32
 // ^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/Z#
+// kind Type
 // documentation
 // > Check that we don't panic
 // > Copied from https://github.com/golang/go/issues/68877#issuecomment-2290000187
@@ -75,11 +80,13 @@
 //⌄ enclosing_range_start github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
   func f(u U) {}
 //     ^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func f(u U)
 //     > ```
 //       ^ definition local 0
+//       kind Variable
 //         ^ reference github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
 //             ⌃ enclosing_range_end github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
   

@@ -15,6 +15,7 @@
   
   var ErrNotImplemented = errors.New("not implemented")
 //    ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/ErrNotImplemented.
+//    kind Variable
 //    documentation
 //    > ```go
 //    > var ErrNotImplemented error
@@ -25,11 +26,13 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
   func newKey(t *testing.T) (string, error) {
 //     ^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func newKey(t *T) (string, error)
 //     > ```
 //            ^ definition local 0
+//            kind Variable
 //               ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
 //                       ^ reference github.com/golang/go/src go1.22 testing/T#
    return "", ErrNotImplemented
@@ -40,14 +43,17 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
   func verifySandbox(t *testing.T, s string) {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func verifySandbox(t *T, s string)
 //     > ```
 //                   ^ definition local 1
+//                   kind Variable
 //                      ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
 //                              ^ reference github.com/golang/go/src go1.22 testing/T#
 //                                 ^ definition local 2
+//                                 kind Variable
    return
   }
 //⌃ enclosing_range_end 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().

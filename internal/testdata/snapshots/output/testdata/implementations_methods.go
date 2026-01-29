@@ -3,6 +3,7 @@
   
   type InterfaceWithSingleMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#
+//     kind Interface
 //     documentation
 //     > ```go
 //     > type InterfaceWithSingleMethod interface
@@ -15,6 +16,7 @@
 //     > ```
    SingleMethod() float64
 // ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#SingleMethod.
+// kind Method
 // documentation
 // > ```go
 // > func (InterfaceWithSingleMethod).SingleMethod() float64
@@ -23,6 +25,7 @@
   
   type StructWithMethods struct{}
 //     ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructWithMethods#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type StructWithMethods struct
@@ -37,6 +40,7 @@
   func (StructWithMethods) SingleMethod() float64 { return 5.0 }
 //      ^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/StructWithMethods#
 //                         ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructWithMethods#SingleMethod().
+//                         kind Method
 //                         documentation
 //                         > ```go
 //                         > func (StructWithMethods).SingleMethod() float64
@@ -46,6 +50,7 @@
   
   type InterfaceWithSingleMethodTwoImplementers interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#
+//     kind Interface
 //     documentation
 //     > ```go
 //     > type InterfaceWithSingleMethodTwoImplementers interface
@@ -58,6 +63,7 @@
 //     > ```
    SingleMethodTwoImpl() float64
 // ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl.
+// kind Method
 // documentation
 // > ```go
 // > func (InterfaceWithSingleMethodTwoImplementers).SingleMethodTwoImpl() float64
@@ -66,6 +72,7 @@
   
   type TwoImplOne struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplOne#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type TwoImplOne struct
@@ -80,6 +87,7 @@
   func (TwoImplOne) SingleMethodTwoImpl() float64 { return 5.0 }
 //      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplOne#
 //                  ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplOne#SingleMethodTwoImpl().
+//                  kind Method
 //                  documentation
 //                  > ```go
 //                  > func (TwoImplOne).SingleMethodTwoImpl() float64
@@ -89,6 +97,7 @@
   
   type TwoImplTwo struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type TwoImplTwo struct
@@ -103,6 +112,7 @@
   func (TwoImplTwo) SingleMethodTwoImpl() float64         { return 5.0 }
 //      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplTwo#
 //                  ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#SingleMethodTwoImpl().
+//                  kind Method
 //                  documentation
 //                  > ```go
 //                  > func (TwoImplTwo).SingleMethodTwoImpl() float64
@@ -113,6 +123,7 @@
   func (TwoImplTwo) RandomThingThatDoesntMatter() float64 { return 5.0 }
 //      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplTwo#
 //                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().
+//                  kind Method
 //                  documentation
 //                  > ```go
 //                  > func (TwoImplTwo).RandomThingThatDoesntMatter() float64

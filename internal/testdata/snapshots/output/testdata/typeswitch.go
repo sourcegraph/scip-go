@@ -4,13 +4,16 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/Switch().
   func Switch(interfaceValue interface{}) bool {
 //     ^^^^^^ definition 0.1.test `sg/testdata`/Switch().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func Switch(interfaceValue interface{}) bool
 //     > ```
 //            ^^^^^^^^^^^^^^ definition local 0
+//            kind Variable
    switch concreteValue := interfaceValue.(type) {
 //        ^^^^^^^^^^^^^ definition local 1
+//        kind Variable
 //                         ^^^^^^^^^^^^^^ reference local 0
    case int:
     return concreteValue*3 > 10

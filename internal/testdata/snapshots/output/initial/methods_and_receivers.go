@@ -6,6 +6,7 @@
   
   type MyStruct struct{ f, y int }
 //     ^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type MyStruct struct
@@ -18,11 +19,13 @@
 //     > }
 //     > ```
 //                      ^ definition 0.1.test `sg/initial`/MyStruct#f.
+//                      kind Field
 //                      documentation
 //                      > ```go
 //                      > struct field f int
 //                      > ```
 //                         ^ definition 0.1.test `sg/initial`/MyStruct#y.
+//                         kind Field
 //                         documentation
 //                         > ```go
 //                         > struct field y int
@@ -31,13 +34,16 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/MyStruct#RecvFunction().
   func (m MyStruct) RecvFunction(b int) int { return m.f + b }
 //      ^ definition local 0
+//      kind Variable
 //        ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //                  ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#RecvFunction().
+//                  kind Method
 //                  documentation
 //                  > ```go
 //                  > func (MyStruct).RecvFunction(b int) int
 //                  > ```
 //                               ^ definition local 1
+//                               kind Variable
 //                                                   ^ reference local 0
 //                                                     ^ reference 0.1.test `sg/initial`/MyStruct#f.
 //                                                         ^ reference local 1
@@ -46,12 +52,14 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/SomethingElse().
   func SomethingElse() {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SomethingElse().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func SomethingElse()
 //     > ```
    s := MyStruct{f: 0}
 // ^ definition local 2
+// kind Variable
 //      ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //               ^ reference 0.1.test `sg/initial`/MyStruct#f.
    fmt.Println(s)

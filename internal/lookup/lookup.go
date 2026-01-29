@@ -100,8 +100,9 @@ func (p *Global) Add(pkgSymbols *Package) {
 }
 
 func (p *Global) SetPkgName(pkg *packages.Package, pkgDeclaration *ast.File) {
+	pkgNameObj := pkg.TypesInfo.ObjectOf(pkgDeclaration.Name)
 	p.m.Lock()
-	p.pkgNames[newtypes.GetID(pkg)] = &PackageName{
+	pkgName := &PackageName{
 		Symbol: &scip.SymbolInformation{
 			Symbol: symbols.FromDescriptors(pkg, &scip.Descriptor{
 				Name:   pkg.PkgPath,
@@ -109,9 +110,11 @@ func (p *Global) SetPkgName(pkg *packages.Package, pkgDeclaration *ast.File) {
 			}),
 			Documentation: []string{},
 			Relationships: []*scip.Relationship{},
+			Kind:          symbols.GetSymbolKind(pkgNameObj),
 		},
 		Pos: pkgDeclaration.Name.NamePos,
 	}
+	p.pkgNames[newtypes.GetID(pkg)] = pkgName
 	p.m.Unlock()
 }
 

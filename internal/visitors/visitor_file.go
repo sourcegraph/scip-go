@@ -359,6 +359,7 @@ func (v *fileVisitor) ToScipDocument() *scip.Document {
 
 		if obj := local.Obj; obj != nil {
 			symbolInfo.DisplayName = obj.Name()
+			symbolInfo.Kind = symbols.GetSymbolKind(obj)
 			if txt := local.SignatureText(); txt != "" {
 				symbolInfo.SignatureDocumentation = &scip.Document{
 					Language: "go",

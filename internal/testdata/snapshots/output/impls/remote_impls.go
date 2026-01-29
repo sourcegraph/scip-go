@@ -7,17 +7,20 @@
 //⌄ enclosing_range_start 0.1.test `sg/impls`/Something().
   func Something(r http.ResponseWriter) {}
 //     ^^^^^^^^^ definition 0.1.test `sg/impls`/Something().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func Something(r ResponseWriter)
 //     > ```
 //               ^ definition local 0
+//               kind Variable
 //                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#
 //                                       ⌃ enclosing_range_end 0.1.test `sg/impls`/Something().
   
   type MyWriter struct{}
 //     ^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type MyWriter struct
@@ -34,8 +37,10 @@
 //⌄ enclosing_range_start 0.1.test `sg/impls`/MyWriter#Header().
   func (w MyWriter) Header() http.Header        { panic("") }
 //      ^ definition local 1
+//      kind Variable
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^ definition 0.1.test `sg/impls`/MyWriter#Header().
+//                  kind Method
 //                  documentation
 //                  > ```go
 //                  > func (MyWriter).Header() Header
@@ -47,8 +52,10 @@
 //⌄ enclosing_range_start 0.1.test `sg/impls`/MyWriter#Write().
   func (w MyWriter) Write([]byte) (int, error)  { panic("") }
 //      ^ definition local 2
+//      kind Variable
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^ definition 0.1.test `sg/impls`/MyWriter#Write().
+//                  kind Method
 //                  documentation
 //                  > ```go
 //                  > func (MyWriter).Write([]byte) (int, error)
@@ -61,19 +68,23 @@
 //⌄ enclosing_range_start 0.1.test `sg/impls`/MyWriter#WriteHeader().
   func (w MyWriter) WriteHeader(statusCode int) { panic("") }
 //      ^ definition local 3
+//      kind Variable
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#WriteHeader().
+//                  kind Method
 //                  documentation
 //                  > ```go
 //                  > func (MyWriter).WriteHeader(statusCode int)
 //                  > ```
 //                  relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
 //                              ^^^^^^^^^^ definition local 4
+//                              kind Variable
 //                                                          ⌃ enclosing_range_end 0.1.test `sg/impls`/MyWriter#WriteHeader().
   
 //⌄ enclosing_range_start 0.1.test `sg/impls`/Another().
   func Another() {
 //     ^^^^^^^ definition 0.1.test `sg/impls`/Another().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func Another()

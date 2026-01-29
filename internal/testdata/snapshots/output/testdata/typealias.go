@@ -9,6 +9,7 @@
   // Type aliased doc
   type SecretBurger = secret.Burger
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/SecretBurger#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type SecretBurger = secret.Burger
@@ -26,6 +27,7 @@
   
   type BadBurger = struct {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/BadBurger#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type BadBurger = struct
@@ -38,6 +40,7 @@
 //     > ```
    Field string
 // ^^^^^ definition 0.1.test `sg/testdata`/BadBurger#Field.
+// kind Field
 // documentation
 // > ```go
 // > struct field Field string

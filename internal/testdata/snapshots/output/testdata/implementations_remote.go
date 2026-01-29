@@ -6,6 +6,7 @@
   
   type implementsWriter struct{}
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type implementsWriter struct
@@ -23,6 +24,7 @@
   func (implementsWriter) Header() http.Header        { panic("Just for how") }
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Header().
+//                        kind Method
 //                        documentation
 //                        > ```go
 //                        > func (implementsWriter).Header() Header
@@ -35,6 +37,7 @@
   func (implementsWriter) Write([]byte) (int, error)  { panic("Just for show") }
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Write().
+//                        kind Method
 //                        documentation
 //                        > ```go
 //                        > func (implementsWriter).Write([]byte) (int, error)
@@ -48,22 +51,26 @@
   func (implementsWriter) WriteHeader(statusCode int) {}
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#WriteHeader().
+//                        kind Method
 //                        documentation
 //                        > ```go
 //                        > func (implementsWriter).WriteHeader(statusCode int)
 //                        > ```
 //                        relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
 //                                    ^^^^^^^^^^ definition local 0
+//                                    kind Variable
 //                                                     ⌃ enclosing_range_end 0.1.test `sg/testdata`/implementsWriter#WriteHeader().
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/ShowsInSignature().
   func ShowsInSignature(respWriter http.ResponseWriter) {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ShowsInSignature().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func ShowsInSignature(respWriter ResponseWriter)
 //     > ```
 //                      ^^^^^^^^^^ definition local 1
+//                      kind Variable
 //                                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#
    respWriter.WriteHeader(1)

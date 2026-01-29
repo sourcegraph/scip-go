@@ -14,6 +14,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/replace-directives`/Something().
   func Something() {
 //     ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/Something().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func Something()

@@ -3,6 +3,7 @@
   
   type importMeta struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/importMeta#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type importMeta struct
@@ -14,6 +15,7 @@
   
   type sourceMeta struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/sourceMeta#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type sourceMeta struct
@@ -26,6 +28,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata/duplicate_path_id`/fetchMeta().
   func fetchMeta() (string, *importMeta, *sourceMeta) {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/fetchMeta().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func fetchMeta() (string, *importMeta, *sourceMeta)
@@ -39,6 +42,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata/duplicate_path_id`/init().
   func init() {}
 //     ^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/init().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func init()
@@ -47,6 +51,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata/duplicate_path_id`/init().
   func init() {}
 //     ^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/init().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func init()
@@ -55,6 +60,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata/duplicate_path_id`/init().
   func init() {}
 //     ^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/init().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func init()

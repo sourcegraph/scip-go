@@ -84,10 +84,11 @@ func (d *Document) SetNewSymbolForPos(
 	pos token.Pos,
 ) {
 	documentation := []string{}
+	var def types.Object
 	if ident != nil {
 		hover := d.extractHoverText(parent, ident)
 		var signature, extra string
-		def := d.pkg.TypesInfo.Defs[ident]
+		def = d.pkg.TypesInfo.Defs[ident]
 		if def != nil {
 			signature, extra = typeStringForObject(def)
 		}
@@ -107,6 +108,7 @@ func (d *Document) SetNewSymbolForPos(
 		Symbol:        symbol,
 		Documentation: documentation,
 		Relationships: []*scip.Relationship{},
+		Kind:          symbols.GetSymbolKind(def),
 	})
 }
 

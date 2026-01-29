@@ -6,12 +6,14 @@
 //    ^^^ reference github.com/golang/go/src go1.22 fmt/
    h "net/http"
 // ^ definition local 0
+// kind Namespace
 //    ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
   )
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/Example().
   func Example() {
 //     ^^^^^^^ definition 0.1.test `sg/testdata`/Example().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func Example()

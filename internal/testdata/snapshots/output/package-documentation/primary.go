@@ -7,6 +7,7 @@
 //⌄ enclosing_range_start github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/package-documentation`/Exported().
   func Exported() {}
 //     ^^^^^^^^ definition github.com/sourcegraph/scip-go . `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/package-documentation`/Exported().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func Exported()

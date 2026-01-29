@@ -6,6 +6,7 @@
   // CustomSwitch does the things in a switch
   type CustomSwitch struct{}
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/switches`/CustomSwitch#
+//     kind Class
 //     documentation
 //     > ```go
 //     > type CustomSwitch struct
@@ -21,8 +22,10 @@
 //⌄ enclosing_range_start 0.1.test `sg/switches`/CustomSwitch#Something().
   func (c *CustomSwitch) Something() bool { return false }
 //      ^ definition local 0
+//      kind Variable
 //         ^^^^^^^^^^^^ reference 0.1.test `sg/switches`/CustomSwitch#
 //                       ^^^^^^^^^ definition 0.1.test `sg/switches`/CustomSwitch#Something().
+//                       kind Method
 //                       documentation
 //                       > ```go
 //                       > func (*CustomSwitch).Something() bool
@@ -34,13 +37,16 @@
 //⌄ enclosing_range_start 0.1.test `sg/switches`/Switch().
   func Switch(interfaceValue interface{}) bool {
 //     ^^^^^^ definition 0.1.test `sg/switches`/Switch().
+//     kind Function
 //     documentation
 //     > ```go
 //     > func Switch(interfaceValue interface{}) bool
 //     > ```
 //            ^^^^^^^^^^^^^^ definition local 1
+//            kind Variable
    switch concreteValue := interfaceValue.(type) {
 //        ^^^^^^^^^^^^^ definition local 2
+//        kind Variable
 //                         ^^^^^^^^^^^^^^ reference local 1
    case int:
     return concreteValue*3 > 10
