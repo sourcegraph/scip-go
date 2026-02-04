@@ -250,13 +250,10 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		if pkg.Module.Path == opts.ModulePath {
 			pkg.Module.Version = opts.ModuleVersion
 		} else {
-			// Only panic when running in debug mode.
-			log.Error(handler.ErrOrPanic(
-				"Unknown version for userland package: %s %s",
-				pkg.Module.Path,
-				opts.ModulePath,
-			))
-
+			log.Warn("Unknown version for userland package, using fallback",
+				"module", pkg.Module.Path,
+				"mainModule", opts.ModulePath,
+			)
 			pkg.Module.Version = "."
 		}
 	} else if module.IsPseudoVersion(pkg.Module.Version) {
@@ -266,12 +263,10 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		// the revision from a pseudo-version.
 		rev, err := module.PseudoVersionRev(pkg.Module.Version)
 		if err != nil {
-			// Only panic when running in debug mode.
-			log.Error(handler.ErrOrPanic(
-				"Unable to find rev from pseudo-version: %s %s",
-				pkg.Module.Path,
-				pkg.Module.Version,
-			))
+			log.Warn("Unable to find rev from pseudo-version, using original",
+				"module", pkg.Module.Path,
+				"version", pkg.Module.Version,
+			)
 		} else {
 			pkg.Module.Version = rev
 		}
