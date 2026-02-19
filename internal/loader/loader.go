@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/charmbracelet/log"
@@ -248,7 +249,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	}
 
 	if pkg.Module.Version == "" {
-		if sameRepoRoot(pkg.Module.Path, opts.ModulePath) {
+		if sameRepoRoot(pkg.Module.Path, opts.ModulePath) || isNestedDir(pkg.Module.Dir, opts.ModuleRoot) {
 			pkg.Module.Version = opts.ModuleVersion
 		} else {
 			// Only panic when running in debug mode.
@@ -298,4 +299,20 @@ func sameRepoRoot(pathA, pathB string) bool {
 		return false
 	}
 	return rootA.Root == rootB.Root
+}
+
+// isNestedDir returns true if either directory is a subdirectory of the other.
+// This detects workspace sibling modules (e.g. go.work) that live in the same
+// repository but have different VCS import paths.
+func isNestedDir(dirA, dirB string) bool {
+	if dirA == "" || dirB == "" {
+		return false
+	}
+	if rel, err := filepath.Rel(dirA, dirB); err == nil && filepath.IsLocal(rel) {
+		return true
+	}
+	if rel, err := filepath.Rel(dirB, dirA); err == nil && filepath.IsLocal(rel) {
+		return true
+	}
+	return false
 }
