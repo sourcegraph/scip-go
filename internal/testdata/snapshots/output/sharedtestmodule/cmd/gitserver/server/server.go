@@ -1,14 +1,14 @@
   package server
-//        ^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/
+//        ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/
 //        documentation
 //        > package server
   
-//⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/AnythingAtAll().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/AnythingAtAll().
   func AnythingAtAll() {}
-//     ^^^^^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/AnythingAtAll().
+//     ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/AnythingAtAll().
 //     documentation
 //     > ```go
 //     > func AnythingAtAll()
 //     > ```
-//                      ⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/AnythingAtAll().
+//                      ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/AnythingAtAll().
   

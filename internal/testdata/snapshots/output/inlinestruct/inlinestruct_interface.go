@@ -1,18 +1,18 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/
+//        ^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/
   
   import "context"
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
   
-//⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/Target().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/Target().
   func Target() interface {
-//     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Target().
+//     ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/Target().
 //     documentation
 //     > ```go
 //     > func Target() interface{AbbreviatedOID(Context) (string, error); Commit(Context) (string, error); OID(Context) (int, error); Type(Context) (int, error)}
 //     > ```
    OID(context.Context) (int, error)
-// ^^^ definition 0.1.test `sg/inlinestruct`/func:Target:OID().
+// ^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/func:Target:OID().
 // documentation
 // > ```go
 // > func (interface).OID(Context) (int, error)
@@ -20,7 +20,7 @@
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //             ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    AbbreviatedOID(context.Context) (string, error)
-// ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:AbbreviatedOID().
+// ^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/func:Target:AbbreviatedOID().
 // documentation
 // > ```go
 // > func (interface).AbbreviatedOID(Context) (string, error)
@@ -28,7 +28,7 @@
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                        ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Commit(context.Context) (string, error)
-// ^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Commit().
+// ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/func:Target:Commit().
 // documentation
 // > ```go
 // > func (interface).Commit(Context) (string, error)
@@ -36,7 +36,7 @@
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Type(context.Context) (int, error)
-// ^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Type().
+// ^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/func:Target:Type().
 // documentation
 // > ```go
 // > func (interface).Type(Context) (int, error)
@@ -46,23 +46,23 @@
   } {
    panic("not implemented")
   }
-//⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/Target().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/Target().
   
-//⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/something().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/something().
   func something() {
-//     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/something().
+//     ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/something().
 //     documentation
 //     > ```go
 //     > func something()
 //     > ```
    x := Target()
 // ^ definition local 0
-//      ^^^^^^ reference 0.1.test `sg/inlinestruct`/Target().
+//      ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/Target().
    x.OID(context.Background())
 // ^ reference local 0
-//   ^^^ reference 0.1.test `sg/inlinestruct`/func:Target:OID().
+//   ^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/func:Target:OID().
 //       ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //               ^^^^^^^^^^ reference github.com/golang/go/src go1.22 context/Background().
   }
-//⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/something().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/something().
   

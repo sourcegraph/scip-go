@@ -2,7 +2,7 @@ package nested_internal
 
 import (
 	"fmt"
-	"sg/embedded"
+	"github.com/sourcegraph/scip-go/internal/testdata/embedded"
 )
 
 func Something(recent embedded.RecentCommittersResults) {

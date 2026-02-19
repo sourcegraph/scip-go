@@ -1,23 +1,23 @@
   package initial
-//        ^^^^^^^ reference 0.1.test `sg/initial`/
+//        ^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/
   
   type LiteralType int
-//     ^^^^^^^^^^^ definition 0.1.test `sg/initial`/LiteralType#
+//     ^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/LiteralType#
 //     documentation
 //     > ```go
 //     > int
 //     > ```
   
   type FuncType func(LiteralType, int) bool
-//     ^^^^^^^^ definition 0.1.test `sg/initial`/FuncType#
+//     ^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/FuncType#
 //     documentation
 //     > ```go
 //     > func(LiteralType, int) bool
 //     > ```
-//                   ^^^^^^^^^^^ reference 0.1.test `sg/initial`/LiteralType#
+//                   ^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/LiteralType#
   
   type IfaceType interface {
-//     ^^^^^^^^^ definition 0.1.test `sg/initial`/IfaceType#
+//     ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/IfaceType#
 //     documentation
 //     > ```go
 //     > type IfaceType interface
@@ -29,16 +29,16 @@
 //     > }
 //     > ```
    Method() LiteralType
-// ^^^^^^ definition 0.1.test `sg/initial`/IfaceType#Method.
+// ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/IfaceType#Method.
 // documentation
 // > ```go
 // > func (IfaceType).Method() LiteralType
 // > ```
-//          ^^^^^^^^^^^ reference 0.1.test `sg/initial`/LiteralType#
+//          ^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/LiteralType#
   }
   
   type StructType struct {
-//     ^^^^^^^^^^ definition 0.1.test `sg/initial`/StructType#
+//     ^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/StructType#
 //     documentation
 //     > ```go
 //     > type StructType struct
@@ -57,29 +57,29 @@
 //     > }
 //     > ```
    m IfaceType
-// ^ definition 0.1.test `sg/initial`/StructType#m.
+// ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/StructType#m.
 // documentation
 // > ```go
-// > struct field m sg/initial.IfaceType
+// > struct field m github.com/sourcegraph/scip-go/internal/testdata/initial.IfaceType
 // > ```
-//   ^^^^^^^^^ reference 0.1.test `sg/initial`/IfaceType#
+//   ^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/IfaceType#
    f LiteralType
-// ^ definition 0.1.test `sg/initial`/StructType#f.
+// ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/StructType#f.
 // documentation
 // > ```go
-// > struct field f sg/initial.LiteralType
+// > struct field f github.com/sourcegraph/scip-go/internal/testdata/initial.LiteralType
 // > ```
-//   ^^^^^^^^^^^ reference 0.1.test `sg/initial`/LiteralType#
+//   ^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/LiteralType#
   
    // anonymous struct
    anon struct {
-// ^^^^ definition 0.1.test `sg/initial`/StructType#anon.
+// ^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/StructType#anon.
 // documentation
 // > ```go
 // > struct field anon struct{sub int}
 // > ```
     sub int
-//  ^^^ definition 0.1.test `sg/initial`/StructType#anon.sub.
+//  ^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/StructType#anon.sub.
 //  documentation
 //  > ```go
 //  > struct field sub int
@@ -88,13 +88,13 @@
   
    // interface within struct
    i interface {
-// ^ definition 0.1.test `sg/initial`/StructType#i.
+// ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/StructType#i.
 // documentation
 // > ```go
 // > struct field i interface{AnonMethod() bool}
 // > ```
     AnonMethod() bool
-//  ^^^^^^^^^^ definition 0.1.test `sg/initial`/StructType#i.AnonMethod.
+//  ^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/StructType#i.AnonMethod.
 //  documentation
 //  > ```go
 //  > func (interface).AnonMethod() bool
@@ -103,7 +103,7 @@
   }
   
   type DeclaredBefore struct{ DeclaredAfter }
-//     ^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredBefore#
+//     ^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/DeclaredBefore#
 //     documentation
 //     > ```go
 //     > type DeclaredBefore struct
@@ -114,14 +114,14 @@
 //     >     DeclaredAfter
 //     > }
 //     > ```
-//                            ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredBefore#DeclaredAfter.
+//                            ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/DeclaredBefore#DeclaredAfter.
 //                            documentation
 //                            > ```go
-//                            > struct field DeclaredAfter sg/initial.DeclaredAfter
+//                            > struct field DeclaredAfter github.com/sourcegraph/scip-go/internal/testdata/initial.DeclaredAfter
 //                            > ```
-//                            ^^^^^^^^^^^^^ reference 0.1.test `sg/initial`/DeclaredAfter#
+//                            ^^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/DeclaredAfter#
   type DeclaredAfter struct{}
-//     ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredAfter#
+//     ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/DeclaredAfter#
 //     documentation
 //     > ```go
 //     > type DeclaredAfter struct

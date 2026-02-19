@@ -1,4 +1,4 @@
-module sg/replace-directives
+module github.com/sourcegraph/scip-go/internal/testdata/replace-directives
 
 go 1.19
 

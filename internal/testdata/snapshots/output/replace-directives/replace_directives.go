@@ -1,5 +1,5 @@
   package replacers
-//        ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/
+//        ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/replace-directives`/
 //        documentation
 //        > package replacers
   
@@ -11,9 +11,9 @@
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference github.com/sourcegraph/gologin c6f1b62954d8 `github.com/dghubble/gologin`/
   )
   
-//⌄ enclosing_range_start 0.1.test `sg/replace-directives`/Something().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/replace-directives`/Something().
   func Something() {
-//     ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/Something().
+//     ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/replace-directives`/Something().
 //     documentation
 //     > ```go
 //     > func Something()
@@ -24,5 +24,5 @@
 //             ^^^^^^^ reference github.com/sourcegraph/gologin c6f1b62954d8 `github.com/dghubble/gologin`/
 //                     ^^^^^^^^^^^^^^^^^^^ reference github.com/sourcegraph/gologin c6f1b62954d8 `github.com/dghubble/gologin`/DefaultCookieConfig.
   }
-//⌃ enclosing_range_end 0.1.test `sg/replace-directives`/Something().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/replace-directives`/Something().
   

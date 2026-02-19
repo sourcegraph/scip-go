@@ -1,9 +1,9 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/Switch().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/Switch().
   func Switch(interfaceValue interface{}) bool {
-//     ^^^^^^ definition 0.1.test `sg/testdata`/Switch().
+//     ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/Switch().
 //     documentation
 //     > ```go
 //     > func Switch(interfaceValue interface{}) bool
@@ -30,5 +30,5 @@
     return false
    }
   }
-//⌃ enclosing_range_end 0.1.test `sg/testdata`/Switch().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/Switch().
   

@@ -1,7 +1,7 @@
 package testdata
 
 import (
-	"sg/testdata/internal/secret"
+	"github.com/sourcegraph/scip-go/internal/testdata/testdata/internal/secret"
 )
 
 // Type aliased doc

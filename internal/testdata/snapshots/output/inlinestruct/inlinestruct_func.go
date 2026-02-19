@@ -1,8 +1,8 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/
+//        ^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/
   
   type InFuncSig struct {
-//     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/InFuncSig#
+//     ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/InFuncSig#
 //     documentation
 //     > ```go
 //     > type InFuncSig struct
@@ -14,7 +14,7 @@
 //     > }
 //     > ```
    value bool
-// ^^^^^ definition 0.1.test `sg/inlinestruct`/InFuncSig#value.
+// ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/InFuncSig#value.
 // documentation
 // > ```go
 // > struct field value bool
@@ -22,10 +22,10 @@
   }
   
   var rowsCloseHook = func() func(InFuncSig, *error) { return nil }
-//    ^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/rowsCloseHook.
+//    ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/rowsCloseHook.
 //    documentation
 //    > ```go
 //    > var rowsCloseHook func() func(InFuncSig, *error)
 //    > ```
-//                                ^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/InFuncSig#
+//                                ^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/inlinestruct`/InFuncSig#
   

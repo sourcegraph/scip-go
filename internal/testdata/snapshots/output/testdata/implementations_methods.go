@@ -1,8 +1,8 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/
   
   type InterfaceWithSingleMethod interface {
-//     ^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#
+//     ^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethod#
 //     documentation
 //     > ```go
 //     > type InterfaceWithSingleMethod interface
@@ -14,7 +14,7 @@
 //     > }
 //     > ```
    SingleMethod() float64
-// ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#SingleMethod.
+// ^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethod#SingleMethod.
 // documentation
 // > ```go
 // > func (InterfaceWithSingleMethod).SingleMethod() float64
@@ -22,7 +22,7 @@
   }
   
   type StructWithMethods struct{}
-//     ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructWithMethods#
+//     ^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/StructWithMethods#
 //     documentation
 //     > ```go
 //     > type StructWithMethods struct
@@ -31,21 +31,21 @@
 //     > ```go
 //     > struct{}
 //     > ```
-//     relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethod# implementation
+//     relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethod# implementation
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/StructWithMethods#SingleMethod().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/StructWithMethods#SingleMethod().
   func (StructWithMethods) SingleMethod() float64 { return 5.0 }
-//      ^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/StructWithMethods#
-//                         ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructWithMethods#SingleMethod().
+//      ^^^^^^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/StructWithMethods#
+//                         ^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/StructWithMethods#SingleMethod().
 //                         documentation
 //                         > ```go
 //                         > func (StructWithMethods).SingleMethod() float64
 //                         > ```
-//                         relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethod#SingleMethod. implementation
-//                                                             ⌃ enclosing_range_end 0.1.test `sg/testdata`/StructWithMethods#SingleMethod().
+//                         relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethod#SingleMethod. implementation
+//                                                             ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/StructWithMethods#SingleMethod().
   
   type InterfaceWithSingleMethodTwoImplementers interface {
-//     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#
+//     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethodTwoImplementers#
 //     documentation
 //     > ```go
 //     > type InterfaceWithSingleMethodTwoImplementers interface
@@ -57,7 +57,7 @@
 //     > }
 //     > ```
    SingleMethodTwoImpl() float64
-// ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl.
+// ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl.
 // documentation
 // > ```go
 // > func (InterfaceWithSingleMethodTwoImplementers).SingleMethodTwoImpl() float64
@@ -65,7 +65,7 @@
   }
   
   type TwoImplOne struct{}
-//     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplOne#
+//     ^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplOne#
 //     documentation
 //     > ```go
 //     > type TwoImplOne struct
@@ -74,21 +74,21 @@
 //     > ```go
 //     > struct{}
 //     > ```
-//     relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers# implementation
+//     relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethodTwoImplementers# implementation
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/TwoImplOne#SingleMethodTwoImpl().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplOne#SingleMethodTwoImpl().
   func (TwoImplOne) SingleMethodTwoImpl() float64 { return 5.0 }
-//      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplOne#
-//                  ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplOne#SingleMethodTwoImpl().
+//      ^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplOne#
+//                  ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplOne#SingleMethodTwoImpl().
 //                  documentation
 //                  > ```go
 //                  > func (TwoImplOne).SingleMethodTwoImpl() float64
 //                  > ```
-//                  relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl. implementation
-//                                                             ⌃ enclosing_range_end 0.1.test `sg/testdata`/TwoImplOne#SingleMethodTwoImpl().
+//                  relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl. implementation
+//                                                             ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplOne#SingleMethodTwoImpl().
   
   type TwoImplTwo struct{}
-//     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#
+//     ^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#
 //     documentation
 //     > ```go
 //     > type TwoImplTwo struct
@@ -97,25 +97,25 @@
 //     > ```go
 //     > struct{}
 //     > ```
-//     relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers# implementation
+//     relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethodTwoImplementers# implementation
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/TwoImplTwo#SingleMethodTwoImpl().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#SingleMethodTwoImpl().
   func (TwoImplTwo) SingleMethodTwoImpl() float64         { return 5.0 }
-//      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplTwo#
-//                  ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#SingleMethodTwoImpl().
+//      ^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#
+//                  ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#SingleMethodTwoImpl().
 //                  documentation
 //                  > ```go
 //                  > func (TwoImplTwo).SingleMethodTwoImpl() float64
 //                  > ```
-//                  relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl. implementation
-//                                                                     ⌃ enclosing_range_end 0.1.test `sg/testdata`/TwoImplTwo#SingleMethodTwoImpl().
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().
+//                  relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl. implementation
+//                                                                     ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#SingleMethodTwoImpl().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().
   func (TwoImplTwo) RandomThingThatDoesntMatter() float64 { return 5.0 }
-//      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplTwo#
-//                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().
+//      ^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#
+//                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().
 //                  documentation
 //                  > ```go
 //                  > func (TwoImplTwo).RandomThingThatDoesntMatter() float64
 //                  > ```
-//                                                                     ⌃ enclosing_range_end 0.1.test `sg/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().
+//                                                                     ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().
   

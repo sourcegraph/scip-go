@@ -1,9 +1,9 @@
   package initial
-//        ^^^^^^^ reference 0.1.test `sg/initial`/
+//        ^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/
   
   // Const is a constant equal to 5. It's the best constant I've ever written. 😹
   const Const = 5
-//      ^^^^^ definition 0.1.test `sg/initial`/Const.
+//      ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Const.
 //      documentation
 //      > ```go
 //      > const Const untyped int = 5
@@ -15,7 +15,7 @@
   const (
    // ConstBlock1 is a constant in a block.
    ConstBlock1 = 1
-// ^^^^^^^^^^^ definition 0.1.test `sg/initial`/ConstBlock1.
+// ^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/ConstBlock1.
 // documentation
 // > ```go
 // > const ConstBlock1 untyped int = 1
@@ -25,7 +25,7 @@
   
    // ConstBlock2 is a constant in a block.
    ConstBlock2 = 2
-// ^^^^^^^^^^^ definition 0.1.test `sg/initial`/ConstBlock2.
+// ^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/ConstBlock2.
 // documentation
 // > ```go
 // > const ConstBlock2 untyped int = 2
@@ -36,33 +36,33 @@
   
   // Var is a variable interface.
   var Var Interface = &Struct{Field: "bar!"}
-//    ^^^ definition 0.1.test `sg/initial`/Var.
+//    ^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Var.
 //    documentation
 //    > ```go
 //    > var Var Interface
 //    > ```
 //    documentation
 //    > Var is a variable interface.
-//        ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
-//                     ^^^^^^ reference 0.1.test `sg/initial`/Struct#
-//                            ^^^^^ reference 0.1.test `sg/initial`/Struct#Field.
+//        ^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface#
+//                     ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#
+//                            ^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Field.
   
   // unexportedVar is an unexported variable interface.
   var unexportedVar Interface = &Struct{Field: "bar!"}
-//    ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/unexportedVar.
+//    ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/unexportedVar.
 //    documentation
 //    > ```go
 //    > var unexportedVar Interface
 //    > ```
 //    documentation
 //    > unexportedVar is an unexported variable interface.
-//                  ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
-//                               ^^^^^^ reference 0.1.test `sg/initial`/Struct#
-//                                      ^^^^^ reference 0.1.test `sg/initial`/Struct#Field.
+//                  ^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface#
+//                               ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#
+//                                      ^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Field.
   
   // x has a builtin error type
   var x error
-//    ^ definition 0.1.test `sg/initial`/x.
+//    ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/x.
 //    documentation
 //    > ```go
 //    > var x error
@@ -71,37 +71,37 @@
 //    > x has a builtin error type
   
   var BigVar Interface = &Struct{
-//    ^^^^^^ definition 0.1.test `sg/initial`/BigVar.
+//    ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/BigVar.
 //    documentation
 //    > ```go
 //    > var BigVar Interface
 //    > ```
-//           ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
-//                        ^^^^^^ reference 0.1.test `sg/initial`/Struct#
+//           ^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface#
+//                        ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#
    Field: "bar!",
-// ^^^^^ reference 0.1.test `sg/initial`/Struct#Field.
+// ^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Field.
    Anonymous: struct {
-// ^^^^^^^^^ reference 0.1.test `sg/initial`/Struct#Anonymous.
+// ^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Anonymous.
     FieldA int
-//  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldA.
+//  ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/BigVar:FieldA.
 //  documentation
 //  > ```go
 //  > struct field FieldA int
 //  > ```
     FieldB int
-//  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldB.
+//  ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/BigVar:FieldB.
 //  documentation
 //  > ```go
 //  > struct field FieldB int
 //  > ```
     FieldC int
-//  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldC.
+//  ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/BigVar:FieldC.
 //  documentation
 //  > ```go
 //  > struct field FieldC int
 //  > ```
    }{FieldA: 1337},
-//   ^^^^^^ reference 0.1.test `sg/initial`/BigVar:FieldA.
+//   ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/BigVar:FieldA.
   }
   
   // What are docs, really?
@@ -118,7 +118,7 @@
   var (
    // This has some docs
    VarBlock1 = "if you're reading this"
-// ^^^^^^^^^ definition 0.1.test `sg/initial`/VarBlock1.
+// ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/VarBlock1.
 // documentation
 // > ```go
 // > var VarBlock1 string
@@ -137,7 +137,7 @@
 // > isn't allowed in Go docstrings, right? right?!
   
    VarBlock2 = "hi"
-// ^^^^^^^^^ definition 0.1.test `sg/initial`/VarBlock2.
+// ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/VarBlock2.
 // documentation
 // > ```go
 // > var VarBlock2 string
@@ -158,7 +158,7 @@
   
   // Embedded is a struct, to be embedded in another struct.
   type Embedded struct {
-//     ^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#
+//     ^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Embedded#
 //     documentation
 //     > ```go
 //     > type Embedded struct
@@ -174,13 +174,13 @@
 //     > ```
    // EmbeddedField has some docs!
    EmbeddedField string
-// ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#EmbeddedField.
+// ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Embedded#EmbeddedField.
 // documentation
 // > ```go
 // > struct field EmbeddedField string
 // > ```
    Field         string // conflicts with parent "Field"
-// ^^^^^ definition 0.1.test `sg/initial`/Embedded#Field.
+// ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Embedded#Field.
 // documentation
 // > ```go
 // > struct field Field string
@@ -188,7 +188,7 @@
   }
   
   type Struct struct {
-//     ^^^^^^ definition 0.1.test `sg/initial`/Struct#
+//     ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#
 //     documentation
 //     > ```go
 //     > type Struct struct
@@ -205,40 +205,40 @@
 //     >     }
 //     > }
 //     > ```
-//     relationship 0.1.test `sg/initial`/Interface# implementation
+//     relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface# implementation
    *Embedded
-//  ^^^^^^^^ definition 0.1.test `sg/initial`/Struct#Embedded.
+//  ^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Embedded.
 //  documentation
 //  > ```go
-//  > struct field Embedded *sg/initial.Embedded
+//  > struct field Embedded *github.com/sourcegraph/scip-go/internal/testdata/initial.Embedded
 //  > ```
-//  ^^^^^^^^ reference 0.1.test `sg/initial`/Embedded#
+//  ^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Embedded#
    Field     string
-// ^^^^^ definition 0.1.test `sg/initial`/Struct#Field.
+// ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Field.
 // documentation
 // > ```go
 // > struct field Field string
 // > ```
    Anonymous struct {
-// ^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.
+// ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Anonymous.
 // documentation
 // > ```go
 // > struct field Anonymous struct{FieldA int; FieldB int; FieldC int}
 // > ```
     FieldA int
-//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.FieldA.
+//  ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Anonymous.FieldA.
 //  documentation
 //  > ```go
 //  > struct field FieldA int
 //  > ```
     FieldB int
-//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.FieldB.
+//  ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Anonymous.FieldB.
 //  documentation
 //  > ```go
 //  > struct field FieldB int
 //  > ```
     FieldC int
-//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.FieldC.
+//  ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#Anonymous.FieldC.
 //  documentation
 //  > ```go
 //  > struct field FieldC int
@@ -247,36 +247,36 @@
   }
   
   // StructMethod has some docs!
-//⌄ enclosing_range_start 0.1.test `sg/initial`/Struct#StructMethod().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#StructMethod().
   func (s *Struct) StructMethod() {}
 //      ^ definition local 0
-//         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
-//                 ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#StructMethod().
+//         ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#
+//                 ^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#StructMethod().
 //                 documentation
 //                 > ```go
 //                 > func (*Struct).StructMethod()
 //                 > ```
 //                 documentation
 //                 > StructMethod has some docs!
-//                                 ⌃ enclosing_range_end 0.1.test `sg/initial`/Struct#StructMethod().
+//                                 ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#StructMethod().
   
-//⌄ enclosing_range_start 0.1.test `sg/initial`/Struct#ImplementsInterface().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#ImplementsInterface().
   func (s *Struct) ImplementsInterface() string { return "hi!" }
 //      ^ definition local 1
-//         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
-//                 ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#ImplementsInterface().
+//         ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#
+//                 ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#ImplementsInterface().
 //                 documentation
 //                 > ```go
 //                 > func (*Struct).ImplementsInterface() string
 //                 > ```
-//                 relationship 0.1.test `sg/initial`/Interface#ImplementsInterface. implementation
-//                                                             ⌃ enclosing_range_end 0.1.test `sg/initial`/Struct#ImplementsInterface().
+//                 relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface#ImplementsInterface. implementation
+//                                                             ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#ImplementsInterface().
   
-//⌄ enclosing_range_start 0.1.test `sg/initial`/Struct#MachineLearning().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#MachineLearning().
   func (s *Struct) MachineLearning(
 //      ^ definition local 2
-//         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
-//                 ^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#MachineLearning().
+//         ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#
+//                 ^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#MachineLearning().
 //                 documentation
 //                 > ```go
 //                 > func (*Struct).MachineLearning(param1 float32, hyperparam2 float32, hyperparam3 float32) float32
@@ -326,11 +326,11 @@
 //                  ^^^^^^^^^^^ reference local 4
 //                                 ^^^^^^^^^^^ reference local 5
   }
-//⌃ enclosing_range_end 0.1.test `sg/initial`/Struct#MachineLearning().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#MachineLearning().
   
   // Interface has docs too
   type Interface interface {
-//     ^^^^^^^^^ definition 0.1.test `sg/initial`/Interface#
+//     ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface#
 //     documentation
 //     > ```go
 //     > type Interface interface
@@ -344,39 +344,39 @@
 //     > }
 //     > ```
    ImplementsInterface() string
-// ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Interface#ImplementsInterface.
+// ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface#ImplementsInterface.
 // documentation
 // > ```go
 // > func (Interface).ImplementsInterface() string
 // > ```
   }
   
-//⌄ enclosing_range_start 0.1.test `sg/initial`/NewInterface().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/NewInterface().
   func NewInterface() Interface { return nil }
-//     ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/NewInterface().
+//     ^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/NewInterface().
 //     documentation
 //     > ```go
 //     > func NewInterface() Interface
 //     > ```
-//                    ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
-//                                           ⌃ enclosing_range_end 0.1.test `sg/initial`/NewInterface().
+//                    ^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface#
+//                                           ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/NewInterface().
   
   var SortExportedFirst = 1
-//    ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SortExportedFirst.
+//    ^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/SortExportedFirst.
 //    documentation
 //    > ```go
 //    > var SortExportedFirst int
 //    > ```
   
   var sortUnexportedSecond = 2
-//    ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/sortUnexportedSecond.
+//    ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/sortUnexportedSecond.
 //    documentation
 //    > ```go
 //    > var sortUnexportedSecond int
 //    > ```
   
   var _sortUnderscoreLast = 3
-//    ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/_sortUnderscoreLast.
+//    ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/_sortUnderscoreLast.
 //    documentation
 //    > ```go
 //    > var _sortUnderscoreLast int
@@ -395,8 +395,8 @@
   //  || |-_\__   /
   // ((_/`(____,-'
   var _ = Interface(&Struct{})
-//        ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
-//                   ^^^^^^ reference 0.1.test `sg/initial`/Struct#
+//        ^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Interface#
+//                   ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Struct#
   
   type _ = struct{}
   
@@ -408,7 +408,7 @@
   type (
    // And confusing
    X struct {
-// ^ definition 0.1.test `sg/initial`/X#
+// ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/X#
 // documentation
 // > ```go
 // > type X struct
@@ -422,7 +422,7 @@
 // > }
 // > ```
     bar string
-//  ^^^ definition 0.1.test `sg/initial`/X#bar.
+//  ^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/X#bar.
 //  documentation
 //  > ```go
 //  > struct field bar string
@@ -430,7 +430,7 @@
    }
   
    Y struct {
-// ^ definition 0.1.test `sg/initial`/Y#
+// ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Y#
 // documentation
 // > ```go
 // > type Y struct
@@ -444,7 +444,7 @@
 // > }
 // > ```
     baz float64
-//  ^^^ definition 0.1.test `sg/initial`/Y#baz.
+//  ^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/initial`/Y#baz.
 //  documentation
 //  > ```go
 //  > struct field baz float64

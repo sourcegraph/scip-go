@@ -1,12 +1,12 @@
   package server
-//        ^^^^^^ reference 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/
+//        ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/
   
   import "testing"
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
   
-//⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestStuff().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/TestStuff().
   func TestStuff(t *testing.T) {
-//     ^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestStuff().
+//     ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/TestStuff().
 //     documentation
 //     > ```go
 //     > func TestStuff(t *T)
@@ -20,10 +20,10 @@
 // ^^^^ definition local 2
   
    runCmd(t, wd, "git", "init", repo)
-// ^^^^^^ reference 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
+// ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/runCmd().
 //        ^ reference local 0
 //           ^^ reference local 1
 //                              ^^^^ reference local 2
   }
-//⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestStuff().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/TestStuff().
   

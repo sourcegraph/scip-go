@@ -1,11 +1,11 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/
   
   import "io"
 //        ^^ reference github.com/golang/go/src go1.22 io/
   
   type I3 interface {
-//     ^^ definition 0.1.test `sg/testdata`/I3#
+//     ^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/I3#
 //     documentation
 //     > ```go
 //     > type I3 interface
@@ -17,7 +17,7 @@
 //     > }
 //     > ```
    Close() error
-// ^^^^^ definition 0.1.test `sg/testdata`/I3#Close.
+// ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/I3#Close.
 // documentation
 // > ```go
 // > func (I3).Close() error
@@ -25,7 +25,7 @@
   }
   
   type TClose struct {
-//     ^^^^^^ definition 0.1.test `sg/testdata`/TClose#
+//     ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TClose#
 //     documentation
 //     > ```go
 //     > type TClose struct
@@ -37,10 +37,10 @@
 //     > }
 //     > ```
 //     relationship github.com/golang/go/src go1.22 io/Closer# implementation
-//     relationship 0.1.test `sg/testdata`/I3# implementation
+//     relationship 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/I3# implementation
    io.Closer
 // ^^ reference github.com/golang/go/src go1.22 io/
-//    ^^^^^^ definition 0.1.test `sg/testdata`/TClose#Closer.
+//    ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TClose#Closer.
 //    documentation
 //    > ```go
 //    > struct field Closer io.Closer

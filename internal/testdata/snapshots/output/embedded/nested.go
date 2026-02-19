@@ -1,5 +1,5 @@
   package embedded
-//        ^^^^^^^^ definition 0.1.test `sg/embedded`/
+//        ^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/
 //        documentation
 //        > package embedded
   
@@ -7,7 +7,7 @@
 //        ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
   
   type NestedHandler struct {
-//     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#
+//     ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedHandler#
 //     documentation
 //     > ```go
 //     > type NestedHandler struct
@@ -22,7 +22,7 @@
 //     relationship github.com/golang/go/src go1.22 `net/http`/Handler# implementation
    http.Handler
 // ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
-//      ^^^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#Handler.
+//      ^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedHandler#Handler.
 //      documentation
 //      > ```go
 //      > struct field Handler net/http.Handler
@@ -31,32 +31,32 @@
   
    // Wow, a great thing for integers
    Other int
-// ^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#Other.
+// ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedHandler#Other.
 // documentation
 // > ```go
 // > struct field Other int
 // > ```
   }
   
-//⌄ enclosing_range_start 0.1.test `sg/embedded`/NestedExample().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedExample().
   func NestedExample(n NestedHandler) {
-//     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/NestedExample().
+//     ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedExample().
 //     documentation
 //     > ```go
 //     > func NestedExample(n NestedHandler)
 //     > ```
 //                   ^ definition local 0
-//                     ^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#
+//                     ^^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedHandler#
    _ = n.Handler.ServeHTTP
 //     ^ reference local 0
-//       ^^^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#Handler.
+//       ^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedHandler#Handler.
 //               ^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Handler#ServeHTTP.
    _ = n.ServeHTTP
 //     ^ reference local 0
 //       ^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Handler#ServeHTTP.
    _ = n.Other
 //     ^ reference local 0
-//       ^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#Other.
+//       ^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedHandler#Other.
   }
-//⌃ enclosing_range_end 0.1.test `sg/embedded`/NestedExample().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/NestedExample().
   

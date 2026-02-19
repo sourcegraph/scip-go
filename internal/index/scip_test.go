@@ -17,6 +17,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+const testModulePrefix = "github.com/sourcegraph/scip-go/internal/testdata/"
+
 // Use "update-snapshots" to update snapshots
 var filter = flag.String("filter", "", "filenames to filter by")
 
@@ -47,7 +49,7 @@ func TestSnapshots(t *testing.T) {
 			err := index.Index(writer, config.IndexOpts{
 				ModuleRoot:      inputDirectory,
 				ModuleVersion:   "0.1.test",
-				ModulePath:      "sg/" + filepath.Base(inputDirectory),
+				ModulePath:      testModulePrefix + filepath.Base(inputDirectory),
 				GoStdlibVersion: "go1.22",
 			})
 			if err != nil {
@@ -58,7 +60,9 @@ func TestSnapshots(t *testing.T) {
 				OnError:               func(err error) error { return err },
 				IncludeScheme:         func(scheme string) bool { return scheme == "local" },
 				IncludePackageManager: func(_ string) bool { return false },
-				IncludePackageName:    func(name string) bool { return !strings.HasPrefix(name, "sg/") },
+				IncludePackageName:    func(name string) bool {
+					return !strings.HasPrefix(name, testModulePrefix)
+				},
 				IncludePackageVersion: func(_ string) bool { return true },
 				IncludeDescriptor:     func(_ string) bool { return true },
 				IncludeRawDescriptor:  func(descriptor *scip.Descriptor) bool { return true },

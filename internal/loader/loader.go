@@ -289,9 +289,6 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 // sameRepoRoot returns true if a and b resolve to the same VCS repository root.
 // This is used to detect sibling modules in a monorepo.
 func sameRepoRoot(pathA, pathB string) bool {
-	if pathA == pathB {
-		return true
-	}
 	rootA, errA := vcs.RepoRootForImportPath(pathA, false)
 	rootB, errB := vcs.RepoRootForImportPath(pathB, false)
 	if errA != nil || errB != nil {

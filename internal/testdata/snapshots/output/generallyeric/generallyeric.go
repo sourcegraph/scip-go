@@ -1,15 +1,15 @@
   // generallyeric -> generic for short
   package generallyeric
-//        ^^^^^^^^^^^^^ definition 0.1.test `sg/generallyeric`/
+//        ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/generallyeric`/
 //        documentation
 //        > generallyeric -> generic for short
   
   import "fmt"
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
-//⌄ enclosing_range_start 0.1.test `sg/generallyeric`/Print().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/generallyeric`/Print().
   func Print[T any](s []T) {
-//     ^^^^^ definition 0.1.test `sg/generallyeric`/Print().
+//     ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/generallyeric`/Print().
 //     documentation
 //     > ```go
 //     > func Print[T any](s []T)
@@ -26,5 +26,5 @@
 //            ^ reference local 2
    }
   }
-//⌃ enclosing_range_end 0.1.test `sg/generallyeric`/Print().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/generallyeric`/Print().
   

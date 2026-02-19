@@ -2,7 +2,7 @@
   // +build !linux,!windows,!freebsd
   
   package osl
-//        ^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/
+//        ^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/
 //        documentation
 //        > package osl
   
@@ -14,7 +14,7 @@
   )
   
   var ErrNotImplemented = errors.New("not implemented")
-//    ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/ErrNotImplemented.
+//    ^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/ErrNotImplemented.
 //    documentation
 //    > ```go
 //    > var ErrNotImplemented error
@@ -22,9 +22,9 @@
 //                        ^^^^^^ reference github.com/golang/go/src go1.22 errors/
 //                               ^^^ reference github.com/golang/go/src go1.22 errors/New().
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/newKey().
   func newKey(t *testing.T) (string, error) {
-//     ^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
+//     ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/newKey().
 //     documentation
 //     > ```go
 //     > func newKey(t *T) (string, error)
@@ -33,13 +33,13 @@
 //               ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
 //                       ^ reference github.com/golang/go/src go1.22 testing/T#
    return "", ErrNotImplemented
-//            ^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata/conflicting_test_symbols`/ErrNotImplemented.
+//            ^^^^^^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/ErrNotImplemented.
   }
-//⌃ enclosing_range_end 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/newKey().
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/verifySandbox().
   func verifySandbox(t *testing.T, s string) {
-//     ^^^^^^^^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
+//     ^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/verifySandbox().
 //     documentation
 //     > ```go
 //     > func verifySandbox(t *T, s string)
@@ -50,5 +50,5 @@
 //                                 ^ definition local 2
    return
   }
-//⌃ enclosing_range_end 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata/conflicting_test_symbols`/verifySandbox().
   

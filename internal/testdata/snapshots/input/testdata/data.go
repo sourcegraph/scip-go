@@ -3,7 +3,7 @@ package testdata
 import (
 	"context"
 
-	"sg/testdata/internal/secret"
+	"github.com/sourcegraph/scip-go/internal/testdata/testdata/internal/secret"
 )
 
 // TestInterface is an interface used for testing.

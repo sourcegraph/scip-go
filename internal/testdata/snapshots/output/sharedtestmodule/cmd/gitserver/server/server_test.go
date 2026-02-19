@@ -1,12 +1,12 @@
   package server
-//        ^^^^^^ reference 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/
+//        ^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/
   
   import "testing"
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
   
-//⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
   func TestExecRequest(t *testing.T) {
-//     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
+//     ^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
 //     documentation
 //     > ```go
 //     > func TestExecRequest(t *T)
@@ -18,11 +18,11 @@
 // ^ reference local 0
 //   ^^^ reference github.com/golang/go/src go1.22 testing/common#Log().
   }
-//⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
   
-//⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/runCmd().
   func runCmd(t *testing.T, dir string, cmd string, arg ...string) {}
-//     ^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
+//     ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/runCmd().
 //     documentation
 //     > ```go
 //     > func runCmd(t *T, dir string, cmd string, arg ...string)
@@ -33,5 +33,5 @@
 //                          ^^^ definition local 2
 //                                      ^^^ definition local 3
 //                                                  ^^^ definition local 4
-//                                                                  ⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
+//                                                                  ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/sharedtestmodule/cmd/gitserver/server`/runCmd().
   

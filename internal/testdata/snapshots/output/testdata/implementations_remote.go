@@ -1,11 +1,11 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/
   
   import "net/http"
 //        ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
   
   type implementsWriter struct{}
-//     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#
+//     ^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#
 //     documentation
 //     > ```go
 //     > type implementsWriter struct
@@ -19,10 +19,10 @@
 //     relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter# implementation
 //     relationship github.com/golang/go/src go1.22 io/Writer# implementation
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/implementsWriter#Header().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#Header().
   func (implementsWriter) Header() http.Header        { panic("Just for how") }
-//      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
-//                        ^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Header().
+//      ^^^^^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#
+//                        ^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#Header().
 //                        documentation
 //                        > ```go
 //                        > func (implementsWriter).Header() Header
@@ -30,11 +30,11 @@
 //                        relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
 //                                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                                      ^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Header#
-//                                                                            ⌃ enclosing_range_end 0.1.test `sg/testdata`/implementsWriter#Header().
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/implementsWriter#Write().
+//                                                                            ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#Header().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#Write().
   func (implementsWriter) Write([]byte) (int, error)  { panic("Just for show") }
-//      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
-//                        ^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Write().
+//      ^^^^^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#
+//                        ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#Write().
 //                        documentation
 //                        > ```go
 //                        > func (implementsWriter).Write([]byte) (int, error)
@@ -43,22 +43,22 @@
 //                        relationship github.com/golang/go/src go1.22 `internal/bisect`/Writer#Write. implementation
 //                        relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Write. implementation
 //                        relationship github.com/golang/go/src go1.22 io/Writer#Write. implementation
-//                                                                             ⌃ enclosing_range_end 0.1.test `sg/testdata`/implementsWriter#Write().
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/implementsWriter#WriteHeader().
+//                                                                             ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#Write().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#WriteHeader().
   func (implementsWriter) WriteHeader(statusCode int) {}
-//      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
-//                        ^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#WriteHeader().
+//      ^^^^^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#
+//                        ^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#WriteHeader().
 //                        documentation
 //                        > ```go
 //                        > func (implementsWriter).WriteHeader(statusCode int)
 //                        > ```
 //                        relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
 //                                    ^^^^^^^^^^ definition local 0
-//                                                     ⌃ enclosing_range_end 0.1.test `sg/testdata`/implementsWriter#WriteHeader().
+//                                                     ⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/implementsWriter#WriteHeader().
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/ShowsInSignature().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/ShowsInSignature().
   func ShowsInSignature(respWriter http.ResponseWriter) {
-//     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ShowsInSignature().
+//     ^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/ShowsInSignature().
 //     documentation
 //     > ```go
 //     > func ShowsInSignature(respWriter ResponseWriter)
@@ -70,5 +70,5 @@
 // ^^^^^^^^^^ reference local 1
 //            ^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader.
   }
-//⌃ enclosing_range_end 0.1.test `sg/testdata`/ShowsInSignature().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/ShowsInSignature().
   

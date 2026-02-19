@@ -1,11 +1,11 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/
   
   import "fmt"
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
   type TypeContainingAnonymousStructs struct {
-//     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
+//     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#
 //     documentation
 //     > ```go
 //     > type TypeContainingAnonymousStructs struct
@@ -28,43 +28,43 @@
 //     > }
 //     > ```
    a, b struct {
-// ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
+// ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.
 // documentation
 // > ```go
 // > struct field a struct{x int; y string}
 // > ```
-//    ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.
+//    ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.
 //    documentation
 //    > ```go
 //    > struct field b struct{x int; y string}
 //    > ```
     x int
-//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.x.
+//  ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.x.
 //  documentation
 //  > ```go
 //  > struct field x int
 //  > ```
     y string
-//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.y.
+//  ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.y.
 //  documentation
 //  > ```go
 //  > struct field y string
 //  > ```
    }
    c struct {
-// ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
+// ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.
 // documentation
 // > ```go
 // > struct field c struct{X int; Y string}
 // > ```
     X int
-//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.X.
+//  ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.X.
 //  documentation
 //  > ```go
 //  > struct field X int
 //  > ```
     Y string
-//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
+//  ^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.Y.
 //  documentation
 //  > ```go
 //  > struct field Y string
@@ -72,9 +72,9 @@
    }
   }
   
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
+//⌄ enclosing_range_start 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/funcContainingAnonymousStructs().
   func funcContainingAnonymousStructs() {
-//     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
+//     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/funcContainingAnonymousStructs().
 //     documentation
 //     > ```go
 //     > func funcContainingAnonymousStructs()
@@ -109,31 +109,31 @@
   
    var f TypeContainingAnonymousStructs
 //     ^ definition local 6
-//       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
+//       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#
    f.a.x = 3
 // ^ reference local 6
-//   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.x.
+//   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.
+//     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.x.
    f.a.y = "three"
 // ^ reference local 6
-//   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.y.
+//   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.
+//     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.y.
    f.b.x = 4
 // ^ reference local 6
-//   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.x.
+//   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.
+//     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.x.
    f.b.y = "four"
 // ^ reference local 6
-//   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.y.
+//   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.
+//     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.y.
    f.c.X = 5
 // ^ reference local 6
-//   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.X.
+//   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.
+//     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.X.
    f.c.Y = "five"
 // ^ reference local 6
-//   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
+//   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.
+//     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.Y.
   
    fmt.Printf("> %s, %s\n", d.x, d.y)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
@@ -154,29 +154,29 @@
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
 //                          ^ reference local 6
-//                            ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.x.
+//                            ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.
+//                              ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.x.
 //                                 ^ reference local 6
-//                                   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.y.
+//                                   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.
+//                                     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.y.
    fmt.Printf("> %s, %s\n", f.b.x, f.b.y)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
 //                          ^ reference local 6
-//                            ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.
-//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.x.
+//                            ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.
+//                              ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.x.
 //                                 ^ reference local 6
-//                                   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.
-//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.b.y.
+//                                   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.
+//                                     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#a.b.y.
    fmt.Printf("> %s, %s\n", f.c.X, f.c.Y)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
 //                          ^ reference local 6
-//                            ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.X.
+//                            ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.
+//                              ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.X.
 //                                 ^ reference local 6
-//                                   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
+//                                   ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.
+//                                     ^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/TypeContainingAnonymousStructs#c.Y.
   }
-//⌃ enclosing_range_end 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
+//⌃ enclosing_range_end 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/testdata`/funcContainingAnonymousStructs().
   

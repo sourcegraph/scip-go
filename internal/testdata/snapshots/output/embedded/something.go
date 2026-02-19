@@ -1,11 +1,11 @@
   package embedded
-//        ^^^^^^^^ reference 0.1.test `sg/embedded`/
+//        ^^^^^^^^ reference 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/
   
   import "fmt"
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
   type RecentCommittersResults struct {
-//     ^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#
+//     ^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#
 //     documentation
 //     > ```go
 //     > type RecentCommittersResults struct
@@ -32,56 +32,56 @@
 //     > }
 //     > ```
    Nodes []struct {
-// ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.
+// ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.
 // documentation
 // > ```go
 // > struct field Nodes []struct{Authors struct{Nodes []struct{Date string; Email string; Name string; User struct{Login string}; AvatarURL string}}}
 // > ```
     Authors struct {
-//  ^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.
+//  ^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.Authors.
 //  documentation
 //  > ```go
 //  > struct field Authors struct{Nodes []struct{Date string; Email string; Name string; User struct{Login string}; AvatarURL string}}
 //  > ```
      Nodes []struct {
-//   ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.
+//   ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.
 //   documentation
 //   > ```go
 //   > struct field Nodes []struct{Date string; Email string; Name string; User struct{Login string}; AvatarURL string}
 //   > ```
       Date  string
-//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Date.
+//    ^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Date.
 //    documentation
 //    > ```go
 //    > struct field Date string
 //    > ```
       Email string
-//    ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Email.
+//    ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Email.
 //    documentation
 //    > ```go
 //    > struct field Email string
 //    > ```
       Name  string
-//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Name.
+//    ^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Name.
 //    documentation
 //    > ```go
 //    > struct field Name string
 //    > ```
       User  struct {
-//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.User.
+//    ^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.User.
 //    documentation
 //    > ```go
 //    > struct field User struct{Login string}
 //    > ```
        Login string
-//     ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.User.Login.
+//     ^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.User.Login.
 //     documentation
 //     > ```go
 //     > struct field Login string
 //     > ```
       }
       AvatarURL string
-//    ^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.AvatarURL.
+//    ^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.AvatarURL.
 //    documentation
 //    > ```go
 //    > struct field AvatarURL string
@@ -90,13 +90,13 @@
     }
    }
    PageInfo struct {
-// ^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#PageInfo.
+// ^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#PageInfo.
 // documentation
 // > ```go
 // > struct field PageInfo struct{HasNextPage bool}
 // > ```
     HasNextPage bool
-//  ^^^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#PageInfo.HasNextPage.
+//  ^^^^^^^^^^^ definition 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/embedded`/RecentCommittersResults#PageInfo.HasNextPage.
 //  documentation
 //  > ```go
 //  > struct field HasNextPage bool
