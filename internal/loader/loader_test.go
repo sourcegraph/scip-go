@@ -46,6 +46,63 @@ type normalizeTestCase struct {
 	Normalized string
 }
 
+func TestNormalizePackageSiblingModule(t *testing.T) {
+	cases := []struct {
+		name            string
+		moduleVersion   string
+		modulePath      string
+		pkgModulePath   string
+		expectedVersion string
+	}{
+		{
+			name:            "sibling subpaths in same repo",
+			moduleVersion:   "abc123",
+			modulePath:      "github.com/sourcegraph/scip-go/internal/loader",
+			pkgModulePath:   "github.com/sourcegraph/scip-go/internal/config",
+			expectedVersion: "abc123",
+		},
+		{
+			name:            "root module and submodule",
+			moduleVersion:   "abc123",
+			modulePath:      "github.com/sourcegraph/scip-go",
+			pkgModulePath:   "github.com/sourcegraph/scip-go/submodule",
+			expectedVersion: "abc123",
+		},
+		{
+			name:            "different repos",
+			moduleVersion:   "abc123",
+			modulePath:      "github.com/sourcegraph/scip-go",
+			pkgModulePath:   "github.com/sourcegraph/sourcegraph",
+			expectedVersion: ".",
+		},
+		{
+			name:            "sibling module with empty module version",
+			moduleVersion:   ".",
+			modulePath:      "github.com/sourcegraph/scip-go/module-a",
+			pkgModulePath:   "github.com/sourcegraph/scip-go/module-b",
+			expectedVersion: ".",
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			opts := &config.IndexOpts{
+				ModulePath:    tc.modulePath,
+				ModuleVersion: tc.moduleVersion,
+			}
+			pkg := &packages.Package{
+				PkgPath: tc.pkgModulePath + "/pkg",
+				Module: &packages.Module{
+					Path:    tc.pkgModulePath,
+					Version: "",
+				},
+			}
+			normalizePackage(opts, pkg)
+			require.Equal(t, tc.expectedVersion, pkg.Module.Version)
+		})
+	}
+}
+
 func TestNormalizePackageModuleVersion(t *testing.T) {
 	cases := []normalizeTestCase{
 		{
