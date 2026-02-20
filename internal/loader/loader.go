@@ -249,7 +249,8 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	}
 
 	if pkg.Module.Version == "" {
-		if sameRepoRoot(pkg.Module.Path, opts.ModulePath) || isNestedDir(pkg.Module.Dir, opts.ModuleRoot) {
+		if hasSameRepoRoot(pkg.Module.Path, opts.ModulePath) ||
+			isNestedDir(pkg.Module.Dir, opts.ModuleRoot) {
 			pkg.Module.Version = opts.ModuleVersion
 		} else {
 			// Only panic when running in debug mode.
@@ -287,9 +288,9 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	return pkg
 }
 
-// sameRepoRoot returns true if a and b resolve to the same VCS repository root.
-// This is used to detect sibling modules in a monorepo.
-func sameRepoRoot(pathA, pathB string) bool {
+// hasSameRepoRoot returns true if a and b resolve to the same VCS repository
+// root. This is used to detect sibling modules in a monorepo.
+func hasSameRepoRoot(pathA, pathB string) bool {
 	if pathA == pathB {
 		return true
 	}
