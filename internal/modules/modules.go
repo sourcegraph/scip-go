@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/log"
-	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/output"
+	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/vcs"
 )
 
@@ -21,17 +21,18 @@ func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err
 
 		moduleName = repo
 
-		if !isModule(dir) {
+		goModPath := filepath.Join(dir, "go.mod")
+		data, readErr := os.ReadFile(goModPath)
+		if readErr != nil {
 			log.Warn("No go.mod file found in current directory.")
-		} else {
-			if moduleName, err = command.Run(dir, "go", "list", "-mod=readonly", "-m"); err != nil {
-				return fmt.Errorf("failed to list modules: %v\n%s", err, moduleName)
-			}
-
+			moduleName, isStdLib, err = resolveModuleName(repo, moduleName)
 			return nil
 		}
-
-		moduleName, isStdLib, err = resolveModuleName(repo, moduleName)
+		parsed, parseErr := modfile.ParseLax(goModPath, data, nil)
+		if parseErr != nil {
+			return fmt.Errorf("failed to parse go.mod: %v", parseErr)
+		}
+		moduleName = parsed.Module.Mod.Path
 
 		return nil
 	}
@@ -74,8 +75,3 @@ func resolveModuleName(repo, name string) (string, bool, error) {
 	return name, name == "std", nil
 }
 
-// isModule returns true if there is a go.mod file in the given directory.
-func isModule(dir string) bool {
-	_, err := os.Stat(filepath.Join(dir, "go.mod"))
-	return err == nil
-}
