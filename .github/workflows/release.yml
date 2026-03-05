@@ -24,7 +24,7 @@ jobs:
           TAG: ${{ github.ref_name }}
 
       - name: Install ASDF
-        uses: asdf-vm/actions/setup@v3
+        uses: asdf-vm/actions/setup@v4
 
       - name: Install matching Go toolchain
         run: |
