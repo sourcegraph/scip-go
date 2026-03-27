@@ -10,14 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: Check direct push
+
+      - name: Validate version.txt
         run: |
           VERSION_FILE_PATH="internal/index/version.txt"
           if ! grep -q "${TAG/v/}" "$VERSION_FILE_PATH"; then
-            echo "error: scip-go version in $VERSION_FILE_PATH doesn't match NEW_VERSION=$NEW_VERSION"
+            echo "error: scip-go version in $VERSION_FILE_PATH doesn't match tag $TAG"
             exit 1
           fi
         env:
@@ -31,12 +32,7 @@ jobs:
           asdf plugin add golang
           asdf install golang
 
-      - uses: azure/docker-login@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      -
-        name: Run GoReleaser
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
@@ -44,3 +40,33 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+
+      - name: Build Docker image
+        run: nix build .#docker
+
+      - name: Load and tag Docker image
+        run: |
+          docker load < result
+          VERSION="$(cat internal/index/version.txt)"
+          MAJOR="$(echo "$VERSION" | cut -d. -f1)"
+          MINOR="$(echo "$VERSION" | cut -d. -f1-2)"
+          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$VERSION"
+          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$MAJOR"
+          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$MAJOR.$MINOR"
+          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:latest"
+
+      - uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker images
+        run: |
+          docker push --all-tags sourcegraph/scip-go

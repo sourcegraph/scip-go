@@ -36,6 +36,21 @@
             nativeCheckInputs = [ pkgs.git ];
           };
           default = self.packages.${system}.scip-go;
+
+          docker = pkgs.dockerTools.buildLayeredImage {
+            name = "scip-go";
+            tag = version;
+            contents = [
+              self.packages.${system}.scip-go
+              pkgs.go
+              pkgs.git
+              pkgs.cacert
+            ];
+            config = {
+              Cmd = [ "scip-go" ];
+              Env = [ "GOTOOLCHAIN=auto" ];
+            };
+          };
         };
 
         devShells = {

@@ -1,4 +1,4 @@
-name: Run go tests
+name: Nix
 
 on:
   push:
@@ -8,42 +8,18 @@ on:
     branches: ["*"]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Install ASDF
-        uses: asdf-vm/actions/setup@v3
-
-      - name: Install matching Go toolchain
-        run: |
-          asdf plugin add golang
-          asdf install golang
-
-      - name: Go version
-        run: go version
-
-      - name: Install dependencies
-        run: go get ./...
-
-      - name: Build
-        run: go build -v ./...
-
-      - name: Test
-        run: go test -v ./...
-
-      - name: Goreleaser checks
-        uses: goreleaser/goreleaser-action@v4
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --snapshot --clean
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - run: nix build .#scip-go
 
   test-gotip:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Install ASDF
         uses: asdf-vm/actions/setup@v3
@@ -70,17 +46,3 @@ jobs:
 
       - name: Test
         run: gotip test -v ./...
-
-  docker-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: 'Check Dockerfile is well-formed'
-        run: ./scripts/dockerfile_checks.sh
-      - name: 'Build Docker image'
-        run: |
-          docker build -t local-scip-go .
-          docker run local-scip-go scip-go --help
-          docker run --volume .:/sources --workdir /sources local-scip-go scip-go
-          file index.scip
-
