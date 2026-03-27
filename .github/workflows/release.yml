@@ -6,13 +6,12 @@ on:
       - v*
 
 jobs:
-  goreleaser:
+  create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v6
 
       - name: Validate version.txt
         run: |
@@ -24,24 +23,59 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
 
-      - name: Install ASDF
-        uses: asdf-vm/actions/setup@v3
-
-      - name: Install matching Go toolchain
-        run: |
-          asdf plugin add golang
-          asdf install golang
-
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
-        with:
-          distribution: goreleaser
-          version: v2.0.1
-          args: release --clean
+      - name: Create GitHub release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" --title "scip-go $TAG" --generate-notes \
+            || echo "Release $TAG already exists"
+
+  binaries:
+    needs: create-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        include:
+          - target: scip-go-linux-amd64
+            asset: scip-go-linux-amd64
+          - target: scip-go-linux-arm64
+            asset: scip-go-linux-arm64
+          - target: scip-go-darwin-amd64
+            asset: scip-go-darwin-amd64
+          - target: scip-go-darwin-arm64
+            asset: scip-go-darwin-arm64
+          - target: scip-go-windows-amd64
+            asset: scip-go-windows-amd64
+          - target: scip-go-windows-arm64
+            asset: scip-go-windows-arm64
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+
+      - name: Build
+        run: nix build .#${{ matrix.target }}
+
+      - name: Package
+        run: |
+          cp result/bin/scip-go* .
+          tar czf "${{ matrix.asset }}.tar.gz" scip-go* LICENSE
+          sha256sum "${{ matrix.asset }}.tar.gz" > "${{ matrix.asset }}.tar.gz.sha256"
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.ref_name }}" \
+            "${{ matrix.asset }}.tar.gz" \
+            "${{ matrix.asset }}.tar.gz.sha256" \
+            --clobber
 
   docker:
+    needs: create-release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -68,5 +102,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Docker images
-        run: |
-          docker push --all-tags sourcegraph/scip-go
+        run: docker push --all-tags sourcegraph/scip-go
