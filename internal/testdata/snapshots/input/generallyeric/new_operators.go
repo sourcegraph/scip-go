@@ -1,9 +1,8 @@
 package generallyeric
 
-import "golang.org/x/exp/constraints"
-
 type Number interface {
-	constraints.Float | constraints.Integer | constraints.Complex
+	~int | ~int8 | ~int16 | ~int32 | ~int64 |
+		~float32 | ~float64
 }
 
 func Double[T Number](value T) T {

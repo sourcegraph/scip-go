@@ -3,9 +3,9 @@ package replacers
 import (
 	"fmt"
 
-	"github.com/dghubble/gologin"
+	"github.com/example/original"
 )
 
 func Something() {
-	fmt.Println(gologin.DefaultCookieConfig)
+	fmt.Println(replaced.DefaultConfig)
 }
