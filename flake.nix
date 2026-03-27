@@ -18,12 +18,13 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        version = pkgs.lib.fileContents ./internal/index/version.txt;
       in
       {
         packages = {
           scip-go = pkgs.buildGoModule {
             pname = "scip-go";
-            version = "0.1.26";
+            inherit version;
             src = ./.;
             vendorHash = "sha256-AqJ9tVDlSMiT/uPI0K0OliE2mTsFl6bwp1fS7w+PfLU=";
             subPackages = [ "cmd/scip-go" ];
