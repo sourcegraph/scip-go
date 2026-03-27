@@ -42,8 +42,6 @@ jobs:
             asset: scip-go-linux-amd64
           - runner: ubuntu-24.04-arm
             asset: scip-go-linux-arm64
-          - runner: macos-13
-            asset: scip-go-darwin-amd64
           - runner: macos-latest
             asset: scip-go-darwin-arm64
     runs-on: ${{ matrix.runner }}
