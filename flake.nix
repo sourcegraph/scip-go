@@ -25,30 +25,16 @@
             pname = "scip-go";
             version = "0.1.26";
             src = ./.;
-            vendorHash = "sha256-kBOdLecRiWiBA8xvNHFcDZNKiLMiN3Vww6CNumMLW2M=";
+            vendorHash = "sha256-AqJ9tVDlSMiT/uPI0K0OliE2mTsFl6bwp1fS7w+PfLU=";
             subPackages = [ "cmd/scip-go" ];
+            checkPhase = "go test ./...";
+            # Use proxyVendor so deps go into the module cache instead
+            # of a vendor/ directory that conflicts with test sub-modules
+            # having their own go.mod.
+            proxyVendor = true;
+            nativeCheckInputs = [ pkgs.git ];
           };
           default = self.packages.${system}.scip-go;
-        };
-
-        checks = {
-          snapshots = pkgs.buildGoModule {
-            pname = "scip-go-snapshot-check";
-            version = "0.1.26";
-            src = ./.;
-            vendorHash = "sha256-AqJ9tVDlSMiT/uPI0K0OliE2mTsFl6bwp1fS7w+PfLU=";
-            proxyVendor = true;
-            nativeBuildInputs = [ pkgs.git ];
-            buildPhase = "true";
-            checkPhase = ''
-              # The snapshot test uses `git rev-parse --show-toplevel`
-              # to locate testdata, so we need a git repo.
-              git init -q
-              git add -A
-              go test ./internal/index -count=1
-            '';
-            installPhase = "touch $out";
-          };
         };
 
         devShells = {
