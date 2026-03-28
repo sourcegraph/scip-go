@@ -5,7 +5,6 @@ go 1.26
 require (
 	github.com/agnivade/levenshtein v1.2.1
 	github.com/alecthomas/kingpin/v2 v2.4.0
-	github.com/pkg/profile v1.7.0
 	github.com/scip-code/scip/bindings/go/scip v0.7.0
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/mod v0.34.0
@@ -18,8 +17,6 @@ require (
 	github.com/alecthomas/units v0.0.0-20240927000941-0f3dac36c52b // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.18.0 // indirect
-	github.com/felixge/fgprof v0.9.5 // indirect
-	github.com/google/pprof v0.0.0-20260302011040-a15ffb7f9dcc // indirect
 	github.com/hexops/gotextdiff v1.0.3 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect

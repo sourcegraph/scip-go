@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
+	"runtime/pprof"
 	"strings"
 	"sync"
 
 	"log/slog"
 
 	"github.com/alecthomas/kingpin/v2"
-	"github.com/pkg/profile"
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/git"
@@ -105,8 +106,16 @@ func mainErr() (err error) {
 	}
 
 	if profileRate > 0 {
-		p := profile.MemProfileRate(profileRate)
-		defer profile.Start(p).Stop()
+		runtime.MemProfileRate = profileRate
+		f, err := os.Create("mem.pprof")
+		if err != nil {
+			return fmt.Errorf("could not create memory profile: %w", err)
+		}
+		defer func() {
+			runtime.GC()
+			pprof.WriteHeapProfile(f)
+			f.Close()
+		}()
 	}
 
 	handler.SetDev(devMode)
