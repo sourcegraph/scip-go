@@ -153,17 +153,13 @@ func TestNormalizePackageModuleVersion(t *testing.T) {
 }
 
 func TestPackagePseudoVersion(t *testing.T) {
-	wd, _ := os.Getwd()
-	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
-	pkgConfig := getConfig(root, config.IndexOpts{})
-	pkgConfig.Tests = false
-
-	pkgs, err := packages.Load(pkgConfig, "github.com/alecthomas/template")
-	require.Nil(t, err)
-
-	require.Equal(t, 1, len(pkgs), "Too many packages")
-
-	pkg := pkgs[0]
+	pkg := &packages.Package{
+		PkgPath: "github.com/alecthomas/template",
+		Module: &packages.Module{
+			Path:    "github.com/alecthomas/template",
+			Version: "v0.0.0-20190718012654-fb15b899a751",
+		},
+	}
 
 	require.True(t, module.IsPseudoVersion(pkg.Module.Version), "Package did not have a pseudo version: pre ensure")
 
