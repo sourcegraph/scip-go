@@ -1,9 +1,6 @@
   package generallyeric
 //        ^^^^^^^^^^^^^ reference 0.1.test `sg/generallyeric`/
   
-  import "golang.org/x/exp/constraints"
-//        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/
-  
   type Number interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Number#
 //     documentation
@@ -13,16 +10,11 @@
 //     documentation
 //     > ```go
 //     > interface {
-//     >     Float | Integer | Complex
+//     >     ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~float32 | ~float64
 //     > }
 //     > ```
-   constraints.Float | constraints.Integer | constraints.Complex
-// ^^^^^^^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/
-//             ^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/Float#
-//                     ^^^^^^^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/
-//                                 ^^^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/Integer#
-//                                           ^^^^^^^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/
-//                                                       ^^^^^^^ reference golang.org/x/exp 47842c84f3db `golang.org/x/exp/constraints`/Complex#
+   ~int | ~int8 | ~int16 | ~int32 | ~int64 |
+    ~float32 | ~float64
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/Double().

@@ -91,11 +91,11 @@ src code-intel upload -github-token='${{ secrets.GITHUB_TOKEN }}' -no-progress
 
 ## Docker
 
-To build a self-contained Docker container with the indexer, use 
-the following command:
+To build a self-contained Docker image with the indexer, use:
 
 ```bash
-docker build -t scip-go:latest .
+nix build .#docker
+docker load < result
 ```
 
 # Contributing

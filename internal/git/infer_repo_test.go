@@ -2,10 +2,15 @@ package git
 
 import (
 	"fmt"
+	"os/exec"
 	"testing"
 )
 
 func TestInferRepo(t *testing.T) {
+	if err := exec.Command("git", "rev-parse", "--git-dir").Run(); err != nil {
+		t.Skip("not inside a git repository")
+	}
+
 	repo, err := InferRepo("")
 	if err != nil {
 		t.Fatalf("unexpected error inferring repo: %s", err)

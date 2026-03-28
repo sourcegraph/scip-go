@@ -4,12 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"net/url"
-	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip/bindings/go/scip"
@@ -97,17 +95,7 @@ func TestSnapshots(t *testing.T) {
 
 // getTestdataRoot returns the absolute path to the testdata directory of this repository.
 func getTestdataRoot(t *testing.T) string {
-	wd, err := os.Getwd()
-	if err != nil {
-		t.Fatalf("unexpected error getting working directory: %s", err)
-	}
-
-	root, err := command.Run(wd, "git", "rev-parse", "--show-toplevel")
-	if err != nil {
-		t.Fatalf("unexpected error getting working directory: %s", err)
-	}
-
-	testdata, err := filepath.Abs(filepath.Join(root, "internal/testdata"))
+	testdata, err := filepath.Abs("../testdata")
 	if err != nil {
 		t.Fatalf("unexpected error getting absolute directory: %s", err)
 	}

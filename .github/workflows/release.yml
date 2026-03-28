@@ -6,41 +6,94 @@ on:
       - v*
 
 jobs:
-  goreleaser:
+  create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Check direct push
+      - uses: actions/checkout@v6
+
+      - name: Validate version.txt
         run: |
           VERSION_FILE_PATH="internal/index/version.txt"
           if ! grep -q "${TAG/v/}" "$VERSION_FILE_PATH"; then
-            echo "error: scip-go version in $VERSION_FILE_PATH doesn't match NEW_VERSION=$NEW_VERSION"
+            echo "error: scip-go version in $VERSION_FILE_PATH doesn't match tag $TAG"
             exit 1
           fi
         env:
           TAG: ${{ github.ref_name }}
 
-      - name: Install ASDF
-        uses: asdf-vm/actions/setup@v3
-
-      - name: Install matching Go toolchain
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
         run: |
-          asdf plugin add golang
-          asdf install golang
+          gh release create "$TAG" --title "scip-go $TAG" --generate-notes \
+            || echo "Release $TAG already exists"
+
+  binaries:
+    needs: create-release
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            asset: scip-go-linux-amd64
+          - runner: ubuntu-24.04-arm
+            asset: scip-go-linux-arm64
+          - runner: macos-latest
+            asset: scip-go-darwin-arm64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+
+      - name: Build
+        run: nix build .#scip-go
+
+      - name: Package
+        run: |
+          cp result/bin/scip-go .
+          tar czf "${{ matrix.asset }}.tar.gz" scip-go LICENSE
+          sha256sum "${{ matrix.asset }}.tar.gz" > "${{ matrix.asset }}.tar.gz.sha256"
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.ref_name }}" \
+            "${{ matrix.asset }}.tar.gz" \
+            "${{ matrix.asset }}.tar.gz.sha256" \
+            --clobber
+
+  docker:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+
+      - name: Build Docker image
+        run: nix build .#docker
+
+      - name: Load and tag Docker image
+        run: |
+          docker load < result
+          VERSION="$(cat internal/index/version.txt)"
+          MAJOR="$(echo "$VERSION" | cut -d. -f1)"
+          MINOR="$(echo "$VERSION" | cut -d. -f1-2)"
+          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$VERSION"
+          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$MAJOR"
+          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$MAJOR.$MINOR"
+          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:latest"
 
       - uses: azure/docker-login@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      -
-        name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
-        with:
-          distribution: goreleaser
-          version: v2.0.1
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker images
+        run: docker push --all-tags sourcegraph/scip-go
