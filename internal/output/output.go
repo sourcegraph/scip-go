@@ -2,14 +2,17 @@ package output
 
 import (
 	"fmt"
+	"log/slog"
+	"os"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/charmbracelet/log"
 	"github.com/efritz/pentimento"
 	"github.com/sourcegraph/scip-go/internal/parallel"
 )
+
+var logLevel = new(slog.LevelVar)
 
 type Verbosity int
 
@@ -144,22 +147,27 @@ func printProgress(printer *pentimento.Printer, name string, c *uint64, n uint64
 }
 
 func SetOutputOptions(verb Verbosity, animation bool) {
+	var handler slog.Handler
 	switch verb {
 	case NoOutput:
-		log.SetLevel(log.FatalLevel)
+		handler = slog.DiscardHandler
 	case DefaultOutput:
-		log.SetLevel(log.WarnLevel)
+		logLevel.Set(slog.LevelWarn)
+		handler = slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: logLevel})
 	case VerboseOutput:
-		log.SetLevel(log.InfoLevel)
+		logLevel.Set(slog.LevelInfo)
+		handler = slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: logLevel})
 	case VeryVerboseOutput, VeryVeryVerboseOutput:
-		log.SetLevel(log.DebugLevel)
+		logLevel.Set(slog.LevelDebug)
+		handler = slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: logLevel})
 	}
+	slog.SetDefault(slog.New(handler))
 	opts.Verbosity = verb
 	opts.ShowAnimations = animation
 }
 
 func Logf(format string, a ...any) {
 	if opts.Verbosity >= VeryVeryVerboseOutput {
-		log.Printf(format, a...)
+		slog.Info(fmt.Sprintf(format, a...))
 	}
 }

@@ -9,8 +9,9 @@ import (
 	"strings"
 	"sync"
 
+	"log/slog"
+
 	"github.com/alecthomas/kingpin"
-	"github.com/charmbracelet/log"
 	"github.com/pkg/profile"
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
@@ -101,18 +102,6 @@ func main() {
 }
 
 func mainErr() (err error) {
-	// The default formatting also prints the date, which is generally not needed.
-	log.SetTimeFormat("15:04:05")
-	log.SetStyles(func() *log.Styles {
-		// The default styles will print 'DEBU' and 'ERRO' to line
-		// up with 'INFO' and 'WARN', instead of 'DEBUG' and 'ERROR'
-		s := log.DefaultStyles()
-		for lvl, style := range s.Levels {
-			s.Levels[lvl] = style.UnsetMaxWidth()
-		}
-		return s
-	}())
-
 	if err = parseArgs(os.Args[1:]); err != nil {
 		return err
 	}
@@ -128,16 +117,16 @@ func mainErr() (err error) {
 
 	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
 
-	log.Info("Go standard library version: ", "version", goVersion)
-	log.Info("Resolved module name: ", "module", modulePath)
+	slog.Info("Go standard library version: ", "version", goVersion)
+	slog.Info("Resolved module name: ", "module", modulePath)
 	if isStdLib {
-		log.Info("Resolved as stdlib: true")
+		slog.Info("Resolved as stdlib: true")
 	}
 	if skipImplementations {
-		log.Info("Skipping implementations")
+		slog.Info("Skipping implementations")
 	}
 	if skipTests {
-		log.Info("Skipping tests")
+		slog.Info("Skipping tests")
 	}
 
 	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion, isStdLib, skipImplementations, skipTests, packagePatterns)
@@ -190,8 +179,8 @@ func mainErr() (err error) {
 
 	file, err := os.Create(outFile)
 	if err != nil {
-		log.Fatal("Failed to create scip index file", "path", outFile)
-		return err
+		slog.Error("Failed to create scip index file", "path", outFile)
+		os.Exit(1)
 	}
 	defer file.Close()
 
@@ -212,7 +201,8 @@ func mainErr() (err error) {
 
 		b, err := proto.Marshal(index)
 		if err != nil {
-			log.Fatal("Failed to marshal SCIP index to Protobuf")
+			slog.Error("Failed to marshal SCIP index to Protobuf")
+			os.Exit(1)
 		}
 
 		// Lock for writing to the file, to make sure that we don't race to
@@ -222,7 +212,8 @@ func mainErr() (err error) {
 
 		// Serialize to file. Items can now be discarded
 		if _, err := file.Write(b); err != nil {
-			log.Fatal("Failed to write to scip index file")
+			slog.Error("Failed to write to scip index file")
+			os.Exit(1)
 		}
 	}
 

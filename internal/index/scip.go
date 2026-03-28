@@ -9,7 +9,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/funk"
@@ -184,7 +184,7 @@ func indexVisitPackages(
 
 		for _, pkgID := range lookupIDs {
 			pkg := pkgLookup[pkgID]
-			log.Debug("Visiting package", "path", pkg.PkgPath)
+			slog.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
 			// Handle that packages can have many files for one package.

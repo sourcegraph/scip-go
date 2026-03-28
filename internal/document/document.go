@@ -11,7 +11,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/scip-code/scip/bindings/go/scip"
@@ -213,10 +213,10 @@ func formatTypeSignature(obj *types.TypeName) string {
 			default:
 				if val := os.Getenv("GODEBUG"); strings.Contains(val, "gotypealias=0") {
 					loggedGODEBUGWarning.Do(func() {
-						log.Warn("Running with GODEBUG=gotypealias=0, this may cause incorrect hover docs")
+						slog.Warn("Running with GODEBUG=gotypealias=0, this may cause incorrect hover docs")
 					})
 				} else {
-					log.Warn("IsAlias() is true but Type() is not Alias; please report this as a bug",
+					slog.Warn("IsAlias() is true but Type() is not Alias; please report this as a bug",
 						"obj", obj.String(), "obj.Type()", ty.String())
 				}
 			}

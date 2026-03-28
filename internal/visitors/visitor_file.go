@@ -7,7 +7,7 @@ import (
 	"go/types"
 	"strings"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
@@ -133,7 +133,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		// Generate import references
 		importedPackage := v.pkg.Imports[strings.Trim(node.Path.Value, `"`)]
 		if importedPackage == nil {
-			log.Warn("Could not find node", "node.Path", node.Path)
+			slog.Warn("Could not find node", "node.Path", node.Path)
 			return nil
 		}
 
