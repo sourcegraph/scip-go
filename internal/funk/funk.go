@@ -1,16 +1,13 @@
 package funk
 
 import (
+	"cmp"
+	"maps"
 	"slices"
-
-	"golang.org/x/exp/constraints"
-	"golang.org/x/exp/maps"
 )
 
-func SortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
-	keys := maps.Keys(m)
-	slices.Sort(keys)
-	return keys
+func SortedKeys[K cmp.Ordered, V any](m map[K]V) []K {
+	return slices.Sorted(maps.Keys(m))
 }
 
 func Map[T any, V any](l []T, f func(T) V) []V {
