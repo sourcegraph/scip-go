@@ -14,7 +14,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/symbols"
-	"github.com/sourcegraph/scip/bindings/go/scip"
+	"github.com/scip-code/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
 

@@ -10,8 +10,8 @@ import (
 
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/index"
-	"github.com/sourcegraph/scip/bindings/go/scip"
-	"github.com/sourcegraph/scip/bindings/go/scip/testutil"
+	"github.com/scip-code/scip/bindings/go/scip"
+	"github.com/scip-code/scip/bindings/go/scip/testutil"
 	"google.golang.org/protobuf/proto"
 )
 
