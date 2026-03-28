@@ -153,11 +153,11 @@ func IsStandardLib(pkg *packages.Package) bool {
 }
 
 func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {
-	// Name string = "pentimento"
-	// PkgPath string = "github.com/efritz/pentimento"
+	// Name string = "template"
+	// PkgPath string = "github.com/alecthomas/template"
 	// Module:
-	//		Path string = "github.com/efritz/pentimento"
-	//		Version string = "v0.0.0-20190429011147-ade47d831101"
+	//		Path string = "github.com/alecthomas/template"
+	//		Version string = "v0.0.0-20190718012654-fb15b899a751"
 
 	if opts.IsGoPackagesDriverSet {
 		// As of golang.org/x/tools v0.26, the JSON object for representing packages

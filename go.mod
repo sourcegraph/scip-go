@@ -5,7 +5,6 @@ go 1.26
 require (
 	github.com/agnivade/levenshtein v1.2.1
 	github.com/alecthomas/kingpin v2.2.6+incompatible
-	github.com/efritz/pentimento v0.0.0-20190429011147-ade47d831101
 	github.com/pkg/profile v1.7.0
 	github.com/scip-code/scip/bindings/go/scip v0.7.0
 	github.com/stretchr/testify v1.11.1

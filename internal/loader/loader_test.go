@@ -3,7 +3,6 @@ package loader
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/sourcegraph/scip-go/internal/config"
@@ -159,7 +158,7 @@ func TestPackagePseudoVersion(t *testing.T) {
 	pkgConfig := getConfig(root, config.IndexOpts{})
 	pkgConfig.Tests = false
 
-	pkgs, err := packages.Load(pkgConfig, "github.com/efritz/pentimento")
+	pkgs, err := packages.Load(pkgConfig, "github.com/alecthomas/template")
 	require.Nil(t, err)
 
 	require.Equal(t, 1, len(pkgs), "Too many packages")
@@ -170,7 +169,7 @@ func TestPackagePseudoVersion(t *testing.T) {
 
 	normalizePackage(&config.IndexOpts{}, pkg)
 
-	require.Equal(t, "ade47d831101", pkg.Module.Version, "Package pseudo-version was not extracted into a sha: post ensure")
+	require.Equal(t, "fb15b899a751", pkg.Module.Version, "Package pseudo-version was not extracted into a sha: post ensure")
 }
 
 func TestPackageWithinModule(t *testing.T) {
@@ -184,46 +183,4 @@ func TestPackageWithinModule(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-}
-
-func TestPentimentoPackage(t *testing.T) {
-	// "github.com/efritz/pentimento"
-	wd, _ := os.Getwd()
-	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
-
-	config := getConfig(root, config.IndexOpts{})
-	config.Tests = false
-
-	// TODO: Could possibly just load this way as well :)
-	// packages.Load(config, "github.com/efritz/pentimento")
-	pkgs, err := packages.Load(config, "./...")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	var pentimento *packages.Package
-	for _, pkg := range pkgs {
-		for _, imported := range pkg.Imports {
-			if strings.Contains(imported.Name, "pentimento") {
-				pentimento = imported
-				break
-			}
-		}
-	}
-
-	if pentimento == nil {
-		t.Fatal("Could not find pentimento dep")
-	}
-
-	if "pentimento" != pentimento.Name ||
-		"github.com/efritz/pentimento" != pentimento.PkgPath ||
-		"github.com/efritz/pentimento" != pentimento.Module.Path {
-
-		t.Fatal("Did not match module")
-	}
-	// Name string = "pentimento"
-	// PkgPath string = "github.com/efritz/pentimento"
-	// Module:
-	//		Path string = "github.com/efritz/pentimento"
-	//		Version string = "v0.0.0-20190429011147-ade47d831101"
 }

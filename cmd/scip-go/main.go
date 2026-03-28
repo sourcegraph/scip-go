@@ -41,7 +41,6 @@ var (
 	goVersion        string
 	verbosity        int
 	noOutput         bool
-	animation        bool
 	devMode          bool
 
 	// fUnNy cOmMaNd
@@ -80,7 +79,6 @@ func init() {
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
 	app.Flag("verbose", "Output debug logs.").Short('v').CounterVar(&verbosity)
-	app.Flag("animation", "Show animated output.").Default("false").BoolVar(&animation)
 	app.Flag("dev", "Enable development mode.").Default("false").BoolVar(&devMode)
 
 	// app.Flag("dep-batch-size", "How many dependencies to load at once to limit memory usage (e.g. 100). 0 means load all at once.").Default("0").IntVar(&depBatchSize)
@@ -113,7 +111,7 @@ func mainErr() (err error) {
 
 	handler.SetDev(devMode)
 
-	output.SetOutputOptions(getVerbosity(), animation)
+	output.SetOutputOptions(getVerbosity())
 
 	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
 
