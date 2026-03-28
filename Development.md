@@ -21,8 +21,5 @@ go test ./internal/index -update-snapshots
    - A ChangeLog entry with `## vM.N.P`
    - Updated version in `internal/index/version.txt`
 
-2. On the `main` branch, run the following:
-
-    ```bash
-    NEW_VERSION="M.N.P" ./dev/publish-release.sh
-    ```
+2. From the `main` branch, trigger the [release workflow](https://github.com/sourcegraph/scip-go/actions/workflows/release.yml)
+   via **Actions → release → Run workflow**, entering `M.N.P` as the version.

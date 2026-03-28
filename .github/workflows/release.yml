@@ -1,32 +1,56 @@
 name: release
 
 on:
-  push:
-    tags:
-      - v*
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g. 1.2.3, without v prefix)"
+        required: true
+        type: string
 
 jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate inputs
+        env:
+          NEW_VERSION: ${{ inputs.version }}
+        run: |
+          VERSION_FILE_PATH="internal/index/version.txt"
+          if ! grep -q "$NEW_VERSION" "$VERSION_FILE_PATH"; then
+            echo "error: scip-go version in $VERSION_FILE_PATH doesn't match NEW_VERSION=$NEW_VERSION"
+            exit 1
+          fi
+          if ! grep -q "## v$NEW_VERSION" CHANGELOG.md; then
+            echo "error: Missing CHANGELOG entry for v$NEW_VERSION"
+            exit 1
+          fi
+
+      - name: Create and push tag
+        env:
+          NEW_VERSION: ${{ inputs.version }}
+        run: |
+          git tag "v$NEW_VERSION"
+          git push origin "v$NEW_VERSION"
+
   create-release:
+    needs: tag
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v6
 
-      - name: Validate version.txt
-        run: |
-          VERSION_FILE_PATH="internal/index/version.txt"
-          if ! grep -q "${TAG/v/}" "$VERSION_FILE_PATH"; then
-            echo "error: scip-go version in $VERSION_FILE_PATH doesn't match tag $TAG"
-            exit 1
-          fi
-        env:
-          TAG: ${{ github.ref_name }}
-
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
+          TAG: v${{ inputs.version }}
         run: |
           gh release create "$TAG" --title "scip-go $TAG" --generate-notes \
             || echo "Release $TAG already exists"
@@ -47,6 +71,8 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: v${{ inputs.version }}
       - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@v13
 
@@ -63,7 +89,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${{ github.ref_name }}" \
+          gh release upload "v${{ inputs.version }}" \
             "${{ matrix.asset }}.tar.gz" \
             "${{ matrix.asset }}.tar.gz.sha256" \
             --clobber
@@ -73,6 +99,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: v${{ inputs.version }}
       - uses: DeterminateSystems/nix-installer-action@v21
       - uses: DeterminateSystems/magic-nix-cache-action@v13
 
