@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/vcs"
@@ -24,7 +24,7 @@ func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err
 		goModPath := filepath.Join(dir, "go.mod")
 		data, readErr := os.ReadFile(goModPath)
 		if readErr != nil {
-			log.Warn("No go.mod file found in current directory.")
+			slog.Warn("No go.mod file found in current directory.")
 			moduleName, isStdLib, err = resolveModuleName(repo, moduleName)
 			return nil
 		}

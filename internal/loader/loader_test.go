@@ -3,11 +3,9 @@ package loader
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/sourcegraph/scip-go/internal/config"
-	"github.com/stretchr/testify/require"
 	"golang.org/x/mod/module"
 	"golang.org/x/tools/go/packages"
 )
@@ -98,7 +96,9 @@ func TestNormalizePackageSiblingModule(t *testing.T) {
 				},
 			}
 			normalizePackage(opts, pkg)
-			require.Equal(t, tc.expectedVersion, pkg.Module.Version)
+			if pkg.Module.Version != tc.expectedVersion {
+				t.Errorf("want %q, got %q", tc.expectedVersion, pkg.Module.Version)
+			}
 		})
 	}
 }
@@ -149,28 +149,30 @@ func TestNormalizePackageModuleVersion(t *testing.T) {
 		}
 		normalizePackage(&config.IndexOpts{}, pkg)
 
-		require.Equal(t, testCase.Normalized, pkg.Module.Version)
+		if pkg.Module.Version != testCase.Normalized {
+			t.Errorf("want %q, got %q", testCase.Normalized, pkg.Module.Version)
+		}
 	}
 }
 
 func TestPackagePseudoVersion(t *testing.T) {
-	wd, _ := os.Getwd()
-	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
-	pkgConfig := getConfig(root, config.IndexOpts{})
-	pkgConfig.Tests = false
+	pkg := &packages.Package{
+		PkgPath: "github.com/alecthomas/template",
+		Module: &packages.Module{
+			Path:    "github.com/alecthomas/template",
+			Version: "v0.0.0-20190718012654-fb15b899a751",
+		},
+	}
 
-	pkgs, err := packages.Load(pkgConfig, "github.com/efritz/pentimento")
-	require.Nil(t, err)
-
-	require.Equal(t, 1, len(pkgs), "Too many packages")
-
-	pkg := pkgs[0]
-
-	require.True(t, module.IsPseudoVersion(pkg.Module.Version), "Package did not have a pseudo version: pre ensure")
+	if !module.IsPseudoVersion(pkg.Module.Version) {
+		t.Fatal("Package did not have a pseudo version: pre ensure")
+	}
 
 	normalizePackage(&config.IndexOpts{}, pkg)
 
-	require.Equal(t, "ade47d831101", pkg.Module.Version, "Package pseudo-version was not extracted into a sha: post ensure")
+	if pkg.Module.Version != "fb15b899a751" {
+		t.Errorf("Package pseudo-version was not extracted into a sha: want %q, got %q", "fb15b899a751", pkg.Module.Version)
+	}
 }
 
 func TestPackageWithinModule(t *testing.T) {
@@ -184,46 +186,4 @@ func TestPackageWithinModule(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-}
-
-func TestPentimentoPackage(t *testing.T) {
-	// "github.com/efritz/pentimento"
-	wd, _ := os.Getwd()
-	root, _ := filepath.Abs(filepath.Join(wd, "../../"))
-
-	config := getConfig(root, config.IndexOpts{})
-	config.Tests = false
-
-	// TODO: Could possibly just load this way as well :)
-	// packages.Load(config, "github.com/efritz/pentimento")
-	pkgs, err := packages.Load(config, "./...")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	var pentimento *packages.Package
-	for _, pkg := range pkgs {
-		for _, imported := range pkg.Imports {
-			if strings.Contains(imported.Name, "pentimento") {
-				pentimento = imported
-				break
-			}
-		}
-	}
-
-	if pentimento == nil {
-		t.Fatal("Could not find pentimento dep")
-	}
-
-	if "pentimento" != pentimento.Name ||
-		"github.com/efritz/pentimento" != pentimento.PkgPath ||
-		"github.com/efritz/pentimento" != pentimento.Module.Path {
-
-		t.Fatal("Did not match module")
-	}
-	// Name string = "pentimento"
-	// PkgPath string = "github.com/efritz/pentimento"
-	// Module:
-	//		Path string = "github.com/efritz/pentimento"
-	//		Version string = "v0.0.0-20190429011147-ade47d831101"
 }

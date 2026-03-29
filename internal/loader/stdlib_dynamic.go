@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 )
 
 var (
@@ -19,19 +19,19 @@ func getStdlibPackages() map[string]struct{} {
 		stdlibMap = stdPackages
 
 		if os.Getenv("GOPACKAGESDRIVER") != "" {
-			log.Debug("GOPACKAGESDRIVER is set, using hardcoded stdlib list")
+			slog.Debug("GOPACKAGESDRIVER is set, using hardcoded stdlib list")
 			return
 		}
 
 		cmd, err := exec.LookPath("go")
 		if err != nil {
-			log.Warn("go command not found, using hardcoded stdlib list")
+			slog.Warn("go command not found, using hardcoded stdlib list")
 			return
 		}
 
 		output, err := exec.Command(cmd, "list", "std").Output()
 		if err != nil {
-			log.Warn(
+			slog.Warn(
 				"Failed to run 'go list std', using hardcoded stdlib list", "error", err)
 			return
 		}
@@ -46,7 +46,7 @@ func getStdlibPackages() map[string]struct{} {
 			stdlibMap[base] = struct{}{}
 		}
 		
-		log.Debug("Successfully loaded stdlib packages dynamically", "count", len(stdlibMap))
+		slog.Debug("Successfully loaded stdlib packages dynamically", "count", len(stdlibMap))
 	})
 	return stdlibMap
 }

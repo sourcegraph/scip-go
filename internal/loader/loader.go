@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
@@ -110,7 +110,7 @@ func LoadPackages(
 		patterns := opts.PackagePatterns
 		if len(patterns) == 0 {
 			patterns = append(patterns, "./...")
-			log.Warn("No target patterns provided using default './...'")
+			slog.Warn("No target patterns provided using default './...'")
 		}
 		pkgs, err := packages.Load(cfg, patterns...)
 		if err != nil {
@@ -153,11 +153,11 @@ func IsStandardLib(pkg *packages.Package) bool {
 }
 
 func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {
-	// Name string = "pentimento"
-	// PkgPath string = "github.com/efritz/pentimento"
+	// Name string = "template"
+	// PkgPath string = "github.com/alecthomas/template"
 	// Module:
-	//		Path string = "github.com/efritz/pentimento"
-	//		Version string = "v0.0.0-20190429011147-ade47d831101"
+	//		Path string = "github.com/alecthomas/template"
+	//		Version string = "v0.0.0-20190718012654-fb15b899a751"
 
 	if opts.IsGoPackagesDriverSet {
 		// As of golang.org/x/tools v0.26, the JSON object for representing packages
@@ -194,7 +194,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		pkg.PkgPath = strings.TrimPrefix(pkg.PkgPath, "std/")
 	} else {
 		if pkg.Module == nil {
-			log.Warn("Package has nil Module, using fallback",
+			slog.Warn("Package has nil Module, using fallback",
 				"package", pkg.PkgPath,
 				"driver", os.Getenv("GOPACKAGESDRIVER"))
 			
@@ -254,11 +254,11 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			pkg.Module.Version = opts.ModuleVersion
 		} else {
 			// Only panic when running in debug mode.
-			log.Error(handler.ErrOrPanic(
+			slog.Error(handler.ErrOrPanic(
 				"Unknown version for userland package: %s %s",
 				pkg.Module.Path,
 				opts.ModulePath,
-			))
+			).Error())
 
 			pkg.Module.Version = "."
 		}
@@ -270,11 +270,11 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		rev, err := module.PseudoVersionRev(pkg.Module.Version)
 		if err != nil {
 			// Only panic when running in debug mode.
-			log.Error(handler.ErrOrPanic(
+			slog.Error(handler.ErrOrPanic(
 				"Unable to find rev from pseudo-version: %s %s",
 				pkg.Module.Path,
 				pkg.Module.Version,
-			))
+			).Error())
 		} else {
 			pkg.Module.Version = rev
 		}

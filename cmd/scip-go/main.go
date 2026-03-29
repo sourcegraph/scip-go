@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
+	"runtime/pprof"
 	"strings"
 	"sync"
 
-	"github.com/alecthomas/kingpin"
-	"github.com/charmbracelet/log"
-	"github.com/pkg/profile"
+	"log/slog"
+
+	"github.com/alecthomas/kingpin/v2"
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/git"
@@ -19,7 +21,7 @@ import (
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip-go/internal/modules"
 	"github.com/sourcegraph/scip-go/internal/output"
-	"github.com/sourcegraph/scip/bindings/go/scip"
+	"github.com/scip-code/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 	"google.golang.org/protobuf/proto"
 )
@@ -40,7 +42,6 @@ var (
 	goVersion        string
 	verbosity        int
 	noOutput         bool
-	animation        bool
 	devMode          bool
 
 	// fUnNy cOmMaNd
@@ -79,7 +80,6 @@ func init() {
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
 	app.Flag("verbose", "Output debug logs.").Short('v').CounterVar(&verbosity)
-	app.Flag("animation", "Show animated output.").Default("false").BoolVar(&animation)
 	app.Flag("dev", "Enable development mode.").Default("false").BoolVar(&devMode)
 
 	// app.Flag("dep-batch-size", "How many dependencies to load at once to limit memory usage (e.g. 100). 0 means load all at once.").Default("0").IntVar(&depBatchSize)
@@ -101,43 +101,39 @@ func main() {
 }
 
 func mainErr() (err error) {
-	// The default formatting also prints the date, which is generally not needed.
-	log.SetTimeFormat("15:04:05")
-	log.SetStyles(func() *log.Styles {
-		// The default styles will print 'DEBU' and 'ERRO' to line
-		// up with 'INFO' and 'WARN', instead of 'DEBUG' and 'ERROR'
-		s := log.DefaultStyles()
-		for lvl, style := range s.Levels {
-			s.Levels[lvl] = style.UnsetMaxWidth()
-		}
-		return s
-	}())
-
 	if err = parseArgs(os.Args[1:]); err != nil {
 		return err
 	}
 
 	if profileRate > 0 {
-		p := profile.MemProfileRate(profileRate)
-		defer profile.Start(p).Stop()
+		runtime.MemProfileRate = profileRate
+		f, err := os.Create("mem.pprof")
+		if err != nil {
+			return fmt.Errorf("could not create memory profile: %w", err)
+		}
+		defer func() {
+			runtime.GC()
+			pprof.WriteHeapProfile(f)
+			f.Close()
+		}()
 	}
 
 	handler.SetDev(devMode)
 
-	output.SetOutputOptions(getVerbosity(), animation)
+	output.SetOutputOptions(getVerbosity())
 
 	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
 
-	log.Info("Go standard library version: ", "version", goVersion)
-	log.Info("Resolved module name: ", "module", modulePath)
+	slog.Info("Go standard library version: ", "version", goVersion)
+	slog.Info("Resolved module name: ", "module", modulePath)
 	if isStdLib {
-		log.Info("Resolved as stdlib: true")
+		slog.Info("Resolved as stdlib: true")
 	}
 	if skipImplementations {
-		log.Info("Skipping implementations")
+		slog.Info("Skipping implementations")
 	}
 	if skipTests {
-		log.Info("Skipping tests")
+		slog.Info("Skipping tests")
 	}
 
 	options := config.New(moduleRoot, moduleVersion, modulePath, goVersion, isStdLib, skipImplementations, skipTests, packagePatterns)
@@ -190,8 +186,7 @@ func mainErr() (err error) {
 
 	file, err := os.Create(outFile)
 	if err != nil {
-		log.Fatal("Failed to create scip index file", "path", outFile)
-		return err
+		panic(fmt.Sprintf("failed to create scip index file %q: %v", outFile, err))
 	}
 	defer file.Close()
 
@@ -212,7 +207,7 @@ func mainErr() (err error) {
 
 		b, err := proto.Marshal(index)
 		if err != nil {
-			log.Fatal("Failed to marshal SCIP index to Protobuf")
+			panic(fmt.Sprintf("failed to marshal SCIP index to Protobuf: %v", err))
 		}
 
 		// Lock for writing to the file, to make sure that we don't race to
@@ -222,7 +217,7 @@ func mainErr() (err error) {
 
 		// Serialize to file. Items can now be discarded
 		if _, err := file.Write(b); err != nil {
-			log.Fatal("Failed to write to scip index file")
+			panic(fmt.Sprintf("failed to write to scip index file: %v", err))
 		}
 	}
 

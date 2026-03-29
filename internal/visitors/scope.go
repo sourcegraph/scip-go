@@ -3,9 +3,8 @@ package visitors
 import (
 	"strings"
 
-	"github.com/sourcegraph/scip-go/internal/funk"
 	"github.com/sourcegraph/scip-go/internal/symbols"
-	"github.com/sourcegraph/scip/bindings/go/scip"
+	"github.com/scip-code/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -37,7 +36,9 @@ func (s *Scope) makeSymbol(pkg *packages.Package, name string, suffix scip.Descr
 }
 
 func (s *Scope) String() string {
-	return strings.Join(funk.Map(s.descriptors, func(d *scip.Descriptor) string {
-		return d.Name
-	}), " > ")
+	names := make([]string, len(s.descriptors))
+	for i, d := range s.descriptors {
+		names[i] = d.Name
+	}
+	return strings.Join(names, " > ")
 }

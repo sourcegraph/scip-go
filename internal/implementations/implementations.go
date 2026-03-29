@@ -6,12 +6,12 @@ import (
 	"go/types"
 	"strings"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/output"
-	"github.com/sourcegraph/scip/bindings/go/scip"
+	"github.com/scip-code/scip/bindings/go/scip"
 	"golang.org/x/tools/container/intsets"
 	"golang.org/x/tools/go/packages"
 )
@@ -79,7 +79,7 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 		for _, impl := range tyImpls {
 			implDef, ok := interfaces[impl.Symbol]
 			if !ok {
-				log.Error("Could not find interface", "symbol", impl.Symbol)
+				slog.Error("Could not find interface", "symbol", impl.Symbol)
 				continue
 			}
 
@@ -169,13 +169,13 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 		}
 
 		if pkg.TypesInfo == nil {
-			log.Warn("No types for package", "path", pkg.PkgPath)
+			slog.Warn("No types for package", "path", pkg.PkgPath)
 			continue
 		}
 
 		pkgSymbols := symbols.GetPackage(pkg)
 		if pkgSymbols == nil {
-			log.Warn("No symbols for package", "path", pkg.PkgPath)
+			slog.Warn("No symbols for package", "path", pkg.PkgPath)
 			continue
 		}
 
@@ -203,7 +203,7 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				if obj.Exported() {
 					// TODO: Look into whether this is a bug or not
 					// https://linear.app/sourcegraph/issue/GRAPH-852
-					// log.Debug("No symbol for:", "identifier", ident.Name, "package", obj.Pkg(), "id", obj.Id())
+					// slog.Debug("No symbol for:", "identifier", ident.Name, "package", obj.Pkg(), "id", obj.Id())
 				}
 
 				continue
