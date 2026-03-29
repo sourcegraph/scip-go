@@ -55,9 +55,29 @@
           };
         };
 
+        checks = {
+          nixfmt = pkgs.runCommand "check-nixfmt" { nativeBuildInputs = [ pkgs.nixfmt ]; } ''
+            nixfmt --check ${./flake.nix}
+            touch $out
+          '';
+          gofmt = pkgs.runCommand "check-gofmt" { nativeBuildInputs = [ pkgs.go ]; } ''
+            cd ${./.}
+            bad=$(gofmt -l .)
+            if [ -n "$bad" ]; then
+              echo "gofmt check failed on:"
+              echo "$bad"
+              exit 1
+            fi
+            touch $out
+          '';
+        };
+
         devShells = {
           default = pkgs.mkShellNoCC {
-            buildInputs = [ pkgs.go ];
+            buildInputs = [
+              pkgs.go
+              pkgs.nixfmt
+            ];
           };
         };
       }
