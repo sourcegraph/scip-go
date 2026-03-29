@@ -3,6 +3,7 @@ package loader
 import (
 	"fmt"
 	"io/ioutil"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,7 +17,6 @@ import (
 	"golang.org/x/mod/semver"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/vcs"
-	"log/slog"
 )
 
 type PackageLookup map[newtypes.PackageID]*packages.Package

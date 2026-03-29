@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"go/ast"
+	"log/slog"
 	"maps"
 	"slices"
 	"sort"
@@ -22,7 +23,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip-go/internal/visitors"
 	"google.golang.org/protobuf/proto"
-	"log/slog"
 )
 
 //go:embed version.txt

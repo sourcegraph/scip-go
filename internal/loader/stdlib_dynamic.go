@@ -1,12 +1,11 @@
 package loader
 
 import (
+	"log/slog"
 	"os"
 	"os/exec"
 	"strings"
 	"sync"
-
-	"log/slog"
 )
 
 var (

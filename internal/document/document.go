@@ -7,6 +7,7 @@ import (
 	"go/doc"
 	"go/token"
 	"go/types"
+	"log/slog"
 	"os"
 	"strings"
 	"sync"
@@ -15,7 +16,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
-	"log/slog"
 )
 
 // indent is used to format struct fields.

@@ -2,6 +2,10 @@ package embedded
 
 import "fmt"
 
+func (r *RecentCommittersResults) String() string {
+	return fmt.Sprintf("RecentCommittersResults{Nodes: %d}", len(r.Nodes))
+}
+
 type RecentCommittersResults struct {
 	Nodes []struct {
 		Authors struct {

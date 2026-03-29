@@ -4,6 +4,26 @@
   import "fmt"
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
+//⌄ enclosing_range_start 0.1.test `sg/embedded`/RecentCommittersResults#String().
+  func (r *RecentCommittersResults) String() string {
+//      ^ definition local 0
+//         ^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#
+//                                  ^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#String().
+//                                  documentation
+//                                  > ```go
+//                                  > func (*RecentCommittersResults).String() string
+//                                  > ```
+//                                  relationship github.com/golang/go/src go1.22 context/stringer#String. implementation
+//                                  relationship github.com/golang/go/src go1.22 fmt/Stringer#String. implementation
+//                                  relationship github.com/golang/go/src go1.22 runtime/stringer#String. implementation
+   return fmt.Sprintf("RecentCommittersResults{Nodes: %d}", len(r.Nodes))
+//        ^^^ reference github.com/golang/go/src go1.22 fmt/
+//            ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Sprintf().
+//                                                              ^ reference local 0
+//                                                                ^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.
+  }
+//⌃ enclosing_range_end 0.1.test `sg/embedded`/RecentCommittersResults#String().
+  
   type RecentCommittersResults struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#
 //     documentation
@@ -31,6 +51,9 @@
 //     >     }
 //     > }
 //     > ```
+//     relationship github.com/golang/go/src go1.22 context/stringer# implementation
+//     relationship github.com/golang/go/src go1.22 fmt/Stringer# implementation
+//     relationship github.com/golang/go/src go1.22 runtime/stringer# implementation
    Nodes []struct {
 // ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.
 // documentation

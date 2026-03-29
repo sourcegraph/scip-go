@@ -4,14 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"runtime"
 	"runtime/pprof"
 	"strings"
 	"sync"
-
-	"log/slog"
 
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/scip-code/scip/bindings/go/scip"

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/types"
+	"log/slog"
 	"strings"
 
 	"github.com/scip-code/scip/bindings/go/scip"
@@ -13,7 +14,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/container/intsets"
 	"golang.org/x/tools/go/packages"
-	"log/slog"
 )
 
 type canonicalMethod string

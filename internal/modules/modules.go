@@ -2,6 +2,7 @@ package modules
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,7 +10,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/vcs"
-	"log/slog"
 )
 
 func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err error) {

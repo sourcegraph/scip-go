@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/token"
 	"go/types"
+	"log/slog"
 	"strings"
 
 	"github.com/scip-code/scip/bindings/go/scip"
@@ -15,7 +16,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
-	"log/slog"
 )
 
 const (
