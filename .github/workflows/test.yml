@@ -14,3 +14,26 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@v13
       - run: nix flake check
       - run: nix build .#scip-go
+
+  docker:
+    strategy:
+      matrix:
+        include:
+          - runner: ubuntu-latest
+          - runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - run: nix build .#docker
+
+  nix-checks:
+    if: always()
+    needs: [build, docker]
+    runs-on: ubuntu-latest
+    steps:
+      - if: >-
+          contains(needs.*.result, 'failure') ||
+          contains(needs.*.result, 'cancelled')
+        run: exit 1

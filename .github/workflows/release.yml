@@ -96,7 +96,14 @@ jobs:
 
   docker:
     needs: create-release
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            arch: amd64
+          - runner: ubuntu-24.04-arm
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -107,21 +114,44 @@ jobs:
       - name: Build Docker image
         run: nix build .#docker
 
-      - name: Load and tag Docker image
+      - name: Load and push single-arch image
         run: |
           docker load < result
           VERSION="$(cat internal/index/version.txt)"
-          MAJOR="$(echo "$VERSION" | cut -d. -f1)"
-          MINOR="$(echo "$VERSION" | cut -d. -f1-2)"
-          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$VERSION"
-          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$MAJOR"
-          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:v$MAJOR.$MINOR"
-          docker tag "scip-go:$VERSION" "sourcegraph/scip-go:latest"
 
       - uses: azure/docker-login@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push Docker images
-        run: docker push --all-tags sourcegraph/scip-go
+      - name: Push arch-specific image
+        run: |
+          VERSION="$(cat internal/index/version.txt)"
+          ARCH_TAG="sourcegraph/scip-go:v${VERSION}-${{ matrix.arch }}"
+          docker tag "scip-go:$VERSION" "$ARCH_TAG"
+          docker push "$ARCH_TAG"
+
+  docker-manifest:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: v${{ inputs.version }}
+
+      - uses: azure/docker-login@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Create and push multi-arch manifests
+        run: |
+          VERSION="$(cat internal/index/version.txt)"
+          MAJOR="$(echo "$VERSION" | cut -d. -f1)"
+          MINOR="$(echo "$VERSION" | cut -d. -f1-2)"
+          AMD64="sourcegraph/scip-go:v${VERSION}-amd64"
+          ARM64="sourcegraph/scip-go:v${VERSION}-arm64"
+          for TAG in "v$VERSION" "v$MAJOR" "v$MAJOR.$MINOR" "latest"; do
+            docker manifest create "sourcegraph/scip-go:$TAG" "$AMD64" "$ARM64"
+            docker manifest push "sourcegraph/scip-go:$TAG"
+          done
