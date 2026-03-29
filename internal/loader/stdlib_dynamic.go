@@ -45,7 +45,7 @@ func getStdlibPackages() map[string]struct{} {
 			base := strings.Split(pkg, "/")[0]
 			stdlibMap[base] = struct{}{}
 		}
-		
+
 		slog.Debug("Successfully loaded stdlib packages dynamically", "count", len(stdlibMap))
 	})
 	return stdlibMap

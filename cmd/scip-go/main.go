@@ -14,6 +14,7 @@ import (
 	"log/slog"
 
 	"github.com/alecthomas/kingpin/v2"
+	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/git"
@@ -21,7 +22,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip-go/internal/modules"
 	"github.com/sourcegraph/scip-go/internal/output"
-	"github.com/scip-code/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 	"google.golang.org/protobuf/proto"
 )

@@ -1,12 +1,12 @@
 package initial
 
 import (
-  "slices"
+	"slices"
 )
 
 func f(xs []int) int {
-  for _, x := range slices.All(xs) {
-    return x
-  }
-  return -1
+	for _, x := range slices.All(xs) {
+		return x
+	}
+	return -1
 }

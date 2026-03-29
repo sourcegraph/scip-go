@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
@@ -17,6 +16,7 @@ import (
 	"golang.org/x/mod/semver"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/vcs"
+	"log/slog"
 )
 
 type PackageLookup map[newtypes.PackageID]*packages.Package
@@ -197,7 +197,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			slog.Warn("Package has nil Module, using fallback",
 				"package", pkg.PkgPath,
 				"driver", os.Getenv("GOPACKAGESDRIVER"))
-			
+
 			pkg.Module = &packages.Module{
 				Path:    ".",
 				Version: ".",

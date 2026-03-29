@@ -62,7 +62,7 @@
           '';
           gofmt = pkgs.runCommand "check-gofmt" { nativeBuildInputs = [ pkgs.go ]; } ''
             cd ${./.}
-            bad=$(gofmt -l .)
+            bad=$(find . -name '*.go' -not -path '*/testdata/snapshots/output/*' -exec gofmt -l {} +)
             if [ -n "$bad" ]; then
               echo "gofmt check failed on:"
               echo "$bad"

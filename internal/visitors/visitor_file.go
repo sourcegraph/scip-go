@@ -7,15 +7,15 @@ import (
 	"go/types"
 	"strings"
 
-	"log/slog"
+	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/document"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/symbols"
-	"github.com/scip-code/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
+	"log/slog"
 )
 
 const (
