@@ -186,8 +186,7 @@ func mainErr() (err error) {
 
 	file, err := os.Create(outFile)
 	if err != nil {
-		slog.Error("Failed to create scip index file", "path", outFile)
-		os.Exit(1)
+		panic(fmt.Sprintf("failed to create scip index file %q: %v", outFile, err))
 	}
 	defer file.Close()
 
@@ -208,8 +207,7 @@ func mainErr() (err error) {
 
 		b, err := proto.Marshal(index)
 		if err != nil {
-			slog.Error("Failed to marshal SCIP index to Protobuf")
-			os.Exit(1)
+			panic(fmt.Sprintf("failed to marshal SCIP index to Protobuf: %v", err))
 		}
 
 		// Lock for writing to the file, to make sure that we don't race to
@@ -219,8 +217,7 @@ func mainErr() (err error) {
 
 		// Serialize to file. Items can now be discarded
 		if _, err := file.Write(b); err != nil {
-			slog.Error("Failed to write to scip index file")
-			os.Exit(1)
+			panic(fmt.Sprintf("failed to write to scip index file: %v", err))
 		}
 	}
 
