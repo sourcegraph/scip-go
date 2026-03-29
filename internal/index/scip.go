@@ -4,6 +4,8 @@ import (
 	_ "embed"
 	"fmt"
 	"go/ast"
+	"maps"
+	"slices"
 	"sort"
 	"strings"
 	"sync"
@@ -12,7 +14,6 @@ import (
 	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip-go/internal/funk"
 	impls "github.com/sourcegraph/scip-go/internal/implementations"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
@@ -64,13 +65,13 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 		return nil, err
 	}
 
-	lookupNames := funk.SortedKeys(pkgLookup)
+	lookupNames := slices.Sorted(maps.Keys(pkgLookup))
 	for _, pkgName := range lookupNames {
 		pkg := pkgLookup[pkgName]
 		visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 	}
 
-	pkgNames := funk.SortedKeys(pkgs)
+	pkgNames := slices.Sorted(maps.Keys(pkgs))
 	for _, name := range pkgNames {
 		pkg := pkgs[name]
 		for _, f := range pkg.Syntax {
@@ -111,7 +112,7 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 		impls.AddImplementationRelationships(pkgs, allPackages, globalSymbols)
 	}
 
-	pkgIDs := funk.SortedKeys(pkgs)
+	pkgIDs := slices.Sorted(maps.Keys(pkgs))
 	pkgLen := len(pkgIDs)
 
 	var count uint64
@@ -172,7 +173,7 @@ func indexVisitPackages(
 	var wg sync.WaitGroup
 	wg.Add(1)
 
-	lookupIDs := funk.SortedKeys(pkgLookup)
+	lookupIDs := slices.Sorted(maps.Keys(pkgLookup))
 
 	// We have to visit all the packages to get the definition sites
 	// for all the symbols.
