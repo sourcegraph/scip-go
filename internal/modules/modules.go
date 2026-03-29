@@ -2,11 +2,11 @@ package modules
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/vcs"
@@ -74,4 +74,3 @@ func resolveModuleName(repo, name string) (string, bool, error) {
 	name = repoRepoRoot.Root + suffix
 	return name, name == "std", nil
 }
-

@@ -3,7 +3,7 @@ package replacers
 import (
 	"fmt"
 
-	"github.com/example/original"
+	replaced "github.com/example/original"
 )
 
 func Something() {

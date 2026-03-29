@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"go/ast"
+	"log/slog"
 	"maps"
 	"slices"
 	"sort"
@@ -11,7 +12,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"log/slog"
+	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/document"
 	impls "github.com/sourcegraph/scip-go/internal/implementations"
@@ -21,7 +22,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/output"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip-go/internal/visitors"
-	"github.com/scip-code/scip/bindings/go/scip"
 	"google.golang.org/protobuf/proto"
 )
 

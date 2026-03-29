@@ -19,7 +19,6 @@
       let
         pkgs = import nixpkgs { inherit system; };
         version = pkgs.lib.fileContents ./internal/index/version.txt;
-
       in
       {
         packages = {
@@ -55,9 +54,36 @@
           };
         };
 
+        checks = {
+          nixfmt = pkgs.runCommand "check-nixfmt" { } ''
+            ${pkgs.nixfmt}/bin/nixfmt --check ${./flake.nix}
+            touch $out
+          '';
+          goimports = pkgs.runCommand "check-goimports" { } ''
+            cd ${./.}
+            bad=$(
+              # Snapshot outputs are generated with modified
+              # indentation for alignment with annotations.
+              find . -name '*.go' \
+                -not -path '*/testdata/snapshots/output/*' \
+                -exec ${pkgs.gotools}/bin/goimports -l {} +
+            )
+            if [ -n "$bad" ]; then
+              echo "goimports check failed on:"
+              echo "$bad"
+              exit 1
+            fi
+            touch $out
+          '';
+        };
+
         devShells = {
           default = pkgs.mkShellNoCC {
-            buildInputs = [ pkgs.go ];
+            buildInputs = [
+              pkgs.go
+              pkgs.gotools
+              pkgs.nixfmt
+            ];
           };
         };
       }

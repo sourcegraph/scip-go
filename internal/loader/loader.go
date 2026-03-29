@@ -3,11 +3,11 @@ package loader
 import (
 	"fmt"
 	"io/ioutil"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"log/slog"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
@@ -197,7 +197,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			slog.Warn("Package has nil Module, using fallback",
 				"package", pkg.PkgPath,
 				"driver", os.Getenv("GOPACKAGESDRIVER"))
-			
+
 			pkg.Module = &packages.Module{
 				Path:    ".",
 				Version: ".",
