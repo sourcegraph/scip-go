@@ -20,7 +20,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip-go/internal/modules"
-	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/go/packages"
 	"google.golang.org/protobuf/proto"
 )
@@ -39,7 +38,7 @@ var (
 	moduleVersion    string
 	moduleName       string
 	goVersion        string
-	verbosity        int
+	verbose          bool
 	noOutput         bool
 	devMode          bool
 
@@ -78,7 +77,7 @@ func init() {
 
 	// Verbosity options
 	app.Flag("quiet", "Do not output to stdout or stderr.").Short('q').Default("false").BoolVar(&noOutput)
-	app.Flag("verbose", "Output debug logs.").Short('v').CounterVar(&verbosity)
+	app.Flag("verbose", "Output debug logs.").Short('v').BoolVar(&verbose)
 	app.Flag("dev", "Enable development mode.").Default("false").BoolVar(&devMode)
 
 	// app.Flag("dep-batch-size", "How many dependencies to load at once to limit memory usage (e.g. 100). 0 means load all at once.").Default("0").IntVar(&depBatchSize)
@@ -119,7 +118,7 @@ func mainErr() (err error) {
 
 	handler.SetDev(devMode)
 
-	output.SetOutputOptions(getVerbosity())
+	setVerbosity()
 
 	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, repositoryRemote, moduleName)
 
@@ -344,21 +343,16 @@ var defaultGoVersion = sync.OnceValue(func() string {
 	return "go" + thisPackage.GoVersion
 })
 
-var verbosityLevels = map[int]output.Verbosity{
-	0: output.DefaultOutput,
-	1: output.VerboseOutput,
-	2: output.VeryVerboseOutput,
-	3: output.VeryVeryVerboseOutput,
-}
-
-func getVerbosity() output.Verbosity {
+func setVerbosity() {
 	if noOutput {
-		return output.NoOutput
+		slog.SetDefault(slog.New(slog.DiscardHandler))
+		return
 	}
 
-	if verbosity >= len(verbosityLevels) {
-		verbosity = len(verbosityLevels) - 1
+	level := slog.LevelWarn
+	if verbose {
+		level = slog.LevelDebug
 	}
-
-	return verbosityLevels[verbosity]
+	slog.SetDefault(slog.New(slog.NewTextHandler(
+		os.Stderr, &slog.HandlerOptions{Level: level})))
 }

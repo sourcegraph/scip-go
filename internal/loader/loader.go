@@ -1,7 +1,6 @@
 package loader
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log/slog"
 	"os"
@@ -11,7 +10,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
-	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
 	"golang.org/x/mod/semver"
@@ -36,7 +34,6 @@ func getConfig(root string, opts config.IndexOpts) *packages.Config {
 	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
-		Logf: output.Logf,
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies
@@ -100,39 +97,25 @@ func LoadPackages(
 
 	projectPackages = make(PackageLookup)
 
-	var panicResult any
-	err = output.WithProgress("Loading Packages", func() error {
-		defer func() {
-			panicResult = recover()
-		}()
+	slog.Info("Loading Packages")
 
-		cfg := getConfig(moduleRoot, opts)
-		patterns := opts.PackagePatterns
-		if len(patterns) == 0 {
-			patterns = append(patterns, "./...")
-			slog.Warn("No target patterns provided using default './...'")
-		}
-		pkgs, err := packages.Load(cfg, patterns...)
-		if err != nil {
-			return err
-		}
-
-		for _, pkg := range pkgs {
-			addImportsToPkgs(pkgLookup, &opts, pkg)
-		}
-
-		for _, pkg := range pkgs {
-			projectPackages[newtypes.GetID(pkg)] = pkg
-		}
-
-		return nil
-	})
-	if err == nil && panicResult != nil {
-		err = fmt.Errorf("during package loading: %v", panicResult)
+	cfg := getConfig(moduleRoot, opts)
+	patterns := opts.PackagePatterns
+	if len(patterns) == 0 {
+		patterns = append(patterns, "./...")
+		slog.Warn("No target patterns provided using default './...'")
 	}
-
+	pkgs, err := packages.Load(cfg, patterns...)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	for _, pkg := range pkgs {
+		addImportsToPkgs(pkgLookup, &opts, pkg)
+	}
+
+	for _, pkg := range pkgs {
+		projectPackages[newtypes.GetID(pkg)] = pkg
 	}
 
 	return projectPackages, pkgLookup, nil
@@ -231,13 +214,13 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 					handler.ErrOrPanic("Failed to parse go mod file: %s", err)
 				}
 
-				output.Logf("[scip.loader] Replacing module path: '%s' with '%s'", pkg.Module.Path, parsed.Module.Mod.Path)
+				slog.Debug("Replacing module path", "old", pkg.Module.Path, "new", parsed.Module.Mod.Path)
 				pkg.Module.Path = parsed.Module.Mod.Path
 
 				// If we have a version specified in this go.mod, we'll use that.
 				// Otherwise we'll fall back to whatever the version was previous set to.
 				if parsed.Module.Mod.Version != "" {
-					output.Logf("[scip.loader] Replacing module version: '%s' with '%s'", pkg.Module.Version, parsed.Module.Mod.Version)
+					slog.Debug("Replacing module version", "old", pkg.Module.Version, "new", parsed.Module.Mod.Version)
 					pkg.Module.Version = parsed.Module.Mod.Version
 				}
 			}

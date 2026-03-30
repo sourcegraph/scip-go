@@ -10,7 +10,6 @@ import (
 	"sort"
 	"strings"
 	"sync"
-	"sync/atomic"
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/config"
@@ -19,7 +18,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
-	"github.com/sourcegraph/scip-go/internal/output"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"github.com/sourcegraph/scip-go/internal/visitors"
 	"google.golang.org/protobuf/proto"
@@ -113,9 +111,7 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 	}
 
 	pkgIDs := slices.Sorted(maps.Keys(pkgs))
-	pkgLen := len(pkgIDs)
 
-	var count uint64
 	var wg sync.WaitGroup
 	wg.Add(1)
 
@@ -152,11 +148,11 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 				writer(visitor.ToScipDocument())
 			}
 
-			atomic.AddUint64(&count, 1)
 		}
 	}()
 
-	output.WithProgressParallel(&wg, "Visiting Project Files: ", &count, uint64(pkgLen))
+	slog.Info("Visiting Project Files")
+	wg.Wait()
 
 	return nil
 }
@@ -169,7 +165,6 @@ func indexVisitPackages(
 	pathToDocuments := documentLookup{}
 	globalSymbols := lookup.NewGlobalSymbols()
 
-	var count uint64
 	var wg sync.WaitGroup
 	wg.Add(1)
 
@@ -196,7 +191,6 @@ func indexVisitPackages(
 			}
 
 			if pkgDeclaration == nil {
-				atomic.AddUint64(&count, 1)
 				continue
 			}
 
@@ -204,7 +198,6 @@ func indexVisitPackages(
 
 			// If we don't have this package anywhere, don't try to create a new symbol
 			if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
-				atomic.AddUint64(&count, 1)
 				continue
 			}
 
@@ -229,11 +222,11 @@ func indexVisitPackages(
 				}
 			}
 
-			atomic.AddUint64(&count, 1)
 		}
 	}()
 
-	output.WithProgressParallel(&wg, "Visiting Packages", &count, uint64(len(lookupIDs)))
+	slog.Info("Visiting Packages")
+	wg.Wait()
 
 	return pathToDocuments, globalSymbols
 }

@@ -7,46 +7,32 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/vcs"
 )
 
 func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err error) {
-	resolve := func() error {
-		if inName != "" {
-			moduleName = inName
-			return nil
-		}
+	slog.Info("Resolving module name")
 
-		moduleName = repo
-
-		goModPath := filepath.Join(dir, "go.mod")
-		data, readErr := os.ReadFile(goModPath)
-		if readErr != nil {
-			slog.Warn("No go.mod file found in current directory.")
-			moduleName, isStdLib, err = resolveModuleName(repo, moduleName)
-			return nil
-		}
-		parsed, parseErr := modfile.ParseLax(goModPath, data, nil)
-		if parseErr != nil {
-			return fmt.Errorf("failed to parse go.mod: %v", parseErr)
-		}
-		moduleName = parsed.Module.Mod.Path
-
-		return nil
+	if inName != "" {
+		return inName, inName == "std", nil
 	}
 
-	err = output.WithProgress("Resolving module name", resolve)
-	if err != nil {
-		return "", false, err
-	}
+	moduleName = repo
 
-	if moduleName == "std" {
-		isStdLib = true
+	goModPath := filepath.Join(dir, "go.mod")
+	data, readErr := os.ReadFile(goModPath)
+	if readErr != nil {
+		slog.Warn("No go.mod file found in current directory.")
+		return resolveModuleName(repo, moduleName)
 	}
+	parsed, parseErr := modfile.ParseLax(goModPath, data, nil)
+	if parseErr != nil {
+		return "", false, fmt.Errorf("failed to parse go.mod: %v", parseErr)
+	}
+	moduleName = parsed.Module.Mod.Path
 
-	return moduleName, isStdLib, err
+	return moduleName, moduleName == "std", nil
 }
 
 // resolveModuleName converts the given repository and import path into a canonical

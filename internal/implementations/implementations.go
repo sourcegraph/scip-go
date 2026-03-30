@@ -11,7 +11,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
-	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/container/intsets"
 	"golang.org/x/tools/go/packages"
 )
@@ -106,40 +105,38 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 }
 
 func AddImplementationRelationships(pkgs loader.PackageLookup, allPackages loader.PackageLookup, symbols *lookup.Global) {
-	output.WithProgress("Indexing Implementations", func() error {
-		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
-		if err != nil {
-			return err
+	slog.Info("Indexing Implementations")
+
+	localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
+	if err != nil {
+		return
+	}
+
+	remotePackages := make(loader.PackageLookup)
+	for pkgID, pkg := range allPackages {
+		if _, ok := pkgs[pkgID]; ok {
+			continue
 		}
 
-		remotePackages := make(loader.PackageLookup)
-		for pkgID, pkg := range allPackages {
-			if _, ok := pkgs[pkgID]; ok {
-				continue
-			}
+		remotePackages[pkgID] = pkg
+	}
+	remoteInterfaces, _, err := extractInterfacesAndConcreteTypes(remotePackages, symbols)
+	if err != nil {
+		return
+	}
 
-			remotePackages[pkgID] = pkg
-		}
-		remoteInterfaces, _, err := extractInterfacesAndConcreteTypes(remotePackages, symbols)
-		if err != nil {
-			return err
-		}
+	// local type -> local interface
+	findImplementations(localTypes, localInterfaces, symbols)
 
-		// local type -> local interface
-		findImplementations(localTypes, localInterfaces, symbols)
+	// local type -> remote interface
+	findImplementations(localTypes, remoteInterfaces, symbols)
 
-		// local type -> remote interface
-		findImplementations(localTypes, remoteInterfaces, symbols)
-
-		// TODO(author: tjdevries, issue: https://github.com/sourcegraph/scip-go/issues/64)
-		// We should consider what this would even look like?
-		// I don't think this makes sense the current way that we are emitting
-		// implementations. You wouldn't even catch these anyways when uploading
-		// remote type -> local interface
-		// findImplementations(remoteTypes, localInterfaces, symbols)
-
-		return nil
-	})
+	// TODO(author: tjdevries, issue: https://github.com/sourcegraph/scip-go/issues/64)
+	// We should consider what this would even look like?
+	// I don't think this makes sense the current way that we are emitting
+	// implementations. You wouldn't even catch these anyways when uploading
+	// remote type -> local interface
+	// findImplementations(remoteTypes, localInterfaces, symbols)
 }
 
 func implementationsForType(ty ImplDef, tyMethods *intsets.Sparse, interfaceToMethodSet map[*scip.SymbolInformation]*intsets.Sparse) (matching []*scip.SymbolInformation) {
