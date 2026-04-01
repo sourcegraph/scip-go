@@ -6,11 +6,11 @@ import (
 	"go/ast"
 	"go/token"
 	"go/types"
+	"log/slog"
 	"sync"
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
-	"github.com/sourcegraph/scip-go/internal/output"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
@@ -58,7 +58,7 @@ func (p *Package) Set(pos token.Pos, symbol *scip.SymbolInformation) {
 			// Ideal fix: https://github.com/sourcegraph/scip-go/issues/95
 			emittedLogLineMu.Lock()
 			if _, ok := emittedLogLine[pos]; !ok {
-				output.Logf("[scip.lookup] Overriding original symbol %s with %s at %v", original.Symbol, symbol.Symbol, p.pkg.Fset.Position(pos))
+				slog.Debug(fmt.Sprintf("[scip.lookup] Overriding original symbol %s with %s at %v", original.Symbol, symbol.Symbol, p.pkg.Fset.Position(pos)))
 				emittedLogLine[pos] = struct{}{}
 			}
 			emittedLogLineMu.Unlock()

@@ -10,7 +10,6 @@ import (
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
@@ -172,7 +171,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				} else {
 					symbol := v.globalSymbols.GetPkgNameSymbolByID(pkgID)
 					if symbol == nil {
-						handler.ErrOrPanic("Missing symbol for package: %s", sel.Imported().Path())
+						slog.Debug(fmt.Sprintf("Missing symbol for package: %s", sel.Imported().Path()))
 						return nil
 					}
 
@@ -253,7 +252,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				if err != nil {
 					// _, ok := v.pkgLookup[symbols.PkgPathFromObject(ref)]
 					// if !ok {
-					// 	if err := handler.ErrOrPanic(
+					// 	if err := output.DebugErr(
 					// 		"Failed to find a package for ref: |%+v|\nNode: %s",
 					// 		ref,
 					// 		v.pkg.Fset.Position(node.Pos()),
@@ -263,14 +262,13 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 					//
 					// }
 
-					if err := handler.ErrOrPanic(
+					slog.Debug(fmt.Sprintf(
 						"Unable to find symbol of object: %s\nNode Position -> %s\n\nPath: %s\n\n",
 						err,
 						v.pkg.Fset.Position(node.Pos()),
 						ref.Pkg().Path(),
-					); err != nil {
-						return v
-					}
+					))
+					return v
 				}
 
 				if !ok {
@@ -285,12 +283,12 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		}
 
 		if def == nil && ref == nil {
-			handler.ErrOrPanic(
+			slog.Debug(fmt.Sprintf(
 				"Neither def nor ref found: %s | %T | %s",
 				node.Name,
 				node,
 				v.pkg.Fset.Position(node.Pos()),
-			)
+			))
 		}
 	}
 
@@ -304,13 +302,13 @@ func (v *fileVisitor) emitImportReference(
 ) {
 	scipRange := symbols.RangeFromName(position, importedPackage.PkgPath, true)
 	if scipRange == nil {
-		handler.ErrOrPanic("Missing symbol for package path: %s", importedPackage.ID)
+		slog.Debug(fmt.Sprintf("Missing symbol for package path: %s", importedPackage.ID))
 		return
 	}
 
 	symbol := globalSymbols.GetPkgNameSymbol(importedPackage)
 	if symbol == nil {
-		handler.ErrOrPanic("Missing symbol information for package: %s", importedPackage.ID)
+		slog.Debug(fmt.Sprintf("Missing symbol information for package: %s", importedPackage.ID))
 		return
 	}
 

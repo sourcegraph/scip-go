@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"log/slog"
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
@@ -87,8 +87,7 @@ func (v *varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 					// panic(fmt.Sprintf("TODO: handle type %T %s", valueType, v.pkg.Fset.Position(node.Pos())))
 					ast.Walk(v, valueType)
 				default:
-					// TODO: Consider how we could emit errors for users running this, not in dev mode
-					_ = handler.ErrOrPanic("TODO: handle type %T %s", valueType, v.pkg.Fset.Position(node.Pos()))
+					slog.Debug(fmt.Sprintf("TODO: handle type %T %s", valueType, v.pkg.Fset.Position(node.Pos())))
 
 					return
 				}

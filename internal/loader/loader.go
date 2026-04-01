@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/sourcegraph/scip-go/internal/config"
-	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/newtypes"
 	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
@@ -36,7 +35,7 @@ func getConfig(root string, opts config.IndexOpts) *packages.Config {
 	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
-		Logf: output.Logf,
+		Logf: func(format string, a ...any) { slog.Debug(fmt.Sprintf(format, a...)) },
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies
@@ -224,20 +223,20 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			contents, err := ioutil.ReadFile(pkg.Module.GoMod)
 
 			if err != nil {
-				handler.ErrOrPanic("Failed to read go mod file: %s", err)
+				slog.Debug(fmt.Sprintf("Failed to read go mod file: %s", err))
 			} else {
 				parsed, err := modfile.ParseLax(pkg.Module.GoMod, contents, nil)
 				if err != nil {
-					handler.ErrOrPanic("Failed to parse go mod file: %s", err)
+					slog.Debug(fmt.Sprintf("Failed to parse go mod file: %s", err))
 				}
 
-				output.Logf("[scip.loader] Replacing module path: '%s' with '%s'", pkg.Module.Path, parsed.Module.Mod.Path)
+				slog.Debug(fmt.Sprintf("[scip.loader] Replacing module path: '%s' with '%s'", pkg.Module.Path, parsed.Module.Mod.Path))
 				pkg.Module.Path = parsed.Module.Mod.Path
 
 				// If we have a version specified in this go.mod, we'll use that.
 				// Otherwise we'll fall back to whatever the version was previous set to.
 				if parsed.Module.Mod.Version != "" {
-					output.Logf("[scip.loader] Replacing module version: '%s' with '%s'", pkg.Module.Version, parsed.Module.Mod.Version)
+					slog.Debug(fmt.Sprintf("[scip.loader] Replacing module version: '%s' with '%s'", pkg.Module.Version, parsed.Module.Mod.Version))
 					pkg.Module.Version = parsed.Module.Mod.Version
 				}
 			}
@@ -253,12 +252,11 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 			isNestedDir(pkg.Module.Dir, opts.ModuleRoot) {
 			pkg.Module.Version = opts.ModuleVersion
 		} else {
-			// Only panic when running in debug mode.
-			slog.Error(handler.ErrOrPanic(
+			slog.Debug(fmt.Sprintf(
 				"Unknown version for userland package: %s %s",
 				pkg.Module.Path,
 				opts.ModulePath,
-			).Error())
+			))
 
 			pkg.Module.Version = "."
 		}
@@ -269,12 +267,11 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		// the revision from a pseudo-version.
 		rev, err := module.PseudoVersionRev(pkg.Module.Version)
 		if err != nil {
-			// Only panic when running in debug mode.
-			slog.Error(handler.ErrOrPanic(
+			slog.Debug(fmt.Sprintf(
 				"Unable to find rev from pseudo-version: %s %s",
 				pkg.Module.Path,
 				pkg.Module.Version,
-			).Error())
+			))
 		} else {
 			pkg.Module.Version = rev
 		}

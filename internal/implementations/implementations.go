@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/scip-code/scip/bindings/go/scip"
-	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/output"
@@ -222,7 +221,7 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				// sym, ok := pkgSymbols.Get(m.Obj().Pos())
 				sym, ok, err := symbols.GetSymbolOfObject(m.Obj())
 				if err != nil {
-					handler.ErrOrPanic("Error while looking for symbol %s | %s", err, m.Obj())
+					slog.Debug(fmt.Sprintf("Error while looking for symbol %s | %s", err, m.Obj()))
 					continue
 				}
 

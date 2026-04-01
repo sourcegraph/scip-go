@@ -16,7 +16,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/git"
-	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip-go/internal/modules"
 	"github.com/sourcegraph/scip-go/internal/output"
@@ -40,7 +39,6 @@ type SharedFlags struct {
 type IndexCmd struct {
 	SharedFlags
 	Output  string `help:"The output file." short:"o" default:"index.scip"`
-	Dev     bool   `help:"Enable development mode."`
 	Profile int    `help:"Turn on debug profiling. This will reduce performance. Do not turn on unless debugging. Set to number of milliseconds per sample"`
 }
 
@@ -78,7 +76,7 @@ func makeOptions(shared *SharedFlags) (config.IndexOpts, error) {
 		return config.IndexOpts{}, fmt.Errorf("get abspath of module root: %v", err)
 	}
 
-	output.SetOutputOptions(getVerbosity(shared.Quiet, shared.Verbose))
+	output.SetOutputOptions(getLogLevel(shared.Quiet, shared.Verbose))
 
 	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, shared.RepositoryRemote, shared.ModulePath)
 	if err != nil {
@@ -113,8 +111,6 @@ func (cmd *IndexCmd) Run() (err error) {
 			f.Close()
 		}()
 	}
-
-	handler.SetDev(cmd.Dev)
 
 	options, err := makeOptions(&cmd.SharedFlags)
 	if err != nil {
@@ -288,21 +284,20 @@ var defaultGoVersion = sync.OnceValue(func() string {
 	return "go" + thisPackage.GoVersion
 })
 
-var verbosityLevels = []output.Verbosity{
-	output.DefaultOutput,
-	output.VerboseOutput,
-	output.VeryVerboseOutput,
-	output.VeryVeryVerboseOutput,
+var logLevels = []slog.Level{
+	slog.LevelWarn,  // default
+	slog.LevelInfo,  // -V
+	slog.LevelDebug, // -VV or more
 }
 
-func getVerbosity(noOutput bool, verbosity int) output.Verbosity {
+func getLogLevel(noOutput bool, verbosity int) slog.Level {
 	if noOutput {
-		return output.NoOutput
+		return slog.LevelError
 	}
 
-	if verbosity >= len(verbosityLevels) {
-		verbosity = len(verbosityLevels) - 1
+	if verbosity >= len(logLevels) {
+		verbosity = len(logLevels) - 1
 	}
 
-	return verbosityLevels[verbosity]
+	return logLevels[verbosity]
 }
