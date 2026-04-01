@@ -1,15 +1,16 @@
 package visitors
 
 import (
+	"fmt"
 	"go/ast"
 	"go/token"
 	"go/types"
+	"log/slog"
 	"path/filepath"
 	"strings"
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"golang.org/x/tools/go/packages"
 )
@@ -150,7 +151,7 @@ func getIdentOfTypeExpr(pkg *packages.Package, ty ast.Expr) []*ast.Ident {
 		return nil
 
 	default:
-		_ = handler.ErrOrPanic("Unhandled named struct field: %T %+v\n%s", ty, ty, pkg.Fset.Position(ty.Pos()))
+		slog.Debug(fmt.Sprintf("Unhandled named struct field: %T %+v\n%s", ty, ty, pkg.Fset.Position(ty.Pos())))
 		return nil
 	}
 }

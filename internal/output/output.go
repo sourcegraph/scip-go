@@ -75,3 +75,4 @@ func SetOutputOptions(level slog.Level) {
 func Logf(format string, a ...any) {
 	slog.Debug(fmt.Sprintf(format, a...))
 }
+

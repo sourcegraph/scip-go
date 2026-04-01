@@ -16,7 +16,6 @@ import (
 	"github.com/sourcegraph/scip-go/internal/command"
 	"github.com/sourcegraph/scip-go/internal/config"
 	"github.com/sourcegraph/scip-go/internal/git"
-	"github.com/sourcegraph/scip-go/internal/handler"
 	"github.com/sourcegraph/scip-go/internal/index"
 	"github.com/sourcegraph/scip-go/internal/modules"
 	"github.com/sourcegraph/scip-go/internal/output"
@@ -40,7 +39,6 @@ type SharedFlags struct {
 type IndexCmd struct {
 	SharedFlags
 	Output  string `help:"The output file." short:"o" default:"index.scip"`
-	Dev     bool   `help:"Enable development mode."`
 	Profile int    `help:"Turn on debug profiling. This will reduce performance. Do not turn on unless debugging. Set to number of milliseconds per sample"`
 }
 
@@ -113,8 +111,6 @@ func (cmd *IndexCmd) Run() (err error) {
 			f.Close()
 		}()
 	}
-
-	handler.SetDev(cmd.Dev)
 
 	options, err := makeOptions(&cmd.SharedFlags)
 	if err != nil {
