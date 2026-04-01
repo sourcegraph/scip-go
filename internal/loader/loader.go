@@ -35,7 +35,7 @@ func getConfig(root string, opts config.IndexOpts) *packages.Config {
 	Config = &packages.Config{
 		Mode: loadMode,
 		Dir:  root,
-		Logf: output.Logf,
+		Logf: func(format string, a ...any) { slog.Debug(fmt.Sprintf(format, a...)) },
 
 		// Only load tests for the current project.
 		// This greatly reduces memory usage when loading dependencies

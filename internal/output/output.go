@@ -6,31 +6,22 @@ import (
 	"os"
 	"sync"
 	"time"
-
-	"github.com/sourcegraph/scip-go/internal/parallel"
 )
 
 var logLevel = new(slog.LevelVar)
 
-// showTiming controls whether elapsed time is printed for progress tasks.
-var showTiming bool
-
-// WithProgress prints a spinner while the given function is active.
+// WithProgress prints the task name, runs fn, and optionally prints elapsed time.
 func WithProgress(name string, fn func() error) error {
-	ch := make(chan func() error, 1)
-	ch <- fn
-	close(ch)
-
-	wg, errCh, count := parallel.Run(ch)
-	WithProgressParallel(wg, name, count, 1)
-
-	// Handle any associated errors
-	select {
-	case err := <-errCh:
-		return err
-	default:
-		return nil
+	if logLevel.Level() > slog.LevelWarn {
+		return fn()
 	}
+	start := time.Now()
+	fmt.Printf("%s\n", name)
+	err := fn()
+	if logLevel.Level() < slog.LevelWarn {
+		fmt.Printf("Finished in %s.\n\n", HumanElapsed(start))
+	}
+	return err
 }
 
 // WithProgressParallel will continuously print progress to stdout until the given wait group
@@ -46,7 +37,7 @@ func WithProgressParallel(wg *sync.WaitGroup, name string, c *uint64, n uint64) 
 	fmt.Printf("%s\n", name)
 	wg.Wait()
 
-	if showTiming {
+	if logLevel.Level() < slog.LevelWarn {
 		fmt.Printf("Finished in %s.\n\n", HumanElapsed(start))
 	}
 }
@@ -58,21 +49,10 @@ func WithProgressParallel(wg *sync.WaitGroup, name string, c *uint64, n uint64) 
 //   - LevelInfo: verbose output with timing
 //   - LevelDebug: very verbose output with timing
 func SetOutputOptions(level slog.Level) {
+	logLevel.Set(level)
 	if level > slog.LevelWarn {
 		slog.SetDefault(slog.New(slog.DiscardHandler))
-		logLevel.Set(level)
-		showTiming = false
-		return
+	} else {
+		slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: logLevel})))
 	}
-
-	logLevel.Set(level)
-	showTiming = level < slog.LevelWarn
-	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: logLevel})))
 }
-
-// Logf is a printf-style function suitable for use as packages.Config.Logf.
-// It logs at Debug level.
-func Logf(format string, a ...any) {
-	slog.Debug(fmt.Sprintf(format, a...))
-}
-
