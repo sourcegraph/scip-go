@@ -231,13 +231,13 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 					handler.ErrOrPanic("Failed to parse go mod file: %s", err)
 				}
 
-				output.Logf("[scip.loader] Replacing module path: '%s' with '%s'", pkg.Module.Path, parsed.Module.Mod.Path)
+				slog.Debug(fmt.Sprintf("[scip.loader] Replacing module path: '%s' with '%s'", pkg.Module.Path, parsed.Module.Mod.Path))
 				pkg.Module.Path = parsed.Module.Mod.Path
 
 				// If we have a version specified in this go.mod, we'll use that.
 				// Otherwise we'll fall back to whatever the version was previous set to.
 				if parsed.Module.Mod.Version != "" {
-					output.Logf("[scip.loader] Replacing module version: '%s' with '%s'", pkg.Module.Version, parsed.Module.Mod.Version)
+					slog.Debug(fmt.Sprintf("[scip.loader] Replacing module version: '%s' with '%s'", pkg.Module.Version, parsed.Module.Mod.Version))
 					pkg.Module.Version = parsed.Module.Mod.Version
 				}
 			}
