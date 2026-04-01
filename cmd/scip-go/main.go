@@ -60,27 +60,15 @@ type CLI struct {
 }
 
 func main() {
-	if err := mainErr(); err != nil {
+	ctx, err := parseArgs(os.Args[1:])
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
-}
 
-func mainErr() (err error) {
-	cli, ctx, err := parseArgs(os.Args[1:])
-	if err != nil {
-		return err
-	}
-
-	switch cmd := ctx.Command(); cmd {
-	case "index", "index <package-patterns>":
-		return runIndex(&cli.Index)
-	case "packages", "packages <package-patterns>":
-		return runPackages(&cli.Packages)
-	case "missing", "missing <package-patterns>":
-		return runMissing(&cli.Missing)
-	default:
-		return fmt.Errorf("unknown command: %s", cmd)
+	if err := ctx.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
 	}
 }
 
@@ -112,7 +100,7 @@ func makeOptions(shared *SharedFlags) (config.IndexOpts, error) {
 	return config.New(moduleRoot, shared.ModuleVersion, modulePath, shared.GoVersion, isStdLib, shared.SkipImplementations, shared.SkipTests, shared.PackagePatterns), nil
 }
 
-func runIndex(cmd *IndexCmd) (err error) {
+func (cmd *IndexCmd) Run() (err error) {
 	if cmd.Profile > 0 {
 		runtime.MemProfileRate = cmd.Profile
 		f, err := os.Create("mem.pprof")
@@ -190,7 +178,7 @@ func runIndex(cmd *IndexCmd) (err error) {
 	return nil
 }
 
-func runPackages(cmd *PackagesCmd) error {
+func (cmd *PackagesCmd) Run() error {
 	options, err := makeOptions(&cmd.SharedFlags)
 	if err != nil {
 		return err
@@ -213,7 +201,7 @@ func runPackages(cmd *PackagesCmd) error {
 	return nil
 }
 
-func runMissing(cmd *MissingCmd) error {
+func (cmd *MissingCmd) Run() error {
 	options, err := makeOptions(&cmd.SharedFlags)
 	if err != nil {
 		return err
@@ -235,7 +223,7 @@ func runMissing(cmd *MissingCmd) error {
 	return nil
 }
 
-func parseArgs(args []string) (*CLI, *kong.Context, error) {
+func parseArgs(args []string) (*kong.Context, error) {
 	cli := &CLI{}
 
 	parser, err := kong.New(cli,
@@ -252,15 +240,15 @@ func parseArgs(args []string) (*CLI, *kong.Context, error) {
 		kong.UsageOnError(),
 	)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to create parser: %v", err)
+		return nil, fmt.Errorf("failed to create parser: %v", err)
 	}
 
 	ctx, err := parser.Parse(args)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to parse args: %v", err)
+		return nil, fmt.Errorf("failed to parse args: %v", err)
 	}
 
-	return cli, ctx, nil
+	return ctx, nil
 }
 
 //
