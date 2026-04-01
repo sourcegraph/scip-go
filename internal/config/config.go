@@ -21,13 +21,11 @@ type IndexOpts struct {
 	SkipImplementations bool
 	SkipTests           bool
 
-	IsIndexingStdlib bool
-
 	// Package patterns to index
 	PackagePatterns []string
 }
 
-func New(ModuleRoot, ModuleVersion, ModulePath, GoStdlibVersion string, IsIndexingStdlib bool, SkipImplementations bool, SkipTests bool, PackagePatterns []string) IndexOpts {
+func New(ModuleRoot, ModuleVersion, ModulePath, GoStdlibVersion string, SkipImplementations bool, SkipTests bool, PackagePatterns []string) IndexOpts {
 	ModuleRoot, err := filepath.Abs(ModuleRoot)
 	if err != nil {
 		panic(err)
@@ -43,7 +41,6 @@ func New(ModuleRoot, ModuleVersion, ModulePath, GoStdlibVersion string, IsIndexi
 		GoStdlibVersion:       GoStdlibVersion,
 		SkipImplementations:   SkipImplementations,
 		SkipTests:             SkipTests,
-		IsIndexingStdlib:      IsIndexingStdlib,
 		PackagePatterns:       PackagePatterns,
 		IsGoPackagesDriverSet: isGoPackagesDriverSet,
 	}

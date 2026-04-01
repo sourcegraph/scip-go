@@ -12,7 +12,7 @@ import (
 	"golang.org/x/tools/go/vcs"
 )
 
-func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err error) {
+func ModuleName(dir, repo, inName string) (moduleName string, err error) {
 	resolve := func() error {
 		if inName != "" {
 			moduleName = inName
@@ -25,7 +25,7 @@ func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err
 		data, readErr := os.ReadFile(goModPath)
 		if readErr != nil {
 			slog.Warn("No go.mod file found in current directory.")
-			moduleName, isStdLib, err = resolveModuleName(repo, moduleName)
+			moduleName, err = resolveModuleName(repo, moduleName)
 			return nil
 		}
 		parsed, parseErr := modfile.ParseLax(goModPath, data, nil)
@@ -39,21 +39,17 @@ func ModuleName(dir, repo, inName string) (moduleName string, isStdLib bool, err
 
 	err = output.WithProgress("Resolving module name", resolve)
 	if err != nil {
-		return "", false, err
+		return "", err
 	}
 
-	if moduleName == "std" {
-		isStdLib = true
-	}
-
-	return moduleName, isStdLib, err
+	return moduleName, err
 }
 
 // resolveModuleName converts the given repository and import path into a canonical
 // representation of a module name usable for moniker identifiers. The base of the
 // import path will be the resolved repository remote, and the given module name
 // is used only to determine the path suffix.
-func resolveModuleName(repo, name string) (string, bool, error) {
+func resolveModuleName(repo, name string) (string, error) {
 	// Determine path suffix relative to repository root
 	var suffix string
 
@@ -68,9 +64,9 @@ func resolveModuleName(repo, name string) (string, bool, error) {
 	repoRepoRoot, err := vcs.RepoRootForImportPath(repo, false)
 	if err != nil {
 		help := "Make sure your git repo has a remote (git remote add origin git@github.com:owner/repo)"
-		return "", false, fmt.Errorf("%v\n\n%s", err, help)
+		return "", fmt.Errorf("%v\n\n%s", err, help)
 	}
 
 	name = repoRepoRoot.Root + suffix
-	return name, name == "std", nil
+	return name, nil
 }

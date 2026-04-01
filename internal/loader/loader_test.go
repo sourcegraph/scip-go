@@ -27,15 +27,17 @@ func TestBuiltinFormat(t *testing.T) {
 
 	fmtPkg := pkgs[0]
 
-	if !IsStandardLib(fmtPkg) {
-		t.Fatal("Package was not a builtin package: pre ensure")
+	if fmtPkg.Module != nil {
+		t.Fatal("Expected stdlib package to have nil Module before normalization")
 	}
 
-	// TODO: don't use nil?
-	normalizePackage(&config.IndexOpts{}, fmtPkg)
+	normalizePackage(&config.IndexOpts{GoStdlibVersion: "go1.21"}, fmtPkg)
 
-	if !IsStandardLib(fmtPkg) {
-		t.Fatal("Package was not a builtin package: post ensure")
+	if fmtPkg.Module == nil {
+		t.Fatal("Expected Module to be set after normalization")
+	}
+	if fmtPkg.Module.Path != "github.com/golang/go/src" {
+		t.Fatalf("Expected module path 'github.com/golang/go/src', got %q", fmtPkg.Module.Path)
 	}
 }
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log/slog"
-	"os"
 	"path/filepath"
 	"strings"
 
@@ -137,20 +136,6 @@ func LoadPackages(
 	return projectPackages, pkgLookup, nil
 }
 
-func IsStandardLib(pkg *packages.Package) bool {
-	// for example:
-	//  PkgPath = net/http
-	//  -> net
-	//  -> true
-	//
-	//  PkgPath = github.com/sourcegraph/scip-go/...
-	//  -> github.com/
-	//  -> false
-	base := strings.Split(pkg.PkgPath, "/")[0]
-	_, ok := getStdlibPackages()[base]
-	return ok
-}
-
 func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {
 	// Name string = "template"
 	// PkgPath string = "github.com/alecthomas/template"
@@ -158,50 +143,45 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	//		Path string = "github.com/alecthomas/template"
 	//		Version string = "v0.0.0-20190718012654-fb15b899a751"
 
-	if opts.IsGoPackagesDriverSet {
-		// As of golang.org/x/tools v0.26, the JSON object for representing packages
-		// does not have a Module field:
-		//   https://github.com/golang/tools/blob/v0.26.0/go/packages/packages.go#L609-L627
-		// which means that cross-repo navigation may not work out-of-the-box
-		// for 3rd party build systems like Bazel, Buck2, Please etc. using GOPACKAGESDRIVER
-		pkg.Module = &packages.Module{
-			Path:    ".",
-			Version: ".",
-		}
-
-		if opts.ModulePath != "" {
-			pkg.Module.Path = opts.ModulePath
-		}
-
-		if opts.ModuleVersion != "" {
-			pkg.Module.Version = opts.ModuleVersion
-		}
-
-		return pkg
-	}
-
-	if IsStandardLib(pkg) || opts.IsIndexingStdlib {
+	if pkg.Module == nil {
+		// go/packages leaves Module nil for standard library and cmd packages.
+		// Assign them to the canonical Go repo module.
+		// This check must come before the GOPACKAGESDRIVER branch so that
+		// stdlib packages get the correct path even when a custom driver is set.
 		pkg.Module = &packages.Module{
 			Path:    "github.com/golang/go/src",
 			Version: opts.GoStdlibVersion,
 		}
 
 		// When indexing the standard library, all packages are prefixed with `std/`.
-		//
-		// We strip that to standardize all the libraries to make sure we are able to jump-to-definition
-		// of the standard library.
+		// Strip that to standardize the paths for cross-repo navigation.
 		pkg.PkgPath = strings.TrimPrefix(pkg.PkgPath, "std/")
-	} else {
-		if pkg.Module == nil {
-			slog.Warn("Package has nil Module, using fallback",
-				"package", pkg.PkgPath,
-				"driver", os.Getenv("GOPACKAGESDRIVER"))
 
+		return pkg
+	}
+
+	if opts.IsGoPackagesDriverSet {
+		// As of golang.org/x/tools v0.26, the JSON object for representing packages
+		// does not have a Module field:
+		//   https://github.com/golang/tools/blob/v0.26.0/go/packages/packages.go#L609-L627
+		// which means that cross-repo navigation may not work out-of-the-box
+		// for 3rd party build systems like Bazel, Buck2, Please etc. using GOPACKAGESDRIVER
+		if pkg.Module.Path == "" {
 			pkg.Module = &packages.Module{
 				Path:    ".",
 				Version: ".",
 			}
+
+			if opts.ModulePath != "" {
+				pkg.Module.Path = opts.ModulePath
+			}
+
+			if opts.ModuleVersion != "" {
+				pkg.Module.Version = opts.ModuleVersion
+			}
 		}
+
+		return pkg
 	}
 
 	// Follow replaced modules

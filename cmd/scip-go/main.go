@@ -78,16 +78,13 @@ func makeOptions(shared *SharedFlags) (config.IndexOpts, error) {
 
 	output.SetOutputOptions(getLogLevel(shared.Quiet, shared.Verbose))
 
-	modulePath, isStdLib, err := modules.ModuleName(moduleRoot, shared.RepositoryRemote, shared.ModulePath)
+	modulePath, err := modules.ModuleName(moduleRoot, shared.RepositoryRemote, shared.ModulePath)
 	if err != nil {
 		return config.IndexOpts{}, err
 	}
 
 	slog.Info("Go standard library version: ", "version", shared.GoVersion)
 	slog.Info("Resolved module name: ", "module", modulePath)
-	if isStdLib {
-		slog.Info("Resolved as stdlib: true")
-	}
 	if shared.SkipImplementations {
 		slog.Info("Skipping implementations")
 	}
@@ -95,7 +92,7 @@ func makeOptions(shared *SharedFlags) (config.IndexOpts, error) {
 		slog.Info("Skipping tests")
 	}
 
-	return config.New(moduleRoot, shared.ModuleVersion, modulePath, shared.GoVersion, isStdLib, shared.SkipImplementations, shared.SkipTests, shared.PackagePatterns), nil
+	return config.New(moduleRoot, shared.ModuleVersion, modulePath, shared.GoVersion, shared.SkipImplementations, shared.SkipTests, shared.PackagePatterns), nil
 }
 
 func (cmd *IndexCmd) Run() (err error) {
