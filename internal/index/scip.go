@@ -87,10 +87,10 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 	return missing, nil
 }
 
-func Index(writer func(proto.Message), opts config.IndexOpts) error {
+func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 	// Emit Metadata.
 	//   NOTE: Must be the first field emitted
-	writer(&scip.Metadata{
+	if err := writer(&scip.Metadata{
 		Version: 0,
 		ToolInfo: &scip.ToolInfo{
 			Name:      "scip-go",
@@ -99,7 +99,9 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 		},
 		ProjectRoot:          "file://" + opts.ModuleRoot,
 		TextDocumentEncoding: scip.TextEncoding_UTF8,
-	})
+	}); err != nil {
+		return err
+	}
 
 	pkgs, allPackages, err := loader.LoadPackages(opts, opts.ModuleRoot)
 	if err != nil {
@@ -117,6 +119,7 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 
 	var count uint64
 	var wg sync.WaitGroup
+	var writeErr error
 	wg.Add(1)
 
 	go func() {
@@ -149,7 +152,9 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 				ast.Walk(visitor, f)
 
 				// Write the document
-				writer(visitor.ToScipDocument())
+				if writeErr = writer(visitor.ToScipDocument()); writeErr != nil {
+					return
+				}
 			}
 
 			atomic.AddUint64(&count, 1)
@@ -158,7 +163,7 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 
 	output.WithProgressParallel(&wg, "Visiting Project Files: ", &count, uint64(pkgLen))
 
-	return nil
+	return writeErr
 }
 
 func indexVisitPackages(
