@@ -104,8 +104,12 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 	}
 }
 
-func AddImplementationRelationships(pkgs loader.PackageLookup, allPackages loader.PackageLookup, symbols *lookup.Global) {
-	output.WithProgress("Indexing Implementations", func() error {
+func AddImplementationRelationships(
+	pkgs loader.PackageLookup,
+	allPackages loader.PackageLookup,
+	symbols *lookup.Global,
+) error {
+	return output.WithProgress("Indexing Implementations", func() error {
 		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
 		if err != nil {
 			return err
