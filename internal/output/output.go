@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -34,11 +35,34 @@ func WithProgressParallel(wg *sync.WaitGroup, name string, c *uint64, n uint64) 
 	}
 
 	start := time.Now()
-	fmt.Printf("%s\n", name)
-	wg.Wait()
 
-	if logLevel.Level() < slog.LevelWarn {
-		fmt.Printf("Finished in %s.\n\n", HumanElapsed(start))
+	done := make(chan struct{})
+	go func() {
+		wg.Wait()
+		close(done)
+	}()
+
+	ticker := time.NewTicker(100 * time.Millisecond)
+	defer ticker.Stop()
+
+	printProgress := func() {
+		completed := atomic.LoadUint64(c)
+		fmt.Printf("\r%s [%d/%d]", name, completed, n)
+	}
+
+	printProgress()
+	for {
+		select {
+		case <-done:
+			fmt.Printf("\r%s [%d/%d]", name, n, n)
+			if logLevel.Level() < slog.LevelWarn {
+				fmt.Printf(" Finished in %s.", HumanElapsed(start))
+			}
+			fmt.Println()
+			return
+		case <-ticker.C:
+			printProgress()
+		}
 	}
 }
 

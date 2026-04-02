@@ -123,8 +123,8 @@ func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 			pkg := projectPackages[ID]
 			pkgSymbols := globalSymbols.GetPackage(pkg)
 
-			for _, f := range pkg.Syntax {
-				doc := pathToDocument[pkg.Fset.File(f.Package).Name()]
+			for _, file := range pkg.Syntax {
+				doc := pathToDocument[pkg.Fset.File(file.Package).Name()]
 				if doc == nil {
 					continue
 				}
@@ -136,14 +136,14 @@ func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 				visitor := visitors.NewFileVisitor(
 					doc,
 					pkg,
-					f,
+					file,
 					allPackages,
 					pkgSymbols,
 					globalSymbols,
 				)
 
 				// Traverse the file
-				ast.Walk(visitor, f)
+				ast.Walk(visitor, file)
 
 				// Write the document
 				if writeErr = writer(visitor.ToScipDocument()); writeErr != nil {
@@ -155,15 +155,15 @@ func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 		}
 	}()
 
-	output.WithProgressParallel(&wg, "Visiting Project Files: ", &count, uint64(pkgLen))
+	output.WithProgressParallel(&wg, "Visiting Project Files", &count, uint64(pkgLen))
 
 	return writeErr
 }
 
 func indexVisitPackages(
 	opts config.IndexOpts,
-	pkgs loader.PackageLookup,
-	pkgLookup loader.PackageLookup,
+	projectPackages loader.PackageLookup,
+	allPackages loader.PackageLookup,
 ) (map[string]*document.Document, *lookup.Global) {
 	pathToDocuments := map[string]*document.Document{}
 	globalSymbols := lookup.NewGlobalSymbols()
@@ -172,7 +172,7 @@ func indexVisitPackages(
 	var wg sync.WaitGroup
 	wg.Add(1)
 
-	lookupIDs := slices.Sorted(maps.Keys(pkgLookup))
+	lookupIDs := slices.Sorted(maps.Keys(allPackages))
 
 	// We have to visit all the packages to get the definition sites
 	// for all the symbols.
@@ -183,7 +183,7 @@ func indexVisitPackages(
 		defer wg.Done()
 
 		for _, pkgID := range lookupIDs {
-			pkg := pkgLookup[pkgID]
+			pkg := allPackages[pkgID]
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
@@ -202,7 +202,7 @@ func indexVisitPackages(
 			globalSymbols.SetPkgName(pkg, pkgDeclaration)
 
 			// If we don't have this package anywhere, don't try to create a new symbol
-			if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
+			if _, ok := projectPackages[newtypes.GetID(pkg)]; !ok {
 				atomic.AddUint64(&count, 1)
 				continue
 			}
