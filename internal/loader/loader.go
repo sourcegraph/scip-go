@@ -37,8 +37,9 @@ func getConfig(root string, opts config.IndexOpts) *packages.Config {
 		Dir:  root,
 		Logf: func(format string, a ...any) { slog.Debug(fmt.Sprintf(format, a...)) },
 
-		// Only load tests for the current project.
-		// This greatly reduces memory usage when loading dependencies
+		// Load test files for matched patterns. This only affects the project's own
+		// packages; dependencies are loaded transitively via imports, so their tests
+		// are never included.
 		Tests: !opts.SkipTests,
 	}
 
@@ -81,14 +82,14 @@ func addImportsToPkgs(pkgLookup PackageLookup, opts *config.IndexOpts, pkg *pack
 func LoadPackages(
 	opts config.IndexOpts,
 	moduleRoot string,
-) (pkgLookup PackageLookup, projectPackages PackageLookup, err error) {
+) (PackageLookup, PackageLookup, error) {
 	// Force a module version, even if it's just a dot for non-cross repo look ups.
 	if opts.ModuleVersion == "" {
 		opts.ModuleVersion = "."
 	}
 
-	pkgLookup = make(PackageLookup)
-	pkgLookup["builtin"] = &packages.Package{
+	allPackages := make(PackageLookup)
+	allPackages["builtin"] = &packages.Package{
 		Name:    "builtin",
 		PkgPath: "builtin",
 		Module: &packages.Module{
@@ -96,13 +97,13 @@ func LoadPackages(
 			Version: opts.GoStdlibVersion,
 		},
 	}
+	projectPackages := make(PackageLookup)
 
-	projectPackages = make(PackageLookup)
-
-	var panicResult any
-	err = output.WithProgress("Loading Packages", func() error {
+	err := output.WithProgress("Loading Packages", func() (err error) {
 		defer func() {
-			panicResult = recover()
+			if r := recover(); r != nil {
+				err = fmt.Errorf("during package loading: %v", r)
+			}
 		}()
 
 		cfg := getConfig(moduleRoot, opts)
@@ -111,30 +112,20 @@ func LoadPackages(
 			patterns = append(patterns, "./...")
 			slog.Warn("No target patterns provided using default './...'")
 		}
+
 		pkgs, err := packages.Load(cfg, patterns...)
 		if err != nil {
 			return err
 		}
 
 		for _, pkg := range pkgs {
-			addImportsToPkgs(pkgLookup, &opts, pkg)
-		}
-
-		for _, pkg := range pkgs {
+			addImportsToPkgs(allPackages, &opts, pkg)
 			projectPackages[newtypes.GetID(pkg)] = pkg
 		}
 
 		return nil
 	})
-	if err == nil && panicResult != nil {
-		err = fmt.Errorf("during package loading: %v", panicResult)
-	}
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return projectPackages, pkgLookup, nil
+	return projectPackages, allPackages, err
 }
 
 func IsStandardLib(pkg *packages.Package) bool {

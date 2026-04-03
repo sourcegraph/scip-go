@@ -31,7 +31,7 @@ func TestSnapshots(t *testing.T) {
 			}
 
 			scipIndex := scip.Index{}
-			writer := func(msg proto.Message) {
+			writer := func(msg proto.Message) error {
 				switch msg := msg.(type) {
 				case *scip.Metadata:
 					scipIndex.Metadata = msg
@@ -40,6 +40,7 @@ func TestSnapshots(t *testing.T) {
 				case *scip.SymbolInformation:
 					scipIndex.ExternalSymbols = append(scipIndex.ExternalSymbols, msg)
 				}
+				return nil
 			}
 
 			err := index.Index(writer, config.IndexOpts{

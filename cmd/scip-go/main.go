@@ -98,7 +98,7 @@ func makeOptions(shared *SharedFlags) (config.IndexOpts, error) {
 	return config.New(moduleRoot, shared.ModuleVersion, modulePath, shared.GoVersion, isStdLib, shared.SkipImplementations, shared.SkipTests, shared.PackagePatterns), nil
 }
 
-func (cmd *IndexCmd) Run() (err error) {
+func (cmd *IndexCmd) Run() error {
 	if cmd.Profile > 0 {
 		runtime.MemProfileRate = cmd.Profile
 		f, err := os.Create("mem.pprof")
@@ -107,8 +107,12 @@ func (cmd *IndexCmd) Run() (err error) {
 		}
 		defer func() {
 			runtime.GC()
-			pprof.WriteHeapProfile(f)
-			f.Close()
+			if err := pprof.WriteHeapProfile(f); err != nil {
+				slog.Error("could not write memory profile", "error", err)
+			}
+			if err := f.Close(); err != nil {
+				slog.Error("could not close memory profile", "error", err)
+			}
 		}()
 	}
 
@@ -119,12 +123,12 @@ func (cmd *IndexCmd) Run() (err error) {
 
 	file, err := os.Create(cmd.Output)
 	if err != nil {
-		panic(fmt.Sprintf("failed to create scip index file %q: %v", cmd.Output, err))
+		return fmt.Errorf("failed to create scip index file %q: %w", cmd.Output, err)
 	}
 	defer file.Close()
 
 	var fileMutex sync.Mutex
-	writer := func(msg proto.Message) {
+	writer := func(msg proto.Message) error {
 		index := &scip.Index{}
 
 		switch msg := msg.(type) {
@@ -135,12 +139,12 @@ func (cmd *IndexCmd) Run() (err error) {
 		case *scip.SymbolInformation:
 			index.ExternalSymbols = append(index.ExternalSymbols, msg)
 		default:
-			panic("invalid msg type")
+			return fmt.Errorf("invalid msg type %T", msg)
 		}
 
 		b, err := proto.Marshal(index)
 		if err != nil {
-			panic(fmt.Sprintf("failed to marshal SCIP index to Protobuf: %v", err))
+			return fmt.Errorf("failed to marshal SCIP index to Protobuf: %w", err)
 		}
 
 		// Lock for writing to the file, to make sure that we don't race to
@@ -149,8 +153,10 @@ func (cmd *IndexCmd) Run() (err error) {
 		defer fileMutex.Unlock()
 
 		if _, err := file.Write(b); err != nil {
-			panic(fmt.Sprintf("failed to write to scip index file: %v", err))
+			return fmt.Errorf("failed to write to scip index file: %w", err)
 		}
+
+		return nil
 	}
 
 	removeOutFileIfPresent := func() {
@@ -158,13 +164,6 @@ func (cmd *IndexCmd) Run() (err error) {
 			os.RemoveAll(cmd.Output)
 		}
 	}
-
-	defer func() {
-		if r := recover(); r != nil {
-			removeOutFileIfPresent()
-			err = fmt.Errorf("panic during indexing: %v", r)
-		}
-	}()
 
 	if err = index.Index(writer, options); err != nil {
 		removeOutFileIfPresent()

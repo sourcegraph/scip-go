@@ -27,9 +27,7 @@ import (
 
 //go:embed version.txt
 var versionFile string
-var ScipGoVersion string = strings.TrimSpace(versionFile)
-
-type documentLookup = map[string]*document.Document
+var ScipGoVersion = strings.TrimSpace(versionFile)
 
 func GetPackages(opts config.IndexOpts) (current []newtypes.PackageID, deps []newtypes.PackageID, err error) {
 	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
@@ -57,40 +55,33 @@ func GetPackages(opts config.IndexOpts) (current []newtypes.PackageID, deps []ne
 }
 
 func ListMissing(opts config.IndexOpts) (missing []string, err error) {
-	pathToDocuments := map[string]*document.Document{}
-	globalSymbols := lookup.NewGlobalSymbols()
-
-	pkgs, pkgLookup, err := loader.LoadPackages(opts, opts.ModuleRoot)
+	projectPackages, allPackages, err := loader.LoadPackages(opts, opts.ModuleRoot)
 	if err != nil {
 		return nil, err
 	}
 
-	lookupNames := slices.Sorted(maps.Keys(pkgLookup))
-	for _, pkgName := range lookupNames {
-		pkg := pkgLookup[pkgName]
-		visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
+	pathToDocuments := map[string]*document.Document{}
+	for _, pkg := range allPackages {
+		visitors.VisitPackageSyntax(
+			opts.ModuleRoot, pkg, pathToDocuments, lookup.NewGlobalSymbols())
 	}
 
-	pkgNames := slices.Sorted(maps.Keys(pkgs))
-	for _, name := range pkgNames {
-		pkg := pkgs[name]
+	for _, pkg := range projectPackages {
 		for _, f := range pkg.Syntax {
 			docName := pkg.Fset.File(f.Package).Name()
-			doc := pathToDocuments[docName]
-			if doc == nil {
+			if _, ok := pathToDocuments[docName]; !ok {
 				missing = append(missing, docName)
 			}
-
 		}
 	}
 
 	return missing, nil
 }
 
-func Index(writer func(proto.Message), opts config.IndexOpts) error {
+func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 	// Emit Metadata.
 	//   NOTE: Must be the first field emitted
-	writer(&scip.Metadata{
+	if err := writer(&scip.Metadata{
 		Version: 0,
 		ToolInfo: &scip.ToolInfo{
 			Name:      "scip-go",
@@ -99,35 +90,41 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 		},
 		ProjectRoot:          "file://" + opts.ModuleRoot,
 		TextDocumentEncoding: scip.TextEncoding_UTF8,
-	})
+	}); err != nil {
+		return err
+	}
 
-	pkgs, allPackages, err := loader.LoadPackages(opts, opts.ModuleRoot)
+	projectPackages, allPackages, err := loader.LoadPackages(opts, opts.ModuleRoot)
 	if err != nil {
 		return err
 	}
 
-	pathToDocuments, globalSymbols := indexVisitPackages(opts, pkgs, allPackages)
-
+	pathToDocument, globalSymbols := indexVisitPackages(opts, projectPackages, allPackages)
 	if !opts.SkipImplementations {
-		impls.AddImplementationRelationships(pkgs, allPackages, globalSymbols)
+		if err := impls.AddImplementationRelationships(
+			projectPackages, allPackages, globalSymbols,
+		); err != nil {
+			return err
+		}
 	}
 
-	pkgIDs := slices.Sorted(maps.Keys(pkgs))
+	pkgIDs := slices.Sorted(maps.Keys(projectPackages))
 	pkgLen := len(pkgIDs)
 
 	var count uint64
 	var wg sync.WaitGroup
+	var writeErr error
 	wg.Add(1)
 
 	go func() {
 		defer wg.Done()
 
 		for _, ID := range pkgIDs {
-			pkg := pkgs[ID]
+			pkg := projectPackages[ID]
 			pkgSymbols := globalSymbols.GetPackage(pkg)
 
-			for _, f := range pkg.Syntax {
-				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+			for _, file := range pkg.Syntax {
+				doc := pathToDocument[pkg.Fset.File(file.Package).Name()]
 				if doc == nil {
 					continue
 				}
@@ -139,41 +136,43 @@ func Index(writer func(proto.Message), opts config.IndexOpts) error {
 				visitor := visitors.NewFileVisitor(
 					doc,
 					pkg,
-					f,
+					file,
 					allPackages,
 					pkgSymbols,
 					globalSymbols,
 				)
 
 				// Traverse the file
-				ast.Walk(visitor, f)
+				ast.Walk(visitor, file)
 
 				// Write the document
-				writer(visitor.ToScipDocument())
+				if writeErr = writer(visitor.ToScipDocument()); writeErr != nil {
+					return
+				}
 			}
 
 			atomic.AddUint64(&count, 1)
 		}
 	}()
 
-	output.WithProgressParallel(&wg, "Visiting Project Files: ", &count, uint64(pkgLen))
+	output.WithProgressParallel(&wg, "Visiting Project Files", &count, uint64(pkgLen))
 
-	return nil
+	return writeErr
 }
 
 func indexVisitPackages(
 	opts config.IndexOpts,
-	pkgs loader.PackageLookup,
-	pkgLookup loader.PackageLookup,
-) (documentLookup, *lookup.Global) {
-	pathToDocuments := documentLookup{}
+	projectPackages loader.PackageLookup,
+	allPackages loader.PackageLookup,
+) (map[string]*document.Document, *lookup.Global) {
+	pathToDocuments := map[string]*document.Document{}
 	globalSymbols := lookup.NewGlobalSymbols()
 
 	var count uint64
 	var wg sync.WaitGroup
 	wg.Add(1)
 
-	lookupIDs := slices.Sorted(maps.Keys(pkgLookup))
+	lookupIDs := slices.Sorted(maps.Keys(allPackages))
 
 	// We have to visit all the packages to get the definition sites
 	// for all the symbols.
@@ -184,7 +183,7 @@ func indexVisitPackages(
 		defer wg.Done()
 
 		for _, pkgID := range lookupIDs {
-			pkg := pkgLookup[pkgID]
+			pkg := allPackages[pkgID]
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
@@ -203,7 +202,7 @@ func indexVisitPackages(
 			globalSymbols.SetPkgName(pkg, pkgDeclaration)
 
 			// If we don't have this package anywhere, don't try to create a new symbol
-			if _, ok := pkgs[newtypes.GetID(pkg)]; !ok {
+			if _, ok := projectPackages[newtypes.GetID(pkg)]; !ok {
 				atomic.AddUint64(&count, 1)
 				continue
 			}
