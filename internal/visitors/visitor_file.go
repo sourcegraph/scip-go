@@ -6,6 +6,7 @@ import (
 	"go/token"
 	"go/types"
 	"log/slog"
+	"path"
 	"strings"
 
 	"github.com/scip-code/scip/bindings/go/scip"
@@ -137,6 +138,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		}
 
 		if node.Name != nil && node.Name.Name != "." {
+			// Aliased import: emit a local definition for the alias
 			pkgAlias := v.pkg.TypesInfo.Defs[node.Name]
 			symName := v.createNewLocalSymbol(node.Name.Pos(), pkgAlias)
 			rangeFromName := symbols.RangeFromName(
@@ -145,6 +147,17 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 
 			// Save package name override, so that we use the new local symbol
 			// within this file
+			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = symName
+		} else if implicitObj, ok := v.pkg.TypesInfo.Implicits[node]; ok {
+			// Non-aliased import: emit a local definition for the implicit
+			// package name (last segment of the import path)
+			symName := v.createNewLocalSymbol(node.Path.Pos(), implicitObj)
+			pathPos := v.pkg.Fset.Position(node.Path.Pos())
+			baseName := path.Base(importedPackage.PkgPath)
+			line := int32(pathPos.Line - 1)
+			col := int32(pathPos.Column-1) + 1 + int32(len(importedPackage.PkgPath)-len(baseName))
+			v.NewDefinition(symName, []int32{line, col, col + int32(len(baseName))}, nil)
+
 			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = symName
 		}
 

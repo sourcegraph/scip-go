@@ -3,10 +3,12 @@
   
   import (
    "context"
+//  ^^^^^^^ definition local 0
 //  ^^^^^^^ reference github.com/golang/go/src go1.22 context/
   
    "sg/testdata/internal/secret"
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
+//                       ^^^^^^ definition local 1
   )
   
   // TestInterface is an interface used for testing.
@@ -31,11 +33,11 @@
 // > ```go
 // > func (TestInterface).Do(ctx Context, data string) (score int, _ error)
 // > ```
-//    ^^^ definition local 0
-//        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
+//    ^^^ definition local 2
+//        ^^^^^^^ reference local 0
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
-//                         ^^^^ definition local 1
-//                                       ^^^^^ definition local 2
+//                         ^^^^ definition local 3
+//                                       ^^^^^ definition local 4
   }
   
   type (
@@ -151,7 +153,7 @@
 //      > ```go
 //      > const secretScore uint64 = 43
 //      > ```
-//                    ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
+//                    ^^^^^^ reference local 1
 //                           ^^^^^^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/SecretScore.
   
   const SomeString = "foobar"
@@ -191,7 +193,7 @@
   // Doer is similar to the test interface (but not the same).
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/TestStruct#Doer().
   func (ts *TestStruct) Doer(ctx context.Context, data string) (score int, err error) {
-//      ^^ definition local 3
+//      ^^ definition local 5
 //          ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TestStruct#
 //                      ^^^^ definition 0.1.test `sg/testdata`/TestStruct#Doer().
 //                      documentation
@@ -200,12 +202,12 @@
 //                      > ```
 //                      documentation
 //                      > Doer is similar to the test interface (but not the same).
-//                           ^^^ definition local 4
-//                               ^^^^^^^ reference github.com/golang/go/src go1.22 context/
+//                           ^^^ definition local 6
+//                               ^^^^^^^ reference local 0
 //                                       ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
-//                                                ^^^^ definition local 5
-//                                                              ^^^^^ definition local 6
-//                                                                         ^^^ definition local 7
+//                                                ^^^^ definition local 7
+//                                                              ^^^^^ definition local 8
+//                                                                         ^^^ definition local 9
    return Score, nil
 //        ^^^^^ reference 0.1.test `sg/testdata`/Score.
   }

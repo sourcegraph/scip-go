@@ -2,6 +2,7 @@
 //        ^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/
   
   import "context"
+//        ^^^^^^^ definition local 0
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
   
 //⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/Target().
@@ -17,7 +18,7 @@
 // > ```go
 // > func (interface).OID(Context) (int, error)
 // > ```
-//     ^^^^^^^ reference github.com/golang/go/src go1.22 context/
+//     ^^^^^^^ reference local 0
 //             ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    AbbreviatedOID(context.Context) (string, error)
 // ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:AbbreviatedOID().
@@ -25,7 +26,7 @@
 // > ```go
 // > func (interface).AbbreviatedOID(Context) (string, error)
 // > ```
-//                ^^^^^^^ reference github.com/golang/go/src go1.22 context/
+//                ^^^^^^^ reference local 0
 //                        ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Commit(context.Context) (string, error)
 // ^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Commit().
@@ -33,7 +34,7 @@
 // > ```go
 // > func (interface).Commit(Context) (string, error)
 // > ```
-//        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
+//        ^^^^^^^ reference local 0
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Type(context.Context) (int, error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Type().
@@ -41,7 +42,7 @@
 // > ```go
 // > func (interface).Type(Context) (int, error)
 // > ```
-//      ^^^^^^^ reference github.com/golang/go/src go1.22 context/
+//      ^^^^^^^ reference local 0
 //              ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
   } {
    panic("not implemented")
@@ -56,12 +57,12 @@
 //     > func something()
 //     > ```
    x := Target()
-// ^ definition local 0
+// ^ definition local 1
 //      ^^^^^^ reference 0.1.test `sg/inlinestruct`/Target().
    x.OID(context.Background())
-// ^ reference local 0
+// ^ reference local 1
 //   ^^^ reference 0.1.test `sg/inlinestruct`/func:Target:OID().
-//       ^^^^^^^ reference github.com/golang/go/src go1.22 context/
+//       ^^^^^^^ reference local 0
 //               ^^^^^^^^^^ reference github.com/golang/go/src go1.22 context/Background().
   }
 //⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/something().

@@ -4,6 +4,7 @@
   import (
    "sg/testdata/internal/secret"
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
+//                       ^^^^^^ definition local 0
   )
   
   // Type aliased doc
@@ -21,7 +22,7 @@
 //     >     Field int
 //     > }
 //     > ```
-//                    ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
+//                    ^^^^^^ reference local 0
 //                           ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/Burger#
   
   type BadBurger = struct {

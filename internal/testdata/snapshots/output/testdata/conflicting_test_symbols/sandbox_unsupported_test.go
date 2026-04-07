@@ -6,8 +6,10 @@
   
   import (
    "errors"
+//  ^^^^^^ definition local 0
 //  ^^^^^^ reference github.com/golang/go/src go1.22 errors/
    "testing"
+//  ^^^^^^^ definition local 1
 //  ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
   )
   
@@ -17,7 +19,7 @@
 //    > ```go
 //    > var ErrNotImplemented error
 //    > ```
-//                        ^^^^^^ reference github.com/golang/go/src go1.22 errors/
+//                        ^^^^^^ reference local 0
 //                               ^^^ reference github.com/golang/go/src go1.22 errors/New().
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
@@ -27,8 +29,8 @@
 //     > ```go
 //     > func newKey(t *T) (string, error)
 //     > ```
-//            ^ definition local 0
-//               ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
+//            ^ definition local 2
+//               ^^^^^^^ reference local 1
 //                       ^ reference github.com/golang/go/src go1.22 testing/T#
    return "", ErrNotImplemented
 //            ^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata/conflicting_test_symbols`/ErrNotImplemented.
@@ -42,10 +44,10 @@
 //     > ```go
 //     > func verifySandbox(t *T, s string)
 //     > ```
-//                   ^ definition local 1
-//                      ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
+//                   ^ definition local 3
+//                      ^^^^^^^ reference local 1
 //                              ^ reference github.com/golang/go/src go1.22 testing/T#
-//                                 ^ definition local 2
+//                                 ^ definition local 4
    return
   }
 //⌃ enclosing_range_end 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
