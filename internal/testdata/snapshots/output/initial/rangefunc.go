@@ -3,6 +3,7 @@
   
   import (
    "slices"
+//  ^^^^^^ definition local 0
 //  ^^^^^^ reference github.com/golang/go/src go1.22 slices/
   )
   
@@ -13,14 +14,14 @@
 //     > ```go
 //     > func f(xs []int) int
 //     > ```
-//       ^^ definition local 0
+//       ^^ definition local 1
    for _, x := range slices.All(xs) {
-//        ^ definition local 1
-//                   ^^^^^^ reference github.com/golang/go/src go1.22 slices/
+//        ^ definition local 2
+//                   ^^^^^^ reference local 0
 //                          ^^^ reference github.com/golang/go/src go1.22 slices/All().
-//                              ^^ reference local 0
+//                              ^^ reference local 1
     return x
-//         ^ reference local 1
+//         ^ reference local 2
    }
    return -1
   }

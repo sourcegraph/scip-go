@@ -2,6 +2,7 @@
 //        ^^^^^^^^^^^^^ reference 0.1.test `sg/generallyeric`/
   
   import "fmt"
+//        ^^^ definition local 0
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
   type Person interface {
@@ -34,7 +35,7 @@
   
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/worker#Work().
   func (w worker) Work() {
-//      ^ definition local 0
+//      ^ definition local 1
 //        ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
 //                ^^^^ definition 0.1.test `sg/generallyeric`/worker#Work().
 //                documentation
@@ -43,9 +44,9 @@
 //                > ```
 //                relationship 0.1.test `sg/generallyeric`/Person#Work. implementation
    fmt.Printf("%s is working\n", w)
-// ^^^ reference github.com/golang/go/src go1.22 fmt/
+// ^^^ reference local 0
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
-//                               ^ reference local 0
+//                               ^ reference local 1
   }
 //⌃ enclosing_range_end 0.1.test `sg/generallyeric`/worker#Work().
   
@@ -56,15 +57,15 @@
 //     > ```go
 //     > func DoWork[T Person](things []T)
 //     > ```
-//            ^ definition local 1
+//            ^ definition local 2
 //              ^^^^^^ reference 0.1.test `sg/generallyeric`/Person#
-//                      ^^^^^^ definition local 2
-//                               ^ reference local 1
+//                      ^^^^^^ definition local 3
+//                               ^ reference local 2
    for _, v := range things {
-//        ^ definition local 3
-//                   ^^^^^^ reference local 2
+//        ^ definition local 4
+//                   ^^^^^^ reference local 3
     v.Work()
-//  ^ reference local 3
+//  ^ reference local 4
 //    ^^^^ reference 0.1.test `sg/generallyeric`/Person#Work.
    }
   }
@@ -78,22 +79,22 @@
 //     > func main()
 //     > ```
    var a, b, c worker
-//     ^ definition local 4
-//        ^ definition local 5
-//           ^ definition local 6
+//     ^ definition local 5
+//        ^ definition local 6
+//           ^ definition local 7
 //             ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
    a = "A"
-// ^ reference local 4
-   b = "B"
 // ^ reference local 5
-   c = "C"
+   b = "B"
 // ^ reference local 6
+   c = "C"
+// ^ reference local 7
    DoWork([]worker{a, b, c})
 // ^^^^^^ reference 0.1.test `sg/generallyeric`/DoWork().
 //          ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
-//                 ^ reference local 4
-//                    ^ reference local 5
-//                       ^ reference local 6
+//                 ^ reference local 5
+//                    ^ reference local 6
+//                       ^ reference local 7
   }
 //⌃ enclosing_range_end 0.1.test `sg/generallyeric`/main().
   

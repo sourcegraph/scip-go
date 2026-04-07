@@ -5,10 +5,11 @@
   
   import (
    "fmt"
+//  ^^^ definition local 0
 //  ^^^ reference github.com/golang/go/src go1.22 fmt/
   
    replaced "github.com/example/original"
-// ^^^^^^^^ definition local 0
+// ^^^^^^^^ definition local 1
 //           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference github.com/example/replaced 0.1.test `github.com/example/original`/
   )
   
@@ -20,9 +21,9 @@
 //     > func Something()
 //     > ```
    fmt.Println(replaced.DefaultConfig)
-// ^^^ reference github.com/golang/go/src go1.22 fmt/
+// ^^^ reference local 0
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().
-//             ^^^^^^^^ reference local 0
+//             ^^^^^^^^ reference local 1
 //                      ^^^^^^^^^^^^^ reference github.com/example/replaced 0.1.test `github.com/example/original`/DefaultConfig.
   }
 //⌃ enclosing_range_end 0.1.test `sg/replace-directives`/Something().

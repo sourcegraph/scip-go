@@ -2,6 +2,7 @@
 //        ^^^^^^^^ reference 0.1.test `sg/testdata`/
   
   import "io"
+//        ^^ definition local 0
 //        ^^ reference github.com/golang/go/src go1.22 io/
   
   type I3 interface {
@@ -39,7 +40,7 @@
 //     relationship github.com/golang/go/src go1.22 io/Closer# implementation
 //     relationship 0.1.test `sg/testdata`/I3# implementation
    io.Closer
-// ^^ reference github.com/golang/go/src go1.22 io/
+// ^^ reference local 0
 //    ^^^^^^ definition 0.1.test `sg/testdata`/TClose#Closer.
 //    documentation
 //    > ```go

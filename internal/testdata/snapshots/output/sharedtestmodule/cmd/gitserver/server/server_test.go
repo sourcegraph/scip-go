@@ -2,6 +2,7 @@
 //        ^^^^^^ reference 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/
   
   import "testing"
+//        ^^^^^^^ definition local 0
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
   
 //⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
@@ -11,11 +12,11 @@
 //     > ```go
 //     > func TestExecRequest(t *T)
 //     > ```
-//                     ^ definition local 0
-//                        ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
+//                     ^ definition local 1
+//                        ^^^^^^^ reference local 0
 //                                ^ reference github.com/golang/go/src go1.22 testing/T#
    t.Log("hello world")
-// ^ reference local 0
+// ^ reference local 1
 //   ^^^ reference github.com/golang/go/src go1.22 testing/common#Log().
   }
 //⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
@@ -27,11 +28,11 @@
 //     > ```go
 //     > func runCmd(t *T, dir string, cmd string, arg ...string)
 //     > ```
-//            ^ definition local 1
-//               ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
+//            ^ definition local 2
+//               ^^^^^^^ reference local 0
 //                       ^ reference github.com/golang/go/src go1.22 testing/T#
-//                          ^^^ definition local 2
-//                                      ^^^ definition local 3
-//                                                  ^^^ definition local 4
+//                          ^^^ definition local 3
+//                                      ^^^ definition local 4
+//                                                  ^^^ definition local 5
 //                                                                  ⌃ enclosing_range_end 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
   
