@@ -8,8 +8,8 @@
 //  ^^^ definition local 0
 //  ^^^ reference github.com/golang/go/src go1.22 fmt/
    "sg/embedded"
+//  ^^^^^^^^^^^ definition local 1
 //  ^^^^^^^^^^^ reference 0.1.test `sg/embedded`/
-//     ^^^^^^^^ definition local 1
   )
   
 //⌄ enclosing_range_start 0.1.test `sg/embedded/internal`/Something().

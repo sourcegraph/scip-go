@@ -2,8 +2,8 @@
 //        ^^^^^^^^ reference 0.1.test `sg/testdata`/
   
   import "net/http"
+//        ^^^^^^^^ definition local 0
 //        ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
-//            ^^^^ definition local 0
   
   type implementsWriter struct{}
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#
