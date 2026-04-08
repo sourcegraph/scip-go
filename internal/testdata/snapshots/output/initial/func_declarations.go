@@ -1,5 +1,5 @@
   package initial
-//        ^^^^^^^ reference 0.1.test `sg/initial`/
+//        ^^^^^^^ definition 0.1.test `sg/initial`/
   
 //⌄ enclosing_range_start 0.1.test `sg/initial`/UsesLater().
   func UsesLater() {

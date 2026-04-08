@@ -1,5 +1,5 @@
   package server
-//        ^^^^^^ reference 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/
+//        ^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/
   
 //⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/LiterallyAnything().
   func LiterallyAnything() {}

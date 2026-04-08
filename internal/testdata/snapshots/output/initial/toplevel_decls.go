@@ -1,5 +1,5 @@
   package initial
-//        ^^^^^^^ reference 0.1.test `sg/initial`/
+//        ^^^^^^^ definition 0.1.test `sg/initial`/
   
   const MY_THING = 10
 //      ^^^^^^^^ definition 0.1.test `sg/initial`/MY_THING.

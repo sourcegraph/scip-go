@@ -1,5 +1,5 @@
   package generallyeric
-//        ^^^^^^^^^^^^^ reference 0.1.test `sg/generallyeric`/
+//        ^^^^^^^^^^^^^ definition 0.1.test `sg/generallyeric`/
   
   import "fmt"
 //        ^^^ definition local 0

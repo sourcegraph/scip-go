@@ -1,5 +1,5 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/
+//        ^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/
   
   import "context"
 //        ^^^^^^^ definition local 0

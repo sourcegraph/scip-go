@@ -1,5 +1,5 @@
   package impls
-//        ^^^^^ reference 0.1.test `sg/impls`/
+//        ^^^^^ definition 0.1.test `sg/impls`/
   
   import "net/http"
 //        ^^^^^^^^ definition local 0

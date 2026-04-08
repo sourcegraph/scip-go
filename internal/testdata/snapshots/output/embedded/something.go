@@ -1,5 +1,5 @@
   package embedded
-//        ^^^^^^^^ reference 0.1.test `sg/embedded`/
+//        ^^^^^^^^ definition 0.1.test `sg/embedded`/
   
   import "fmt"
 //        ^^^ definition local 0
