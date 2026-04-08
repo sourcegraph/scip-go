@@ -131,13 +131,14 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 	switch node := n.(type) {
 	case *ast.ImportSpec:
 		// Generate import references
-		importedPackage := v.pkg.Imports[strings.Trim(node.Path.Value, `"`)]
+		importPath := strings.Trim(node.Path.Value, `"`)
+		importedPackage := v.pkg.Imports[importPath]
 		if importedPackage == nil {
 			slog.Warn("Could not find node", "node.Path", node.Path)
 			return nil
 		}
 
-		if node.Name != nil && node.Name.Name != "." {
+		if node.Name != nil && node.Name.Name != "." && node.Name.Name != "_" {
 			// Aliased import: emit a local definition for the alias
 			pkgAlias := v.pkg.TypesInfo.Defs[node.Name]
 			symName := v.createNewLocalSymbol(node.Name.Pos(), pkgAlias)
@@ -150,12 +151,13 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = symName
 		} else if implicitObj, ok := v.pkg.TypesInfo.Implicits[node]; ok {
 			// Non-aliased import: emit a local definition for the implicit
-			// package name (last segment of the import path)
+			// package name (last segment of the import path), so that usages
+			// like `modfile.Parse()` resolve to the import line.
 			symName := v.createNewLocalSymbol(node.Path.Pos(), implicitObj)
 			pathPos := v.pkg.Fset.Position(node.Path.Pos())
-			baseName := path.Base(importedPackage.PkgPath)
+			baseName := path.Base(importPath)
 			line := int32(pathPos.Line - 1)
-			col := int32(pathPos.Column-1) + 1 + int32(len(importedPackage.PkgPath)-len(baseName))
+			col := int32(pathPos.Column-1) + 1 + int32(len(importPath)-len(baseName))
 			v.NewDefinition(symName, []int32{line, col, col + int32(len(baseName))}, nil)
 
 			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = symName
