@@ -6,8 +6,8 @@
 //  ^^^ definition local 0
 //  ^^^ reference github.com/golang/go/src go1.22 fmt/
    "os/exec"
+//  ^^^^^^^ definition local 1
 //  ^^^^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
-//     ^^^^ definition local 1
   )
   
   type osExecCommand struct {

@@ -3,8 +3,8 @@
   
   import (
    "sg/testdata/internal/secret"
+//  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition local 0
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
-//                       ^^^^^^ definition local 0
   )
   
   // Type aliased doc

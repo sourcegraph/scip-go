@@ -7,8 +7,8 @@
 //  ^^^^^^^ reference github.com/golang/go/src go1.22 context/
   
    "sg/testdata/internal/secret"
+//  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition local 1
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
-//                       ^^^^^^ definition local 1
   )
   
   // TestInterface is an interface used for testing.

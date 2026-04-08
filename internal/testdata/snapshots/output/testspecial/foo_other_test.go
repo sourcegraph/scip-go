@@ -7,8 +7,8 @@
 //  ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
   
    "sg/testspecial"
+//  ^^^^^^^^^^^^^^ definition local 1
 //  ^^^^^^^^^^^^^^ reference 0.1.test `sg/testspecial`/
-//     ^^^^^^^^^^^ definition local 1
   )
   
 //⌄ enclosing_range_start 0.1.test `sg/testspecial_test`/TestFoo_Blackbox().
