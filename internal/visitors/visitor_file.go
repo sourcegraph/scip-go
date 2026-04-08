@@ -130,13 +130,15 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 	switch node := n.(type) {
 	case *ast.ImportSpec:
 		// Generate import references
-		importedPackage := v.pkg.Imports[strings.Trim(node.Path.Value, `"`)]
+		importPath := strings.Trim(node.Path.Value, `"`)
+		importedPackage := v.pkg.Imports[importPath]
 		if importedPackage == nil {
 			slog.Warn("Could not find node", "node.Path", node.Path)
 			return nil
 		}
 
-		if node.Name != nil && node.Name.Name != "." {
+		if node.Name != nil && node.Name.Name != "." && node.Name.Name != "_" {
+			// Aliased import: emit a local definition for the alias
 			pkgAlias := v.pkg.TypesInfo.Defs[node.Name]
 			symName := v.createNewLocalSymbol(node.Name.Pos(), pkgAlias)
 			rangeFromName := symbols.RangeFromName(
@@ -145,6 +147,14 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 
 			// Save package name override, so that we use the new local symbol
 			// within this file
+			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = symName
+		} else if implicitObj, ok := v.pkg.TypesInfo.Implicits[node]; ok {
+			// Non-aliased import: emit a local definition for the entire import path
+			symName := v.createNewLocalSymbol(node.Path.Pos(), implicitObj)
+			defRange := symbols.RangeFromName(
+				v.pkg.Fset.Position(node.Path.Pos()), importPath, true)
+			v.NewDefinition(symName, defRange, nil)
+
 			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = symName
 		}
 

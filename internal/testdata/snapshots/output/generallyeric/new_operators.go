@@ -1,5 +1,5 @@
   package generallyeric
-//        ^^^^^^^^^^^^^ reference 0.1.test `sg/generallyeric`/
+//        ^^^^^^^^^^^^^ definition 0.1.test `sg/generallyeric`/
   
   type Number interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Number#

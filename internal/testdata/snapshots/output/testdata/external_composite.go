@@ -1,7 +1,8 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ definition 0.1.test `sg/testdata`/
   
   import "net/http"
+//        ^^^^^^^^ definition local 0
 //        ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
   
   type NestedHandler struct {
@@ -19,7 +20,7 @@
 //     > ```
 //     relationship github.com/golang/go/src go1.22 `net/http`/Handler# implementation
    http.Handler
-// ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
+// ^^^^ reference local 0
 //      ^^^^^^^ definition 0.1.test `sg/testdata`/NestedHandler#Handler.
 //      documentation
 //      > ```go

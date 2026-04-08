@@ -1,7 +1,8 @@
   package impls
-//        ^^^^^ reference 0.1.test `sg/impls`/
+//        ^^^^^ definition 0.1.test `sg/impls`/
   
   import "net/http"
+//        ^^^^^^^^ definition local 0
 //        ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
   
 //⌄ enclosing_range_start 0.1.test `sg/impls`/Something().
@@ -11,8 +12,8 @@
 //     > ```go
 //     > func Something(r ResponseWriter)
 //     > ```
-//               ^ definition local 0
-//                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
+//               ^ definition local 1
+//                 ^^^^ reference local 0
 //                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#
 //                                       ⌃ enclosing_range_end 0.1.test `sg/impls`/Something().
   
@@ -33,7 +34,7 @@
   
 //⌄ enclosing_range_start 0.1.test `sg/impls`/MyWriter#Header().
   func (w MyWriter) Header() http.Header        { panic("") }
-//      ^ definition local 1
+//      ^ definition local 2
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^ definition 0.1.test `sg/impls`/MyWriter#Header().
 //                  documentation
@@ -41,12 +42,12 @@
 //                  > func (MyWriter).Header() Header
 //                  > ```
 //                  relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
-//                           ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
+//                           ^^^^ reference local 0
 //                                ^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Header#
 //                                                          ⌃ enclosing_range_end 0.1.test `sg/impls`/MyWriter#Header().
 //⌄ enclosing_range_start 0.1.test `sg/impls`/MyWriter#Write().
   func (w MyWriter) Write([]byte) (int, error)  { panic("") }
-//      ^ definition local 2
+//      ^ definition local 3
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^ definition 0.1.test `sg/impls`/MyWriter#Write().
 //                  documentation
@@ -60,7 +61,7 @@
 //                                                          ⌃ enclosing_range_end 0.1.test `sg/impls`/MyWriter#Write().
 //⌄ enclosing_range_start 0.1.test `sg/impls`/MyWriter#WriteHeader().
   func (w MyWriter) WriteHeader(statusCode int) { panic("") }
-//      ^ definition local 3
+//      ^ definition local 4
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#WriteHeader().
 //                  documentation
@@ -68,7 +69,7 @@
 //                  > func (MyWriter).WriteHeader(statusCode int)
 //                  > ```
 //                  relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
-//                              ^^^^^^^^^^ definition local 4
+//                              ^^^^^^^^^^ definition local 5
 //                                                          ⌃ enclosing_range_end 0.1.test `sg/impls`/MyWriter#WriteHeader().
   
 //⌄ enclosing_range_start 0.1.test `sg/impls`/Another().

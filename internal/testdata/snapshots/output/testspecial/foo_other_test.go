@@ -5,9 +5,11 @@
   
   import (
    "testing"
+//  ^^^^^^^ definition local 0
 //  ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
   
    "sg/testspecial"
+//  ^^^^^^^^^^^^^^ definition local 1
 //  ^^^^^^^^^^^^^^ reference 0.1.test `sg/testspecial`/
   )
   
@@ -18,9 +20,9 @@
 //     > ```go
 //     > func TestFoo_Blackbox(*T)
 //     > ```
-//                       ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
+//                       ^^^^^^^ reference local 0
 //                               ^ reference github.com/golang/go/src go1.22 testing/T#
-//                                    ^^^^^^^^^^^ reference 0.1.test `sg/testspecial`/
+//                                    ^^^^^^^^^^^ reference local 1
 //                                                ^^^ reference 0.1.test `sg/testspecial`/Foo().
 //                                                      ⌃ enclosing_range_end 0.1.test `sg/testspecial_test`/TestFoo_Blackbox().
   

@@ -4,6 +4,7 @@
 //        > package embedded
   
   import "net/http"
+//        ^^^^^^^^ definition local 0
 //        ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
   
   type NestedHandler struct {
@@ -21,7 +22,7 @@
 //     > ```
 //     relationship github.com/golang/go/src go1.22 `net/http`/Handler# implementation
    http.Handler
-// ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
+// ^^^^ reference local 0
 //      ^^^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#Handler.
 //      documentation
 //      > ```go
@@ -45,17 +46,17 @@
 //     > ```go
 //     > func NestedExample(n NestedHandler)
 //     > ```
-//                   ^ definition local 0
+//                   ^ definition local 1
 //                     ^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#
    _ = n.Handler.ServeHTTP
-//     ^ reference local 0
+//     ^ reference local 1
 //       ^^^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#Handler.
 //               ^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Handler#ServeHTTP.
    _ = n.ServeHTTP
-//     ^ reference local 0
+//     ^ reference local 1
 //       ^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Handler#ServeHTTP.
    _ = n.Other
-//     ^ reference local 0
+//     ^ reference local 1
 //       ^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#Other.
   }
 //⌃ enclosing_range_end 0.1.test `sg/embedded`/NestedExample().

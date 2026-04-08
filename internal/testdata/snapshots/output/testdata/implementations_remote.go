@@ -1,7 +1,8 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ definition 0.1.test `sg/testdata`/
   
   import "net/http"
+//        ^^^^^^^^ definition local 0
 //        ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/
   
   type implementsWriter struct{}
@@ -28,7 +29,7 @@
 //                        > func (implementsWriter).Header() Header
 //                        > ```
 //                        relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
-//                                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
+//                                 ^^^^ reference local 0
 //                                      ^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Header#
 //                                                                            ⌃ enclosing_range_end 0.1.test `sg/testdata`/implementsWriter#Header().
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/implementsWriter#Write().
@@ -53,7 +54,7 @@
 //                        > func (implementsWriter).WriteHeader(statusCode int)
 //                        > ```
 //                        relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
-//                                    ^^^^^^^^^^ definition local 0
+//                                    ^^^^^^^^^^ definition local 1
 //                                                     ⌃ enclosing_range_end 0.1.test `sg/testdata`/implementsWriter#WriteHeader().
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/ShowsInSignature().
@@ -63,11 +64,11 @@
 //     > ```go
 //     > func ShowsInSignature(respWriter ResponseWriter)
 //     > ```
-//                      ^^^^^^^^^^ definition local 1
-//                                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
+//                      ^^^^^^^^^^ definition local 2
+//                                 ^^^^ reference local 0
 //                                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#
    respWriter.WriteHeader(1)
-// ^^^^^^^^^^ reference local 1
+// ^^^^^^^^^^ reference local 2
 //            ^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader.
   }
 //⌃ enclosing_range_end 0.1.test `sg/testdata`/ShowsInSignature().

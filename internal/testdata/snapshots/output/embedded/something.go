@@ -1,12 +1,13 @@
   package embedded
-//        ^^^^^^^^ reference 0.1.test `sg/embedded`/
+//        ^^^^^^^^ definition 0.1.test `sg/embedded`/
   
   import "fmt"
+//        ^^^ definition local 0
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
 //⌄ enclosing_range_start 0.1.test `sg/embedded`/RecentCommittersResults#String().
   func (r *RecentCommittersResults) String() string {
-//      ^ definition local 0
+//      ^ definition local 1
 //         ^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#
 //                                  ^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#String().
 //                                  documentation
@@ -17,9 +18,9 @@
 //                                  relationship github.com/golang/go/src go1.22 fmt/Stringer#String. implementation
 //                                  relationship github.com/golang/go/src go1.22 runtime/stringer#String. implementation
    return fmt.Sprintf("RecentCommittersResults{Nodes: %d}", len(r.Nodes))
-//        ^^^ reference github.com/golang/go/src go1.22 fmt/
+//        ^^^ reference local 0
 //            ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Sprintf().
-//                                                              ^ reference local 0
+//                                                              ^ reference local 1
 //                                                                ^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.
   }
 //⌃ enclosing_range_end 0.1.test `sg/embedded`/RecentCommittersResults#String().

@@ -23,7 +23,7 @@ func (l *Local) SignatureText() string {
 	case *types.Const:
 		parts = append(parts, "const")
 	case *types.PkgName:
-		parts = append(parts, "import")
+		parts = append(parts, "package")
 	case *types.Var:
 		parts = append(parts, "var")
 	}
@@ -32,12 +32,9 @@ func (l *Local) SignatureText() string {
 		parts = append(parts, name)
 	}
 
-	// For PkgName, append the package path instead of type
-	if pkgName, isPkgName := l.Obj.(*types.PkgName); isPkgName {
-		if imported := pkgName.Imported(); imported != nil {
-			parts = append(parts, imported.Path())
-		}
-	} else {
+	// For PkgName, the signature is just "package <name>" (matching gopls).
+	// For other types, append the type string.
+	if _, isPkgName := l.Obj.(*types.PkgName); !isPkgName {
 		if t := l.Obj.Type(); t != nil {
 			if ts := t.String(); ts != "" {
 				parts = append(parts, ts)

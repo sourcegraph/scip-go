@@ -1,8 +1,9 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ definition 0.1.test `sg/testdata`/
   
   import (
    "sg/testdata/internal/secret"
+//  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition local 0
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
   )
   
@@ -21,7 +22,7 @@
 //     >     Field int
 //     > }
 //     > ```
-//                    ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
+//                    ^^^^^^ reference local 0
 //                           ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/Burger#
   
   type BadBurger = struct {

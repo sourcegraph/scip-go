@@ -1,10 +1,12 @@
   package embedded
-//        ^^^^^^^^ reference 0.1.test `sg/embedded`/
+//        ^^^^^^^^ definition 0.1.test `sg/embedded`/
   
   import (
    "fmt"
+//  ^^^ definition local 0
 //  ^^^ reference github.com/golang/go/src go1.22 fmt/
    "os/exec"
+//  ^^^^^^^ definition local 1
 //  ^^^^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
   )
   
@@ -24,7 +26,7 @@
 //     relationship github.com/golang/go/src go1.22 fmt/Stringer# implementation
 //     relationship github.com/golang/go/src go1.22 runtime/stringer# implementation
    *exec.Cmd
-//  ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
+//  ^^^^ reference local 1
 //       ^^^ definition 0.1.test `sg/embedded`/osExecCommand#Cmd.
 //       documentation
 //       > ```go
@@ -40,13 +42,13 @@
 //     > ```go
 //     > func wrapExecCommand(c *Cmd)
 //     > ```
-//                     ^ definition local 0
-//                        ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
+//                     ^ definition local 2
+//                        ^^^^ reference local 1
 //                             ^^^ reference github.com/golang/go/src go1.22 `os/exec`/Cmd#
    _ = &osExecCommand{Cmd: c}
 //      ^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/osExecCommand#
 //                    ^^^ reference 0.1.test `sg/embedded`/osExecCommand#Cmd.
-//                         ^ reference local 0
+//                         ^ reference local 2
   }
 //⌃ enclosing_range_end 0.1.test `sg/embedded`/wrapExecCommand().
   
@@ -120,7 +122,7 @@
 //     > func useOfCompositeStructs()
 //     > ```
    o := Outer{
-// ^ definition local 1
+// ^ definition local 3
 //      ^^^^^ reference 0.1.test `sg/embedded`/Outer#
     Inner: Inner{
 //  ^^^^^ reference 0.1.test `sg/embedded`/Outer#Inner.
@@ -137,14 +139,14 @@
    }
   
    fmt.Printf("> %d\n", o.X)
-// ^^^ reference github.com/golang/go/src go1.22 fmt/
+// ^^^ reference local 0
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
-//                      ^ reference local 1
+//                      ^ reference local 3
 //                        ^ reference 0.1.test `sg/embedded`/Inner#X.
    fmt.Println(o.Inner.Y)
-// ^^^ reference github.com/golang/go/src go1.22 fmt/
+// ^^^ reference local 0
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().
-//             ^ reference local 1
+//             ^ reference local 3
 //               ^^^^^ reference 0.1.test `sg/embedded`/Outer#Inner.
 //                     ^ reference 0.1.test `sg/embedded`/Inner#Y.
   }

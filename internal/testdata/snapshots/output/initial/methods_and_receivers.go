@@ -1,7 +1,8 @@
   package initial
-//        ^^^^^^^ reference 0.1.test `sg/initial`/
+//        ^^^^^^^ definition 0.1.test `sg/initial`/
   
   import "fmt"
+//        ^^^ definition local 0
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
   type MyStruct struct{ f, y int }
@@ -30,17 +31,17 @@
   
 //⌄ enclosing_range_start 0.1.test `sg/initial`/MyStruct#RecvFunction().
   func (m MyStruct) RecvFunction(b int) int { return m.f + b }
-//      ^ definition local 0
+//      ^ definition local 1
 //        ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //                  ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#RecvFunction().
 //                  documentation
 //                  > ```go
 //                  > func (MyStruct).RecvFunction(b int) int
 //                  > ```
-//                               ^ definition local 1
-//                                                   ^ reference local 0
+//                               ^ definition local 2
+//                                                   ^ reference local 1
 //                                                     ^ reference 0.1.test `sg/initial`/MyStruct#f.
-//                                                         ^ reference local 1
+//                                                         ^ reference local 2
 //                                                           ⌃ enclosing_range_end 0.1.test `sg/initial`/MyStruct#RecvFunction().
   
 //⌄ enclosing_range_start 0.1.test `sg/initial`/SomethingElse().
@@ -51,13 +52,13 @@
 //     > func SomethingElse()
 //     > ```
    s := MyStruct{f: 0}
-// ^ definition local 2
+// ^ definition local 3
 //      ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //               ^ reference 0.1.test `sg/initial`/MyStruct#f.
    fmt.Println(s)
-// ^^^ reference github.com/golang/go/src go1.22 fmt/
+// ^^^ reference local 0
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().
-//             ^ reference local 2
+//             ^ reference local 3
   }
 //⌃ enclosing_range_end 0.1.test `sg/initial`/SomethingElse().
   
