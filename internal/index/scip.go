@@ -214,8 +214,6 @@ func indexVisitPackages(
 				if pkgDeclaration != nil {
 					position := pkg.Fset.Position(f.Name.NamePos)
 
-					// Every package statement is a definition of the package symbol.
-					// The "best" file also provides the SymbolInformation with documentation.
 					if f == pkgDeclaration {
 						doc.SetNewSymbolForPos(pkgSymbol, pkgDeclaration, f.Name, f.Name.NamePos)
 					}

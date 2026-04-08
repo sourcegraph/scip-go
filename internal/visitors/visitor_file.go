@@ -149,9 +149,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			// within this file
 			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = symName
 		} else if implicitObj, ok := v.pkg.TypesInfo.Implicits[node]; ok {
-			// Non-aliased import: emit a local definition covering the
-			// entire import path, so that usages like `modfile.Parse()`
-			// resolve to the import line.
+			// Non-aliased import: emit a local definition for the entire import path
 			symName := v.createNewLocalSymbol(node.Path.Pos(), implicitObj)
 			defRange := symbols.RangeFromName(
 				v.pkg.Fset.Position(node.Path.Pos()), importPath, true)
