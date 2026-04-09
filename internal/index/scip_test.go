@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"path/filepath"
+	"sort"
 	"strings"
 	"testing"
 
@@ -89,9 +90,63 @@ func TestSnapshots(t *testing.T) {
 				))
 			}
 
+			if len(scipIndex.ExternalSymbols) > 0 {
+				sourceFiles = append(sourceFiles, scip.NewSourceFile(
+					"external_symbols.txt",
+					"external_symbols.txt",
+					formatExternalSymbols(scipIndex.ExternalSymbols, symbolFormatter),
+				))
+			}
+
 			return sourceFiles
 		},
 	)
+}
+
+func formatExternalSymbols(symbols []*scip.SymbolInformation, formatter scip.SymbolFormatter) string {
+	var b strings.Builder
+
+	sort.Slice(symbols, func(i, j int) bool {
+		return symbols[i].Symbol < symbols[j].Symbol
+	})
+
+	for i, sym := range symbols {
+		if i > 0 {
+			b.WriteString("\n")
+		}
+		formatted, err := formatter.Format(sym.Symbol)
+		if err != nil {
+			formatted = sym.Symbol
+		}
+		b.WriteString(formatted)
+		b.WriteString("\n")
+
+		rels := make([]*scip.Relationship, len(sym.Relationships))
+		copy(rels, sym.Relationships)
+		sort.Slice(rels, func(i, j int) bool {
+			return rels[i].Symbol < rels[j].Symbol
+		})
+
+		for _, rel := range rels {
+			relFormatted, err := formatter.Format(rel.Symbol)
+			if err != nil {
+				relFormatted = rel.Symbol
+			}
+			kind := "reference"
+			if rel.IsImplementation {
+				kind = "implementation"
+			}
+			if rel.IsReference {
+				kind = "reference"
+			}
+			if rel.IsTypeDefinition {
+				kind = "type_definition"
+			}
+			fmt.Fprintf(&b, "  relationship %s %s\n", relFormatted, kind)
+		}
+	}
+
+	return b.String()
 }
 
 // getTestdataRoot returns the absolute path to the testdata directory of this repository.

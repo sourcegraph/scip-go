@@ -1,0 +1,2 @@
+github.com/example/dep 0.1.test `github.com/example/dep`/T#
+  relationship 0.1.test `sg/pr198`/Foo# implementation
