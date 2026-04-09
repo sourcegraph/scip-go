@@ -1,6 +1,6 @@
 module sg/pr198
 
-go 1.22
+go 1.26
 
 require github.com/example/dep v0.0.0
 
