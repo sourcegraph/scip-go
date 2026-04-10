@@ -2,7 +2,6 @@ package index
 
 import (
 	_ "embed"
-	"fmt"
 	"go/ast"
 	"log/slog"
 	"maps"
@@ -188,15 +187,7 @@ func indexVisitPackages(
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
 			// Find the file whose doc comment represents the package documentation.
-			pkgDocFile, err := findPackageDocFile(pkg)
-			if err != nil {
-				panic(fmt.Sprintf("Unhandled package declaration: %s", err))
-			}
-
-			if pkgDocFile == nil {
-				atomic.AddUint64(&count, 1)
-				continue
-			}
+			pkgDocFile := findPackageDocFile(pkg)
 
 			pkgSymbol := globalSymbols.SetPkgSymbol(pkg)
 

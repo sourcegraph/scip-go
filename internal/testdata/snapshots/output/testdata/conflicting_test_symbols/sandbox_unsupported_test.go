@@ -3,8 +3,6 @@
   
   package osl
 //        ^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/
-//        documentation
-//        > package osl
   
   import (
    "errors"
