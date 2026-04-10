@@ -193,7 +193,7 @@ func indexVisitPackages(
 				atomic.AddUint64(&count, 1)
 				continue
 			}
-			// Build SymbolInformation for the package symbol.
+
 			symInfo := &scip.SymbolInformation{
 				Symbol:        pkgSymbol,
 				DisplayName:   pkg.Name,
@@ -203,16 +203,13 @@ func indexVisitPackages(
 					Text:     "package " + pkg.Name,
 				},
 			}
+			firstFile := pkg.Syntax[0]
+			firstDoc := pathToDocuments[pkg.Fset.File(firstFile.Package).Name()]
+			firstDoc.SetSymbolInformation(firstFile.Name.NamePos, symInfo)
 
-			symInfoEmitted := false
 			for _, f := range pkg.Syntax {
 				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
 				position := pkg.Fset.Position(f.Name.NamePos)
-
-				if !symInfoEmitted {
-					doc.SetSymbolInformation(f.Name.NamePos, symInfo)
-					symInfoEmitted = true
-				}
 
 				doc.PackageOccurrence = &scip.Occurrence{
 					Range:       symbols.RangeFromName(position, f.Name.Name, false),
@@ -228,17 +225,4 @@ func indexVisitPackages(
 	output.WithProgressParallel(&wg, "Visiting Packages", &count, uint64(len(lookupIDs)))
 
 	return pathToDocuments, globalSymbols
-}
-
-// packagePrefixes returns all prefix of the go package path. For example, the package
-// `foo/bar/baz` will return the slice containing `foo/bar/baz`, `foo/bar`, and `foo`.
-func packagePrefixes(packageName string) []string {
-	parts := strings.Split(packageName, "/")
-	prefixes := make([]string, len(parts))
-
-	for i := 1; i <= len(parts); i++ {
-		prefixes[len(parts)-i] = strings.Join(parts[:i], "/")
-	}
-
-	return prefixes
 }
