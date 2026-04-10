@@ -21,15 +21,11 @@ func findPackageDocs(pkg *packages.Package) []string {
 		}
 	}
 
-	if len(filesWithDocs) == 0 {
-		return nil
-	}
-
 	sort.SliceStable(filesWithDocs, func(i, j int) bool {
 		return fileRelevance(pkg, filesWithDocs[i]) < fileRelevance(pkg, filesWithDocs[j])
 	})
 
-	docs := make([]string, 0, len(filesWithDocs))
+	var docs []string
 	for _, f := range filesWithDocs {
 		docs = append(docs, f.Doc.Text())
 	}
