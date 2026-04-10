@@ -187,44 +187,38 @@ func indexVisitPackages(
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
-			// Handle that packages can have many files for one package.
-			// This finds the "definitive" package declaration
-			pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
+			// Find the file whose doc comment represents the package documentation.
+			pkgDocFile, err := findPackageDocFile(pkg)
 			if err != nil {
 				panic(fmt.Sprintf("Unhandled package declaration: %s", err))
 			}
 
-			if pkgDeclaration == nil {
+			if pkgDocFile == nil {
 				atomic.AddUint64(&count, 1)
 				continue
 			}
 
-			globalSymbols.SetPkgName(pkg, pkgDeclaration)
+			pkgSymbol := globalSymbols.SetPkgSymbol(pkg)
 
 			// If we don't have this package anywhere, don't try to create a new symbol
 			if _, ok := projectPackages[newtypes.GetID(pkg)]; !ok {
 				atomic.AddUint64(&count, 1)
 				continue
 			}
-
-			pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg).Symbol
 			for _, f := range pkg.Syntax {
 				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+				position := pkg.Fset.Position(f.Name.NamePos)
 
-				if pkgDeclaration != nil {
-					position := pkg.Fset.Position(f.Name.NamePos)
+				// The doc file provides the SymbolInformation with documentation.
+				if f == pkgDocFile {
+					doc.SetNewSymbolForPos(pkgSymbol, pkgDocFile, f.Name, f.Name.NamePos)
+				}
 
-					// Every package statement is a definition of the package symbol.
-					// The "best" file also provides the SymbolInformation with documentation.
-					if f == pkgDeclaration {
-						doc.SetNewSymbolForPos(pkgSymbol, pkgDeclaration, f.Name, f.Name.NamePos)
-					}
-
-					doc.PackageOccurrence = &scip.Occurrence{
-						Range:       symbols.RangeFromName(position, f.Name.Name, false),
-						Symbol:      pkgSymbol,
-						SymbolRoles: int32(scip.SymbolRole_Definition),
-					}
+				// Every package statement is a definition of the package symbol.
+				doc.PackageOccurrence = &scip.Occurrence{
+					Range:       symbols.RangeFromName(position, f.Name.Name, false),
+					Symbol:      pkgSymbol,
+					SymbolRoles: int32(scip.SymbolRole_Definition),
 				}
 			}
 

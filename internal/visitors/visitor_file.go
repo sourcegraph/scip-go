@@ -169,13 +169,13 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				if overrideSymbol, ok := v.overrides.pkgNameOverride[pkgID]; ok {
 					symbolName = overrideSymbol
 				} else {
-					symbol := v.globalSymbols.GetPkgNameSymbolByID(pkgID)
-					if symbol == nil {
+					sym, ok := v.globalSymbols.GetPkgSymbolByID(pkgID)
+					if !ok {
 						slog.Debug(fmt.Sprintf("Missing symbol for package: %s", sel.Imported().Path()))
 						return nil
 					}
 
-					symbolName = symbol.Symbol
+					symbolName = sym
 				}
 
 				v.AppendSymbolReference(symbolName, scipRange(startPosition, endPosition, sel), nil)
@@ -306,13 +306,13 @@ func (v *fileVisitor) emitImportReference(
 		return
 	}
 
-	symbol := globalSymbols.GetPkgNameSymbol(importedPackage)
-	if symbol == nil {
+	sym, ok := globalSymbols.GetPkgSymbol(importedPackage)
+	if !ok {
 		slog.Debug(fmt.Sprintf("Missing symbol information for package: %s", importedPackage.ID))
 		return
 	}
 
-	v.AppendSymbolReference(symbol.Symbol, scipRange, nil)
+	v.AppendSymbolReference(sym, scipRange, nil)
 }
 
 // NewDefinition emits a scip.Occurence ONLY. This will not emit a

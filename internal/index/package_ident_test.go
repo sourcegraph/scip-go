@@ -8,7 +8,7 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func TestIndexer_findBestPackageDefinitionPath(t *testing.T) {
+func TestIndexer_findPackageDocFile(t *testing.T) {
 	type FileInfo struct {
 		Name string
 		Docs bool
@@ -58,7 +58,7 @@ func TestIndexer_findBestPackageDefinitionPath(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			pkg, names := makePackage(pkgName, fileInfo)
 
-			pkgToken, _ := findBestPackageDefinitionPath(pkg)
+			pkgToken, _ := findPackageDocFile(pkg)
 			if name := names[pkgToken]; name != expected {
 				t.Errorf("incorrect hover text documentation. want=%s have=%s", name, expected)
 			}

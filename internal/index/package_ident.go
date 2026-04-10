@@ -10,7 +10,9 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
+// findPackageDocFile picks the file whose doc comment should represent
+// the package's documentation in the SCIP index.
+func findPackageDocFile(pkg *packages.Package) (*ast.File, error) {
 	if pkg.PkgPath == "builtin" {
 		return nil, nil
 	}
