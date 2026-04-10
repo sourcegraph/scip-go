@@ -1,5 +1,4 @@
-  // THIS FILE IS GENERATED.
-  
+  // Documentation for no_doc.go.
   package pr199
 //        ^^^^^ definition 0.1.test `sg/pr199`/
   
