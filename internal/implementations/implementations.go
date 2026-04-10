@@ -108,8 +108,9 @@ func AddImplementationRelationships(
 	pkgs loader.PackageLookup,
 	allPackages loader.PackageLookup,
 	symbols *lookup.Global,
-) error {
-	return output.WithProgress("Indexing Implementations", func() error {
+) ([]*scip.SymbolInformation, error) {
+	var externalSymbols []*scip.SymbolInformation
+	err := output.WithProgress("Indexing Implementations", func() error {
 		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
 		if err != nil {
 			return err
@@ -123,7 +124,8 @@ func AddImplementationRelationships(
 
 			remotePackages[pkgID] = pkg
 		}
-		remoteInterfaces, _, err := extractInterfacesAndConcreteTypes(remotePackages, symbols)
+		remoteInterfaces, remoteTypes, err := extractInterfacesAndConcreteTypes(
+			remotePackages, symbols)
 		if err != nil {
 			return err
 		}
@@ -134,15 +136,22 @@ func AddImplementationRelationships(
 		// local type -> remote interface
 		findImplementations(localTypes, remoteInterfaces, symbols)
 
-		// TODO(author: tjdevries, issue: https://github.com/sourcegraph/scip-go/issues/64)
-		// We should consider what this would even look like?
-		// I don't think this makes sense the current way that we are emitting
-		// implementations. You wouldn't even catch these anyways when uploading
 		// remote type -> local interface
-		// findImplementations(remoteTypes, localInterfaces, symbols)
+		// We emit these as external symbols so index consumer can merge them.
+		findImplementations(remoteTypes, localInterfaces, symbols)
+
+		// Collect remote type symbols that gained relationships
+		for _, typ := range remoteTypes {
+			if sym, ok := symbols.GetSymbolInformation(typ.Pkg, typ.Ident.Pos()); ok {
+				if len(sym.Relationships) > 0 {
+					externalSymbols = append(externalSymbols, sym)
+				}
+			}
+		}
 
 		return nil
 	})
+	return externalSymbols, err
 }
 
 func implementationsForType(ty ImplDef, tyMethods *intsets.Sparse, interfaceToMethodSet map[*scip.SymbolInformation]*intsets.Sparse) (matching []*scip.SymbolInformation) {

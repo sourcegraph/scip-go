@@ -1,0 +1,136 @@
+github.com/golang/go/src go1.22 `compress/flate`/Writer#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `compress/flate`/decompressor#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `compress/gzip`/Reader#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `compress/gzip`/Writer#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `crypto/cipher`/StreamWriter#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `crypto/tls`/Conn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `crypto/tls`/QUICConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `crypto/tls`/listener#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `encoding/base64`/encoder#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `encoding/hex`/dumper#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `encoding/pem`/lineBreaker#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `internal/fuzz`/sharedMem#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `internal/fuzz`/workerClient#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `internal/poll`/FD#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `mime/multipart`/Part#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `mime/multipart`/Writer#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `mime/multipart`/sectionReadCloser#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `mime/quotedprintable`/Writer#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http/internal`/chunkedWriter#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/ClientConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/Server#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/body#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/bodyEOFSignal#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/cancelTimerBody#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/expectContinueReader#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/gzipReader#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/http1ClientConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/http2ClientConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/http2gzipReader#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/http2missingBody#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/http2netHTTPClientConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/http2noBodyReader#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/http2requestBody#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/http2transportResponseBody#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/ioFile#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/loggingConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/maxBytesReader#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/noBody#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/onceCloseListener#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/readTrackingBody#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/readWriteCloserBody#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/socksConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/http`/unencryptedNetConnInTLSConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/textproto`/Conn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `net/textproto`/dotWriter#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `vendor/golang.org/x/net/http2/hpack`/Decoder#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `vendor/golang.org/x/text/transform`/Writer#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 `vendor/golang.org/x/text/unicode/norm`/normWriter#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 io/PipeReader#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 io/PipeWriter#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 io/nopCloser#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 io/nopCloserWriterTo#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/IPConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/TCPConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/TCPListener#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/UDPConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/UnixConn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/UnixListener#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/conn#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/netFD#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/pipe#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/tcpConnWithoutReadFrom#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 net/tcpConnWithoutWriteTo#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 os/File#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 os/Root#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 os/fileWithoutReadFrom#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 os/fileWithoutWriteTo#
+  relationship 0.1.test `sg/testdata`/I3# implementation
+github.com/golang/go/src go1.22 os/root#
+  relationship 0.1.test `sg/testdata`/I3# implementation

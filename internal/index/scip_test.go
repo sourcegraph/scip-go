@@ -3,7 +3,6 @@ package index_test
 import (
 	"flag"
 	"fmt"
-	"net/url"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -64,29 +63,28 @@ func TestSnapshots(t *testing.T) {
 				IncludeDisambiguator:  func(_ string) bool { return true },
 			}
 
-			sourceFiles := []*scip.SourceFile{}
+			// Skip documents outside of current directory (e.g. from Go build cache)
+			var localDocs []*scip.Document
 			for _, doc := range scipIndex.Documents {
-				// Skip files outside of current directory
-				if strings.HasPrefix(doc.RelativePath, "..") {
-					continue
+				if !strings.HasPrefix(doc.RelativePath, "..") {
+					localDocs = append(localDocs, doc)
 				}
+			}
+			scipIndex.Documents = localDocs
 
-				if *filter != "" && !strings.Contains(doc.RelativePath, *filter) {
-					continue
+			sourceFiles, err := testutil.FormatSnapshots(&scipIndex, "//", symbolFormatter, inputDirectory)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if *filter != "" {
+				var filtered []*scip.SourceFile
+				for _, sf := range sourceFiles {
+					if strings.Contains(sf.RelativePath, *filter) {
+						filtered = append(filtered, sf)
+					}
 				}
-
-				sourcePath, _ := url.JoinPath(scipIndex.Metadata.ProjectRoot, doc.RelativePath)
-				sourceUrl, _ := url.Parse(sourcePath)
-				formatted, err := testutil.FormatSnapshot(doc, "//", symbolFormatter, sourceUrl.Path)
-				if err != nil {
-					t.Errorf("Failed to format document: %s // %s", sourceUrl.Path, err)
-				}
-
-				sourceFiles = append(sourceFiles, scip.NewSourceFile(
-					doc.RelativePath,
-					doc.RelativePath,
-					formatted,
-				))
+				sourceFiles = filtered
 			}
 
 			return sourceFiles
