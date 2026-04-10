@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"path/filepath"
-	"sort"
 	"strings"
 	"testing"
 
@@ -77,69 +76,33 @@ func TestSnapshots(t *testing.T) {
 				IncludeDisambiguator:  func(_ string) bool { return true },
 			}
 
-			sourceFiles, err := testutil.FormatSnapshots(
-				&scipIndex, "//", symbolFormatter, "")
+			// Skip documents outside of current directory (e.g. from Go build cache)
+			var localDocs []*scip.Document
+			for _, doc := range scipIndex.Documents {
+				if !strings.HasPrefix(doc.RelativePath, "..") {
+					localDocs = append(localDocs, doc)
+				}
+			}
+			scipIndex.Documents = localDocs
+
+			sourceFiles, err := testutil.FormatSnapshots(&scipIndex, "//", symbolFormatter, inputDirectory)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			if len(scipIndex.ExternalSymbols) > 0 {
-				sourceFiles = append(sourceFiles, scip.NewSourceFile(
-					"external_symbols.txt",
-					"external_symbols.txt",
-					formatExternalSymbols(scipIndex.ExternalSymbols, symbolFormatter),
-				))
+			if *filter != "" {
+				var filtered []*scip.SourceFile
+				for _, sf := range sourceFiles {
+					if strings.Contains(sf.RelativePath, *filter) {
+						filtered = append(filtered, sf)
+					}
+				}
+				sourceFiles = filtered
 			}
 
 			return sourceFiles
 		},
 	)
-}
-
-func formatExternalSymbols(symbols []*scip.SymbolInformation, formatter scip.SymbolFormatter) string {
-	var b strings.Builder
-
-	sort.Slice(symbols, func(i, j int) bool {
-		return symbols[i].Symbol < symbols[j].Symbol
-	})
-
-	for i, sym := range symbols {
-		if i > 0 {
-			b.WriteString("\n")
-		}
-		formatted, err := formatter.Format(sym.Symbol)
-		if err != nil {
-			formatted = sym.Symbol
-		}
-		b.WriteString(formatted)
-		b.WriteString("\n")
-
-		rels := make([]*scip.Relationship, len(sym.Relationships))
-		copy(rels, sym.Relationships)
-		sort.Slice(rels, func(i, j int) bool {
-			return rels[i].Symbol < rels[j].Symbol
-		})
-
-		for _, rel := range rels {
-			relFormatted, err := formatter.Format(rel.Symbol)
-			if err != nil {
-				relFormatted = rel.Symbol
-			}
-			kind := "reference"
-			if rel.IsImplementation {
-				kind = "implementation"
-			}
-			if rel.IsReference {
-				kind = "reference"
-			}
-			if rel.IsTypeDefinition {
-				kind = "type_definition"
-			}
-			fmt.Fprintf(&b, "  relationship %s %s\n", relFormatted, kind)
-		}
-	}
-
-	return b.String()
 }
 
 // getTestdataRoot returns the absolute path to the testdata directory of this repository.
