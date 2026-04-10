@@ -214,16 +214,16 @@ func indexVisitPackages(
 				if pkgDeclaration != nil {
 					position := pkg.Fset.Position(f.Name.NamePos)
 
-					role := int32(scip.SymbolRole_ReadAccess)
+					// Every package statement is a definition of the package symbol.
+					// The "best" file also provides the SymbolInformation with documentation.
 					if f == pkgDeclaration {
 						doc.SetNewSymbolForPos(pkgSymbol, pkgDeclaration, f.Name, f.Name.NamePos)
-						role = int32(scip.SymbolRole_Definition)
 					}
 
 					doc.PackageOccurrence = &scip.Occurrence{
 						Range:       symbols.RangeFromName(position, f.Name.Name, false),
 						Symbol:      pkgSymbol,
-						SymbolRoles: role,
+						SymbolRoles: int32(scip.SymbolRole_Definition),
 					}
 				}
 			}

@@ -1,5 +1,5 @@
   package gosrc
-//        ^^^^^ reference 0.1.test `sg/testdata/duplicate_path_id`/
+//        ^^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/
   
   type importMeta struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/importMeta#

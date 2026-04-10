@@ -1,5 +1,5 @@
   package testdata
-//        ^^^^^^^^ reference 0.1.test `sg/testdata`/
+//        ^^^^^^^^ definition 0.1.test `sg/testdata`/
   
   import (
    "sg/testdata/internal/secret"

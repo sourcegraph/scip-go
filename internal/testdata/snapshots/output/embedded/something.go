@@ -1,5 +1,5 @@
   package embedded
-//        ^^^^^^^^ reference 0.1.test `sg/embedded`/
+//        ^^^^^^^^ definition 0.1.test `sg/embedded`/
   
   import "fmt"
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
