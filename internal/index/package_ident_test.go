@@ -3,7 +3,7 @@ package index
 import (
 	"go/ast"
 	"go/token"
-	"strings"
+	"slices"
 	"testing"
 
 	"golang.org/x/tools/go/packages"
@@ -44,6 +44,11 @@ func TestFindPackageDocs(t *testing.T) {
 		}
 	}
 
+	// doc produces the text that ast.CommentGroup.Text() returns for a "// text" comment.
+	doc := func(text string) string {
+		return text + "\n"
+	}
+
 	t.Run("returns nil when no file has docs", func(t *testing.T) {
 		pkg := makePackage("smol", []FileInfo{
 			{"smol.go", ""},
@@ -54,14 +59,22 @@ func TestFindPackageDocs(t *testing.T) {
 		}
 	})
 
+	t.Run("returns nil for empty syntax", func(t *testing.T) {
+		pkg := makePackage("mylib", []FileInfo{})
+		if docs := findPackageDocs(pkg); docs != nil {
+			t.Errorf("expected nil, got %v", docs)
+		}
+	})
+
 	t.Run("returns single doc", func(t *testing.T) {
 		pkg := makePackage("mylib", []FileInfo{
 			{"mylib.go", ""},
 			{"has_docs.go", "Package docs"},
 		})
-		docs := findPackageDocs(pkg)
-		if len(docs) != 1 {
-			t.Fatalf("expected 1 doc, got %d", len(docs))
+		want := []string{doc("Package docs")}
+		got := findPackageDocs(pkg)
+		if !slices.Equal(got, want) {
+			t.Errorf("want %v, got %v", want, got)
 		}
 	})
 
@@ -71,15 +84,10 @@ func TestFindPackageDocs(t *testing.T) {
 			{"doc.go", "from doc.go"},
 			{"other.go", "from other"},
 		})
-		docs := findPackageDocs(pkg)
-		if len(docs) != 3 {
-			t.Fatalf("expected 3 docs, got %d", len(docs))
-		}
-		if !strings.Contains(docs[0], "from doc.go") {
-			t.Errorf("expected doc.go first, got %q", docs[0])
-		}
-		if !strings.Contains(docs[1], "from mylib") {
-			t.Errorf("expected mylib.go second, got %q", docs[1])
+		want := []string{doc("from doc.go"), doc("from mylib"), doc("from other")}
+		got := findPackageDocs(pkg)
+		if !slices.Equal(got, want) {
+			t.Errorf("want %v, got %v", want, got)
 		}
 	})
 
@@ -88,19 +96,27 @@ func TestFindPackageDocs(t *testing.T) {
 			{"other.go", "from other"},
 			{"mylib.go", "from mylib"},
 		})
-		docs := findPackageDocs(pkg)
-		if len(docs) != 2 {
-			t.Fatalf("expected 2 docs, got %d", len(docs))
-		}
-		if !strings.Contains(docs[0], "from mylib") {
-			t.Errorf("expected mylib.go first, got %q", docs[0])
+		want := []string{doc("from mylib"), doc("from other")}
+		got := findPackageDocs(pkg)
+		if !slices.Equal(got, want) {
+			t.Errorf("want %v, got %v", want, got)
 		}
 	})
+}
 
-	t.Run("returns nil for empty syntax", func(t *testing.T) {
-		pkg := makePackage("mylib", []FileInfo{})
-		if docs := findPackageDocs(pkg); docs != nil {
-			t.Errorf("expected nil, got %v", docs)
+func TestFileRelevance(t *testing.T) {
+	tests := []struct {
+		filename string
+		want     int
+	}{
+		{"doc.go", 0},
+		{"mylib.go", 1},
+		{"other.go", 2},
+		{"other_test.go", 3},
+	}
+	for _, tt := range tests {
+		if got := fileRelevance("mylib", tt.filename); got != tt.want {
+			t.Errorf("fileRelevance(%q) = %d, want %d", tt.filename, got, tt.want)
 		}
-	})
+	}
 }
