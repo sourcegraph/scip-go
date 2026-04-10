@@ -22,7 +22,9 @@ func findPackageDocs(pkg *packages.Package) []string {
 	}
 
 	sort.SliceStable(filesWithDocs, func(i, j int) bool {
-		return fileRelevance(pkg, filesWithDocs[i]) < fileRelevance(pkg, filesWithDocs[j])
+		fi := pkg.Fset.Position(filesWithDocs[i].Pos()).Filename
+		fj := pkg.Fset.Position(filesWithDocs[j].Pos()).Filename
+		return fileRelevance(pkg.Name, fi) < fileRelevance(pkg.Name, fj)
 	})
 
 	var docs []string
@@ -33,15 +35,13 @@ func findPackageDocs(pkg *packages.Package) []string {
 }
 
 // fileRelevance returns a sort key: lower is more relevant.
-func fileRelevance(pkg *packages.Package, f *ast.File) int {
-	fPath := pkg.Fset.Position(f.Pos()).Filename
-
+func fileRelevance(pkgName, filename string) int {
 	switch {
-	case path.Base(fPath) == "doc.go":
+	case path.Base(filename) == "doc.go":
 		return 0
-	case strings.TrimSuffix(path.Base(fPath), path.Ext(fPath)) == pkg.Name:
+	case strings.TrimSuffix(path.Base(filename), path.Ext(filename)) == pkgName:
 		return 1
-	case !strings.HasSuffix(fPath, "_test.go"):
+	case !strings.HasSuffix(filename, "_test.go"):
 		return 2
 	default:
 		return 3
