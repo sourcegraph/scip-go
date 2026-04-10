@@ -8,10 +8,10 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-// findPackageDocFile picks the file whose doc comment should represent
-// the package's documentation in the SCIP index. Returns nil if no file
+// findPackageDoc returns the doc comment text for the package, picking the
+// best file when multiple files have doc comments. Returns "" if no file
 // has a package doc comment.
-func findPackageDocFile(pkg *packages.Package) *ast.File {
+func findPackageDoc(pkg *packages.Package) string {
 	var filesWithDocs []*ast.File
 	for _, f := range pkg.Syntax {
 		if f.Doc != nil {
@@ -19,29 +19,24 @@ func findPackageDocFile(pkg *packages.Package) *ast.File {
 		}
 	}
 
-	if len(filesWithDocs) == 1 {
-		return filesWithDocs[0]
-	}
-
-	if len(filesWithDocs) == 0 {
-		return nil
-	}
-
-	// Multiple files have doc comments. Prefer doc.go, then the file matching
-	// the package name, then pick the first candidate.
 	candidates := filterBasedOnTestFiles(pkg, filesWithDocs)
+	if len(candidates) == 0 {
+		return ""
+	}
+
+	// Prefer doc.go, then the file matching the package name, then pick the
+	// first candidate.
 	for _, f := range candidates {
 		if path.Base(pkg.Fset.Position(f.Pos()).Filename) == "doc.go" {
-			return f
+			return f.Doc.Text()
 		}
 	}
 	for _, f := range candidates {
 		if fileNameWithoutExtension(pkg.Fset.Position(f.Pos()).Filename) == pkg.Name {
-			return f
+			return f.Doc.Text()
 		}
 	}
-
-	return candidates[0]
+	return candidates[0].Doc.Text()
 }
 
 func fileNameWithoutExtension(fileName string) string {

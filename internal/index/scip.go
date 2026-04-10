@@ -186,9 +186,6 @@ func indexVisitPackages(
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
-			// Find the file whose doc comment represents the package documentation.
-			pkgDocFile := findPackageDocFile(pkg)
-
 			pkgSymbol := globalSymbols.SetPkgSymbol(pkg)
 
 			// If we don't have this package anywhere, don't try to create a new symbol
@@ -205,8 +202,8 @@ func indexVisitPackages(
 					Text:     "package " + pkg.Name,
 				},
 			}
-			if pkgDocFile != nil && pkgDocFile.Doc != nil {
-				symInfo.Documentation = []string{pkgDocFile.Doc.Text()}
+			if pkgDoc := findPackageDoc(pkg); pkgDoc != "" {
+				symInfo.Documentation = []string{pkgDoc}
 			}
 
 			symInfoEmitted := false
