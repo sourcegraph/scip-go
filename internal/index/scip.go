@@ -196,13 +196,27 @@ func indexVisitPackages(
 				atomic.AddUint64(&count, 1)
 				continue
 			}
+			// Build SymbolInformation for the package symbol.
+			symInfo := &scip.SymbolInformation{
+				Symbol:      pkgSymbol,
+				DisplayName: pkg.Name,
+				SignatureDocumentation: &scip.Document{
+					Language: "go",
+					Text:     "package " + pkg.Name,
+				},
+			}
+			if pkgDocFile != nil && pkgDocFile.Doc != nil {
+				symInfo.Documentation = []string{pkgDocFile.Doc.Text()}
+			}
+
+			symInfoEmitted := false
 			for _, f := range pkg.Syntax {
 				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
 				position := pkg.Fset.Position(f.Name.NamePos)
 
-				// The doc file provides the SymbolInformation with documentation.
-				if f == pkgDocFile {
-					doc.SetNewSymbolForPos(pkgSymbol, pkgDocFile, f.Name, f.Name.NamePos)
+				if !symInfoEmitted {
+					doc.SetSymbolInformation(f.Name.NamePos, symInfo)
+					symInfoEmitted = true
 				}
 
 				// Every package statement is a definition of the package symbol.
