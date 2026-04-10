@@ -62,7 +62,9 @@ func (d *Document) GetSymbol(pos token.Pos) (string, bool) {
 }
 
 // SetSymbolInformation registers a pre-built SymbolInformation at the given position.
-func (d *Document) SetSymbolInformation(pos token.Pos, info *scip.SymbolInformation) {
+func (d *Document) SetSymbolInformation(
+	pos token.Pos, info *scip.SymbolInformation,
+) {
 	d.pkgSymbols.Set(pos, info)
 }
 

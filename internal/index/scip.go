@@ -195,15 +195,13 @@ func indexVisitPackages(
 			}
 			// Build SymbolInformation for the package symbol.
 			symInfo := &scip.SymbolInformation{
-				Symbol:      pkgSymbol,
-				DisplayName: pkg.Name,
+				Symbol:        pkgSymbol,
+				DisplayName:   pkg.Name,
+				Documentation: findPackageDocs(pkg),
 				SignatureDocumentation: &scip.Document{
 					Language: "go",
 					Text:     "package " + pkg.Name,
 				},
-			}
-			if pkgDoc := findPackageDoc(pkg); pkgDoc != "" {
-				symInfo.Documentation = []string{pkgDoc}
 			}
 
 			symInfoEmitted := false
@@ -216,7 +214,6 @@ func indexVisitPackages(
 					symInfoEmitted = true
 				}
 
-				// Every package statement is a definition of the package symbol.
 				doc.PackageOccurrence = &scip.Occurrence{
 					Range:       symbols.RangeFromName(position, f.Name.Name, false),
 					Symbol:      pkgSymbol,

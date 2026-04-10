@@ -9,7 +9,7 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-func TestFindPackageDoc(t *testing.T) {
+func TestFindPackageDocs(t *testing.T) {
 	type FileInfo struct {
 		Name    string
 		DocText string
@@ -44,59 +44,63 @@ func TestFindPackageDoc(t *testing.T) {
 		}
 	}
 
-	t.Run("returns empty when no file has docs", func(t *testing.T) {
+	t.Run("returns nil when no file has docs", func(t *testing.T) {
 		pkg := makePackage("smol", []FileInfo{
 			{"smol.go", ""},
 			{"other.go", ""},
 		})
-		if doc := findPackageDoc(pkg); doc != "" {
-			t.Errorf("expected empty, got %q", doc)
+		if docs := findPackageDocs(pkg); docs != nil {
+			t.Errorf("expected nil, got %v", docs)
 		}
 	})
 
-	t.Run("returns doc from the single file with docs", func(t *testing.T) {
+	t.Run("returns single doc", func(t *testing.T) {
 		pkg := makePackage("mylib", []FileInfo{
 			{"mylib.go", ""},
-			{"has_docs.go", "Package docs here"},
+			{"has_docs.go", "Package docs"},
 		})
-		doc := findPackageDoc(pkg)
-		if doc == "" {
-			t.Fatal("expected doc text, got empty")
+		docs := findPackageDocs(pkg)
+		if len(docs) != 1 {
+			t.Fatalf("expected 1 doc, got %d", len(docs))
 		}
 	})
 
-	t.Run("prefers doc.go when multiple files have docs", func(t *testing.T) {
+	t.Run("returns all docs sorted with doc.go first", func(t *testing.T) {
 		pkg := makePackage("mylib", []FileInfo{
 			{"mylib.go", "from mylib"},
 			{"doc.go", "from doc.go"},
+			{"other.go", "from other"},
 		})
-		doc := findPackageDoc(pkg)
-		if doc == "" {
-			t.Fatal("expected doc text, got empty")
+		docs := findPackageDocs(pkg)
+		if len(docs) != 3 {
+			t.Fatalf("expected 3 docs, got %d", len(docs))
 		}
-		if !strings.Contains(doc, "from doc.go") {
-			t.Errorf("expected doc from doc.go, got %q", doc)
+		if !strings.Contains(docs[0], "from doc.go") {
+			t.Errorf("expected doc.go first, got %q", docs[0])
+		}
+		if !strings.Contains(docs[1], "from mylib") {
+			t.Errorf("expected mylib.go second, got %q", docs[1])
 		}
 	})
 
-	t.Run("prefers exact package name match when multiple files have docs", func(t *testing.T) {
+	t.Run("returns all docs sorted with package name match first when no doc.go", func(t *testing.T) {
 		pkg := makePackage("mylib", []FileInfo{
 			{"other.go", "from other"},
 			{"mylib.go", "from mylib"},
 		})
-		doc := findPackageDoc(pkg)
-		if doc == "" {
-			t.Fatal("expected doc text, got empty")
+		docs := findPackageDocs(pkg)
+		if len(docs) != 2 {
+			t.Fatalf("expected 2 docs, got %d", len(docs))
 		}
-		if !strings.Contains(doc, "from mylib") {
-			t.Errorf("expected doc from mylib.go, got %q", doc)
+		if !strings.Contains(docs[0], "from mylib") {
+			t.Errorf("expected mylib.go first, got %q", docs[0])
 		}
 	})
 
-	t.Run("returns empty for empty syntax", func(t *testing.T) {
+	t.Run("returns nil for empty syntax", func(t *testing.T) {
 		pkg := makePackage("mylib", []FileInfo{})
-		if doc := findPackageDoc(pkg); doc != "" {
-			t.Errorf("expected empty, got %q", doc)
+		if docs := findPackageDocs(pkg); docs != nil {
+			t.Errorf("expected nil, got %v", docs)
 		}
 	})
 }
