@@ -1,5 +1,5 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/
+//        ^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/
   
   type InFuncSig struct {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/InFuncSig#

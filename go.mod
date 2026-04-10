@@ -3,7 +3,6 @@ module github.com/sourcegraph/scip-go
 go 1.25.0
 
 require (
-	github.com/agnivade/levenshtein v1.2.1
 	github.com/alecthomas/kong v1.14.0
 	github.com/scip-code/scip/bindings/go/scip v0.7.0
 	golang.org/x/mod v0.34.0

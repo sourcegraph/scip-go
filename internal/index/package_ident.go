@@ -2,105 +2,48 @@ package index
 
 import (
 	"go/ast"
-	"math"
 	"path"
+	"sort"
 	"strings"
 
-	"github.com/agnivade/levenshtein"
 	"golang.org/x/tools/go/packages"
 )
 
-func findBestPackageDefinitionPath(pkg *packages.Package) (*ast.File, error) {
-	if pkg.PkgPath == "builtin" {
-		return nil, nil
-	}
-
-	// Unsafe is special case for builtin
-	if pkg.PkgPath == "unsafe" {
-		return nil, nil
-	}
-
-	if len(pkg.Syntax) == 0 {
-		// This case can be triggered when a package directory only contains `_test.go` files,
-		// as those files will be compiled as part of a separate _test package.
-		return nil, nil
-	}
-
-	files := []*ast.File{}
-	filesWithDocs := []*ast.File{}
+// findPackageDocs returns all doc comment texts for the package, sorted by
+// relevance: doc.go first, then the file matching the package name, then
+// other matching files, and finally test/non-test mismatched files last.
+// Returns nil if no file has a package doc comment.
+func findPackageDocs(pkg *packages.Package) []string {
+	var filesWithDocs []*ast.File
 	for _, f := range pkg.Syntax {
-		// pos := pkg.Fset.Position(f.Pos())
-
-		files = append(files, f)
 		if f.Doc != nil {
 			filesWithDocs = append(filesWithDocs, f)
 		}
 	}
 
-	// The idiomatic way is to _only_ have one .go file per package that has a docstring
-	// for the package. This should generally return here.
-	if len(filesWithDocs) == 1 {
-		return filesWithDocs[0], nil
+	sort.SliceStable(filesWithDocs, func(i, j int) bool {
+		fi := pkg.Fset.Position(filesWithDocs[i].Pos()).Filename
+		fj := pkg.Fset.Position(filesWithDocs[j].Pos()).Filename
+		return fileRelevance(pkg.Name, fi) < fileRelevance(pkg.Name, fj)
+	})
+
+	var docs []string
+	for _, f := range filesWithDocs {
+		docs = append(docs, f.Doc.Text())
 	}
-
-	// If we for some reason have more than one .go file per package that has a docstring,
-	// only consider returning paths that contain the docstring (instead of any of the possible
-	// paths).
-	if len(filesWithDocs) > 1 {
-		files = filesWithDocs
-	}
-
-	// Try to only pick non _test files for non _test packages and vice versa.
-	files = filterBasedOnTestFiles(pkg, files)
-
-	// Find the best remaining path.
-	// Chooses:
-	//     1. doc.go
-	//     2. exact match
-	//     3. computes levenshtein and picks best score
-	var bestFile *ast.File
-
-	minDistance := math.MaxInt32
-	for _, f := range files {
-		fPath := pkg.Fset.Position(f.Pos()).Filename
-		fileName := fileNameWithoutExtension(fPath)
-
-		if "doc.go" == path.Base(fPath) {
-			return f, nil
-		}
-
-		if pkg.Name == fileName {
-			return f, nil
-		}
-
-		distance := levenshtein.ComputeDistance(pkg.Name, fileName)
-		if distance < minDistance {
-			minDistance = distance
-			bestFile = f
-		}
-	}
-
-	return bestFile, nil
+	return docs
 }
 
-func fileNameWithoutExtension(fileName string) string {
-	return strings.TrimSuffix(fileName, path.Ext(fileName))
-}
-
-func filterBasedOnTestFiles(pkg *packages.Package, files []*ast.File) []*ast.File {
-	packageNameEndsWithTest := strings.HasSuffix(pkg.Name, "_test")
-
-	preferredFiles := []*ast.File{}
-	for _, f := range files {
-		fPath := pkg.Fset.Position(f.Pos())
-		if packageNameEndsWithTest == strings.HasSuffix(fPath.Filename, "_test.go") {
-			preferredFiles = append(preferredFiles, f)
-		}
+// fileRelevance returns a sort key: lower is more relevant.
+func fileRelevance(pkgName, filename string) int {
+	switch {
+	case path.Base(filename) == "doc.go":
+		return 0
+	case strings.TrimSuffix(path.Base(filename), path.Ext(filename)) == pkgName:
+		return 1
+	case !strings.HasSuffix(filename, "_test.go"):
+		return 2
+	default:
+		return 3
 	}
-
-	if len(preferredFiles) > 0 {
-		return preferredFiles
-	}
-
-	return files
 }

@@ -1,7 +1,5 @@
   package embedded
 //        ^^^^^^^^ definition 0.1.test `sg/embedded`/
-//        documentation
-//        > package embedded
   
   import "net/http"
 //        ^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/

@@ -1,7 +1,5 @@
   package nested_internal
 //        ^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded/internal`/
-//        documentation
-//        > package nested_internal
   
   import (
    "fmt"

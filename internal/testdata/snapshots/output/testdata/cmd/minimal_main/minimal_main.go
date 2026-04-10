@@ -1,7 +1,5 @@
   package main
 //        ^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/
-//        documentation
-//        > package main
   
   type User struct {
 //     ^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/User#

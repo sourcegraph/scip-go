@@ -1,5 +1,5 @@
   package secret
-//        ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
+//        ^^^^^^ definition 0.1.test `sg/testdata/internal/secret`/
   
   // SecretScore is like score but _secret_.
   const SecretScore = uint64(43)

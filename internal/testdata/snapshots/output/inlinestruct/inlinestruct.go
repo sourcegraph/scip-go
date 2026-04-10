@@ -1,7 +1,5 @@
   package inlinestruct
 //        ^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/
-//        documentation
-//        > package inlinestruct
   
   type FieldInterface interface {
 //     ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/FieldInterface#

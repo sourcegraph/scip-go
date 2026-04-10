@@ -1,5 +1,5 @@
   package inlinestruct
-//        ^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/
+//        ^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/
   
   import "context"
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/

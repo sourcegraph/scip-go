@@ -1,7 +1,5 @@
   package testspecial_test
 //        ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testspecial_test`/
-//        documentation
-//        > package testspecial_test
   
   import (
    "testing"

@@ -2,7 +2,6 @@ package index
 
 import (
 	_ "embed"
-	"fmt"
 	"go/ast"
 	"log/slog"
 	"maps"
@@ -187,19 +186,7 @@ func indexVisitPackages(
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
-			// Handle that packages can have many files for one package.
-			// This finds the "definitive" package declaration
-			pkgDeclaration, err := findBestPackageDefinitionPath(pkg)
-			if err != nil {
-				panic(fmt.Sprintf("Unhandled package declaration: %s", err))
-			}
-
-			if pkgDeclaration == nil {
-				atomic.AddUint64(&count, 1)
-				continue
-			}
-
-			globalSymbols.SetPkgName(pkg, pkgDeclaration)
+			pkgSymbol := globalSymbols.SetPkgSymbol(pkg)
 
 			// If we don't have this package anywhere, don't try to create a new symbol
 			if _, ok := projectPackages[newtypes.GetID(pkg)]; !ok {
@@ -207,24 +194,27 @@ func indexVisitPackages(
 				continue
 			}
 
-			pkgSymbol := globalSymbols.GetPkgNameSymbol(pkg).Symbol
+			symInfo := &scip.SymbolInformation{
+				Symbol:        pkgSymbol,
+				DisplayName:   pkg.Name,
+				Documentation: findPackageDocs(pkg),
+				SignatureDocumentation: &scip.Document{
+					Language: "go",
+					Text:     "package " + pkg.Name,
+				},
+			}
+			firstFile := pkg.Syntax[0]
+			firstDoc := pathToDocuments[pkg.Fset.File(firstFile.Package).Name()]
+			firstDoc.SetSymbolInformation(firstFile.Name.NamePos, symInfo)
+
 			for _, f := range pkg.Syntax {
 				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+				position := pkg.Fset.Position(f.Name.NamePos)
 
-				if pkgDeclaration != nil {
-					position := pkg.Fset.Position(f.Name.NamePos)
-
-					role := int32(scip.SymbolRole_ReadAccess)
-					if f == pkgDeclaration {
-						doc.SetNewSymbolForPos(pkgSymbol, pkgDeclaration, f.Name, f.Name.NamePos)
-						role = int32(scip.SymbolRole_Definition)
-					}
-
-					doc.PackageOccurrence = &scip.Occurrence{
-						Range:       symbols.RangeFromName(position, f.Name.Name, false),
-						Symbol:      pkgSymbol,
-						SymbolRoles: role,
-					}
+				doc.PackageOccurrence = &scip.Occurrence{
+					Range:       symbols.RangeFromName(position, f.Name.Name, false),
+					Symbol:      pkgSymbol,
+					SymbolRoles: int32(scip.SymbolRole_Definition),
 				}
 			}
 
@@ -235,17 +225,4 @@ func indexVisitPackages(
 	output.WithProgressParallel(&wg, "Visiting Packages", &count, uint64(len(lookupIDs)))
 
 	return pathToDocuments, globalSymbols
-}
-
-// packagePrefixes returns all prefix of the go package path. For example, the package
-// `foo/bar/baz` will return the slice containing `foo/bar/baz`, `foo/bar`, and `foo`.
-func packagePrefixes(packageName string) []string {
-	parts := strings.Split(packageName, "/")
-	prefixes := make([]string, len(parts))
-
-	for i := 1; i <= len(parts); i++ {
-		prefixes[len(parts)-i] = strings.Join(parts[:i], "/")
-	}
-
-	return prefixes
 }
