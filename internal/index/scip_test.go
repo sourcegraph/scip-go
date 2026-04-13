@@ -3,7 +3,6 @@ package index_test
 import (
 	"flag"
 	"fmt"
-	"net/url"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -53,6 +52,19 @@ func TestSnapshots(t *testing.T) {
 				t.Fatal(err)
 			}
 
+			// Filter out documents outside of current directory
+			var filteredDocs []*scip.Document
+			for _, doc := range scipIndex.Documents {
+				if strings.HasPrefix(doc.RelativePath, "..") {
+					continue
+				}
+				if *filter != "" && !strings.Contains(doc.RelativePath, *filter) {
+					continue
+				}
+				filteredDocs = append(filteredDocs, doc)
+			}
+			scipIndex.Documents = filteredDocs
+
 			symbolFormatter := scip.SymbolFormatter{
 				OnError:               func(err error) error { return err },
 				IncludeScheme:         func(scheme string) bool { return scheme == "local" },
@@ -64,29 +76,10 @@ func TestSnapshots(t *testing.T) {
 				IncludeDisambiguator:  func(_ string) bool { return true },
 			}
 
-			sourceFiles := []*scip.SourceFile{}
-			for _, doc := range scipIndex.Documents {
-				// Skip files outside of current directory
-				if strings.HasPrefix(doc.RelativePath, "..") {
-					continue
-				}
-
-				if *filter != "" && !strings.Contains(doc.RelativePath, *filter) {
-					continue
-				}
-
-				sourcePath, _ := url.JoinPath(scipIndex.Metadata.ProjectRoot, doc.RelativePath)
-				sourceUrl, _ := url.Parse(sourcePath)
-				formatted, err := testutil.FormatSnapshot(doc, "//", symbolFormatter, sourceUrl.Path)
-				if err != nil {
-					t.Errorf("Failed to format document: %s // %s", sourceUrl.Path, err)
-				}
-
-				sourceFiles = append(sourceFiles, scip.NewSourceFile(
-					doc.RelativePath,
-					doc.RelativePath,
-					formatted,
-				))
+			sourceFiles, err := testutil.FormatSnapshots(
+				&scipIndex, "//", symbolFormatter, "")
+			if err != nil {
+				t.Fatal(err)
 			}
 
 			return sourceFiles
