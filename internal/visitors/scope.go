@@ -31,6 +31,12 @@ func (s *Scope) pop() {
 	s.descriptors = s.descriptors[:len(s.descriptors)-1]
 }
 
+func (s *Scope) withScope(name string, suffix scip.Descriptor_Suffix, fn func()) {
+	s.push(name, suffix)
+	defer s.pop()
+	fn()
+}
+
 func (s *Scope) makeSymbol(pkg *packages.Package, name string, suffix scip.Descriptor_Suffix) string {
 	return symbols.FromDescriptors(pkg, append(s.descriptors, &scip.Descriptor{Name: name, Suffix: suffix})...)
 }

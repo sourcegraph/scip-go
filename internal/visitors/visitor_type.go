@@ -121,32 +121,20 @@ func (v typeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 
 				switch typ := node.Type.(type) {
 				case *ast.MapType:
-					v.scope.push(name.Name, scip.Descriptor_Term)
-					defer func() {
-						v.scope.pop()
-					}()
-
-					ast.Walk(v, typ.Key)
-					ast.Walk(v, typ.Value)
+					v.scope.withScope(name.Name, scip.Descriptor_Term, func() {
+						ast.Walk(v, typ.Key)
+						ast.Walk(v, typ.Value)
+					})
 
 				case *ast.ArrayType:
-					v.scope.push(name.Name, scip.Descriptor_Term)
-					defer func() {
-						v.scope.pop()
-					}()
-
-					ast.Walk(v, typ.Elt)
+					v.scope.withScope(name.Name, scip.Descriptor_Term, func() {
+						ast.Walk(v, typ.Elt)
+					})
 
 				case *ast.StructType, *ast.InterfaceType:
-					// Current scope is now embedded in the anonymous struct
-					//   So we walk the rest of the type expression and save
-					//   the nested names
-					v.scope.push(name.Name, scip.Descriptor_Term)
-					defer func() {
-						v.scope.pop()
-					}()
-
-					ast.Walk(v, node.Type)
+					v.scope.withScope(name.Name, scip.Descriptor_Term, func() {
+						ast.Walk(v, node.Type)
+					})
 				}
 			}
 		}

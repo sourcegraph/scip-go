@@ -98,13 +98,13 @@
 // > ```go
 // > struct field x struct{field int}
 // > ```
-//    ^ definition 0.1.test `sg/pr95`/MultiNameConflict#x.y.
+//    ^ definition 0.1.test `sg/pr95`/MultiNameConflict#y.
 //    documentation
 //    > ```go
 //    > struct field y struct{field int}
 //    > ```
     field int
-//  ^^^^^ definition 0.1.test `sg/pr95`/MultiNameConflict#x.y.field.
+//  ^^^^^ definition 0.1.test `sg/pr95`/MultiNameConflict#y.field.
 //  documentation
 //  > ```go
 //  > struct field field int
@@ -125,11 +125,11 @@
    m.x.field = 10
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/MultiNameConflict#x.
-//     ^^^^^ reference 0.1.test `sg/pr95`/MultiNameConflict#x.y.field.
+//     ^^^^^ reference 0.1.test `sg/pr95`/MultiNameConflict#y.field.
    m.y.field = 20
 // ^ reference local 1
-//   ^ reference 0.1.test `sg/pr95`/MultiNameConflict#x.y.
-//     ^^^^^ reference 0.1.test `sg/pr95`/MultiNameConflict#x.y.field.
+//   ^ reference 0.1.test `sg/pr95`/MultiNameConflict#y.
+//     ^^^^^ reference 0.1.test `sg/pr95`/MultiNameConflict#y.field.
   }
 //⌃ enclosing_range_end 0.1.test `sg/pr95`/useMultiNameConflict().
   
