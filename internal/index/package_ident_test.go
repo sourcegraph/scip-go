@@ -3,118 +3,120 @@ package index
 import (
 	"go/ast"
 	"go/token"
+	"slices"
 	"testing"
 
 	"golang.org/x/tools/go/packages"
 )
 
-func TestIndexer_findBestPackageDefinitionPath(t *testing.T) {
+func TestFindPackageDocs(t *testing.T) {
 	type FileInfo struct {
-		Name string
-		Docs bool
+		Name    string
+		DocText string
 	}
 
-	makePackage := func(pkgName string, fileInfo []FileInfo) (*packages.Package, map[*ast.File]string) {
+	makePackage := func(pkgName string, fileInfo []FileInfo) *packages.Package {
 		fset := token.NewFileSet()
+		var syntax []*ast.File
 
-		files := map[string]*ast.File{}
-		syntax := []*ast.File{}
-		posMap := map[*ast.File]string{}
-
-		for idx, info := range fileInfo {
+		for _, info := range fileInfo {
 			var doc *ast.CommentGroup
-			if info.Docs {
-				doc = &ast.CommentGroup{}
+			if info.DocText != "" {
+				doc = &ast.CommentGroup{
+					List: []*ast.Comment{{Text: "// " + info.DocText}},
+				}
 			}
 
-			f := &ast.File{
+			tf := fset.AddFile(info.Name, fset.Base(), 1)
+
+			syntax = append(syntax, &ast.File{
 				Doc:     doc,
-				Package: 0,
-				Name: &ast.Ident{
-					NamePos: token.Pos(idx),
-					Name:    pkgName,
-					Obj:     &ast.Object{},
-				},
-			}
-
-			files[info.Name] = f
-			syntax = append(syntax, f)
-			posMap[f] = info.Name
-
-			fset.AddFile(info.Name, fset.Base(), 1)
+				Package: tf.Pos(0),
+				Name:    &ast.Ident{Name: pkgName},
+			})
 		}
 
 		return &packages.Package{
-			ID:      "test-package",
 			Name:    pkgName,
 			PkgPath: "test-package",
-			Imports: map[string]*packages.Package{},
 			Fset:    fset,
 			Syntax:  syntax,
-		}, posMap
+		}
 	}
 
-	makeTest := func(name, pkgName, expected string, fileInfo []FileInfo) {
-		t.Run(name, func(t *testing.T) {
-			pkg, names := makePackage(pkgName, fileInfo)
+	// doc produces the text that ast.CommentGroup.Text() returns for a "// text" comment.
+	doc := func(text string) string {
+		return text + "\n"
+	}
 
-			pkgToken, _ := findBestPackageDefinitionPath(pkg)
-			if name := names[pkgToken]; name != expected {
-				t.Errorf("incorrect hover text documentation. want=%s have=%s", name, expected)
-			}
+	t.Run("returns nil when no file has docs", func(t *testing.T) {
+		pkg := makePackage("smol", []FileInfo{
+			{"smol.go", ""},
+			{"other.go", ""},
 		})
+		if docs := findPackageDocs(pkg); docs != nil {
+			t.Errorf("expected nil, got %v", docs)
+		}
+	})
+
+	t.Run("returns nil for empty syntax", func(t *testing.T) {
+		pkg := makePackage("mylib", []FileInfo{})
+		if docs := findPackageDocs(pkg); docs != nil {
+			t.Errorf("expected nil, got %v", docs)
+		}
+	})
+
+	t.Run("returns single doc", func(t *testing.T) {
+		pkg := makePackage("mylib", []FileInfo{
+			{"mylib.go", ""},
+			{"has_docs.go", "Package docs"},
+		})
+		want := []string{doc("Package docs")}
+		got := findPackageDocs(pkg)
+		if !slices.Equal(got, want) {
+			t.Errorf("want %v, got %v", want, got)
+		}
+	})
+
+	t.Run("returns all docs sorted with doc.go first", func(t *testing.T) {
+		pkg := makePackage("mylib", []FileInfo{
+			{"mylib.go", "from mylib"},
+			{"doc.go", "from doc.go"},
+			{"other.go", "from other"},
+		})
+		want := []string{doc("from doc.go"), doc("from mylib"), doc("from other")}
+		got := findPackageDocs(pkg)
+		if !slices.Equal(got, want) {
+			t.Errorf("want %v, got %v", want, got)
+		}
+	})
+
+	t.Run("returns all docs sorted with package name match first when no doc.go", func(t *testing.T) {
+		pkg := makePackage("mylib", []FileInfo{
+			{"other.go", "from other"},
+			{"mylib.go", "from mylib"},
+		})
+		want := []string{doc("from mylib"), doc("from other")}
+		got := findPackageDocs(pkg)
+		if !slices.Equal(got, want) {
+			t.Errorf("want %v, got %v", want, got)
+		}
+	})
+}
+
+func TestFileRelevance(t *testing.T) {
+	tests := []struct {
+		filename string
+		want     int
+	}{
+		{"doc.go", 0},
+		{"mylib.go", 1},
+		{"other.go", 2},
+		{"other_test.go", 3},
 	}
-
-	makeTest("Should find exact name match",
-		"smol",
-		"smol.go",
-		[]FileInfo{
-			{"smol.go", false},
-			{"other.go", false},
-		},
-	)
-
-	makeTest("Should return something even if nothing matches",
-		"smol",
-		"random.go",
-		[]FileInfo{
-			{"random.go", false},
-		},
-	)
-
-	makeTest("Should not pick _test files if package is not a test package",
-		"unreleated",
-		"smol.go",
-		[]FileInfo{
-			{"smol.go", false},
-			{"smol_test.go", false},
-		},
-	)
-
-	makeTest("Pick whatever has documentation",
-		"mylib",
-		"has_docs.go",
-		[]FileInfo{
-			{"mylib.go", false},
-			{"has_docs.go", true},
-		},
-	)
-
-	makeTest("should pick a name that is a closer edit distance than one far away",
-		"http_router",
-		"httprouter.go",
-		[]FileInfo{
-			{"httprouter.go", false},
-			{"httpother.go", false},
-		},
-	)
-
-	makeTest("should prefer test packages over other packages if the package name has test suffix",
-		"mylib_test",
-		"mylib_test.go",
-		[]FileInfo{
-			{"mylib_test.go", false},
-			{"mylib.go", false},
-		},
-	)
+	for _, tt := range tests {
+		if got := fileRelevance("mylib", tt.filename); got != tt.want {
+			t.Errorf("fileRelevance(%q) = %d, want %d", tt.filename, got, tt.want)
+		}
+	}
 }

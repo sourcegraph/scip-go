@@ -1,5 +1,5 @@
   package initial
-//        ^^^^^^^ reference 0.1.test `sg/initial`/
+//        ^^^^^^^ definition 0.1.test `sg/initial`/
   
   type (
    // HoverTypeList is a cool struct

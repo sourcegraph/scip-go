@@ -1,7 +1,5 @@
   package switches
 //        ^^^^^^^^ definition 0.1.test `sg/switches`/
-//        documentation
-//        > package switches
   
   // CustomSwitch does the things in a switch
   type CustomSwitch struct{}

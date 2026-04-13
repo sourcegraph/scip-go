@@ -1,5 +1,5 @@
   package testspecial
-//        ^^^^^^^^^^^ reference 0.1.test `sg/testspecial`/
+//        ^^^^^^^^^^^ definition 0.1.test `sg/testspecial`/
   
 //⌄ enclosing_range_start 0.1.test `sg/testspecial`/TestFoo_Whitebox().
   func TestFoo_Whitebox() { Foo() }

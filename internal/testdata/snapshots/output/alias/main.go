@@ -1,7 +1,5 @@
   package main
 //        ^^^^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/
-//        documentation
-//        > package main
   
   // Check that we don't panic
   // Copied from https://github.com/golang/go/issues/68877#issuecomment-2290000187

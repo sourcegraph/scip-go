@@ -1,7 +1,5 @@
   package testdata
 //        ^^^^^^^^ definition 0.1.test `sg/testdata`/
-//        documentation
-//        > package testdata
   
   import (
    "context"

@@ -3,7 +3,6 @@ package lookup
 import (
 	"errors"
 	"fmt"
-	"go/ast"
 	"go/token"
 	"go/types"
 	"log/slog"
@@ -24,8 +23,8 @@ func NewPackageSymbols(pkg *packages.Package) *Package {
 
 func NewGlobalSymbols() *Global {
 	return &Global{
-		symbols:  map[newtypes.PackageID]*Package{},
-		pkgNames: map[newtypes.PackageID]*PackageName{},
+		symbols:    map[newtypes.PackageID]*Package{},
+		pkgSymbols: map[newtypes.PackageID]string{},
 	}
 }
 
@@ -82,15 +81,10 @@ func (p *Package) GetSymbol(pos token.Pos) (string, bool) {
 	}
 }
 
-type PackageName struct {
-	Symbol *scip.SymbolInformation
-	Pos    token.Pos
-}
-
 type Global struct {
-	m        sync.Mutex
-	symbols  map[newtypes.PackageID]*Package
-	pkgNames map[newtypes.PackageID]*PackageName
+	m          sync.Mutex
+	symbols    map[newtypes.PackageID]*Package
+	pkgSymbols map[newtypes.PackageID]string
 }
 
 func (p *Global) Add(pkgSymbols *Package) {
@@ -99,33 +93,24 @@ func (p *Global) Add(pkgSymbols *Package) {
 	p.m.Unlock()
 }
 
-func (p *Global) SetPkgName(pkg *packages.Package, pkgDeclaration *ast.File) {
+func (p *Global) SetPkgSymbol(pkg *packages.Package) string {
+	sym := symbols.FromDescriptors(pkg, &scip.Descriptor{
+		Name:   pkg.PkgPath,
+		Suffix: scip.Descriptor_Namespace,
+	})
 	p.m.Lock()
-	p.pkgNames[newtypes.GetID(pkg)] = &PackageName{
-		Symbol: &scip.SymbolInformation{
-			Symbol: symbols.FromDescriptors(pkg, &scip.Descriptor{
-				Name:   pkg.PkgPath,
-				Suffix: scip.Descriptor_Namespace,
-			}),
-			Documentation: []string{},
-			Relationships: []*scip.Relationship{},
-		},
-		Pos: pkgDeclaration.Name.NamePos,
-	}
+	p.pkgSymbols[newtypes.GetID(pkg)] = sym
 	p.m.Unlock()
+	return sym
 }
 
-func (p *Global) GetPkgNameSymbolByID(pkgID newtypes.PackageID) *scip.SymbolInformation {
-	named, ok := p.pkgNames[pkgID]
-	if !ok {
-		return nil
-	}
-
-	return named.Symbol
+func (p *Global) GetPkgSymbolByID(pkgID newtypes.PackageID) (string, bool) {
+	sym, ok := p.pkgSymbols[pkgID]
+	return sym, ok
 }
 
-func (p *Global) GetPkgNameSymbol(pkg *packages.Package) *scip.SymbolInformation {
-	return p.GetPkgNameSymbolByID(newtypes.GetID(pkg))
+func (p *Global) GetPkgSymbol(pkg *packages.Package) (string, bool) {
+	return p.GetPkgSymbolByID(newtypes.GetID(pkg))
 }
 
 func (p *Global) GetPackage(pkg *packages.Package) *Package {

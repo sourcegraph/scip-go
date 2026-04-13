@@ -1,7 +1,5 @@
   package server
 //        ^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/
-//        documentation
-//        > package server
   
 //⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/AnythingAtAll().
   func AnythingAtAll() {}
