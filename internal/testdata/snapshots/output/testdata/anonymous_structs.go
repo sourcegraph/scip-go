@@ -39,13 +39,13 @@
 //    > struct field b struct{x int; y string}
 //    > ```
     x int
-//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.x.
+//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#x.
 //  documentation
 //  > ```go
 //  > struct field x int
 //  > ```
     y string
-//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.y.
+//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#y.
 //  documentation
 //  > ```go
 //  > struct field y string
@@ -58,13 +58,13 @@
 // > struct field c struct{X int; Y string}
 // > ```
     X int
-//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.X.
+//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_63f1bdfcbb5680cb#X.
 //  documentation
 //  > ```go
 //  > struct field X int
 //  > ```
     Y string
-//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
+//  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_63f1bdfcbb5680cb#Y.
 //  documentation
 //  > ```go
 //  > struct field Y string
@@ -113,27 +113,27 @@
    f.a.x = 3
 // ^ reference local 6
 //   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.x.
+//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#x.
    f.a.y = "three"
 // ^ reference local 6
 //   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.y.
+//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#y.
    f.b.x = 4
 // ^ reference local 6
 //   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.x.
+//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#x.
    f.b.y = "four"
 // ^ reference local 6
 //   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.y.
+//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#y.
    f.c.X = 5
 // ^ reference local 6
 //   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.X.
+//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_63f1bdfcbb5680cb#X.
    f.c.Y = "five"
 // ^ reference local 6
 //   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
+//     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_63f1bdfcbb5680cb#Y.
   
    fmt.Printf("> %s, %s\n", d.x, d.y)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
@@ -155,28 +155,28 @@
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
 //                          ^ reference local 6
 //                            ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.x.
+//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#x.
 //                                 ^ reference local 6
 //                                   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.y.
+//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#y.
    fmt.Printf("> %s, %s\n", f.b.x, f.b.y)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
 //                          ^ reference local 6
 //                            ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.
-//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.x.
+//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#x.
 //                                 ^ reference local 6
 //                                   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.
-//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.y.
+//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_dc8845ad0ddc25eb#y.
    fmt.Printf("> %s, %s\n", f.c.X, f.c.Y)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^ reference github.com/golang/go/src go1.22 fmt/Printf().
 //                          ^ reference local 6
 //                            ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.X.
+//                              ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_63f1bdfcbb5680cb#X.
 //                                 ^ reference local 6
 //                                   ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.Y.
+//                                     ^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_63f1bdfcbb5680cb#Y.
   }
 //⌃ enclosing_range_end 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
   

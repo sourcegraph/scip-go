@@ -30,7 +30,7 @@
 // > struct field first struct{shared int}
 // > ```
     shared int
-//  ^^^^^^ definition 0.1.test `sg/pr95`/ConflictingFields#first.shared.
+//  ^^^^^^ definition 0.1.test `sg/pr95`/ConflictingFields#$anon_813df666bd2a1564#shared.
 //  documentation
 //  > ```go
 //  > struct field shared int
@@ -43,7 +43,7 @@
 // > struct field second struct{shared int}
 // > ```
     shared int
-//  ^^^^^^ definition 0.1.test `sg/pr95`/ConflictingFields#second.shared.
+//  ^^^^^^ definition 0.1.test `sg/pr95`/ConflictingFields#$anon_813df666bd2a1564#shared.
 //  documentation
 //  > ```go
 //  > struct field shared int
@@ -64,11 +64,11 @@
    c.first.shared = 1
 // ^ reference local 0
 //   ^^^^^ reference 0.1.test `sg/pr95`/ConflictingFields#first.
-//         ^^^^^^ reference 0.1.test `sg/pr95`/ConflictingFields#first.shared.
+//         ^^^^^^ reference 0.1.test `sg/pr95`/ConflictingFields#$anon_813df666bd2a1564#shared.
    c.second.shared = 2
 // ^ reference local 0
 //   ^^^^^^ reference 0.1.test `sg/pr95`/ConflictingFields#second.
-//          ^^^^^^ reference 0.1.test `sg/pr95`/ConflictingFields#second.shared.
+//          ^^^^^^ reference 0.1.test `sg/pr95`/ConflictingFields#$anon_813df666bd2a1564#shared.
   }
 //⌃ enclosing_range_end 0.1.test `sg/pr95`/useConflictingFields().
   
@@ -104,7 +104,7 @@
 //    > struct field y struct{field int}
 //    > ```
     field int
-//  ^^^^^ definition 0.1.test `sg/pr95`/MultiNameConflict#y.field.
+//  ^^^^^ definition 0.1.test `sg/pr95`/MultiNameConflict#$anon_d2a1057ae09aaccc#field.
 //  documentation
 //  > ```go
 //  > struct field field int
@@ -125,11 +125,11 @@
    m.x.field = 10
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/MultiNameConflict#x.
-//     ^^^^^ reference 0.1.test `sg/pr95`/MultiNameConflict#y.field.
+//     ^^^^^ reference 0.1.test `sg/pr95`/MultiNameConflict#$anon_d2a1057ae09aaccc#field.
    m.y.field = 20
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/MultiNameConflict#y.
-//     ^^^^^ reference 0.1.test `sg/pr95`/MultiNameConflict#y.field.
+//     ^^^^^ reference 0.1.test `sg/pr95`/MultiNameConflict#$anon_d2a1057ae09aaccc#field.
   }
 //⌃ enclosing_range_end 0.1.test `sg/pr95`/useMultiNameConflict().
   

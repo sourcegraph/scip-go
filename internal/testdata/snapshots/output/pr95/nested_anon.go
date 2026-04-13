@@ -26,13 +26,13 @@
 // > struct field outer struct{inner struct{value int}}
 // > ```
     inner struct {
-//  ^^^^^ definition 0.1.test `sg/pr95`/DeepNested#outer.inner.
+//  ^^^^^ definition 0.1.test `sg/pr95`/DeepNested#$anon_30bdf47ff4254f9b#inner.
 //  documentation
 //  > ```go
 //  > struct field inner struct{value int}
 //  > ```
      value int
-//   ^^^^^ definition 0.1.test `sg/pr95`/DeepNested#outer.inner.value.
+//   ^^^^^ definition 0.1.test `sg/pr95`/DeepNested#$anon_30bdf47ff4254f9b#$anon_25fd857a3a1203a7#value.
 //   documentation
 //   > ```go
 //   > struct field value int
@@ -63,13 +63,13 @@
 // > struct field items []struct{id int; name string}
 // > ```
     id   int
-//  ^^ definition 0.1.test `sg/pr95`/SliceAnon#items.id.
+//  ^^ definition 0.1.test `sg/pr95`/SliceAnon#$anon_7105f7cab05b114b#id.
 //  documentation
 //  > ```go
 //  > struct field id int
 //  > ```
     name string
-//  ^^^^ definition 0.1.test `sg/pr95`/SliceAnon#items.name.
+//  ^^^^ definition 0.1.test `sg/pr95`/SliceAnon#$anon_7105f7cab05b114b#name.
 //  documentation
 //  > ```go
 //  > struct field name string
@@ -99,13 +99,13 @@
 // > struct field entries map[string]struct{count int; label string}
 // > ```
     count int
-//  ^^^^^ definition 0.1.test `sg/pr95`/MapAnon#entries.count.
+//  ^^^^^ definition 0.1.test `sg/pr95`/MapAnon#$anon_f7ce9edfffe6705a#count.
 //  documentation
 //  > ```go
 //  > struct field count int
 //  > ```
     label string
-//  ^^^^^ definition 0.1.test `sg/pr95`/MapAnon#entries.label.
+//  ^^^^^ definition 0.1.test `sg/pr95`/MapAnon#$anon_f7ce9edfffe6705a#label.
 //  documentation
 //  > ```go
 //  > struct field label string
@@ -134,7 +134,11 @@
 // > struct field ptr *struct{data int}
 // > ```
     data int
-//  ^^^^ definition local 0
+//  ^^^^ definition 0.1.test `sg/pr95`/PointerAnon#$anon_9ac92b9fde9a0cad#data.
+//  documentation
+//  > ```go
+//  > struct field data int
+//  > ```
    }
   }
   
@@ -164,7 +168,7 @@
 // > ```go
 // > struct field a []struct{v int}
 // > ```
-//             ^ definition 0.1.test `sg/pr95`/SliceAnonShared#a.v.
+//             ^ definition 0.1.test `sg/pr95`/SliceAnonShared#$anon_62737c874b048720#v.
 //             documentation
 //             > ```go
 //             > struct field v int
@@ -175,7 +179,7 @@
 // > ```go
 // > struct field b []struct{v int}
 // > ```
-//             ^ definition 0.1.test `sg/pr95`/SliceAnonShared#b.v.
+//             ^ definition 0.1.test `sg/pr95`/SliceAnonShared#$anon_62737c874b048720#v.
 //             documentation
 //             > ```go
 //             > struct field v int
@@ -190,54 +194,54 @@
 //     > func useNestedAnon()
 //     > ```
    var d DeepNested
-//     ^ definition local 1
+//     ^ definition local 0
 //       ^^^^^^^^^^ reference 0.1.test `sg/pr95`/DeepNested#
    d.outer.inner.value = 42
-// ^ reference local 1
+// ^ reference local 0
 //   ^^^^^ reference 0.1.test `sg/pr95`/DeepNested#outer.
-//         ^^^^^ reference 0.1.test `sg/pr95`/DeepNested#outer.inner.
-//               ^^^^^ reference 0.1.test `sg/pr95`/DeepNested#outer.inner.value.
+//         ^^^^^ reference 0.1.test `sg/pr95`/DeepNested#$anon_30bdf47ff4254f9b#inner.
+//               ^^^^^ reference 0.1.test `sg/pr95`/DeepNested#$anon_30bdf47ff4254f9b#$anon_25fd857a3a1203a7#value.
   
    var s SliceAnon
-//     ^ definition local 2
+//     ^ definition local 1
 //       ^^^^^^^^^ reference 0.1.test `sg/pr95`/SliceAnon#
    if len(s.items) > 0 {
-//        ^ reference local 2
+//        ^ reference local 1
 //          ^^^^^ reference 0.1.test `sg/pr95`/SliceAnon#items.
     _ = s.items[0].id
-//      ^ reference local 2
+//      ^ reference local 1
 //        ^^^^^ reference 0.1.test `sg/pr95`/SliceAnon#items.
-//                 ^^ reference 0.1.test `sg/pr95`/SliceAnon#items.id.
+//                 ^^ reference 0.1.test `sg/pr95`/SliceAnon#$anon_7105f7cab05b114b#id.
     _ = s.items[0].name
-//      ^ reference local 2
+//      ^ reference local 1
 //        ^^^^^ reference 0.1.test `sg/pr95`/SliceAnon#items.
-//                 ^^^^ reference 0.1.test `sg/pr95`/SliceAnon#items.name.
+//                 ^^^^ reference 0.1.test `sg/pr95`/SliceAnon#$anon_7105f7cab05b114b#name.
    }
   
    var m MapAnon
-//     ^ definition local 3
+//     ^ definition local 2
 //       ^^^^^^^ reference 0.1.test `sg/pr95`/MapAnon#
    entry := m.entries["key"]
-// ^^^^^ definition local 4
-//          ^ reference local 3
+// ^^^^^ definition local 3
+//          ^ reference local 2
 //            ^^^^^^^ reference 0.1.test `sg/pr95`/MapAnon#entries.
    _ = entry.count
-//     ^^^^^ reference local 4
-//           ^^^^^ reference 0.1.test `sg/pr95`/MapAnon#entries.count.
+//     ^^^^^ reference local 3
+//           ^^^^^ reference 0.1.test `sg/pr95`/MapAnon#$anon_f7ce9edfffe6705a#count.
    _ = entry.label
-//     ^^^^^ reference local 4
-//           ^^^^^ reference 0.1.test `sg/pr95`/MapAnon#entries.label.
+//     ^^^^^ reference local 3
+//           ^^^^^ reference 0.1.test `sg/pr95`/MapAnon#$anon_f7ce9edfffe6705a#label.
   
    var p PointerAnon
-//     ^ definition local 5
+//     ^ definition local 4
 //       ^^^^^^^^^^^ reference 0.1.test `sg/pr95`/PointerAnon#
    if p.ptr != nil {
-//    ^ reference local 5
+//    ^ reference local 4
 //      ^^^ reference 0.1.test `sg/pr95`/PointerAnon#ptr.
     _ = p.ptr.data
-//      ^ reference local 5
+//      ^ reference local 4
 //        ^^^ reference 0.1.test `sg/pr95`/PointerAnon#ptr.
-//            ^^^^ reference local 0
+//            ^^^^ reference 0.1.test `sg/pr95`/PointerAnon#$anon_9ac92b9fde9a0cad#data.
    }
   }
 //⌃ enclosing_range_end 0.1.test `sg/pr95`/useNestedAnon().

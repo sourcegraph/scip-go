@@ -61,50 +61,50 @@
 // > struct field Nodes []struct{Authors struct{Nodes []struct{Date string; Email string; Name string; User struct{Login string}; AvatarURL string}}}
 // > ```
     Authors struct {
-//  ^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.
+//  ^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_d6a31d3215fd380e#Authors.
 //  documentation
 //  > ```go
 //  > struct field Authors struct{Nodes []struct{Date string; Email string; Name string; User struct{Login string}; AvatarURL string}}
 //  > ```
      Nodes []struct {
-//   ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.
+//   ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_d6a31d3215fd380e#$anon_ae22730d5ab4639d#Nodes.
 //   documentation
 //   > ```go
 //   > struct field Nodes []struct{Date string; Email string; Name string; User struct{Login string}; AvatarURL string}
 //   > ```
       Date  string
-//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Date.
+//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_d6a31d3215fd380e#$anon_ae22730d5ab4639d#$anon_9f31da10601e7ccd#Date.
 //    documentation
 //    > ```go
 //    > struct field Date string
 //    > ```
       Email string
-//    ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Email.
+//    ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_d6a31d3215fd380e#$anon_ae22730d5ab4639d#$anon_9f31da10601e7ccd#Email.
 //    documentation
 //    > ```go
 //    > struct field Email string
 //    > ```
       Name  string
-//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Name.
+//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_d6a31d3215fd380e#$anon_ae22730d5ab4639d#$anon_9f31da10601e7ccd#Name.
 //    documentation
 //    > ```go
 //    > struct field Name string
 //    > ```
       User  struct {
-//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.User.
+//    ^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_d6a31d3215fd380e#$anon_ae22730d5ab4639d#$anon_9f31da10601e7ccd#User.
 //    documentation
 //    > ```go
 //    > struct field User struct{Login string}
 //    > ```
        Login string
-//     ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.User.Login.
+//     ^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_d6a31d3215fd380e#$anon_ae22730d5ab4639d#$anon_9f31da10601e7ccd#$anon_d4bff1f61f45b2a1#Login.
 //     documentation
 //     > ```go
 //     > struct field Login string
 //     > ```
       }
       AvatarURL string
-//    ^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.AvatarURL.
+//    ^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_d6a31d3215fd380e#$anon_ae22730d5ab4639d#$anon_9f31da10601e7ccd#AvatarURL.
 //    documentation
 //    > ```go
 //    > struct field AvatarURL string
@@ -119,7 +119,7 @@
 // > struct field PageInfo struct{HasNextPage bool}
 // > ```
     HasNextPage bool
-//  ^^^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#PageInfo.HasNextPage.
+//  ^^^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#$anon_0a5c453971407ce4#HasNextPage.
 //  documentation
 //  > ```go
 //  > struct field HasNextPage bool
