@@ -49,8 +49,6 @@
    switch concreteValue := interfaceValue.(type) {
 //        ^^^^^^^^^^^^^ definition local 2
 //                      display_name concreteValue
-//                      signature_documentation
-//                      > var concreteValue bool
 //                         ^^^^^^^^^^^^^^ reference local 1
    case int:
     return concreteValue*3 > 10
