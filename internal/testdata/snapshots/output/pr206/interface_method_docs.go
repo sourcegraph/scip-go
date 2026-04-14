@@ -16,11 +16,15 @@
 // ^^ definition 0.1.test `sg/pr206`/Doer#Do.
 //    signature_documentation
 //    > func (Doer).Do() error
+//    documentation
+//    > Do performs the action and returns an error if it fails.
   
    // Reset clears internal state.
    Reset()
 // ^^^^^ definition 0.1.test `sg/pr206`/Doer#Reset.
 //       signature_documentation
 //       > func (Doer).Reset()
+//       documentation
+//       > Reset clears internal state.
   }
   

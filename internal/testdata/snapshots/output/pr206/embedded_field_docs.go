@@ -13,6 +13,8 @@
 // ^^ definition 0.1.test `sg/pr206`/Base#ID.
 //    signature_documentation
 //    > struct field ID int
+//    documentation
+//    > ID uniquely identifies the entity.
   }
   
   type Container struct {
@@ -36,5 +38,7 @@
 // ^^^^^ definition 0.1.test `sg/pr206`/Container#Extra.
 //       signature_documentation
 //       > struct field Extra string
+//       documentation
+//       > Extra is a container-specific field.
   }
   

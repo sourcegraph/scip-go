@@ -117,7 +117,7 @@ func (v typeVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				v.doc.SetNewSymbol(v.makeSymbol(&scip.Descriptor{
 					Name:   name.Name,
 					Suffix: scip.Descriptor_Term,
-				}), nil, name)
+				}), node, name)
 
 				v.walkAnonymousTypeFields(node.Type)
 			}

@@ -137,10 +137,14 @@
 // ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#EmbeddedField.
 //               signature_documentation
 //               > struct field EmbeddedField string
+//               documentation
+//               > EmbeddedField has some docs!
    Field         string // conflicts with parent "Field"
 // ^^^^^ definition 0.1.test `sg/initial`/Embedded#Field.
 //       signature_documentation
 //       > struct field Field string
+//       documentation
+//       > conflicts with parent "Field"
   }
   
   type Struct struct {
