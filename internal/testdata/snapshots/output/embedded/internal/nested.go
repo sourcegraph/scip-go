@@ -25,13 +25,13 @@
     for _, author := range commit.Authors.Nodes {
 //         ^^^^^^ definition local 2
 //                         ^^^^^^ reference local 1
-//                                ^^^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.
-//                                        ^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.
+//                                ^^^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#$anon_90b32de18ec80596#Authors.
+//                                        ^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#$anon_90b32de18ec80596#$anon_bb290b1f6ea0cf58#Nodes.
      fmt.Println(author.Name)
 //   ^^^ reference github.com/golang/go/src go1.22 fmt/
 //       ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().
 //               ^^^^^^ reference local 2
-//                      ^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#Nodes.Authors.Nodes.Name.
+//                      ^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#$anon_90b32de18ec80596#$anon_bb290b1f6ea0cf58#$anon_b2a8a16c744b2d4b#Name.
     }
    }
   }

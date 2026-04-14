@@ -121,41 +121,31 @@ func (v *varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 					Suffix: scip.Descriptor_Term,
 				}), nil, name)
 
-				switch typ := node.Type.(type) {
-				case *ast.MapType:
-					v.scope.push(name.Name, scip.Descriptor_Term)
-					defer func() {
-						v.scope.pop()
-					}()
-
-					ast.Walk(v, typ.Key)
-					ast.Walk(v, typ.Value)
-
-				case *ast.ArrayType:
-					v.scope.push(name.Name, scip.Descriptor_Term)
-					defer func() {
-						v.scope.pop()
-					}()
-
-					ast.Walk(v, typ.Elt)
-
-				case *ast.StructType, *ast.InterfaceType:
-					// Current scope is now embedded in the anonymous struct
-					//   So we walk the rest of the type expression and save
-					//   the nested names
-					v.scope.push(name.Name, scip.Descriptor_Term)
-					defer func() {
-						v.scope.pop()
-					}()
-
-					ast.Walk(v, node.Type)
-				}
+				v.walkAnonymousTypeFields(node.Type)
 			}
 		}
 		return nil
 
 	default:
 		return v
+	}
+}
+
+func (v *varVisitor) walkAnonymousTypeFields(expr ast.Expr) {
+	switch typ := expr.(type) {
+	case *ast.MapType:
+		v.walkAnonymousTypeFields(typ.Key)
+		v.walkAnonymousTypeFields(typ.Value)
+	case *ast.ArrayType:
+		v.walkAnonymousTypeFields(typ.Elt)
+	case *ast.StarExpr:
+		v.walkAnonymousTypeFields(typ.X)
+	case *ast.StructType, *ast.InterfaceType:
+		if key := anonTypeKey(v.pkg, expr); key != "" {
+			v.scope.withScope(key, scip.Descriptor_Type, func() {
+				ast.Walk(v, expr)
+			})
+		}
 	}
 }
 

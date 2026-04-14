@@ -96,20 +96,20 @@
 //  > struct field FieldWithAnonymousType struct{NestedA string; NestedB string; NestedC string}
 //  > ```
      NestedA string
-//   ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#FieldWithAnonymousType.NestedA.
+//   ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#$anon_2bed88e490dc48af#NestedA.
 //   documentation
 //   > ```go
 //   > struct field NestedA string
 //   > ```
      NestedB string
-//   ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#FieldWithAnonymousType.NestedB.
+//   ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#$anon_2bed88e490dc48af#NestedB.
 //   documentation
 //   > ```go
 //   > struct field NestedB string
 //   > ```
      // NestedC docs
      NestedC string
-//   ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#FieldWithAnonymousType.NestedC.
+//   ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#$anon_2bed88e490dc48af#NestedC.
 //   documentation
 //   > ```go
 //   > struct field NestedC string
