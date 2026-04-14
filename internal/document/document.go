@@ -9,6 +9,7 @@ import (
 	"go/types"
 	"log/slog"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -174,7 +175,7 @@ func typeStringForObject(obj types.Object) (signature string, extra string) {
 	case *types.Var:
 		if v.IsField() {
 			// TODO(tjdevries) - make this be "(T).F" instead of "struct field F string"
-			return fmt.Sprintf("struct %s", obj.String()), ""
+			return fmt.Sprintf("struct %s", quotedTagsToBacktick(obj.String())), ""
 		}
 
 	case *types.Const:
@@ -262,10 +263,14 @@ outer:
 
 				if extra[j] == '"' {
 					// found non-escaped ending quote
-					// write entire string unchanged, then skip to this
-					// character adn continue the outer loop, which will
-					// start the next iteration on the following character
-					buf.WriteString(extra[i : j+1])
+					quoted := extra[i : j+1]
+					if unquoted, err := strconv.Unquote(quoted); err == nil {
+						buf.WriteByte('`')
+						buf.WriteString(unquoted)
+						buf.WriteByte('`')
+					} else {
+						buf.WriteString(quoted)
+					}
 					i = j
 					continue outer
 				}
@@ -302,5 +307,36 @@ outer:
 		}
 	}
 
+	return buf.String()
+}
+
+// quotedTagsToBacktick replaces double-quoted struct tag strings with
+// backtick-quoted equivalents in the output of types.ObjectString.
+func quotedTagsToBacktick(s string) string {
+	buf := bytes.NewBuffer(make([]byte, 0, len(s)))
+	for i := 0; i < len(s); i++ {
+		if s[i] != '"' {
+			buf.WriteByte(s[i])
+			continue
+		}
+		for j := i + 1; j < len(s); j++ {
+			if s[j] == '\\' {
+				j++
+				continue
+			}
+			if s[j] == '"' {
+				quoted := s[i : j+1]
+				if unquoted, err := strconv.Unquote(quoted); err == nil {
+					buf.WriteByte('`')
+					buf.WriteString(unquoted)
+					buf.WriteByte('`')
+				} else {
+					buf.WriteString(quoted)
+				}
+				i = j
+				break
+			}
+		}
+	}
 	return buf.String()
 }

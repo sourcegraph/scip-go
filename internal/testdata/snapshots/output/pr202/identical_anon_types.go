@@ -145,10 +145,10 @@
 //     > ```go
 //     > struct {
 //     >     a struct {
-//     >         Name string "json:\"name\""
+//     >         Name string `json:"name"`
 //     >     }
 //     >     b struct {
-//     >         Name string "json:\"full_name\""
+//     >         Name string `json:"full_name"`
 //     >     }
 //     > }
 //     > ```
@@ -156,7 +156,7 @@
 // ^ definition 0.1.test `sg/pr202`/DifferentTags#a.
 // documentation
 // > ```go
-// > struct field a struct{Name string "json:\"name\""}
+// > struct field a struct{Name string `json:"name"`}
 // > ```
     Name string `json:"name"`
 //  ^^^^ definition 0.1.test `sg/pr202`/DifferentTags#$anon_ed545d904f2246eb#Name.
@@ -169,7 +169,7 @@
 // ^ definition 0.1.test `sg/pr202`/DifferentTags#b.
 // documentation
 // > ```go
-// > struct field b struct{Name string "json:\"full_name\""}
+// > struct field b struct{Name string `json:"full_name"`}
 // > ```
     Name string `json:"full_name"`
 //  ^^^^ definition 0.1.test `sg/pr202`/DifferentTags#$anon_29f1ad2683b11ed0#Name.
