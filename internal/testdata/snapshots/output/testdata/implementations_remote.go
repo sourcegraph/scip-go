@@ -6,14 +6,8 @@
   
   type implementsWriter struct{}
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#
-//                      documentation
-//                      > ```go
-//                      > type implementsWriter struct
-//                      > ```
-//                      documentation
-//                      > ```go
-//                      > struct{}
-//                      > ```
+//                      signature_documentation
+//                      > type implementsWriter struct{}
 //                      relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash# implementation
 //                      relationship github.com/golang/go/src go1.22 `internal/bisect`/Writer# implementation
 //                      relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter# implementation
@@ -23,10 +17,8 @@
   func (implementsWriter) Header() http.Header        { panic("Just for how") }
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Header().
-//                               documentation
-//                               > ```go
+//                               signature_documentation
 //                               > func (implementsWriter).Header() Header
-//                               > ```
 //                               relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
 //                                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                                      ^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Header#
@@ -35,10 +27,8 @@
   func (implementsWriter) Write([]byte) (int, error)  { panic("Just for show") }
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Write().
-//                              documentation
-//                              > ```go
+//                              signature_documentation
 //                              > func (implementsWriter).Write([]byte) (int, error)
-//                              > ```
 //                              relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash#Write. implementation
 //                              relationship github.com/golang/go/src go1.22 `internal/bisect`/Writer#Write. implementation
 //                              relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Write. implementation
@@ -48,10 +38,8 @@
   func (implementsWriter) WriteHeader(statusCode int) {}
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#WriteHeader().
-//                                    documentation
-//                                    > ```go
+//                                    signature_documentation
 //                                    > func (implementsWriter).WriteHeader(statusCode int)
-//                                    > ```
 //                                    relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
 //                                    ^^^^^^^^^^ definition local 0
 //                                               display_name statusCode
@@ -62,14 +50,12 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/ShowsInSignature().
   func ShowsInSignature(respWriter http.ResponseWriter) {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ShowsInSignature().
-//                      documentation
-//                      > ```go
+//                      signature_documentation
 //                      > func ShowsInSignature(respWriter ResponseWriter)
-//                      > ```
 //                      ^^^^^^^^^^ definition local 1
 //                                 display_name respWriter
 //                                 signature_documentation
-//                                 > var respWriter net/http.ResponseWriter
+//                                 > var respWriter ResponseWriter
 //                                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#
    respWriter.WriteHeader(1)

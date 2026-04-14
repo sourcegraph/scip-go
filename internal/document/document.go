@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/doc"
+	"go/format"
 	"go/token"
 	"go/types"
 	"log/slog"
@@ -15,7 +16,6 @@ import (
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/lookup"
-	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -91,30 +91,27 @@ func (d *Document) SetNewSymbolForPos(
 	ident *ast.Ident,
 	pos token.Pos,
 ) {
-	documentation := []string{}
+	var documentation []string
+	var sigDoc *scip.Document
 	if ident != nil {
-		hover := d.extractHoverText(parent, ident)
-		var signature, extra string
-		def := d.pkg.TypesInfo.Defs[ident]
-		if def != nil {
-			signature, extra = typeStringForObject(def)
+		if def := d.pkg.TypesInfo.Defs[ident]; def != nil {
+			if signature := typeStringForObject(def); signature != "" {
+				sigDoc = &scip.Document{
+					Language: "go",
+					Text:     signature,
+				}
+			}
 		}
-
-		if signature != "" {
-			documentation = append(documentation, symbols.FormatCode(signature))
-		}
-		if hover != "" {
+		if hover := d.extractHoverText(parent, ident); hover != "" {
 			documentation = append(documentation, hover)
-		}
-		if extra != "" {
-			documentation = append(documentation, symbols.FormatCode(extra))
 		}
 	}
 
 	d.pkgSymbols.Set(pos, &scip.SymbolInformation{
-		Symbol:        symbol,
-		Documentation: documentation,
-		Relationships: []*scip.Relationship{},
+		Symbol:                 symbol,
+		Documentation:          documentation,
+		SignatureDocumentation: sigDoc,
+		Relationships:          []*scip.Relationship{},
 	})
 }
 
@@ -164,150 +161,106 @@ func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 // name from all identifiers in the return value of types.ObjectString.
 func packageQualifier(*types.Package) string { return "" }
 
-func typeStringForObject(obj types.Object) (signature string, extra string) {
+func typeStringForObject(obj types.Object) string {
 	switch v := obj.(type) {
 	case *types.PkgName:
-		return fmt.Sprintf("package %s", v.Name()), ""
+		return fmt.Sprintf("package %s", v.Name())
 
 	case *types.TypeName:
-		return formatTypeSignature(v), formatTypeExtra(v)
+		return formatTypeDeclaration(v)
 
 	case *types.Var:
 		if v.IsField() {
 			// TODO(tjdevries) - make this be "(T).F" instead of "struct field F string"
-			return fmt.Sprintf("struct %s", quotedTagsToBacktick(obj.String())), ""
+			return fmt.Sprintf("struct %s", quotedTagsToBacktick(obj.String()))
 		}
 
 	case *types.Const:
-		return fmt.Sprintf("%s = %s", types.ObjectString(v, packageQualifier), v.Val()), ""
-		// TODO: We had this case in previous iterations
-		// case *PkgDeclaration:
-		// 	return fmt.Sprintf("package %s", v.name), ""
+		return fmt.Sprintf("%s = %s", types.ObjectString(v, packageQualifier), v.Val())
 	}
 
-	// Fall back to types.Object
-	//    All other cases of this should be this type. We only had to implement PkgDeclaration because
-	//    some fields are not exported in types.Object.
-	return types.ObjectString(obj, packageQualifier), ""
+	return types.ObjectString(obj, packageQualifier)
 }
 
 var loggedGODEBUGWarning sync.Once
 
-// formatTypeSignature returns a brief description of the given struct or interface type.
-func formatTypeSignature(obj *types.TypeName) string {
-	switch obj.Type().Underlying().(type) {
-	case *types.Struct:
-		if obj.IsAlias() {
-			switch ty := obj.Type().(type) {
-			case *types.Alias:
-				switch rhs := ty.Rhs().(type) {
-				case *types.Alias:
-					original := rhs.Obj()
-					var pkg string
-					if obj.Pkg().Name() != original.Pkg().Name() {
-						pkg = original.Pkg().Name() + "."
-					}
-					return fmt.Sprintf("type %s = %s%s", obj.Name(), pkg, original.Name())
-				case *types.Named:
-					original := rhs.Obj()
-					var pkg string
-					if obj.Pkg().Name() != original.Pkg().Name() {
-						pkg = original.Pkg().Name() + "."
-					}
-					return fmt.Sprintf("type %s = %s%s", obj.Name(), pkg, original.Name())
-				case *types.Struct:
-					return fmt.Sprintf("type %s = struct", obj.Name())
-				}
-			default:
-				if val := os.Getenv("GODEBUG"); strings.Contains(val, "gotypealias=0") {
-					loggedGODEBUGWarning.Do(func() {
-						slog.Warn("Running with GODEBUG=gotypealias=0, this may cause incorrect hover docs")
-					})
-				} else {
-					slog.Warn("IsAlias() is true but Type() is not Alias; please report this as a bug",
-						"obj", obj.String(), "obj.Type()", ty.String())
-				}
-			}
-
-		}
-
-		return fmt.Sprintf("type %s struct", obj.Name())
-	case *types.Interface:
-		return fmt.Sprintf("type %s interface", obj.Name())
+// formatTypeDeclaration returns the full type declaration string for a type,
+// e.g. "type T struct{}", "type I interface { ... }", "type U = T", "type Z int32".
+func formatTypeDeclaration(obj *types.TypeName) string {
+	if obj.IsAlias() {
+		return formatAliasDeclaration(obj)
 	}
 
-	return ""
+	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Type().Underlying()))
 }
 
-// formatTypeExtra returns the beautified fields of the given struct or interface type.
-//
-// The output of `types.TypeString` puts fields of structs and interfaces on a single
-// line separated by a semicolon. This method simply expands the fields to reside on
-// different lines with the appropriate indentation.
-func formatTypeExtra(obj *types.TypeName) string {
-	extra := types.TypeString(obj.Type().Underlying(), packageQualifier)
+// qualifiedName returns the name of original, prefixed with its package name
+// if it differs from obj's package. Handles nil packages (builtins).
+func qualifiedName(obj, original types.Object) string {
+	objPkg := obj.Pkg()
+	origPkg := original.Pkg()
+	if objPkg == nil || origPkg == nil || objPkg.Name() == origPkg.Name() {
+		return original.Name()
+	}
+	return origPkg.Name() + "." + original.Name()
+}
 
-	depth := 0
-	buf := bytes.NewBuffer(make([]byte, 0, len(extra)))
-
-outer:
-	for i := 0; i < len(extra); i++ {
-		switch extra[i] {
-		case '"':
-			for j := i + 1; j < len(extra); j++ {
-				if extra[j] == '\\' {
-					// skip over escaped characters
-					j++
-					continue
-				}
-
-				if extra[j] == '"' {
-					// found non-escaped ending quote
-					quoted := extra[i : j+1]
-					if unquoted, err := strconv.Unquote(quoted); err == nil {
-						buf.WriteByte('`')
-						buf.WriteString(unquoted)
-						buf.WriteByte('`')
-					} else {
-						buf.WriteString(quoted)
-					}
-					i = j
-					continue outer
-				}
-			}
-
-			// note: we should never get down here otherwise
-			// there is some illegal output from types.TypeString.
-
-		case ';':
-			buf.WriteString("\n")
-			buf.WriteString(strings.Repeat(indent, depth))
-			i++ // Skip following ' '
-
-		case '{':
-			// Special case empty fields so we don't insert
-			// an unnecessary newline.
-			if i < len(extra)-1 && extra[i+1] == '}' {
-				buf.WriteString("{}")
-				i++ // Skip following '}'
-			} else {
-				depth++
-				buf.WriteString(" {\n")
-				buf.WriteString(strings.Repeat(indent, depth))
-			}
-
-		case '}':
-			depth--
-			buf.WriteString("\n")
-			buf.WriteString(strings.Repeat(indent, depth))
-			buf.WriteString("}")
-
+// formatAliasDeclaration returns the type declaration for alias types.
+func formatAliasDeclaration(obj *types.TypeName) string {
+	switch ty := obj.Type().(type) {
+	case *types.Alias:
+		switch rhs := ty.Rhs().(type) {
+		case *types.Alias:
+			return fmt.Sprintf("type %s = %s", obj.Name(), qualifiedName(obj, rhs.Obj()))
+		case *types.Named:
+			return fmt.Sprintf("type %s = %s", obj.Name(), qualifiedName(obj, rhs.Obj()))
 		default:
-			buf.WriteByte(extra[i])
+			return fmt.Sprintf("type %s = %s", obj.Name(), expandTypeExpr(rhs))
+		}
+	default:
+		if val := os.Getenv("GODEBUG"); strings.Contains(val, "gotypealias=0") {
+			loggedGODEBUGWarning.Do(func() {
+				slog.Warn(
+					"Running with GODEBUG=gotypealias=0, this may cause incorrect hover docs")
+			})
+		} else {
+			slog.Warn(
+				"IsAlias() is true but Type() is not Alias; please report this as a bug",
+				"obj", obj.String(), "obj.Type()", ty.String())
 		}
 	}
 
-	return buf.String()
+	// Fallback for when GODEBUG=gotypealias=0 or unexpected types.
+	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Type().Underlying()))
+}
+
+// expandTypeExpr renders a type expression, formatting struct and interface
+// types with aligned fields using go/format.
+func expandTypeExpr(t types.Type) string {
+	raw := types.TypeString(t, packageQualifier)
+
+	switch t.(type) {
+	case *types.Struct, *types.Interface:
+		if formatted, err := formatGoDecl("type _ " + raw); err == nil {
+			return strings.TrimPrefix(formatted, "type _ ")
+		}
+	}
+
+	return raw
+}
+
+// formatGoDecl formats a Go type declaration using go/format, returning
+// the formatted result with tabs replaced by spaces.
+func formatGoDecl(decl string) (string, error) {
+	src := "package p\n\n" + decl + "\n"
+	formatted, err := format.Source([]byte(src))
+	if err != nil {
+		return "", err
+	}
+	result := strings.TrimPrefix(string(formatted), "package p\n\n")
+	result = strings.TrimSpace(result)
+	result = strings.ReplaceAll(result, "\t", indent)
+	return result, nil
 }
 
 // quotedTagsToBacktick replaces double-quoted struct tag strings with

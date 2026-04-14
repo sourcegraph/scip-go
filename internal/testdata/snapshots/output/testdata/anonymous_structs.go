@@ -9,13 +9,8 @@
   
   type TypeContainingAnonymousStructs struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
-//                                    documentation
-//                                    > ```go
-//                                    > type TypeContainingAnonymousStructs struct
-//                                    > ```
-//                                    documentation
-//                                    > ```go
-//                                    > struct {
+//                                    signature_documentation
+//                                    > type TypeContainingAnonymousStructs struct {
 //                                    >     a struct {
 //                                    >         x int
 //                                    >         y string
@@ -29,59 +24,42 @@
 //                                    >         Y string
 //                                    >     }
 //                                    > }
-//                                    > ```
    a, b struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-//   documentation
-//   > ```go
+//   signature_documentation
 //   > struct field a struct{x int; y string}
-//   > ```
 //    ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.
-//      documentation
-//      > ```go
+//      signature_documentation
 //      > struct field b struct{x int; y string}
-//      > ```
     x int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_c0a8952b3a214f68#x.
-//    documentation
-//    > ```go
+//    signature_documentation
 //    > struct field x int
-//    > ```
     y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_c0a8952b3a214f68#y.
-//    documentation
-//    > ```go
+//    signature_documentation
 //    > struct field y string
-//    > ```
    }
    c struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-//   documentation
-//   > ```go
+//   signature_documentation
 //   > struct field c struct{X int; Y string}
-//   > ```
     X int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_2f238678626c0da1#X.
-//    documentation
-//    > ```go
+//    signature_documentation
 //    > struct field X int
-//    > ```
     Y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_2f238678626c0da1#Y.
-//    documentation
-//    > ```go
+//    signature_documentation
 //    > struct field Y string
-//    > ```
    }
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
   func funcContainingAnonymousStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
-//                                    documentation
-//                                    > ```go
+//                                    signature_documentation
 //                                    > func funcContainingAnonymousStructs()
-//                                    > ```
    d := struct {
 // ^ definition local 0
 //   display_name d
@@ -132,7 +110,7 @@
 //     ^ definition local 6
 //       display_name f
 //       signature_documentation
-//       > var f sg/testdata.TypeContainingAnonymousStructs
+//       > var f TypeContainingAnonymousStructs
 //       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
    f.a.x = 3
 // ^ reference local 6

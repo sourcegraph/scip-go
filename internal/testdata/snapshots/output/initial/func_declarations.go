@@ -4,10 +4,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/UsesLater().
   func UsesLater() {
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/UsesLater().
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > func UsesLater()
-//               > ```
    DefinedLater()
 // ^^^^^^^^^^^^ reference 0.1.test `sg/initial`/DefinedLater().
   }
@@ -16,9 +14,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/DefinedLater().
   func DefinedLater() {}
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DefinedLater().
-//                  documentation
-//                  > ```go
+//                  signature_documentation
 //                  > func DefinedLater()
-//                  > ```
 //                     ⌃ enclosing_range_end 0.1.test `sg/initial`/DefinedLater().
   

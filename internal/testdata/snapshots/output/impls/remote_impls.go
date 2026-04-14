@@ -7,28 +7,20 @@
 //⌄ enclosing_range_start 0.1.test `sg/impls`/Something().
   func Something(r http.ResponseWriter) {}
 //     ^^^^^^^^^ definition 0.1.test `sg/impls`/Something().
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > func Something(r ResponseWriter)
-//               > ```
 //               ^ definition local 0
 //                 display_name r
 //                 signature_documentation
-//                 > var r net/http.ResponseWriter
+//                 > var r ResponseWriter
 //                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#
 //                                       ⌃ enclosing_range_end 0.1.test `sg/impls`/Something().
   
   type MyWriter struct{}
 //     ^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#
-//              documentation
-//              > ```go
-//              > type MyWriter struct
-//              > ```
-//              documentation
-//              > ```go
-//              > struct{}
-//              > ```
+//              signature_documentation
+//              > type MyWriter struct{}
 //              relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash# implementation
 //              relationship github.com/golang/go/src go1.22 `internal/bisect`/Writer# implementation
 //              relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter# implementation
@@ -39,13 +31,11 @@
 //      ^ definition local 1
 //        display_name w
 //        signature_documentation
-//        > var w sg/impls.MyWriter
+//        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^ definition 0.1.test `sg/impls`/MyWriter#Header().
-//                         documentation
-//                         > ```go
+//                         signature_documentation
 //                         > func (MyWriter).Header() Header
-//                         > ```
 //                         relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
 //                           ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                                ^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Header#
@@ -55,13 +45,11 @@
 //      ^ definition local 2
 //        display_name w
 //        signature_documentation
-//        > var w sg/impls.MyWriter
+//        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^ definition 0.1.test `sg/impls`/MyWriter#Write().
-//                        documentation
-//                        > ```go
+//                        signature_documentation
 //                        > func (MyWriter).Write([]byte) (int, error)
-//                        > ```
 //                        relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash#Write. implementation
 //                        relationship github.com/golang/go/src go1.22 `internal/bisect`/Writer#Write. implementation
 //                        relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Write. implementation
@@ -72,13 +60,11 @@
 //      ^ definition local 3
 //        display_name w
 //        signature_documentation
-//        > var w sg/impls.MyWriter
+//        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#WriteHeader().
-//                              documentation
-//                              > ```go
+//                              signature_documentation
 //                              > func (MyWriter).WriteHeader(statusCode int)
-//                              > ```
 //                              relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
 //                              ^^^^^^^^^^ definition local 4
 //                                         display_name statusCode
@@ -89,10 +75,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/impls`/Another().
   func Another() {
 //     ^^^^^^^ definition 0.1.test `sg/impls`/Another().
-//             documentation
-//             > ```go
+//             signature_documentation
 //             > func Another()
-//             > ```
    Something(MyWriter{})
 // ^^^^^^^^^ reference 0.1.test `sg/impls`/Something().
 //           ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#

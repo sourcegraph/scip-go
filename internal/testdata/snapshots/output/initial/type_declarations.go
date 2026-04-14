@@ -3,131 +3,79 @@
   
   type LiteralType int
 //     ^^^^^^^^^^^ definition 0.1.test `sg/initial`/LiteralType#
-//                 documentation
-//                 > ```go
-//                 > int
-//                 > ```
+//                 signature_documentation
+//                 > type LiteralType int
   
   type FuncType func(LiteralType, int) bool
 //     ^^^^^^^^ definition 0.1.test `sg/initial`/FuncType#
-//              documentation
-//              > ```go
-//              > func(LiteralType, int) bool
-//              > ```
+//              signature_documentation
+//              > type FuncType func(LiteralType, int) bool
 //                   ^^^^^^^^^^^ reference 0.1.test `sg/initial`/LiteralType#
   
   type IfaceType interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/IfaceType#
-//               documentation
-//               > ```go
-//               > type IfaceType interface
-//               > ```
-//               documentation
-//               > ```go
-//               > interface {
-//               >     Method() LiteralType
-//               > }
-//               > ```
+//               signature_documentation
+//               > type IfaceType interface{ Method() LiteralType }
    Method() LiteralType
 // ^^^^^^ definition 0.1.test `sg/initial`/IfaceType#Method.
-//        documentation
-//        > ```go
+//        signature_documentation
 //        > func (IfaceType).Method() LiteralType
-//        > ```
 //          ^^^^^^^^^^^ reference 0.1.test `sg/initial`/LiteralType#
   }
   
   type StructType struct {
 //     ^^^^^^^^^^ definition 0.1.test `sg/initial`/StructType#
-//                documentation
-//                > ```go
-//                > type StructType struct
-//                > ```
-//                documentation
-//                > ```go
-//                > struct {
-//                >     m IfaceType
-//                >     f LiteralType
-//                >     anon struct {
-//                >         sub int
-//                >     }
-//                >     i interface {
-//                >         AnonMethod() bool
-//                >     }
+//                signature_documentation
+//                > type StructType struct {
+//                >     m    IfaceType
+//                >     f    LiteralType
+//                >     anon struct{ sub int }
+//                >     i    interface{ AnonMethod() bool }
 //                > }
-//                > ```
    m IfaceType
 // ^ definition 0.1.test `sg/initial`/StructType#m.
-//   documentation
-//   > ```go
+//   signature_documentation
 //   > struct field m sg/initial.IfaceType
-//   > ```
 //   ^^^^^^^^^ reference 0.1.test `sg/initial`/IfaceType#
    f LiteralType
 // ^ definition 0.1.test `sg/initial`/StructType#f.
-//   documentation
-//   > ```go
+//   signature_documentation
 //   > struct field f sg/initial.LiteralType
-//   > ```
 //   ^^^^^^^^^^^ reference 0.1.test `sg/initial`/LiteralType#
   
    // anonymous struct
    anon struct {
 // ^^^^ definition 0.1.test `sg/initial`/StructType#anon.
-//      documentation
-//      > ```go
+//      signature_documentation
 //      > struct field anon struct{sub int}
-//      > ```
     sub int
 //  ^^^ definition 0.1.test `sg/initial`/StructType#$anon_0ba9ace1dcfd6761#sub.
-//      documentation
-//      > ```go
+//      signature_documentation
 //      > struct field sub int
-//      > ```
    }
   
    // interface within struct
    i interface {
 // ^ definition 0.1.test `sg/initial`/StructType#i.
-//   documentation
-//   > ```go
+//   signature_documentation
 //   > struct field i interface{AnonMethod() bool}
-//   > ```
     AnonMethod() bool
 //  ^^^^^^^^^^ definition 0.1.test `sg/initial`/StructType#$anon_97e7de633e3ef8e8#AnonMethod.
-//             documentation
-//             > ```go
+//             signature_documentation
 //             > func (interface).AnonMethod() bool
-//             > ```
    }
   }
   
   type DeclaredBefore struct{ DeclaredAfter }
 //     ^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredBefore#
-//                    documentation
-//                    > ```go
-//                    > type DeclaredBefore struct
-//                    > ```
-//                    documentation
-//                    > ```go
-//                    > struct {
-//                    >     DeclaredAfter
-//                    > }
-//                    > ```
+//                    signature_documentation
+//                    > type DeclaredBefore struct{ DeclaredAfter }
 //                            ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredBefore#DeclaredAfter.
-//                                          documentation
-//                                          > ```go
+//                                          signature_documentation
 //                                          > struct field DeclaredAfter sg/initial.DeclaredAfter
-//                                          > ```
 //                            ^^^^^^^^^^^^^ reference 0.1.test `sg/initial`/DeclaredAfter#
   type DeclaredAfter struct{}
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredAfter#
-//                   documentation
-//                   > ```go
-//                   > type DeclaredAfter struct
-//                   > ```
-//                   documentation
-//                   > ```go
-//                   > struct{}
-//                   > ```
+//                   signature_documentation
+//                   > type DeclaredAfter struct{}
   

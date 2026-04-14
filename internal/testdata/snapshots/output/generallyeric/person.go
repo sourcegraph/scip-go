@@ -6,30 +6,18 @@
   
   type Person interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Person#
-//            documentation
-//            > ```go
-//            > type Person interface
-//            > ```
-//            documentation
-//            > ```go
-//            > interface {
-//            >     Work()
-//            > }
-//            > ```
+//            signature_documentation
+//            > type Person interface{ Work() }
    Work()
 // ^^^^ definition 0.1.test `sg/generallyeric`/Person#Work.
-//      documentation
-//      > ```go
+//      signature_documentation
 //      > func (Person).Work()
-//      > ```
   }
   
   type worker string
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/worker#
-//            documentation
-//            > ```go
-//            > string
-//            > ```
+//            signature_documentation
+//            > type worker string
 //            relationship 0.1.test `sg/generallyeric`/Person# implementation
   
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/worker#Work().
@@ -37,13 +25,11 @@
 //      ^ definition local 0
 //        display_name w
 //        signature_documentation
-//        > var w sg/generallyeric.worker
+//        > var w worker
 //        ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
 //                ^^^^ definition 0.1.test `sg/generallyeric`/worker#Work().
-//                     documentation
-//                     > ```go
+//                     signature_documentation
 //                     > func (worker).Work()
-//                     > ```
 //                     relationship 0.1.test `sg/generallyeric`/Person#Work. implementation
    fmt.Printf("%s is working\n", w)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
@@ -55,10 +41,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/DoWork().
   func DoWork[T Person](things []T) {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/DoWork().
-//            documentation
-//            > ```go
+//            signature_documentation
 //            > func DoWork[T Person](things []T)
-//            > ```
 //            ^ definition local 1
 //              display_name T
 //              signature_documentation
@@ -85,23 +69,21 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/main().
   func main() {
 //     ^^^^ definition 0.1.test `sg/generallyeric`/main().
-//          documentation
-//          > ```go
+//          signature_documentation
 //          > func main()
-//          > ```
    var a, b, c worker
 //     ^ definition local 4
 //       display_name a
 //       signature_documentation
-//       > var a sg/generallyeric.worker
+//       > var a worker
 //        ^ definition local 5
 //          display_name b
 //          signature_documentation
-//          > var b sg/generallyeric.worker
+//          > var b worker
 //           ^ definition local 6
 //             display_name c
 //             signature_documentation
-//             > var c sg/generallyeric.worker
+//             > var c worker
 //             ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
    a = "A"
 // ^ reference local 4

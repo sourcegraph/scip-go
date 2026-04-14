@@ -12,10 +12,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/Example().
   func Example() {
 //     ^^^^^^^ definition 0.1.test `sg/testdata`/Example().
-//             documentation
-//             > ```go
+//             signature_documentation
 //             > func Example()
-//             > ```
    Println(h.CanonicalHeaderKey("accept-encoding"))
 // ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().
 //         ^ reference github.com/golang/go/src go1.22 `net/http`/
