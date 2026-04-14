@@ -1,7 +1,8 @@
   package pr198
 //        ^^^^^ definition 0.1.test `sg/pr198`/
-//        documentation
-//        > package pr198
+//              display_name pr198
+//              signature_documentation
+//              > package pr198
   
   import "github.com/example/dep"
 //        ^^^^^^^^^^^^^^^^^^^^^^ reference github.com/example/dep 0.1.test `github.com/example/dep`/
@@ -12,47 +13,36 @@
   // pointing to Foo.
   type Foo interface {
 //     ^^^ definition 0.1.test `sg/pr198`/Foo#
-//     documentation
-//     > ```go
-//     > type Foo interface
-//     > ```
-//     documentation
-//     > Foo is an interface defined downstream of the type that implements it.
-//     > The dep.T type (from a dependency) implements Foo, and scip-go should
-//     > emit an external symbol for dep.T with an IsImplementation relationship
-//     > pointing to Foo.
-//     documentation
-//     > ```go
-//     > interface {
-//     >     Bar()
-//     > }
-//     > ```
+//         signature_documentation
+//         > type Foo interface{ Bar() }
+//         documentation
+//         > Foo is an interface defined downstream of the type that implements it.
+//         > The dep.T type (from a dependency) implements Foo, and scip-go should
+//         > emit an external symbol for dep.T with an IsImplementation relationship
+//         > pointing to Foo.
    Bar()
 // ^^^ definition 0.1.test `sg/pr198`/Foo#Bar.
-// documentation
-// > ```go
-// > func (Foo).Bar()
-// > ```
+//     signature_documentation
+//     > func (Foo).Bar()
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/pr198`/UseFoo().
   func UseFoo(f Foo) {}
 //     ^^^^^^ definition 0.1.test `sg/pr198`/UseFoo().
-//     documentation
-//     > ```go
-//     > func UseFoo(f Foo)
-//     > ```
+//            signature_documentation
+//            > func UseFoo(f Foo)
 //            ^ definition local 0
+//              display_name f
+//              signature_documentation
+//              > var f Foo
 //              ^^^ reference 0.1.test `sg/pr198`/Foo#
 //                    ⌃ enclosing_range_end 0.1.test `sg/pr198`/UseFoo().
   
 //⌄ enclosing_range_start 0.1.test `sg/pr198`/Example().
   func Example() {
 //     ^^^^^^^ definition 0.1.test `sg/pr198`/Example().
-//     documentation
-//     > ```go
-//     > func Example()
-//     > ```
+//             signature_documentation
+//             > func Example()
    UseFoo(&dep.T{})
 // ^^^^^^ reference 0.1.test `sg/pr198`/UseFoo().
 //         ^^^ reference github.com/example/dep 0.1.test `github.com/example/dep`/

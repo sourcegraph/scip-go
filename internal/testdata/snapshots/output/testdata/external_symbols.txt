@@ -36,8 +36,6 @@ github.com/golang/go/src go1.22 `mime/quotedprintable`/Writer#
   relationship 0.1.test `sg/testdata`/I3# implementation
 github.com/golang/go/src go1.22 `net/http/internal`/chunkedWriter#
   relationship 0.1.test `sg/testdata`/I3# implementation
-github.com/golang/go/src go1.22 `net/http`/ClientConn#
-  relationship 0.1.test `sg/testdata`/I3# implementation
 github.com/golang/go/src go1.22 `net/http`/Server#
   relationship 0.1.test `sg/testdata`/I3# implementation
 github.com/golang/go/src go1.22 `net/http`/body#
@@ -50,15 +48,11 @@ github.com/golang/go/src go1.22 `net/http`/expectContinueReader#
   relationship 0.1.test `sg/testdata`/I3# implementation
 github.com/golang/go/src go1.22 `net/http`/gzipReader#
   relationship 0.1.test `sg/testdata`/I3# implementation
-github.com/golang/go/src go1.22 `net/http`/http1ClientConn#
-  relationship 0.1.test `sg/testdata`/I3# implementation
 github.com/golang/go/src go1.22 `net/http`/http2ClientConn#
   relationship 0.1.test `sg/testdata`/I3# implementation
 github.com/golang/go/src go1.22 `net/http`/http2gzipReader#
   relationship 0.1.test `sg/testdata`/I3# implementation
 github.com/golang/go/src go1.22 `net/http`/http2missingBody#
-  relationship 0.1.test `sg/testdata`/I3# implementation
-github.com/golang/go/src go1.22 `net/http`/http2netHTTPClientConn#
   relationship 0.1.test `sg/testdata`/I3# implementation
 github.com/golang/go/src go1.22 `net/http`/http2noBodyReader#
   relationship 0.1.test `sg/testdata`/I3# implementation
