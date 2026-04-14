@@ -37,13 +37,13 @@
 //    > struct field b struct{x int; y string}
 //    > ```
     x int
-//  ^ definition 0.1.test `sg/pr95`/MultiNameStruct#$anon_be9db40d1a2efdbd#x.
+//  ^ definition 0.1.test `sg/pr95`/MultiNameStruct#$anon_c0a8952b3a214f68#x.
 //  documentation
 //  > ```go
 //  > struct field x int
 //  > ```
     y string
-//  ^ definition 0.1.test `sg/pr95`/MultiNameStruct#$anon_be9db40d1a2efdbd#y.
+//  ^ definition 0.1.test `sg/pr95`/MultiNameStruct#$anon_c0a8952b3a214f68#y.
 //  documentation
 //  > ```go
 //  > struct field y string
@@ -88,7 +88,7 @@
 //       > struct field r struct{val int}
 //       > ```
     val int
-//  ^^^ definition 0.1.test `sg/pr95`/ThreeNameStruct#$anon_d8a1af4032ba4db7#val.
+//  ^^^ definition 0.1.test `sg/pr95`/ThreeNameStruct#$anon_64fbd7cc136081fc#val.
 //  documentation
 //  > ```go
 //  > struct field val int
@@ -109,19 +109,19 @@
    m.a.x = 1
 // ^ reference local 0
 //   ^ reference 0.1.test `sg/pr95`/MultiNameStruct#a.
-//     ^ reference 0.1.test `sg/pr95`/MultiNameStruct#$anon_be9db40d1a2efdbd#x.
+//     ^ reference 0.1.test `sg/pr95`/MultiNameStruct#$anon_c0a8952b3a214f68#x.
    m.a.y = "hello"
 // ^ reference local 0
 //   ^ reference 0.1.test `sg/pr95`/MultiNameStruct#a.
-//     ^ reference 0.1.test `sg/pr95`/MultiNameStruct#$anon_be9db40d1a2efdbd#y.
+//     ^ reference 0.1.test `sg/pr95`/MultiNameStruct#$anon_c0a8952b3a214f68#y.
    m.b.x = 2
 // ^ reference local 0
 //   ^ reference 0.1.test `sg/pr95`/MultiNameStruct#b.
-//     ^ reference 0.1.test `sg/pr95`/MultiNameStruct#$anon_be9db40d1a2efdbd#x.
+//     ^ reference 0.1.test `sg/pr95`/MultiNameStruct#$anon_c0a8952b3a214f68#x.
    m.b.y = "world"
 // ^ reference local 0
 //   ^ reference 0.1.test `sg/pr95`/MultiNameStruct#b.
-//     ^ reference 0.1.test `sg/pr95`/MultiNameStruct#$anon_be9db40d1a2efdbd#y.
+//     ^ reference 0.1.test `sg/pr95`/MultiNameStruct#$anon_c0a8952b3a214f68#y.
   
    m.a = m.b
 // ^ reference local 0
@@ -135,15 +135,15 @@
    t.p.val = 1
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/ThreeNameStruct#p.
-//     ^^^ reference 0.1.test `sg/pr95`/ThreeNameStruct#$anon_d8a1af4032ba4db7#val.
+//     ^^^ reference 0.1.test `sg/pr95`/ThreeNameStruct#$anon_64fbd7cc136081fc#val.
    t.q.val = 2
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/ThreeNameStruct#q.
-//     ^^^ reference 0.1.test `sg/pr95`/ThreeNameStruct#$anon_d8a1af4032ba4db7#val.
+//     ^^^ reference 0.1.test `sg/pr95`/ThreeNameStruct#$anon_64fbd7cc136081fc#val.
    t.r.val = 3
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/ThreeNameStruct#r.
-//     ^^^ reference 0.1.test `sg/pr95`/ThreeNameStruct#$anon_d8a1af4032ba4db7#val.
+//     ^^^ reference 0.1.test `sg/pr95`/ThreeNameStruct#$anon_64fbd7cc136081fc#val.
   }
 //⌃ enclosing_range_end 0.1.test `sg/pr95`/useMultiNameFields().
   

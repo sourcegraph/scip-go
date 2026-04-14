@@ -79,7 +79,7 @@
 // > struct field anon struct{sub int}
 // > ```
     sub int
-//  ^^^ definition 0.1.test `sg/initial`/StructType#$anon_eceee42b51fe9fb4#sub.
+//  ^^^ definition 0.1.test `sg/initial`/StructType#$anon_0ba9ace1dcfd6761#sub.
 //  documentation
 //  > ```go
 //  > struct field sub int
@@ -94,7 +94,7 @@
 // > struct field i interface{AnonMethod() bool}
 // > ```
     AnonMethod() bool
-//  ^^^^^^^^^^ definition 0.1.test `sg/initial`/StructType#$anon_8de51bfd1cc09b2e#AnonMethod.
+//  ^^^^^^^^^^ definition 0.1.test `sg/initial`/StructType#$anon_97e7de633e3ef8e8#AnonMethod.
 //  documentation
 //  > ```go
 //  > func (interface).AnonMethod() bool

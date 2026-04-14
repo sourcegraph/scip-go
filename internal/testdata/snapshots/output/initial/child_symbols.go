@@ -226,19 +226,19 @@
 // > struct field Anonymous struct{FieldA int; FieldB int; FieldC int}
 // > ```
     FieldA int
-//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_ae80b029f4e74b91#FieldA.
+//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_81475a76ba757de7#FieldA.
 //  documentation
 //  > ```go
 //  > struct field FieldA int
 //  > ```
     FieldB int
-//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_ae80b029f4e74b91#FieldB.
+//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_81475a76ba757de7#FieldB.
 //  documentation
 //  > ```go
 //  > struct field FieldB int
 //  > ```
     FieldC int
-//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_ae80b029f4e74b91#FieldC.
+//  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_81475a76ba757de7#FieldC.
 //  documentation
 //  > ```go
 //  > struct field FieldC int

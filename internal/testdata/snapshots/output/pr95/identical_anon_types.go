@@ -28,7 +28,7 @@
 // > ```go
 // > struct field x struct{t int}
 // > ```
-//           ^ definition 0.1.test `sg/pr95`/IdenticalAnonFields#$anon_c8f4f3405c957285#t.
+//           ^ definition 0.1.test `sg/pr95`/IdenticalAnonFields#$anon_44af0565eb406c15#t.
 //           documentation
 //           > ```go
 //           > struct field t int
@@ -39,7 +39,7 @@
 // > ```go
 // > struct field z struct{t int}
 // > ```
-//           ^ definition 0.1.test `sg/pr95`/IdenticalAnonFields#$anon_c8f4f3405c957285#t.
+//           ^ definition 0.1.test `sg/pr95`/IdenticalAnonFields#$anon_44af0565eb406c15#t.
 //           documentation
 //           > ```go
 //           > struct field t int
@@ -64,11 +64,11 @@
    y.x.t = 1
 // ^ reference local 0
 //   ^ reference 0.1.test `sg/pr95`/IdenticalAnonFields#x.
-//     ^ reference 0.1.test `sg/pr95`/IdenticalAnonFields#$anon_c8f4f3405c957285#t.
+//     ^ reference 0.1.test `sg/pr95`/IdenticalAnonFields#$anon_44af0565eb406c15#t.
    y.z.t = 2
 // ^ reference local 0
 //   ^ reference 0.1.test `sg/pr95`/IdenticalAnonFields#z.
-//     ^ reference 0.1.test `sg/pr95`/IdenticalAnonFields#$anon_c8f4f3405c957285#t.
+//     ^ reference 0.1.test `sg/pr95`/IdenticalAnonFields#$anon_44af0565eb406c15#t.
   }
 //⌃ enclosing_range_end 0.1.test `sg/pr95`/useIdenticalAnonFields().
   
@@ -101,13 +101,13 @@
 // > struct field a struct{x int; y string}
 // > ```
     x int
-//  ^ definition 0.1.test `sg/pr95`/FieldOrderMatters#$anon_be9db40d1a2efdbd#x.
+//  ^ definition 0.1.test `sg/pr95`/FieldOrderMatters#$anon_c0a8952b3a214f68#x.
 //  documentation
 //  > ```go
 //  > struct field x int
 //  > ```
     y string
-//  ^ definition 0.1.test `sg/pr95`/FieldOrderMatters#$anon_be9db40d1a2efdbd#y.
+//  ^ definition 0.1.test `sg/pr95`/FieldOrderMatters#$anon_c0a8952b3a214f68#y.
 //  documentation
 //  > ```go
 //  > struct field y string
@@ -120,13 +120,13 @@
 // > struct field b struct{y string; x int}
 // > ```
     y string
-//  ^ definition 0.1.test `sg/pr95`/FieldOrderMatters#$anon_27de975a6d45f011#y.
+//  ^ definition 0.1.test `sg/pr95`/FieldOrderMatters#$anon_b8d88f3211c0d7a4#y.
 //  documentation
 //  > ```go
 //  > struct field y string
 //  > ```
     x int
-//  ^ definition 0.1.test `sg/pr95`/FieldOrderMatters#$anon_27de975a6d45f011#x.
+//  ^ definition 0.1.test `sg/pr95`/FieldOrderMatters#$anon_b8d88f3211c0d7a4#x.
 //  documentation
 //  > ```go
 //  > struct field x int
@@ -147,19 +147,19 @@
    f.a.x = 1
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#a.
-//     ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#$anon_be9db40d1a2efdbd#x.
+//     ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#$anon_c0a8952b3a214f68#x.
    f.a.y = "hello"
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#a.
-//     ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#$anon_be9db40d1a2efdbd#y.
+//     ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#$anon_c0a8952b3a214f68#y.
    f.b.y = "world"
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#b.
-//     ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#$anon_27de975a6d45f011#y.
+//     ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#$anon_b8d88f3211c0d7a4#y.
    f.b.x = 2
 // ^ reference local 1
 //   ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#b.
-//     ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#$anon_27de975a6d45f011#x.
+//     ^ reference 0.1.test `sg/pr95`/FieldOrderMatters#$anon_b8d88f3211c0d7a4#x.
   }
 //⌃ enclosing_range_end 0.1.test `sg/pr95`/useFieldOrderMatters().
   
@@ -190,7 +190,7 @@
 // > struct field a struct{Name string "json:\"name\""}
 // > ```
     Name string `json:"name"`
-//  ^^^^ definition 0.1.test `sg/pr95`/DifferentTags#$anon_77f2eafdab9bea5a#Name.
+//  ^^^^ definition 0.1.test `sg/pr95`/DifferentTags#$anon_ed545d904f2246eb#Name.
 //  documentation
 //  > ```go
 //  > struct field Name string
@@ -203,7 +203,7 @@
 // > struct field b struct{Name string "json:\"full_name\""}
 // > ```
     Name string `json:"full_name"`
-//  ^^^^ definition 0.1.test `sg/pr95`/DifferentTags#$anon_65595b49922e7722#Name.
+//  ^^^^ definition 0.1.test `sg/pr95`/DifferentTags#$anon_29f1ad2683b11ed0#Name.
 //  documentation
 //  > ```go
 //  > struct field Name string
@@ -240,13 +240,13 @@
 // > struct field a struct{X int; Y string}
 // > ```
     X int
-//  ^ definition 0.1.test `sg/pr95`/ExportedVsUnexported#$anon_63f1bdfcbb5680cb#X.
+//  ^ definition 0.1.test `sg/pr95`/ExportedVsUnexported#$anon_2f238678626c0da1#X.
 //  documentation
 //  > ```go
 //  > struct field X int
 //  > ```
     Y string
-//  ^ definition 0.1.test `sg/pr95`/ExportedVsUnexported#$anon_63f1bdfcbb5680cb#Y.
+//  ^ definition 0.1.test `sg/pr95`/ExportedVsUnexported#$anon_2f238678626c0da1#Y.
 //  documentation
 //  > ```go
 //  > struct field Y string
@@ -259,13 +259,13 @@
 // > struct field b struct{x int; y string}
 // > ```
     x int
-//  ^ definition 0.1.test `sg/pr95`/ExportedVsUnexported#$anon_be9db40d1a2efdbd#x.
+//  ^ definition 0.1.test `sg/pr95`/ExportedVsUnexported#$anon_c0a8952b3a214f68#x.
 //  documentation
 //  > ```go
 //  > struct field x int
 //  > ```
     y string
-//  ^ definition 0.1.test `sg/pr95`/ExportedVsUnexported#$anon_be9db40d1a2efdbd#y.
+//  ^ definition 0.1.test `sg/pr95`/ExportedVsUnexported#$anon_c0a8952b3a214f68#y.
 //  documentation
 //  > ```go
 //  > struct field y string
