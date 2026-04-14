@@ -26,8 +26,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rogpeppe/go-internal v1.14.1 h1:UQB4HGPB6osV0SQTLymcB4TgvyWu6ZyliaW0tI/otEQ=
 github.com/rogpeppe/go-internal v1.14.1/go.mod h1:MaRKkUm5W0goXpeCfT7UZI6fk/L7L7so1lCWt35ZSgc=
-github.com/scip-code/scip/bindings/go/scip v0.7.0 h1:on80ynl7eSovvMUy3uxWkJm+kepsVjIwI2byIeMZego=
-github.com/scip-code/scip/bindings/go/scip v0.7.0/go.mod h1:XC4dP3um0lKaSDRFIMwYlkBjFxKy1Rw7xFt6KDtRjAk=
+github.com/scip-code/scip/bindings/go/scip v0.7.1 h1:x2QVP2nO09TFUGVrNJ+8XakD45KyXn/tSalzAELcB3Q=
+github.com/scip-code/scip/bindings/go/scip v0.7.1/go.mod h1:XC4dP3um0lKaSDRFIMwYlkBjFxKy1Rw7xFt6KDtRjAk=
 github.com/sourcegraph/beaut v0.0.0-20240611013027-627e4c25335a h1:j/CQ27s679M9wRGBRJYyXGrfkYuQA6VMnD7R08mHD9c=
 github.com/sourcegraph/beaut v0.0.0-20240611013027-627e4c25335a/go.mod h1:JG1sdvGTKWwe/oH3/3UKQ26vfcHIN//7fwEJhoqaBcM=
 github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu7U=

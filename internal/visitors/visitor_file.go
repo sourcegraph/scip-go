@@ -337,10 +337,15 @@ func (v *fileVisitor) ToScipDocument() *scip.Document {
 
 		if obj := local.Obj; obj != nil {
 			symbolInfo.DisplayName = obj.Name()
-			if txt := local.SignatureText(); txt != "" {
-				symbolInfo.SignatureDocumentation = &scip.Document{
-					Language: "go",
-					Text:     txt,
+			// Skip SignatureDocumentation for type-switch locals because
+			// multiple case clauses share the same obj.Pos(), making the
+			// type recorded in caseClauses nondeterministic.
+			if _, isTypeSwitchLocal := v.caseClauses[obj.Pos()]; !isTypeSwitchLocal {
+				if txt := local.SignatureText(); txt != "" {
+					symbolInfo.SignatureDocumentation = &scip.Document{
+						Language: "go",
+						Text:     txt,
+					}
 				}
 			}
 		}

@@ -1,5 +1,8 @@
   package replacers
 //        ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/
+//                  display_name replacers
+//                  signature_documentation
+//                  > package replacers
   
   import (
    "fmt"
@@ -13,10 +16,10 @@
 //⌄ enclosing_range_start 0.1.test `sg/replace-directives`/Something().
   func Something() {
 //     ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/Something().
-//     documentation
-//     > ```go
-//     > func Something()
-//     > ```
+//               documentation
+//               > ```go
+//               > func Something()
+//               > ```
    fmt.Println(replaced.DefaultConfig)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().
