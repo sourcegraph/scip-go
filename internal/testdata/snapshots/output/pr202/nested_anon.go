@@ -105,7 +105,7 @@
 //     ^ definition local 0
 //       display_name c
 //       signature_documentation
-//       > var c sg/pr202.ContainerAnon
+//       > var c ContainerAnon
 //       ^^^^^^^^^^^^^ reference 0.1.test `sg/pr202`/ContainerAnon#
    if len(c.items) > 0 {
 //        ^ reference local 0
@@ -138,7 +138,7 @@
 //     ^ definition local 2
 //       display_name d
 //       signature_documentation
-//       > var d sg/pr202.DeepNested
+//       > var d DeepNested
 //       ^^^^^^^^^^ reference 0.1.test `sg/pr202`/DeepNested#
    d.outer.inner.value = 42
 // ^ reference local 2

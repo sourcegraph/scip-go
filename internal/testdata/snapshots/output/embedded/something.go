@@ -9,7 +9,7 @@
 //      ^ definition local 0
 //        display_name r
 //        signature_documentation
-//        > var r *sg/embedded.RecentCommittersResults
+//        > var r *RecentCommittersResults
 //         ^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#
 //                                  ^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#String().
 //                                         signature_documentation

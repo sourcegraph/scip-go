@@ -27,7 +27,7 @@
 //      ^ definition local 0
 //        display_name w
 //        signature_documentation
-//        > var w sg/generallyeric.worker
+//        > var w worker
 //        ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
 //                ^^^^ definition 0.1.test `sg/generallyeric`/worker#Work().
 //                     signature_documentation
@@ -77,15 +77,15 @@
 //     ^ definition local 4
 //       display_name a
 //       signature_documentation
-//       > var a sg/generallyeric.worker
+//       > var a worker
 //        ^ definition local 5
 //          display_name b
 //          signature_documentation
-//          > var b sg/generallyeric.worker
+//          > var b worker
 //           ^ definition local 6
 //             display_name c
 //             signature_documentation
-//             > var c sg/generallyeric.worker
+//             > var c worker
 //             ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
    a = "A"
 // ^ reference local 4

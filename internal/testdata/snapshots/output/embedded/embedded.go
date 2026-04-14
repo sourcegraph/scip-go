@@ -36,7 +36,7 @@
 //                     ^ definition local 0
 //                       display_name c
 //                       signature_documentation
-//                       > var c *os/exec.Cmd
+//                       > var c *Cmd
 //                        ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
 //                             ^^^ reference github.com/golang/go/src go1.22 `os/exec`/Cmd#
    _ = &osExecCommand{Cmd: c}
@@ -95,7 +95,7 @@
 // ^ definition local 1
 //   display_name o
 //   signature_documentation
-//   > var o sg/embedded.Outer
+//   > var o Outer
 //      ^^^^^ reference 0.1.test `sg/embedded`/Outer#
     Inner: Inner{
 //  ^^^^^ reference 0.1.test `sg/embedded`/Outer#Inner.

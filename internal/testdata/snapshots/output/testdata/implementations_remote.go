@@ -55,7 +55,7 @@
 //                      ^^^^^^^^^^ definition local 1
 //                                 display_name respWriter
 //                                 signature_documentation
-//                                 > var respWriter net/http.ResponseWriter
+//                                 > var respWriter ResponseWriter
 //                                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#
    respWriter.WriteHeader(1)

@@ -26,7 +26,7 @@
 //    ^^^ definition local 0
 //        display_name ctx
 //        signature_documentation
-//        > var ctx context.Context
+//        > var ctx Context
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
 //                         ^^^^ definition local 1
@@ -151,7 +151,7 @@
 //      ^^ definition local 3
 //         display_name ts
 //         signature_documentation
-//         > var ts *sg/testdata.TestStruct
+//         > var ts *TestStruct
 //          ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TestStruct#
 //                      ^^^^ definition 0.1.test `sg/testdata`/TestStruct#Doer().
 //                           signature_documentation
@@ -161,7 +161,7 @@
 //                           ^^^ definition local 4
 //                               display_name ctx
 //                               signature_documentation
-//                               > var ctx context.Context
+//                               > var ctx Context
 //                               ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                                       ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
 //                                                ^^^^ definition local 5

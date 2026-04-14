@@ -24,12 +24,12 @@
 //           ^ definition local 0
 //             display_name p
 //             signature_documentation
-//             > var p sg/inlinestruct.Params
+//             > var p Params
 //             ^^^^^^ reference 0.1.test `sg/inlinestruct`/Params#
 //                      ^^^^^^^^ definition local 1
 //                               display_name response
 //                               signature_documentation
-//                               > var response *sg/inlinestruct.HighlightedCode
+//                               > var response *HighlightedCode
 //                                ^^^^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/HighlightedCode#
 //                                                 ^^^^^^^ definition local 2
 //                                                         display_name aborted
@@ -52,12 +52,12 @@
 //           ^ definition local 4
 //             display_name p
 //             signature_documentation
-//             > var p sg/inlinestruct.Params
+//             > var p Params
 //             ^^^^^^ reference 0.1.test `sg/inlinestruct`/Params#
 //                      ^^^^^^^^ definition local 5
 //                               display_name response
 //                               signature_documentation
-//                               > var response *sg/inlinestruct.HighlightedCode
+//                               > var response *HighlightedCode
 //                                ^^^^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/HighlightedCode#
 //                                                 ^^^^^^^ definition local 6
 //                                                         display_name aborted

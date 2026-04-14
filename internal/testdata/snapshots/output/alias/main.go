@@ -55,7 +55,7 @@
 //       ^ definition local 0
 //         display_name u
 //         signature_documentation
-//         > var u github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias.U
+//         > var u U
 //         ^ reference github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
 //             ⌃ enclosing_range_end github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
   

@@ -23,7 +23,7 @@
 //      ^ definition local 0
 //        display_name m
 //        signature_documentation
-//        > var m sg/initial.MyStruct
+//        > var m MyStruct
 //        ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //                  ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#RecvFunction().
 //                               signature_documentation
@@ -46,7 +46,7 @@
 // ^ definition local 2
 //   display_name s
 //   signature_documentation
-//   > var s sg/initial.MyStruct
+//   > var s MyStruct
 //      ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //               ^ reference 0.1.test `sg/initial`/MyStruct#f.
    fmt.Println(s)

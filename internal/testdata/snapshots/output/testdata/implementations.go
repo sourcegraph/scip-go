@@ -41,7 +41,7 @@
 //      ^ definition local 0
 //        display_name r
 //        signature_documentation
-//        > var r sg/testdata.T1
+//        > var r T1
 //        ^^ reference 0.1.test `sg/testdata`/T1#
 //            ^^ definition 0.1.test `sg/testdata`/T1#F1().
 //               signature_documentation
@@ -61,7 +61,7 @@
 //      ^ definition local 1
 //        display_name r
 //        signature_documentation
-//        > var r sg/testdata.T2
+//        > var r T2
 //        ^^ reference 0.1.test `sg/testdata`/T2#
 //            ^^ definition 0.1.test `sg/testdata`/T2#F1().
 //               signature_documentation
@@ -73,7 +73,7 @@
 //      ^ definition local 2
 //        display_name r
 //        signature_documentation
-//        > var r sg/testdata.T2
+//        > var r T2
 //        ^^ reference 0.1.test `sg/testdata`/T2#
 //            ^^ definition 0.1.test `sg/testdata`/T2#F2().
 //               signature_documentation
@@ -130,7 +130,7 @@
 //      ^ definition local 3
 //        display_name r
 //        signature_documentation
-//        > var r sg/testdata.Foo
+//        > var r Foo
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
 //             ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/Foo#nonExportedMethod().
 //                               signature_documentation
@@ -142,7 +142,7 @@
 //      ^ definition local 4
 //        display_name r
 //        signature_documentation
-//        > var r sg/testdata.Foo
+//        > var r Foo
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
 //             ^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/Foo#ExportedMethod().
 //                            signature_documentation
@@ -154,7 +154,7 @@
 //      ^ definition local 5
 //        display_name r
 //        signature_documentation
-//        > var r sg/testdata.Foo
+//        > var r Foo
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
 //             ^^^^^ definition 0.1.test `sg/testdata`/Foo#Close().
 //                   signature_documentation
@@ -238,7 +238,7 @@
 //                ^^^^^^ definition local 6
 //                       display_name shared
 //                       signature_documentation
-//                       > var shared sg/testdata.SharedOne
+//                       > var shared SharedOne
 //                       ^^^^^^^^^ reference 0.1.test `sg/testdata`/SharedOne#
    shared.Shared()
 // ^^^^^^ reference local 6

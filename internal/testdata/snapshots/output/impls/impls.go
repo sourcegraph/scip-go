@@ -57,7 +57,7 @@
 //      ^ definition local 0
 //        display_name r
 //        signature_documentation
-//        > var r sg/impls.T1
+//        > var r T1
 //        ^^ reference 0.1.test `sg/impls`/T1#
 //            ^^ definition 0.1.test `sg/impls`/T1#F1().
 //               signature_documentation
@@ -78,7 +78,7 @@
 //      ^ definition local 1
 //        display_name r
 //        signature_documentation
-//        > var r sg/impls.T2
+//        > var r T2
 //        ^^ reference 0.1.test `sg/impls`/T2#
 //            ^^ definition 0.1.test `sg/impls`/T2#F1().
 //               signature_documentation
@@ -91,7 +91,7 @@
 //      ^ definition local 2
 //        display_name r
 //        signature_documentation
-//        > var r sg/impls.T2
+//        > var r T2
 //        ^^ reference 0.1.test `sg/impls`/T2#
 //            ^^ definition 0.1.test `sg/impls`/T2#F2().
 //               signature_documentation

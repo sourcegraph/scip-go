@@ -18,7 +18,7 @@
 //      ^ definition local 0
 //        display_name c
 //        signature_documentation
-//        > var c *sg/switches.CustomSwitch
+//        > var c *CustomSwitch
 //         ^^^^^^^^^^^^ reference 0.1.test `sg/switches`/CustomSwitch#
 //                       ^^^^^^^^^ definition 0.1.test `sg/switches`/CustomSwitch#Something().
 //                                 signature_documentation

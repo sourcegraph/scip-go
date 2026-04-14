@@ -43,7 +43,7 @@
 //     ^ definition local 0
 //       display_name m
 //       signature_documentation
-//       > var m sg/pr202.MultiNameStruct
+//       > var m MultiNameStruct
 //       ^^^^^^^^^^^^^^^ reference 0.1.test `sg/pr202`/MultiNameStruct#
    m.a.x = 1
 // ^ reference local 0

@@ -200,7 +200,7 @@
 //      ^ definition local 0
 //        display_name s
 //        signature_documentation
-//        > var s *sg/initial.Struct
+//        > var s *Struct
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#StructMethod().
 //                              signature_documentation
@@ -214,7 +214,7 @@
 //      ^ definition local 1
 //        display_name s
 //        signature_documentation
-//        > var s *sg/initial.Struct
+//        > var s *Struct
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#ImplementsInterface().
 //                                     signature_documentation
@@ -227,7 +227,7 @@
 //      ^ definition local 2
 //        display_name s
 //        signature_documentation
-//        > var s *sg/initial.Struct
+//        > var s *Struct
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#MachineLearning().
 //                                 signature_documentation
@@ -282,7 +282,7 @@
 //      ^^^^^^^^^^^^^^^^^^^^^ definition local 8
 //                            display_name typeShouldNotHaveDocs
 //                            signature_documentation
-//                            > typeShouldNotHaveDocs sg/initial.typeShouldNotHaveDocs
+//                            > typeShouldNotHaveDocs typeShouldNotHaveDocs
 //                                    ^ definition local 9
 //                                      display_name a
 //                                      signature_documentation

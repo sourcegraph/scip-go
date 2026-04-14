@@ -39,7 +39,9 @@ func (l *Local) SignatureText() string {
 		}
 	} else {
 		if t := l.Obj.Type(); t != nil {
-			if ts := t.String(); ts != "" {
+			if ts := types.TypeString(
+				t, func(*types.Package) string { return "" },
+			); ts != "" {
 				parts = append(parts, ts)
 			}
 		}

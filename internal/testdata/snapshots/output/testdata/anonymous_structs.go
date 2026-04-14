@@ -110,7 +110,7 @@
 //     ^ definition local 6
 //       display_name f
 //       signature_documentation
-//       > var f sg/testdata.TypeContainingAnonymousStructs
+//       > var f TypeContainingAnonymousStructs
 //       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
    f.a.x = 3
 // ^ reference local 6

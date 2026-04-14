@@ -29,7 +29,7 @@
 //            ^ definition local 0
 //              display_name t
 //              signature_documentation
-//              > var t *testing.T
+//              > var t *T
 //               ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
 //                       ^ reference github.com/golang/go/src go1.22 testing/T#
    return "", ErrNotImplemented
@@ -45,7 +45,7 @@
 //                   ^ definition local 1
 //                     display_name t
 //                     signature_documentation
-//                     > var t *testing.T
+//                     > var t *T
 //                      ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
 //                              ^ reference github.com/golang/go/src go1.22 testing/T#
 //                                 ^ definition local 2

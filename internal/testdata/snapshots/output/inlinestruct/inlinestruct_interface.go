@@ -47,7 +47,7 @@
 // ^ definition local 0
 //   display_name x
 //   signature_documentation
-//   > var x interface{AbbreviatedOID(context.Context) (string, error); Commit(context.Context) (string, error); OID(context.Context) (int, error); Type(context.Context) (int, error)}
+//   > var x interface{AbbreviatedOID(Context) (string, error); Commit(Context) (string, error); OID(Context) (int, error); Type(Context) (int, error)}
 //      ^^^^^^ reference 0.1.test `sg/inlinestruct`/Target().
    x.OID(context.Background())
 // ^ reference local 0

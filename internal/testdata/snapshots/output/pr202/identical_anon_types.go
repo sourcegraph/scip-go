@@ -42,7 +42,7 @@
 //     ^ definition local 0
 //       display_name y
 //       signature_documentation
-//       > var y sg/pr202.IdenticalAnonFields
+//       > var y IdenticalAnonFields
 //       ^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/pr202`/IdenticalAnonFields#
    y.x = y.z
 // ^ reference local 0

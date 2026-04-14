@@ -12,7 +12,7 @@
 //               ^ definition local 0
 //                 display_name r
 //                 signature_documentation
-//                 > var r net/http.ResponseWriter
+//                 > var r ResponseWriter
 //                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                      ^^^^^^^^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/ResponseWriter#
 //                                       ⌃ enclosing_range_end 0.1.test `sg/impls`/Something().
@@ -31,7 +31,7 @@
 //      ^ definition local 1
 //        display_name w
 //        signature_documentation
-//        > var w sg/impls.MyWriter
+//        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^ definition 0.1.test `sg/impls`/MyWriter#Header().
 //                         signature_documentation
@@ -45,7 +45,7 @@
 //      ^ definition local 2
 //        display_name w
 //        signature_documentation
-//        > var w sg/impls.MyWriter
+//        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^ definition 0.1.test `sg/impls`/MyWriter#Write().
 //                        signature_documentation
@@ -60,7 +60,7 @@
 //      ^ definition local 3
 //        display_name w
 //        signature_documentation
-//        > var w sg/impls.MyWriter
+//        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#WriteHeader().
 //                              signature_documentation

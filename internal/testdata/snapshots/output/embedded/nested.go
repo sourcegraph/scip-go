@@ -34,7 +34,7 @@
 //                   ^ definition local 0
 //                     display_name n
 //                     signature_documentation
-//                     > var n sg/embedded.NestedHandler
+//                     > var n NestedHandler
 //                     ^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#
    _ = n.Handler.ServeHTTP
 //     ^ reference local 0

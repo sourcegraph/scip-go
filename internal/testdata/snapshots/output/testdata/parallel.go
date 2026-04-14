@@ -20,7 +20,7 @@
 //                             ^^^ definition local 0
 //                                 display_name ctx
 //                                 signature_documentation
-//                                 > var ctx context.Context
+//                                 > var ctx Context
 //                                 ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                                         ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
   
@@ -37,19 +37,19 @@
 //              ^^^ definition local 1
 //                  display_name ctx
 //                  signature_documentation
-//                  > var ctx context.Context
+//                  > var ctx Context
 //                  ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                          ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
 //                                   ^^^ definition local 2
 //                                       display_name fns
 //                                       signature_documentation
-//                                       > var fns []sg/testdata.ParallelizableFunc
+//                                       > var fns []ParallelizableFunc
 //                                          ^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/ParallelizableFunc#
    var wg sync.WaitGroup
 //     ^^ definition local 3
 //        display_name wg
 //        signature_documentation
-//        > var wg sync.WaitGroup
+//        > var wg WaitGroup
 //        ^^^^ reference github.com/golang/go/src go1.22 sync/
 //             ^^^^^^^^^ reference github.com/golang/go/src go1.22 sync/WaitGroup#
    errs := make(chan error, len(fns))
@@ -63,7 +63,7 @@
 //        ^^ definition local 5
 //           display_name fn
 //           signature_documentation
-//           > var fn sg/testdata.ParallelizableFunc
+//           > var fn ParallelizableFunc
 //                    ^^^ reference local 2
     wg.Add(1)
 //  ^^ reference local 3
@@ -73,7 +73,7 @@
 //          ^^ definition local 6
 //             display_name fn
 //             signature_documentation
-//             > var fn sg/testdata.ParallelizableFunc
+//             > var fn ParallelizableFunc
 //             ^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/ParallelizableFunc#
      errs <- fn(ctx)
 //   ^^^^ reference local 4

@@ -19,7 +19,7 @@
 //               ^^^^^^ definition local 0
 //                      display_name recent
 //                      signature_documentation
-//                      > var recent sg/embedded.RecentCommittersResults
+//                      > var recent RecentCommittersResults
 //                      ^^^^^^^^ reference 0.1.test `sg/embedded`/
 //                               ^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/RecentCommittersResults#
    for _, commit := range recent.Nodes {
