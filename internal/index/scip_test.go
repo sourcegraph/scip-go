@@ -76,28 +76,10 @@ func TestSnapshots(t *testing.T) {
 				IncludeDisambiguator:  func(_ string) bool { return true },
 			}
 
-			// Skip documents outside of current directory (e.g. from Go build cache)
-			var localDocs []*scip.Document
-			for _, doc := range scipIndex.Documents {
-				if !strings.HasPrefix(doc.RelativePath, "..") {
-					localDocs = append(localDocs, doc)
-				}
-			}
-			scipIndex.Documents = localDocs
-
-			sourceFiles, err := testutil.FormatSnapshots(&scipIndex, "//", symbolFormatter, inputDirectory)
+			sourceFiles, err := testutil.FormatSnapshots(
+				&scipIndex, "//", symbolFormatter, "")
 			if err != nil {
 				t.Fatal(err)
-			}
-
-			if *filter != "" {
-				var filtered []*scip.SourceFile
-				for _, sf := range sourceFiles {
-					if strings.Contains(sf.RelativePath, *filter) {
-						filtered = append(filtered, sf)
-					}
-				}
-				sourceFiles = filtered
 			}
 
 			return sourceFiles
