@@ -43,19 +43,15 @@ func NewFileVisitor(
 	}
 
 	return &fileVisitor{
-		doc:           doc,
-		pkg:           pkg,
-		file:          file,
-		pkgLookup:     pkgLookup,
-		locals:        map[token.Pos]lookup.Local{},
-		pkgSymbols:    pkgSymbols,
-		globalSymbols: globalSymbols,
-		occurrences:   occurrences,
-		overrides: struct {
-			caseClauses map[token.Pos]types.Object
-		}{
-			caseClauses: caseClauses,
-		},
+		doc:              doc,
+		pkg:              pkg,
+		file:             file,
+		pkgLookup:        pkgLookup,
+		locals:           map[token.Pos]lookup.Local{},
+		pkgSymbols:       pkgSymbols,
+		globalSymbols:    globalSymbols,
+		occurrences:      occurrences,
+		caseClauses:      caseClauses,
 		enclosingNodeMap: enclosingNodeMap(file),
 	}
 }
@@ -87,11 +83,8 @@ type fileVisitor struct {
 	// occurrences in this file
 	occurrences []*scip.Occurrence
 
-	// Overriding Definition Behvaior:
-	overrides struct {
-		// Case clauses have to map particular positions to different types
-		caseClauses map[token.Pos]types.Object
-	}
+	// caseClauses maps particular positions to different types for case clauses
+	caseClauses map[token.Pos]types.Object
 
 	// enclosingNodeMap maps certain nodes to their enclosing nodes for
 	// enclosing range computation.
@@ -131,13 +124,10 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		}
 
 		if node.Name != nil && node.Name.Name != "." && node.Name.Name != "_" {
-			// Aliased import: emit a reference to the global package symbol
-			// for the alias name (Option A - pierce the veil)
 			rangeFromName := symbols.RangeFromName(
 				v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false)
 			if rangeFromName != nil {
-				sym, ok := v.globalSymbols.GetPkgSymbol(importedPackage)
-				if ok {
+				if sym, ok := v.globalSymbols.GetPkgSymbol(importedPackage); ok {
 					v.AppendSymbolReference(sym, rangeFromName, nil)
 				}
 			}
@@ -159,13 +149,16 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				startPosition := v.pkg.Fset.Position(ident.Pos())
 				endPosition := v.pkg.Fset.Position(ident.End())
 
-				sym, ok := v.globalSymbols.GetPkgSymbolByID(newtypes.GetFromTypesPackage(sel.Imported()))
+				packageID := newtypes.GetFromTypesPackage(sel.Imported())
+				sym, ok := v.globalSymbols.GetPkgSymbolByID(packageID)
 				if !ok {
-					slog.Debug(fmt.Sprintf("Missing symbol for package: %s", sel.Imported().Path()))
+					slog.Debug(fmt.Sprintf(
+						"Missing symbol for package: %s", sel.Imported().Path()))
 					return nil
 				}
 
-				v.AppendSymbolReference(sym, scipRange(startPosition, endPosition, sel), nil)
+				symRange := scipRange(startPosition, endPosition, sel)
+				v.AppendSymbolReference(sym, symRange, nil)
 
 				// Then walk the selection
 				ast.Walk(v, node.Sel)
@@ -196,7 +189,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		endPosition := v.pkg.Fset.Position(node.End())
 
 		// Short circuit on case clauses
-		if obj, ok := v.overrides.caseClauses[node.Pos()]; ok {
+		if obj, ok := v.caseClauses[node.Pos()]; ok {
 			symName := v.createNewLocalSymbol(obj.Pos(), obj)
 			v.NewDefinition(symName, scipRange(startPosition, endPosition, obj), nil)
 			return nil
@@ -230,7 +223,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			if localSymbol, ok := v.locals[ref.Pos()]; ok {
 				symbol = localSymbol.Symbol
 
-				if _, ok := v.overrides.caseClauses[ref.Pos()]; ok {
+				if _, ok := v.caseClauses[ref.Pos()]; ok {
 					overrideType = v.pkg.TypesInfo.TypeOf(node)
 				}
 			} else {
