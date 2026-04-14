@@ -9,7 +9,7 @@
 //           signature_documentation
 //           > var BlockVar1 string
 //           documentation
-//           > Block doc for the var group.
+//           > BlockVar1 is the first var in a block.
   
    BlockVarNoDoc = "two"
 // ^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockVarNoDoc.

@@ -12,7 +12,7 @@
 //             signature_documentation
 //             > const BlockConst1 untyped int = 1
 //             documentation
-//             > Block doc for the const group.
+//             > BlockConst1 is the first constant in a block.
   
    // BlockConst2 is a multi-line doc.
    // It spans two lines.
@@ -21,7 +21,8 @@
 //             signature_documentation
 //             > const BlockConst2 untyped int = 2
 //             documentation
-//             > Block doc for the const group.
+//             > BlockConst2 is a multi-line doc.
+//             > It spans two lines.
   
    BlockConstNoDoc = 3
 // ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConstNoDoc.
@@ -29,6 +30,13 @@
 //                 > const BlockConstNoDoc untyped int = 3
 //                 documentation
 //                 > Block doc for the const group.
+  
+   BlockConstTrailing = 5 // trailing comment on const
+// ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConstTrailing.
+//                    signature_documentation
+//                    > const BlockConstTrailing untyped int = 5
+//                    documentation
+//                    > trailing comment on const
   )
   
   const (
@@ -37,5 +45,7 @@
 // ^^^^^^^^^^^ definition 0.1.test `sg/pr206`/OrphanConst.
 //             signature_documentation
 //             > const OrphanConst untyped int = 99
+//             documentation
+//             > OrphanConst lives in a block with no block-level doc.
   )
   

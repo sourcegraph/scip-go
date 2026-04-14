@@ -140,7 +140,7 @@ func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 
 		return doc
 	case *ast.ValueSpec:
-		doc := v.Doc.Text()
+		doc := strings.TrimSpace(v.Doc.Text() + "\n" + v.Comment.Text())
 		if doc == "" && parent != nil {
 			doc = d.extractHoverText(nil, parent)
 		}
@@ -149,6 +149,22 @@ func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 	case *ast.Field:
 		return strings.TrimSpace(v.Doc.Text() + "\n" + v.Comment.Text())
 	case *ast.Ident:
+		if genDecl, ok := parent.(*ast.GenDecl); ok {
+			for _, spec := range genDecl.Specs {
+				switch s := spec.(type) {
+				case *ast.TypeSpec:
+					if s.Name == v {
+						return d.extractHoverText(parent, s)
+					}
+				case *ast.ValueSpec:
+					for _, name := range s.Names {
+						if name == v {
+							return d.extractHoverText(parent, s)
+						}
+					}
+				}
+			}
+		}
 		if parent != nil {
 			return d.extractHoverText(nil, parent)
 		}

@@ -10,6 +10,8 @@ const (
 	BlockConst2 = 2
 
 	BlockConstNoDoc = 3
+
+	BlockConstTrailing = 5 // trailing comment on const
 )
 
 const (
