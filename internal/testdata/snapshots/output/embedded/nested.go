@@ -6,44 +6,47 @@
   
   type NestedHandler struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#
-//     documentation
-//     > ```go
-//     > type NestedHandler struct
-//     > ```
-//     documentation
-//     > ```go
-//     > struct {
-//     >     Handler
-//     >     Other int
-//     > }
-//     > ```
-//     relationship github.com/golang/go/src go1.22 `net/http`/Handler# implementation
+//                   documentation
+//                   > ```go
+//                   > type NestedHandler struct
+//                   > ```
+//                   documentation
+//                   > ```go
+//                   > struct {
+//                   >     Handler
+//                   >     Other int
+//                   > }
+//                   > ```
+//                   relationship github.com/golang/go/src go1.22 `net/http`/Handler# implementation
    http.Handler
 // ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //      ^^^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#Handler.
-//      documentation
-//      > ```go
-//      > struct field Handler net/http.Handler
-//      > ```
+//              documentation
+//              > ```go
+//              > struct field Handler net/http.Handler
+//              > ```
 //      ^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Handler#
   
    // Wow, a great thing for integers
    Other int
 // ^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#Other.
-// documentation
-// > ```go
-// > struct field Other int
-// > ```
+//       documentation
+//       > ```go
+//       > struct field Other int
+//       > ```
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/embedded`/NestedExample().
   func NestedExample(n NestedHandler) {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/NestedExample().
-//     documentation
-//     > ```go
-//     > func NestedExample(n NestedHandler)
-//     > ```
+//                   documentation
+//                   > ```go
+//                   > func NestedExample(n NestedHandler)
+//                   > ```
 //                   ^ definition local 0
+//                     display_name n
+//                     signature_documentation
+//                     > var n sg/embedded.NestedHandler
 //                     ^^^^^^^^^^^^^ reference 0.1.test `sg/embedded`/NestedHandler#
    _ = n.Handler.ServeHTTP
 //     ^ reference local 0

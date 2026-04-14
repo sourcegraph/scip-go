@@ -5,58 +5,61 @@
   
   type MultiNameStruct struct {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/MultiNameStruct#
-//     documentation
-//     > ```go
-//     > type MultiNameStruct struct
-//     > ```
-//     documentation
-//     > ```go
-//     > struct {
-//     >     a struct {
-//     >         x int
-//     >         y string
-//     >     }
-//     >     b struct {
-//     >         x int
-//     >         y string
-//     >     }
-//     > }
-//     > ```
+//                     documentation
+//                     > ```go
+//                     > type MultiNameStruct struct
+//                     > ```
+//                     documentation
+//                     > ```go
+//                     > struct {
+//                     >     a struct {
+//                     >         x int
+//                     >         y string
+//                     >     }
+//                     >     b struct {
+//                     >         x int
+//                     >         y string
+//                     >     }
+//                     > }
+//                     > ```
    a, b struct {
 // ^ definition 0.1.test `sg/pr202`/MultiNameStruct#a.
-// documentation
-// > ```go
-// > struct field a struct{x int; y string}
-// > ```
+//   documentation
+//   > ```go
+//   > struct field a struct{x int; y string}
+//   > ```
 //    ^ definition 0.1.test `sg/pr202`/MultiNameStruct#b.
-//    documentation
-//    > ```go
-//    > struct field b struct{x int; y string}
-//    > ```
+//      documentation
+//      > ```go
+//      > struct field b struct{x int; y string}
+//      > ```
     x int
 //  ^ definition 0.1.test `sg/pr202`/MultiNameStruct#$anon_c0a8952b3a214f68#x.
-//  documentation
-//  > ```go
-//  > struct field x int
-//  > ```
+//    documentation
+//    > ```go
+//    > struct field x int
+//    > ```
     y string
 //  ^ definition 0.1.test `sg/pr202`/MultiNameStruct#$anon_c0a8952b3a214f68#y.
-//  documentation
-//  > ```go
-//  > struct field y string
-//  > ```
+//    documentation
+//    > ```go
+//    > struct field y string
+//    > ```
    }
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/pr202`/useMultiNameFields().
   func useMultiNameFields() {
 //     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/useMultiNameFields().
-//     documentation
-//     > ```go
-//     > func useMultiNameFields()
-//     > ```
+//                        documentation
+//                        > ```go
+//                        > func useMultiNameFields()
+//                        > ```
    var m MultiNameStruct
 //     ^ definition local 0
+//       display_name m
+//       signature_documentation
+//       > var m sg/pr202.MultiNameStruct
 //       ^^^^^^^^^^^^^^^ reference 0.1.test `sg/pr202`/MultiNameStruct#
    m.a.x = 1
 // ^ reference local 0

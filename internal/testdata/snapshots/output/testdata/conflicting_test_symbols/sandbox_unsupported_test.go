@@ -3,6 +3,9 @@
   
   package osl
 //        ^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/
+//            display_name osl
+//            signature_documentation
+//            > package osl
   
   import (
    "errors"
@@ -13,21 +16,24 @@
   
   var ErrNotImplemented = errors.New("not implemented")
 //    ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/ErrNotImplemented.
-//    documentation
-//    > ```go
-//    > var ErrNotImplemented error
-//    > ```
+//                      documentation
+//                      > ```go
+//                      > var ErrNotImplemented error
+//                      > ```
 //                        ^^^^^^ reference github.com/golang/go/src go1.22 errors/
 //                               ^^^ reference github.com/golang/go/src go1.22 errors/New().
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
   func newKey(t *testing.T) (string, error) {
 //     ^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
-//     documentation
-//     > ```go
-//     > func newKey(t *T) (string, error)
-//     > ```
+//            documentation
+//            > ```go
+//            > func newKey(t *T) (string, error)
+//            > ```
 //            ^ definition local 0
+//              display_name t
+//              signature_documentation
+//              > var t *testing.T
 //               ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
 //                       ^ reference github.com/golang/go/src go1.22 testing/T#
    return "", ErrNotImplemented
@@ -38,14 +44,20 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
   func verifySandbox(t *testing.T, s string) {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
-//     documentation
-//     > ```go
-//     > func verifySandbox(t *T, s string)
-//     > ```
+//                   documentation
+//                   > ```go
+//                   > func verifySandbox(t *T, s string)
+//                   > ```
 //                   ^ definition local 1
+//                     display_name t
+//                     signature_documentation
+//                     > var t *testing.T
 //                      ^^^^^^^ reference github.com/golang/go/src go1.22 testing/
 //                              ^ reference github.com/golang/go/src go1.22 testing/T#
 //                                 ^ definition local 2
+//                                   display_name s
+//                                   signature_documentation
+//                                   > var s string
    return
   }
 //⌃ enclosing_range_end 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().

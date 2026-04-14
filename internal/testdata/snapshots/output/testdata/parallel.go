@@ -12,14 +12,17 @@
   // of this function type.
   type ParallelizableFunc func(ctx context.Context) error
 //     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ParallelizableFunc#
-//     documentation
-//     > ParallelizableFunc is a function that can be called concurrently with other instances
-//     > of this function type.
-//     documentation
-//     > ```go
-//     > func(ctx Context) error
-//     > ```
+//                        documentation
+//                        > ParallelizableFunc is a function that can be called concurrently with other instances
+//                        > of this function type.
+//                        documentation
+//                        > ```go
+//                        > func(ctx Context) error
+//                        > ```
 //                             ^^^ definition local 0
+//                                 display_name ctx
+//                                 signature_documentation
+//                                 > var ctx context.Context
 //                                 ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                                         ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
   
@@ -28,28 +31,43 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/Parallel().
   func Parallel(ctx context.Context, fns ...ParallelizableFunc) error {
 //     ^^^^^^^^ definition 0.1.test `sg/testdata`/Parallel().
-//     documentation
-//     > ```go
-//     > func Parallel(ctx Context, fns ...ParallelizableFunc) error
-//     > ```
-//     documentation
-//     > Parallel invokes each of the given parallelizable functions in their own goroutines and
-//     > returns the first error to occur. This method will block until all goroutines have returned.
+//              documentation
+//              > ```go
+//              > func Parallel(ctx Context, fns ...ParallelizableFunc) error
+//              > ```
+//              documentation
+//              > Parallel invokes each of the given parallelizable functions in their own goroutines and
+//              > returns the first error to occur. This method will block until all goroutines have returned.
 //              ^^^ definition local 1
+//                  display_name ctx
+//                  signature_documentation
+//                  > var ctx context.Context
 //                  ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                          ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
 //                                   ^^^ definition local 2
+//                                       display_name fns
+//                                       signature_documentation
+//                                       > var fns []sg/testdata.ParallelizableFunc
 //                                          ^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/ParallelizableFunc#
    var wg sync.WaitGroup
 //     ^^ definition local 3
+//        display_name wg
+//        signature_documentation
+//        > var wg sync.WaitGroup
 //        ^^^^ reference github.com/golang/go/src go1.22 sync/
 //             ^^^^^^^^^ reference github.com/golang/go/src go1.22 sync/WaitGroup#
    errs := make(chan error, len(fns))
 // ^^^^ definition local 4
+//      display_name errs
+//      signature_documentation
+//      > var errs chan error
 //                              ^^^ reference local 2
   
    for _, fn := range fns {
 //        ^^ definition local 5
+//           display_name fn
+//           signature_documentation
+//           > var fn sg/testdata.ParallelizableFunc
 //                    ^^^ reference local 2
     wg.Add(1)
 //  ^^ reference local 3
@@ -57,6 +75,9 @@
   
     go func(fn ParallelizableFunc) {
 //          ^^ definition local 6
+//             display_name fn
+//             signature_documentation
+//             > var fn sg/testdata.ParallelizableFunc
 //             ^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/ParallelizableFunc#
      errs <- fn(ctx)
 //   ^^^^ reference local 4
@@ -75,6 +96,9 @@
   
    for err := range errs {
 //     ^^^ definition local 7
+//         display_name err
+//         signature_documentation
+//         > var err error
 //                  ^^^^ reference local 4
     if err != nil {
 //     ^^^ reference local 7

@@ -1,90 +1,102 @@
   package testdata
 //        ^^^^^^^^ definition 0.1.test `sg/testdata`/
+//                 display_name testdata
+//                 signature_documentation
+//                 > package testdata
   
   import "fmt"
 //        ^^^ reference github.com/golang/go/src go1.22 fmt/
   
   type TypeContainingAnonymousStructs struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
-//     documentation
-//     > ```go
-//     > type TypeContainingAnonymousStructs struct
-//     > ```
-//     documentation
-//     > ```go
-//     > struct {
-//     >     a struct {
-//     >         x int
-//     >         y string
-//     >     }
-//     >     b struct {
-//     >         x int
-//     >         y string
-//     >     }
-//     >     c struct {
-//     >         X int
-//     >         Y string
-//     >     }
-//     > }
-//     > ```
+//                                    documentation
+//                                    > ```go
+//                                    > type TypeContainingAnonymousStructs struct
+//                                    > ```
+//                                    documentation
+//                                    > ```go
+//                                    > struct {
+//                                    >     a struct {
+//                                    >         x int
+//                                    >         y string
+//                                    >     }
+//                                    >     b struct {
+//                                    >         x int
+//                                    >         y string
+//                                    >     }
+//                                    >     c struct {
+//                                    >         X int
+//                                    >         Y string
+//                                    >     }
+//                                    > }
+//                                    > ```
    a, b struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
-// documentation
-// > ```go
-// > struct field a struct{x int; y string}
-// > ```
+//   documentation
+//   > ```go
+//   > struct field a struct{x int; y string}
+//   > ```
 //    ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.
-//    documentation
-//    > ```go
-//    > struct field b struct{x int; y string}
-//    > ```
+//      documentation
+//      > ```go
+//      > struct field b struct{x int; y string}
+//      > ```
     x int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_c0a8952b3a214f68#x.
-//  documentation
-//  > ```go
-//  > struct field x int
-//  > ```
+//    documentation
+//    > ```go
+//    > struct field x int
+//    > ```
     y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_c0a8952b3a214f68#y.
-//  documentation
-//  > ```go
-//  > struct field y string
-//  > ```
+//    documentation
+//    > ```go
+//    > struct field y string
+//    > ```
    }
    c struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
-// documentation
-// > ```go
-// > struct field c struct{X int; Y string}
-// > ```
+//   documentation
+//   > ```go
+//   > struct field c struct{X int; Y string}
+//   > ```
     X int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_2f238678626c0da1#X.
-//  documentation
-//  > ```go
-//  > struct field X int
-//  > ```
+//    documentation
+//    > ```go
+//    > struct field X int
+//    > ```
     Y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_2f238678626c0da1#Y.
-//  documentation
-//  > ```go
-//  > struct field Y string
-//  > ```
+//    documentation
+//    > ```go
+//    > struct field Y string
+//    > ```
    }
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
   func funcContainingAnonymousStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
-//     documentation
-//     > ```go
-//     > func funcContainingAnonymousStructs()
-//     > ```
+//                                    documentation
+//                                    > ```go
+//                                    > func funcContainingAnonymousStructs()
+//                                    > ```
    d := struct {
 // ^ definition local 0
+//   display_name d
+//   signature_documentation
+//   > var d struct{x int; y string}
     x int
 //  ^ definition local 1
+//    display_name x
+//    signature_documentation
+//    > var x int
     y string
 //  ^ definition local 2
+//    display_name y
+//    signature_documentation
+//    > var y string
    }{
     x: 1,
 //  ^ reference local 1
@@ -94,10 +106,19 @@
   
    var e struct {
 //     ^ definition local 3
+//       display_name e
+//       signature_documentation
+//       > var e struct{x int; y string}
     x int
 //  ^ definition local 4
+//    display_name x
+//    signature_documentation
+//    > var x int
     y string
 //  ^ definition local 5
+//    display_name y
+//    signature_documentation
+//    > var y string
    }
   
    e.x = 2
@@ -109,6 +130,9 @@
   
    var f TypeContainingAnonymousStructs
 //     ^ definition local 6
+//       display_name f
+//       signature_documentation
+//       > var f sg/testdata.TypeContainingAnonymousStructs
 //       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
    f.a.x = 3
 // ^ reference local 6
