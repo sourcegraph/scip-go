@@ -7,8 +7,7 @@
   type NestedHandler struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/NestedHandler#
 //                   signature_documentation
-//                   > type NestedHandler struct
-//                   > struct {
+//                   > type NestedHandler struct {
 //                   >     Handler
 //                   >     Other int
 //                   > }

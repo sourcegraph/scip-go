@@ -6,8 +6,7 @@
   type ContainerAnon struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#
 //                   signature_documentation
-//                   > type ContainerAnon struct
-//                   > struct {
+//                   > type ContainerAnon struct {
 //                   >     items []struct {
 //                   >         id int
 //                   >     }
@@ -44,8 +43,7 @@
   type DeepNested struct {
 //     ^^^^^^^^^^ definition 0.1.test `sg/pr202`/DeepNested#
 //                signature_documentation
-//                > type DeepNested struct
-//                > struct {
+//                > type DeepNested struct {
 //                >     outer struct {
 //                >         inner struct {
 //                >             value int
@@ -72,8 +70,7 @@
   type SliceAnonShared struct {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/SliceAnonShared#
 //                     signature_documentation
-//                     > type SliceAnonShared struct
-//                     > struct {
+//                     > type SliceAnonShared struct {
 //                     >     a []struct {
 //                     >         v int
 //                     >     }

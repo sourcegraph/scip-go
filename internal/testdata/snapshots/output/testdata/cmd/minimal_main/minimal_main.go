@@ -7,8 +7,7 @@
   type User struct {
 //     ^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/User#
 //          signature_documentation
-//          > type User struct
-//          > struct {
+//          > type User struct {
 //          >     Id string
 //          >     Name string
 //          > }
@@ -24,8 +23,7 @@
   type UserResource struct{}
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/UserResource#
 //                  signature_documentation
-//                  > type UserResource struct
-//                  > struct{}
+//                  > type UserResource struct{}
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata/cmd/minimal_main`/main().
   func main() {}

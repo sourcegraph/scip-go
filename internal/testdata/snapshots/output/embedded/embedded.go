@@ -14,8 +14,7 @@
   type osExecCommand struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/osExecCommand#
 //                   signature_documentation
-//                   > type osExecCommand struct
-//                   > struct {
+//                   > type osExecCommand struct {
 //                   >     *Cmd
 //                   > }
 //                   relationship github.com/golang/go/src go1.22 context/stringer# implementation
@@ -50,8 +49,7 @@
   type Inner struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Inner#
 //           signature_documentation
-//           > type Inner struct
-//           > struct {
+//           > type Inner struct {
 //           >     X int
 //           >     Y int
 //           >     Z int
@@ -73,8 +71,7 @@
   type Outer struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Outer#
 //           signature_documentation
-//           > type Outer struct
-//           > struct {
+//           > type Outer struct {
 //           >     Inner
 //           >     W int
 //           > }

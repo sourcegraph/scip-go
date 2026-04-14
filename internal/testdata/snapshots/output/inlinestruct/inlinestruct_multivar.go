@@ -4,13 +4,11 @@
   type Params struct{}
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Params#
 //            signature_documentation
-//            > type Params struct
-//            > struct{}
+//            > type Params struct{}
   type HighlightedCode struct{}
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/HighlightedCode#
 //                     signature_documentation
-//                     > type HighlightedCode struct
-//                     > struct{}
+//                     > type HighlightedCode struct{}
   
   var Mocks, emptyMocks struct {
 //    ^^^^^ definition 0.1.test `sg/inlinestruct`/Mocks.

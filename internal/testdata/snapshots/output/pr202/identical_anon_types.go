@@ -9,8 +9,7 @@
   type IdenticalAnonFields struct {
 //     ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/IdenticalAnonFields#
 //                         signature_documentation
-//                         > type IdenticalAnonFields struct
-//                         > struct {
+//                         > type IdenticalAnonFields struct {
 //                         >     x struct {
 //                         >         t int
 //                         >     }
@@ -65,8 +64,7 @@
   type FieldOrderMatters struct {
 //     ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/FieldOrderMatters#
 //                       signature_documentation
-//                       > type FieldOrderMatters struct
-//                       > struct {
+//                       > type FieldOrderMatters struct {
 //                       >     a struct {
 //                       >         x int
 //                       >         y string
@@ -110,8 +108,7 @@
   type DifferentTags struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/DifferentTags#
 //                   signature_documentation
-//                   > type DifferentTags struct
-//                   > struct {
+//                   > type DifferentTags struct {
 //                   >     a struct {
 //                   >         Name string `json:"name"`
 //                   >     }

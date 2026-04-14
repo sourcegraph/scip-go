@@ -13,8 +13,7 @@
   type TestInterface interface {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestInterface#
 //                   signature_documentation
-//                   > type TestInterface interface
-//                   > interface {
+//                   > type TestInterface interface {
 //                   >     Do(ctx Context, data string) (score int, _ error)
 //                   > }
 //                   documentation
@@ -45,8 +44,7 @@
    TestStruct struct {
 // ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#
 //            signature_documentation
-//            > type TestStruct struct
-//            > struct {
+//            > type TestStruct struct {
 //            >     SimpleA int
 //            >     SimpleB int
 //            >     SimpleC int
@@ -106,8 +104,7 @@
    TestEmptyStruct struct{}
 // ^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestEmptyStruct#
 //                 signature_documentation
-//                 > type TestEmptyStruct struct
-//                 > struct{}
+//                 > type TestEmptyStruct struct{}
   )
   
   // Score is just a hardcoded number.
@@ -191,8 +188,7 @@
   type StructTagRegression struct {
 //     ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructTagRegression#
 //                         signature_documentation
-//                         > type StructTagRegression struct
-//                         > struct {
+//                         > type StructTagRegression struct {
 //                         >     Value int `key:",range=[:}"`
 //                         > }
 //                         documentation
@@ -209,8 +205,7 @@
   type TestEqualsStruct = struct {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestEqualsStruct#
 //                      signature_documentation
-//                      > type TestEqualsStruct = struct
-//                      > struct {
+//                      > type TestEqualsStruct = struct {
 //                      >     Value int
 //                      > }
    Value int
@@ -222,8 +217,7 @@
   type ShellStruct struct {
 //     ^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ShellStruct#
 //                 signature_documentation
-//                 > type ShellStruct struct
-//                 > struct {
+//                 > type ShellStruct struct {
 //                 >     InnerStruct
 //                 > }
    // Ensure this field comes before the definition
@@ -243,6 +237,5 @@
   type InnerStruct struct{}
 //     ^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InnerStruct#
 //                 signature_documentation
-//                 > type InnerStruct struct
-//                 > struct{}
+//                 > type InnerStruct struct{}
   

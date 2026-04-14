@@ -10,8 +10,7 @@
    T struct{}
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/T#
 //   signature_documentation
-//   > type T struct
-//   > struct{}
+//   > type T struct{}
 //   documentation
 //   > Check that we don't panic
 //   > Copied from https://github.com/golang/go/issues/68877#issuecomment-2290000187
@@ -19,7 +18,6 @@
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
 //   signature_documentation
 //   > type U = T
-//   > struct{}
 //   documentation
 //   > Check that we don't panic
 //   > Copied from https://github.com/golang/go/issues/68877#issuecomment-2290000187
@@ -28,7 +26,6 @@
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/V#
 //   signature_documentation
 //   > type V = U
-//   > struct{}
 //   documentation
 //   > Check that we don't panic
 //   > Copied from https://github.com/golang/go/issues/68877#issuecomment-2290000187
@@ -36,8 +33,7 @@
    S U
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/S#
 //   signature_documentation
-//   > type S struct
-//   > struct{}
+//   > type S struct{}
 //   documentation
 //   > Check that we don't panic
 //   > Copied from https://github.com/golang/go/issues/68877#issuecomment-2290000187

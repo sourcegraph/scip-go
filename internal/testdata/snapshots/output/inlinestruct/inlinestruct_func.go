@@ -4,8 +4,7 @@
   type InFuncSig struct {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/InFuncSig#
 //               signature_documentation
-//               > type InFuncSig struct
-//               > struct {
+//               > type InFuncSig struct {
 //               >     value bool
 //               > }
    value bool

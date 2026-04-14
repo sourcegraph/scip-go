@@ -10,8 +10,7 @@
   type TypeContainingAnonymousStructs struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
 //                                    signature_documentation
-//                                    > type TypeContainingAnonymousStructs struct
-//                                    > struct {
+//                                    > type TypeContainingAnonymousStructs struct {
 //                                    >     a struct {
 //                                    >         x int
 //                                    >         y string

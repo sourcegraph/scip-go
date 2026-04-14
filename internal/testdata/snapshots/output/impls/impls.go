@@ -7,8 +7,7 @@
   type I1 interface {
 //     ^^ definition 0.1.test `sg/impls`/I1#
 //        signature_documentation
-//        > type I1 interface
-//        > interface {
+//        > type I1 interface {
 //        >     F1()
 //        > }
    F1()
@@ -20,8 +19,7 @@
   type I1Clone interface {
 //     ^^^^^^^ definition 0.1.test `sg/impls`/I1Clone#
 //             signature_documentation
-//             > type I1Clone interface
-//             > interface {
+//             > type I1Clone interface {
 //             >     F1()
 //             > }
    F1()
@@ -33,8 +31,7 @@
   type IfaceOther interface {
 //     ^^^^^^^^^^ definition 0.1.test `sg/impls`/IfaceOther#
 //                signature_documentation
-//                > type IfaceOther interface
-//                > interface {
+//                > type IfaceOther interface {
 //                >     Another()
 //                >     Something()
 //                > }

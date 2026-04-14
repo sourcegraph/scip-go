@@ -11,9 +11,6 @@
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/SecretBurger#
 //                  signature_documentation
 //                  > type SecretBurger = secret.Burger
-//                  > struct {
-//                  >     Field int
-//                  > }
 //                  documentation
 //                  > Type aliased doc
 //                    ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
@@ -22,8 +19,7 @@
   type BadBurger = struct {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/BadBurger#
 //               signature_documentation
-//               > type BadBurger = struct
-//               > struct {
+//               > type BadBurger = struct {
 //               >     Field string
 //               > }
    Field string

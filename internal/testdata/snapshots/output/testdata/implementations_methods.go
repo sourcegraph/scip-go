@@ -4,8 +4,7 @@
   type InterfaceWithSingleMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#
 //                               signature_documentation
-//                               > type InterfaceWithSingleMethod interface
-//                               > interface {
+//                               > type InterfaceWithSingleMethod interface {
 //                               >     SingleMethod() float64
 //                               > }
    SingleMethod() float64
@@ -17,8 +16,7 @@
   type StructWithMethods struct{}
 //     ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructWithMethods#
 //                       signature_documentation
-//                       > type StructWithMethods struct
-//                       > struct{}
+//                       > type StructWithMethods struct{}
 //                       relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethod# implementation
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/StructWithMethods#SingleMethod().
@@ -33,8 +31,7 @@
   type InterfaceWithSingleMethodTwoImplementers interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#
 //                                              signature_documentation
-//                                              > type InterfaceWithSingleMethodTwoImplementers interface
-//                                              > interface {
+//                                              > type InterfaceWithSingleMethodTwoImplementers interface {
 //                                              >     SingleMethodTwoImpl() float64
 //                                              > }
    SingleMethodTwoImpl() float64
@@ -46,8 +43,7 @@
   type TwoImplOne struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplOne#
 //                signature_documentation
-//                > type TwoImplOne struct
-//                > struct{}
+//                > type TwoImplOne struct{}
 //                relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers# implementation
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/TwoImplOne#SingleMethodTwoImpl().
@@ -62,8 +58,7 @@
   type TwoImplTwo struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#
 //                signature_documentation
-//                > type TwoImplTwo struct
-//                > struct{}
+//                > type TwoImplTwo struct{}
 //                relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers# implementation
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/TwoImplTwo#SingleMethodTwoImpl().

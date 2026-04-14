@@ -7,14 +7,12 @@
   type importMeta struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/importMeta#
 //                signature_documentation
-//                > type importMeta struct
-//                > struct{}
+//                > type importMeta struct{}
   
   type sourceMeta struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/sourceMeta#
 //                signature_documentation
-//                > type sourceMeta struct
-//                > struct{}
+//                > type sourceMeta struct{}
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata/duplicate_path_id`/fetchMeta().
   func fetchMeta() (string, *importMeta, *sourceMeta) {

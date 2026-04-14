@@ -4,14 +4,12 @@
   type I0 interface{}
 //     ^^ definition 0.1.test `sg/testdata`/I0#
 //        signature_documentation
-//        > type I0 interface
-//        > interface{}
+//        > type I0 interface{}
   
   type I1 interface {
 //     ^^ definition 0.1.test `sg/testdata`/I1#
 //        signature_documentation
-//        > type I1 interface
-//        > interface {
+//        > type I1 interface {
 //        >     F1()
 //        > }
    F1()
@@ -23,8 +21,7 @@
   type I2 interface {
 //     ^^ definition 0.1.test `sg/testdata`/I2#
 //        signature_documentation
-//        > type I2 interface
-//        > interface {
+//        > type I2 interface {
 //        >     F2()
 //        > }
    F2()
@@ -87,19 +84,18 @@
   type A1 = T1
 //     ^^ definition 0.1.test `sg/testdata`/A1#
 //        signature_documentation
-//        > type A1 int
+//        > type A1 = T1
 //          ^^ reference 0.1.test `sg/testdata`/T1#
   type A12 = A1
 //     ^^^ definition 0.1.test `sg/testdata`/A12#
 //         signature_documentation
-//         > type A12 int
+//         > type A12 = A1
 //           ^^ reference 0.1.test `sg/testdata`/A1#
   
   type InterfaceWithNonExportedMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod#
 //                                    signature_documentation
-//                                    > type InterfaceWithNonExportedMethod interface
-//                                    > interface {
+//                                    > type InterfaceWithNonExportedMethod interface {
 //                                    >     nonExportedMethod()
 //                                    > }
    nonExportedMethod()
@@ -111,8 +107,7 @@
   type InterfaceWithExportedMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithExportedMethod#
 //                                 signature_documentation
-//                                 > type InterfaceWithExportedMethod interface
-//                                 > interface {
+//                                 > type InterfaceWithExportedMethod interface {
 //                                 >     ExportedMethod()
 //                                 > }
    ExportedMethod()
@@ -171,8 +166,7 @@
   type SharedOne interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/SharedOne#
 //               signature_documentation
-//               > type SharedOne interface
-//               > interface {
+//               > type SharedOne interface {
 //               >     Distinct()
 //               >     Shared()
 //               > }
@@ -189,8 +183,7 @@
   type SharedTwo interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/SharedTwo#
 //               signature_documentation
-//               > type SharedTwo interface
-//               > interface {
+//               > type SharedTwo interface {
 //               >     Shared()
 //               >     Unique()
 //               > }
@@ -207,8 +200,7 @@
   type Between struct{}
 //     ^^^^^^^ definition 0.1.test `sg/testdata`/Between#
 //             signature_documentation
-//             > type Between struct
-//             > struct{}
+//             > type Between struct{}
 //             relationship 0.1.test `sg/testdata`/SharedOne# implementation
 //             relationship 0.1.test `sg/testdata`/SharedTwo# implementation
   

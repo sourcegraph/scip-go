@@ -136,8 +136,7 @@
   type Embedded struct {
 //     ^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#
 //              signature_documentation
-//              > type Embedded struct
-//              > struct {
+//              > type Embedded struct {
 //              >     EmbeddedField string
 //              >     Field string
 //              > }
@@ -157,8 +156,7 @@
   type Struct struct {
 //     ^^^^^^ definition 0.1.test `sg/initial`/Struct#
 //            signature_documentation
-//            > type Struct struct
-//            > struct {
+//            > type Struct struct {
 //            >     *Embedded
 //            >     Field string
 //            >     Anonymous struct {
@@ -312,8 +310,7 @@
   type Interface interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/Interface#
 //               signature_documentation
-//               > type Interface interface
-//               > interface {
+//               > type Interface interface {
 //               >     ImplementsInterface() string
 //               > }
 //               documentation
@@ -375,8 +372,7 @@
    X struct {
 // ^ definition 0.1.test `sg/initial`/X#
 //   signature_documentation
-//   > type X struct
-//   > struct {
+//   > type X struct {
 //   >     bar string
 //   > }
 //   documentation
@@ -390,8 +386,7 @@
    Y struct {
 // ^ definition 0.1.test `sg/initial`/Y#
 //   signature_documentation
-//   > type Y struct
-//   > struct {
+//   > type Y struct {
 //   >     baz float64
 //   > }
 //   documentation

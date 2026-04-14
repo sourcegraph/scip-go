@@ -4,8 +4,7 @@
   type Number interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Number#
 //            signature_documentation
-//            > type Number interface
-//            > interface {
+//            > type Number interface {
 //            >     ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~float32 | ~float64
 //            > }
    ~int | ~int8 | ~int16 | ~int32 | ~int64 |
@@ -36,8 +35,7 @@
   type Box[T any] struct {
 //     ^^^ definition 0.1.test `sg/generallyeric`/Box#
 //         signature_documentation
-//         > type Box struct
-//         > struct {
+//         > type Box struct {
 //         >     Something T
 //         > }
 //         ^ definition local 2
@@ -54,8 +52,7 @@
   type handler[T any] struct {
 //     ^^^^^^^ definition 0.1.test `sg/generallyeric`/handler#
 //             signature_documentation
-//             > type handler struct
-//             > struct {
+//             > type handler struct {
 //             >     Box[T]
 //             >     Another string
 //             > }

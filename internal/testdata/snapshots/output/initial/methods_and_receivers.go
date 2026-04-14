@@ -7,8 +7,7 @@
   type MyStruct struct{ f, y int }
 //     ^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#
 //              signature_documentation
-//              > type MyStruct struct
-//              > struct {
+//              > type MyStruct struct {
 //              >     f int
 //              >     y int
 //              > }

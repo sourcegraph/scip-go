@@ -13,8 +13,7 @@
   type Burger struct {
 //     ^^^^^^ definition 0.1.test `sg/testdata/internal/secret`/Burger#
 //            signature_documentation
-//            > type Burger struct
-//            > struct {
+//            > type Burger struct {
 //            >     Field int
 //            > }
 //            documentation

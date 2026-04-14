@@ -28,8 +28,7 @@
   type RecentCommittersResults struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/RecentCommittersResults#
 //                             signature_documentation
-//                             > type RecentCommittersResults struct
-//                             > struct {
+//                             > type RecentCommittersResults struct {
 //                             >     Nodes []struct {
 //                             >         Authors struct {
 //                             >             Nodes []struct {

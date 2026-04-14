@@ -8,8 +8,7 @@
   type CustomSwitch struct{}
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/switches`/CustomSwitch#
 //                  signature_documentation
-//                  > type CustomSwitch struct
-//                  > struct{}
+//                  > type CustomSwitch struct{}
 //                  documentation
 //                  > CustomSwitch does the things in a switch
   

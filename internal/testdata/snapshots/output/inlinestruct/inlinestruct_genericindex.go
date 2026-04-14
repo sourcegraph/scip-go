@@ -4,8 +4,7 @@
   type Processor[T any] interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/Processor#
 //               signature_documentation
-//               > type Processor interface
-//               > interface {
+//               > type Processor interface {
 //               >     Process(payload T)
 //               >     ProcessorType() string
 //               > }
@@ -36,8 +35,7 @@
   type ProcessImpl struct{}
 //     ^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/ProcessImpl#
 //                 signature_documentation
-//                 > type ProcessImpl struct
-//                 > struct{}
+//                 > type ProcessImpl struct{}
   
 //⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/ProcessImpl#Process().
   func (p *ProcessImpl) Process(payload Limit) { panic("not implemented") }

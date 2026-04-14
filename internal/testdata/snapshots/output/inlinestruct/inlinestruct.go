@@ -7,8 +7,7 @@
   type FieldInterface interface {
 //     ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/FieldInterface#
 //                    signature_documentation
-//                    > type FieldInterface interface
-//                    > interface {
+//                    > type FieldInterface interface {
 //                    >     SomeMethod() string
 //                    > }
    SomeMethod() string

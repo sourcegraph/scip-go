@@ -7,8 +7,7 @@
   type implementsWriter struct{}
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#
 //                      signature_documentation
-//                      > type implementsWriter struct
-//                      > struct{}
+//                      > type implementsWriter struct{}
 //                      relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash# implementation
 //                      relationship github.com/golang/go/src go1.22 `internal/bisect`/Writer# implementation
 //                      relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter# implementation

@@ -6,8 +6,7 @@
   type MultiNameStruct struct {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/MultiNameStruct#
 //                     signature_documentation
-//                     > type MultiNameStruct struct
-//                     > struct {
+//                     > type MultiNameStruct struct {
 //                     >     a struct {
 //                     >         x int
 //                     >         y string

@@ -20,8 +20,7 @@
   type MyWriter struct{}
 //     ^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#
 //              signature_documentation
-//              > type MyWriter struct
-//              > struct{}
+//              > type MyWriter struct{}
 //              relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash# implementation
 //              relationship github.com/golang/go/src go1.22 `internal/bisect`/Writer# implementation
 //              relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter# implementation
