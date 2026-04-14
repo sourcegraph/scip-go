@@ -193,25 +193,26 @@ func formatTypeDeclaration(obj *types.TypeName) string {
 	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Type().Underlying()))
 }
 
+// qualifiedName returns the name of original, prefixed with its package name
+// if it differs from obj's package. Handles nil packages (builtins).
+func qualifiedName(obj, original types.Object) string {
+	objPkg := obj.Pkg()
+	origPkg := original.Pkg()
+	if objPkg == nil || origPkg == nil || objPkg.Name() == origPkg.Name() {
+		return original.Name()
+	}
+	return origPkg.Name() + "." + original.Name()
+}
+
 // formatAliasDeclaration returns the type declaration for alias types.
 func formatAliasDeclaration(obj *types.TypeName) string {
 	switch ty := obj.Type().(type) {
 	case *types.Alias:
 		switch rhs := ty.Rhs().(type) {
 		case *types.Alias:
-			original := rhs.Obj()
-			var pkg string
-			if obj.Pkg().Name() != original.Pkg().Name() {
-				pkg = original.Pkg().Name() + "."
-			}
-			return fmt.Sprintf("type %s = %s%s", obj.Name(), pkg, original.Name())
+			return fmt.Sprintf("type %s = %s", obj.Name(), qualifiedName(obj, rhs.Obj()))
 		case *types.Named:
-			original := rhs.Obj()
-			var pkg string
-			if obj.Pkg().Name() != original.Pkg().Name() {
-				pkg = original.Pkg().Name() + "."
-			}
-			return fmt.Sprintf("type %s = %s%s", obj.Name(), pkg, original.Name())
+			return fmt.Sprintf("type %s = %s", obj.Name(), qualifiedName(obj, rhs.Obj()))
 		default:
 			return fmt.Sprintf("type %s = %s", obj.Name(), expandTypeExpr(rhs))
 		}
