@@ -1,4 +1,4 @@
-package pr95
+package pr202
 
 // Anonymous structs inside container types and nested structs.
 

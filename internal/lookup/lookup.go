@@ -49,7 +49,9 @@ func (p *Package) Set(pos token.Pos, symbol *scip.SymbolInformation) {
 		if original.Symbol == symbol.Symbol {
 			return
 		}
-		slog.Warn(fmt.Sprintf("[scip.lookup] Conflicting symbol at %v: %s vs %s", p.pkg.Fset.Position(pos), original.Symbol, symbol.Symbol))
+		slog.Warn(fmt.Sprintf(
+			"[scip.lookup] Conflicting symbol at %v: %s vs %s",
+			p.pkg.Fset.Position(pos), original.Symbol, symbol.Symbol))
 	}
 
 	p.fields[pos] = symbol
@@ -105,8 +107,10 @@ func (p *Global) GetPackage(pkg *packages.Package) *Package {
 	return p.symbols[newtypes.GetID(pkg)]
 }
 
-var skippedTypes = map[string]struct{}{}
-var builtinSymbols = map[string]*scip.SymbolInformation{}
+var (
+	skippedTypes   = map[string]struct{}{}
+	builtinSymbols = map[string]*scip.SymbolInformation{}
+)
 
 // GetSymbolOfObject returns a symbol and whether we were successful at finding.
 //

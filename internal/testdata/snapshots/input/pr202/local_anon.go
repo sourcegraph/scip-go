@@ -1,4 +1,4 @@
-package pr95
+package pr202
 
 // Anonymous structs in local/function scope.
 

@@ -1,4 +1,4 @@
-package pr95
+package pr202
 
 // Identical anonymous struct types should share symbols for nested fields.
 
@@ -16,12 +16,22 @@ func useIdenticalAnonFields() {
 
 // Different field order means different type — symbols must NOT unify.
 type FieldOrderMatters struct {
-	a struct{ x int; y string }
-	b struct{ y string; x int }
+	a struct {
+		x int
+		y string
+	}
+	b struct {
+		y string
+		x int
+	}
 }
 
 // Different struct tags — symbols must NOT unify.
 type DifferentTags struct {
-	a struct{ Name string `json:"name"` }
-	b struct{ Name string `json:"full_name"` }
+	a struct {
+		Name string `json:"name"`
+	}
+	b struct {
+		Name string `json:"full_name"`
+	}
 }

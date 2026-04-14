@@ -1,11 +1,11 @@
-  package pr95
-//        ^^^^ definition 0.1.test `sg/pr95`/
+  package pr202
+//        ^^^^^ definition 0.1.test `sg/pr202`/
   
   // Anonymous structs in local/function scope.
   
-//⌄ enclosing_range_start 0.1.test `sg/pr95`/localAnonymousStructs().
+//⌄ enclosing_range_start 0.1.test `sg/pr202`/localAnonymousStructs().
   func localAnonymousStructs() {
-//     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr95`/localAnonymousStructs().
+//     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/localAnonymousStructs().
 //     documentation
 //     > ```go
 //     > func localAnonymousStructs()
@@ -25,11 +25,11 @@
 //     ^ reference local 2
 //       ^ reference local 3
   }
-//⌃ enclosing_range_end 0.1.test `sg/pr95`/localAnonymousStructs().
+//⌃ enclosing_range_end 0.1.test `sg/pr202`/localAnonymousStructs().
   
-//⌄ enclosing_range_start 0.1.test `sg/pr95`/paramAnonymousStruct().
+//⌄ enclosing_range_start 0.1.test `sg/pr202`/paramAnonymousStruct().
   func paramAnonymousStruct(p struct{ x int }) int {
-//     ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr95`/paramAnonymousStruct().
+//     ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/paramAnonymousStruct().
 //     documentation
 //     > ```go
 //     > func paramAnonymousStruct(p struct{x int}) int
@@ -40,5 +40,5 @@
 //        ^ reference local 4
 //          ^ reference local 5
   }
-//⌃ enclosing_range_end 0.1.test `sg/pr95`/paramAnonymousStruct().
+//⌃ enclosing_range_end 0.1.test `sg/pr202`/paramAnonymousStruct().
   
