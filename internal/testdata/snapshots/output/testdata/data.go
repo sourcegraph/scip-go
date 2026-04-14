@@ -52,7 +52,7 @@
 // >     SimpleA int
 // >     SimpleB int
 // >     SimpleC int
-// >     FieldWithTag string "json:\"tag\""
+// >     FieldWithTag string `json:"tag"`
 // >     FieldWithAnonymousType struct {
 // >         NestedA string
 // >         NestedB string
@@ -229,7 +229,7 @@
 //     documentation
 //     > ```go
 //     > struct {
-//     >     Value int "key:\",range=[:}\""
+//     >     Value int `key:",range=[:}"`
 //     > }
 //     > ```
    Value int `key:",range=[:}"`
