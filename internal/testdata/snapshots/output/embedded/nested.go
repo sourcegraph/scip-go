@@ -6,43 +6,32 @@
   
   type NestedHandler struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#
-//                   documentation
-//                   > ```go
+//                   signature_documentation
 //                   > type NestedHandler struct
-//                   > ```
-//                   documentation
-//                   > ```go
 //                   > struct {
 //                   >     Handler
 //                   >     Other int
 //                   > }
-//                   > ```
 //                   relationship github.com/golang/go/src go1.22 `net/http`/Handler# implementation
    http.Handler
 // ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //      ^^^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#Handler.
-//              documentation
-//              > ```go
+//              signature_documentation
 //              > struct field Handler net/http.Handler
-//              > ```
 //      ^^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Handler#
   
    // Wow, a great thing for integers
    Other int
 // ^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#Other.
-//       documentation
-//       > ```go
+//       signature_documentation
 //       > struct field Other int
-//       > ```
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/embedded`/NestedExample().
   func NestedExample(n NestedHandler) {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/NestedExample().
-//                   documentation
-//                   > ```go
+//                   signature_documentation
 //                   > func NestedExample(n NestedHandler)
-//                   > ```
 //                   ^ definition local 0
 //                     display_name n
 //                     signature_documentation

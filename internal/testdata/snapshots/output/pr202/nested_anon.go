@@ -5,12 +5,8 @@
   
   type ContainerAnon struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#
-//                   documentation
-//                   > ```go
+//                   signature_documentation
 //                   > type ContainerAnon struct
-//                   > ```
-//                   documentation
-//                   > ```go
 //                   > struct {
 //                   >     items []struct {
 //                   >         id int
@@ -22,50 +18,33 @@
 //                   >         data int
 //                   >     }
 //                   > }
-//                   > ```
    items   []struct{ id int }
 // ^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#items.
-//       documentation
-//       > ```go
+//       signature_documentation
 //       > struct field items []struct{id int}
-//       > ```
 //                   ^^ definition 0.1.test `sg/pr202`/ContainerAnon#$anon_71c5ea8d9342795c#id.
-//                      documentation
-//                      > ```go
+//                      signature_documentation
 //                      > struct field id int
-//                      > ```
    entries map[string]struct{ count int }
 // ^^^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#entries.
-//         documentation
-//         > ```go
+//         signature_documentation
 //         > struct field entries map[string]struct{count int}
-//         > ```
 //                            ^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#$anon_721f9800014370ac#count.
-//                                  documentation
-//                                  > ```go
+//                                  signature_documentation
 //                                  > struct field count int
-//                                  > ```
    ptr     *struct{ data int }
 // ^^^ definition 0.1.test `sg/pr202`/ContainerAnon#ptr.
-//     documentation
-//     > ```go
+//     signature_documentation
 //     > struct field ptr *struct{data int}
-//     > ```
 //                  ^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#$anon_944f727740dfb75d#data.
-//                       documentation
-//                       > ```go
+//                       signature_documentation
 //                       > struct field data int
-//                       > ```
   }
   
   type DeepNested struct {
 //     ^^^^^^^^^^ definition 0.1.test `sg/pr202`/DeepNested#
-//                documentation
-//                > ```go
+//                signature_documentation
 //                > type DeepNested struct
-//                > ```
-//                documentation
-//                > ```go
 //                > struct {
 //                >     outer struct {
 //                >         inner struct {
@@ -73,25 +52,18 @@
 //                >         }
 //                >     }
 //                > }
-//                > ```
    outer struct {
 // ^^^^^ definition 0.1.test `sg/pr202`/DeepNested#outer.
-//       documentation
-//       > ```go
+//       signature_documentation
 //       > struct field outer struct{inner struct{value int}}
-//       > ```
     inner struct {
 //  ^^^^^ definition 0.1.test `sg/pr202`/DeepNested#$anon_5ee0364e53e1abd6#inner.
-//        documentation
-//        > ```go
+//        signature_documentation
 //        > struct field inner struct{value int}
-//        > ```
      value int
 //   ^^^^^ definition 0.1.test `sg/pr202`/DeepNested#$anon_5ee0364e53e1abd6#$anon_77e42bf2e5c84d1a#value.
-//         documentation
-//         > ```go
+//         signature_documentation
 //         > struct field value int
-//         > ```
     }
    }
   }
@@ -99,14 +71,8 @@
   // Two fields with identical slice-of-anonymous-struct type.
   type SliceAnonShared struct {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/SliceAnonShared#
-//                     documentation
-//                     > ```go
+//                     signature_documentation
 //                     > type SliceAnonShared struct
-//                     > ```
-//                     documentation
-//                     > Two fields with identical slice-of-anonymous-struct type.
-//                     documentation
-//                     > ```go
 //                     > struct {
 //                     >     a []struct {
 //                     >         v int
@@ -115,38 +81,29 @@
 //                     >         v int
 //                     >     }
 //                     > }
-//                     > ```
+//                     documentation
+//                     > Two fields with identical slice-of-anonymous-struct type.
    a []struct{ v int }
 // ^ definition 0.1.test `sg/pr202`/SliceAnonShared#a.
-//   documentation
-//   > ```go
+//   signature_documentation
 //   > struct field a []struct{v int}
-//   > ```
 //             ^ definition 0.1.test `sg/pr202`/SliceAnonShared#$anon_358bfde4cba1ecae#v.
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > struct field v int
-//               > ```
    b []struct{ v int }
 // ^ definition 0.1.test `sg/pr202`/SliceAnonShared#b.
-//   documentation
-//   > ```go
+//   signature_documentation
 //   > struct field b []struct{v int}
-//   > ```
 //             ^ definition 0.1.test `sg/pr202`/SliceAnonShared#$anon_358bfde4cba1ecae#v.
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > struct field v int
-//               > ```
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/pr202`/useContainerAnon().
   func useContainerAnon() {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/useContainerAnon().
-//                      documentation
-//                      > ```go
+//                      signature_documentation
 //                      > func useContainerAnon()
-//                      > ```
    var c ContainerAnon
 //     ^ definition local 0
 //       display_name c

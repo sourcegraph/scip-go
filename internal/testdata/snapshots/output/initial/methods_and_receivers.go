@@ -6,27 +6,18 @@
   
   type MyStruct struct{ f, y int }
 //     ^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#
-//              documentation
-//              > ```go
+//              signature_documentation
 //              > type MyStruct struct
-//              > ```
-//              documentation
-//              > ```go
 //              > struct {
 //              >     f int
 //              >     y int
 //              > }
-//              > ```
 //                      ^ definition 0.1.test `sg/initial`/MyStruct#f.
-//                        documentation
-//                        > ```go
+//                        signature_documentation
 //                        > struct field f int
-//                        > ```
 //                         ^ definition 0.1.test `sg/initial`/MyStruct#y.
-//                           documentation
-//                           > ```go
+//                           signature_documentation
 //                           > struct field y int
-//                           > ```
   
 //⌄ enclosing_range_start 0.1.test `sg/initial`/MyStruct#RecvFunction().
   func (m MyStruct) RecvFunction(b int) int { return m.f + b }
@@ -36,10 +27,8 @@
 //        > var m sg/initial.MyStruct
 //        ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //                  ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#RecvFunction().
-//                               documentation
-//                               > ```go
+//                               signature_documentation
 //                               > func (MyStruct).RecvFunction(b int) int
-//                               > ```
 //                               ^ definition local 1
 //                                 display_name b
 //                                 signature_documentation
@@ -52,10 +41,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/SomethingElse().
   func SomethingElse() {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SomethingElse().
-//                   documentation
-//                   > ```go
+//                   signature_documentation
 //                   > func SomethingElse()
-//                   > ```
    s := MyStruct{f: 0}
 // ^ definition local 2
 //   display_name s

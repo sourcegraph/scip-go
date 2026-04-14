@@ -27,10 +27,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr201`/UseImports().
   func UseImports() {
 //     ^^^^^^^^^^ definition 0.1.test `sg/pr201`/UseImports().
-//                documentation
-//                > ```go
+//                signature_documentation
 //                > func UseImports()
-//                > ```
    fmt.Println(context.Background())
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().

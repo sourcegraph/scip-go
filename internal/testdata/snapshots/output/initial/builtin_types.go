@@ -10,10 +10,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/UsesBuiltin().
   func UsesBuiltin() int {
 //     ^^^^^^^^^^^ definition 0.1.test `sg/initial`/UsesBuiltin().
-//                 documentation
-//                 > ```go
+//                 signature_documentation
 //                 > func UsesBuiltin() int
-//                 > ```
    var x int = 5
 //     ^ definition local 0
 //       display_name x

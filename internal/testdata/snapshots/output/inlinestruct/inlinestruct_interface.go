@@ -7,40 +7,30 @@
 //⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/Target().
   func Target() interface {
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Target().
-//            documentation
-//            > ```go
+//            signature_documentation
 //            > func Target() interface{AbbreviatedOID(Context) (string, error); Commit(Context) (string, error); OID(Context) (int, error); Type(Context) (int, error)}
-//            > ```
    OID(context.Context) (int, error)
 // ^^^ definition 0.1.test `sg/inlinestruct`/func:Target:OID().
-//     documentation
-//     > ```go
+//     signature_documentation
 //     > func (interface).OID(Context) (int, error)
-//     > ```
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //             ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    AbbreviatedOID(context.Context) (string, error)
 // ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:AbbreviatedOID().
-//                documentation
-//                > ```go
+//                signature_documentation
 //                > func (interface).AbbreviatedOID(Context) (string, error)
-//                > ```
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                        ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Commit(context.Context) (string, error)
 // ^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Commit().
-//        documentation
-//        > ```go
+//        signature_documentation
 //        > func (interface).Commit(Context) (string, error)
-//        > ```
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Type(context.Context) (int, error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Type().
-//      documentation
-//      > ```go
+//      signature_documentation
 //      > func (interface).Type(Context) (int, error)
-//      > ```
 //      ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //              ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
   } {
@@ -51,10 +41,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/inlinestruct`/something().
   func something() {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/something().
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > func something()
-//               > ```
    x := Target()
 // ^ definition local 0
 //   display_name x

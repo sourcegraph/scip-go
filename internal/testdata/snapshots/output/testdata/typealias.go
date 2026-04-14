@@ -9,38 +9,26 @@
   // Type aliased doc
   type SecretBurger = secret.Burger
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/SecretBurger#
-//                  documentation
-//                  > ```go
+//                  signature_documentation
 //                  > type SecretBurger = secret.Burger
-//                  > ```
-//                  documentation
-//                  > Type aliased doc
-//                  documentation
-//                  > ```go
 //                  > struct {
 //                  >     Field int
 //                  > }
-//                  > ```
+//                  documentation
+//                  > Type aliased doc
 //                    ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/
 //                           ^^^^^^ reference 0.1.test `sg/testdata/internal/secret`/Burger#
   
   type BadBurger = struct {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/BadBurger#
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > type BadBurger = struct
-//               > ```
-//               documentation
-//               > ```go
 //               > struct {
 //               >     Field string
 //               > }
-//               > ```
    Field string
 // ^^^^^ definition 0.1.test `sg/testdata`/BadBurger#Field.
-//       documentation
-//       > ```go
+//       signature_documentation
 //       > struct field Field string
-//       > ```
   }
   

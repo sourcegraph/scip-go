@@ -15,7 +15,6 @@ import (
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/lookup"
-	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -91,7 +90,8 @@ func (d *Document) SetNewSymbolForPos(
 	ident *ast.Ident,
 	pos token.Pos,
 ) {
-	documentation := []string{}
+	var documentation []string
+	var sigDoc *scip.Document
 	if ident != nil {
 		hover := d.extractHoverText(parent, ident)
 		var signature, extra string
@@ -101,20 +101,24 @@ func (d *Document) SetNewSymbolForPos(
 		}
 
 		if signature != "" {
-			documentation = append(documentation, symbols.FormatCode(signature))
+			if extra != "" {
+				signature += "\n" + extra
+			}
+			sigDoc = &scip.Document{
+				Language: "go",
+				Text:     signature,
+			}
 		}
 		if hover != "" {
 			documentation = append(documentation, hover)
 		}
-		if extra != "" {
-			documentation = append(documentation, symbols.FormatCode(extra))
-		}
 	}
 
 	d.pkgSymbols.Set(pos, &scip.SymbolInformation{
-		Symbol:        symbol,
-		Documentation: documentation,
-		Relationships: []*scip.Relationship{},
+		Symbol:                 symbol,
+		Documentation:          documentation,
+		SignatureDocumentation: sigDoc,
+		Relationships:          []*scip.Relationship{},
 	})
 }
 
@@ -236,7 +240,7 @@ func formatTypeSignature(obj *types.TypeName) string {
 		return fmt.Sprintf("type %s interface", obj.Name())
 	}
 
-	return ""
+	return fmt.Sprintf("type %s %s", obj.Name(), types.TypeString(obj.Type().Underlying(), packageQualifier))
 }
 
 // formatTypeExtra returns the beautified fields of the given struct or interface type.
@@ -245,6 +249,14 @@ func formatTypeSignature(obj *types.TypeName) string {
 // line separated by a semicolon. This method simply expands the fields to reside on
 // different lines with the appropriate indentation.
 func formatTypeExtra(obj *types.TypeName) string {
+	switch obj.Type().Underlying().(type) {
+	case *types.Struct, *types.Interface:
+		// Only show extra details for struct/interface types,
+		// where we expand fields across multiple lines.
+	default:
+		return ""
+	}
+
 	extra := types.TypeString(obj.Type().Underlying(), packageQualifier)
 
 	depth := 0

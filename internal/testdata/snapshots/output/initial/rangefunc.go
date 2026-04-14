@@ -9,10 +9,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/f().
   func f(xs []int) int {
 //     ^ definition 0.1.test `sg/initial`/f().
-//       documentation
-//       > ```go
+//       signature_documentation
 //       > func f(xs []int) int
-//       > ```
 //       ^^ definition local 0
 //          display_name xs
 //          signature_documentation

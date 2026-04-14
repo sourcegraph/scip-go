@@ -3,42 +3,26 @@
   
   type Params struct{}
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Params#
-//            documentation
-//            > ```go
+//            signature_documentation
 //            > type Params struct
-//            > ```
-//            documentation
-//            > ```go
 //            > struct{}
-//            > ```
   type HighlightedCode struct{}
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/HighlightedCode#
-//                     documentation
-//                     > ```go
+//                     signature_documentation
 //                     > type HighlightedCode struct
-//                     > ```
-//                     documentation
-//                     > ```go
 //                     > struct{}
-//                     > ```
   
   var Mocks, emptyMocks struct {
 //    ^^^^^ definition 0.1.test `sg/inlinestruct`/Mocks.
-//          documentation
-//          > ```go
+//          signature_documentation
 //          > var Mocks struct{Code func(p Params) (response *HighlightedCode, aborted bool, err error)}
-//          > ```
 //           ^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/emptyMocks.
-//                      documentation
-//                      > ```go
+//                      signature_documentation
 //                      > var emptyMocks struct{Code func(p Params) (response *HighlightedCode, aborted bool, err error)}
-//                      > ```
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/inline-6-5:Code.
-//      documentation
-//      > ```go
+//      signature_documentation
 //      > struct field Code func(p sg/inlinestruct.Params) (response *sg/inlinestruct.HighlightedCode, aborted bool, err error)
-//      > ```
 //           ^ definition local 0
 //             display_name p
 //             signature_documentation
@@ -61,16 +45,12 @@
   
   var MocksSingle struct {
 //    ^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/MocksSingle.
-//                documentation
-//                > ```go
+//                signature_documentation
 //                > var MocksSingle struct{Code func(p Params) (response *HighlightedCode, aborted bool, err error)}
-//                > ```
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/MocksSingle:Code.
-//      documentation
-//      > ```go
+//      signature_documentation
 //      > struct field Code func(p sg/inlinestruct.Params) (response *sg/inlinestruct.HighlightedCode, aborted bool, err error)
-//      > ```
 //           ^ definition local 4
 //             display_name p
 //             signature_documentation
@@ -94,15 +74,11 @@
   var (
    okReply   interface{} = "OK"
 // ^^^^^^^ definition 0.1.test `sg/inlinestruct`/okReply.
-//         documentation
-//         > ```go
+//         signature_documentation
 //         > var okReply interface{}
-//         > ```
    pongReply interface{} = "PONG"
 // ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/pongReply.
-//           documentation
-//           > ```go
+//           signature_documentation
 //           > var pongReply interface{}
-//           > ```
   )
   

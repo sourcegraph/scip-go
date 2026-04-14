@@ -7,10 +7,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
   func TestExecRequest(t *testing.T) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
-//                     documentation
-//                     > ```go
+//                     signature_documentation
 //                     > func TestExecRequest(t *T)
-//                     > ```
 //                     ^ definition local 0
 //                       display_name t
 //                       signature_documentation
@@ -26,10 +24,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
   func runCmd(t *testing.T, dir string, cmd string, arg ...string) {}
 //     ^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
-//            documentation
-//            > ```go
+//            signature_documentation
 //            > func runCmd(t *T, dir string, cmd string, arg ...string)
-//            > ```
 //            ^ definition local 1
 //              display_name t
 //              signature_documentation

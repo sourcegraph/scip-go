@@ -5,27 +5,17 @@
    // HoverTypeList is a cool struct
    HoverTypeList struct{}
 // ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/HoverTypeList#
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > type HoverTypeList struct
-//               > ```
-//               documentation
-//               > ```go
 //               > struct{}
-//               > ```
   )
   
   // This should show up as well
   type HoverType struct{}
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/HoverType#
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > type HoverType struct
-//               > ```
+//               > struct{}
 //               documentation
 //               > This should show up as well
-//               documentation
-//               > ```go
-//               > struct{}
-//               > ```
   

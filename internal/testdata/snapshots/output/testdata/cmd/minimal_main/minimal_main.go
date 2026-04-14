@@ -6,47 +6,31 @@
   
   type User struct {
 //     ^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/User#
-//          documentation
-//          > ```go
+//          signature_documentation
 //          > type User struct
-//          > ```
-//          documentation
-//          > ```go
 //          > struct {
 //          >     Id string
 //          >     Name string
 //          > }
-//          > ```
    Id, Name string
 // ^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/User#Id.
-//    documentation
-//    > ```go
+//    signature_documentation
 //    > struct field Id string
-//    > ```
 //     ^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/User#Name.
-//          documentation
-//          > ```go
+//          signature_documentation
 //          > struct field Name string
-//          > ```
   }
   
   type UserResource struct{}
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/UserResource#
-//                  documentation
-//                  > ```go
+//                  signature_documentation
 //                  > type UserResource struct
-//                  > ```
-//                  documentation
-//                  > ```go
 //                  > struct{}
-//                  > ```
   
 //⌄ enclosing_range_start 0.1.test `sg/testdata/cmd/minimal_main`/main().
   func main() {}
 //     ^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/main().
-//          documentation
-//          > ```go
+//          signature_documentation
 //          > func main()
-//          > ```
 //             ⌃ enclosing_range_end 0.1.test `sg/testdata/cmd/minimal_main`/main().
   

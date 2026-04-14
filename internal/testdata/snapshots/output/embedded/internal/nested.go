@@ -14,10 +14,8 @@
 //⌄ enclosing_range_start 0.1.test `sg/embedded/internal`/Something().
   func Something(recent embedded.RecentCommittersResults) {
 //     ^^^^^^^^^ definition 0.1.test `sg/embedded/internal`/Something().
-//               documentation
-//               > ```go
+//               signature_documentation
 //               > func Something(recent RecentCommittersResults)
-//               > ```
 //               ^^^^^^ definition local 0
 //                      display_name recent
 //                      signature_documentation
