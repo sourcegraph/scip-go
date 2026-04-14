@@ -93,23 +93,19 @@ func (d *Document) SetNewSymbolForPos(
 	var documentation []string
 	var sigDoc *scip.Document
 	if ident != nil {
-		hover := d.extractHoverText(parent, ident)
-		var signature, extra string
-		def := d.pkg.TypesInfo.Defs[ident]
-		if def != nil {
-			signature, extra = typeStringForObject(def)
-		}
-
-		if signature != "" {
-			if extra != "" {
-				signature += "\n" + extra
-			}
-			sigDoc = &scip.Document{
-				Language: "go",
-				Text:     signature,
+		if def := d.pkg.TypesInfo.Defs[ident]; def != nil {
+			signature, extra := typeStringForObject(def)
+			if signature != "" {
+				if extra != "" {
+					signature += "\n" + extra
+				}
+				sigDoc = &scip.Document{
+					Language: "go",
+					Text:     signature,
+				}
 			}
 		}
-		if hover != "" {
+		if hover := d.extractHoverText(parent, ident); hover != "" {
 			documentation = append(documentation, hover)
 		}
 	}
@@ -232,7 +228,6 @@ func formatTypeSignature(obj *types.TypeName) string {
 						"obj", obj.String(), "obj.Type()", ty.String())
 				}
 			}
-
 		}
 
 		return fmt.Sprintf("type %s struct", obj.Name())
@@ -240,7 +235,9 @@ func formatTypeSignature(obj *types.TypeName) string {
 		return fmt.Sprintf("type %s interface", obj.Name())
 	}
 
-	return fmt.Sprintf("type %s %s", obj.Name(), types.TypeString(obj.Type().Underlying(), packageQualifier))
+	return fmt.Sprintf(
+		"type %s %s",
+		obj.Name(), types.TypeString(obj.Type().Underlying(), packageQualifier))
 }
 
 // formatTypeExtra returns the beautified fields of the given struct or interface type.
