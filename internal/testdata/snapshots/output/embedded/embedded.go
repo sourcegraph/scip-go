@@ -14,9 +14,7 @@
   type osExecCommand struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/osExecCommand#
 //                   signature_documentation
-//                   > type osExecCommand struct {
-//                   >     *Cmd
-//                   > }
+//                   > type osExecCommand struct{ *Cmd }
 //                   relationship github.com/golang/go/src go1.22 context/stringer# implementation
 //                   relationship github.com/golang/go/src go1.22 fmt/Stringer# implementation
 //                   relationship github.com/golang/go/src go1.22 runtime/stringer# implementation

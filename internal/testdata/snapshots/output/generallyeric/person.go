@@ -7,9 +7,7 @@
   type Person interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Person#
 //            signature_documentation
-//            > type Person interface {
-//            >     Work()
-//            > }
+//            > type Person interface{ Work() }
    Work()
 // ^^^^ definition 0.1.test `sg/generallyeric`/Person#Work.
 //      signature_documentation

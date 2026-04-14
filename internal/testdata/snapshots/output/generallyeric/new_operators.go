@@ -35,9 +35,7 @@
   type Box[T any] struct {
 //     ^^^ definition 0.1.test `sg/generallyeric`/Box#
 //         signature_documentation
-//         > type Box struct {
-//         >     Something T
-//         > }
+//         > type Box struct{ Something T }
 //         ^ definition local 2
 //           display_name T
 //           signature_documentation

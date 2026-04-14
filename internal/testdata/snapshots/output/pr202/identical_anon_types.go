@@ -10,12 +10,8 @@
 //     ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/IdenticalAnonFields#
 //                         signature_documentation
 //                         > type IdenticalAnonFields struct {
-//                         >     x struct {
-//                         >         t int
-//                         >     }
-//                         >     z struct {
-//                         >         t int
-//                         >     }
+//                         >     x struct{ t int }
+//                         >     z struct{ t int }
 //                         > }
    x struct{ t int }
 // ^ definition 0.1.test `sg/pr202`/IdenticalAnonFields#x.
@@ -110,10 +106,10 @@
 //                   signature_documentation
 //                   > type DifferentTags struct {
 //                   >     a struct {
-//                   >         Name string `json:"name"`
+//                   >         Name string "json:\"name\""
 //                   >     }
 //                   >     b struct {
-//                   >         Name string `json:"full_name"`
+//                   >         Name string "json:\"full_name\""
 //                   >     }
 //                   > }
 //                   documentation

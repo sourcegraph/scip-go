@@ -15,9 +15,7 @@
   type IfaceType interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/IfaceType#
 //               signature_documentation
-//               > type IfaceType interface {
-//               >     Method() LiteralType
-//               > }
+//               > type IfaceType interface{ Method() LiteralType }
    Method() LiteralType
 // ^^^^^^ definition 0.1.test `sg/initial`/IfaceType#Method.
 //        signature_documentation
@@ -29,14 +27,10 @@
 //     ^^^^^^^^^^ definition 0.1.test `sg/initial`/StructType#
 //                signature_documentation
 //                > type StructType struct {
-//                >     m IfaceType
-//                >     f LiteralType
-//                >     anon struct {
-//                >         sub int
-//                >     }
-//                >     i interface {
-//                >         AnonMethod() bool
-//                >     }
+//                >     m    IfaceType
+//                >     f    LiteralType
+//                >     anon struct{ sub int }
+//                >     i    interface{ AnonMethod() bool }
 //                > }
    m IfaceType
 // ^ definition 0.1.test `sg/initial`/StructType#m.
@@ -75,9 +69,7 @@
   type DeclaredBefore struct{ DeclaredAfter }
 //     ^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredBefore#
 //                    signature_documentation
-//                    > type DeclaredBefore struct {
-//                    >     DeclaredAfter
-//                    > }
+//                    > type DeclaredBefore struct{ DeclaredAfter }
 //                            ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredBefore#DeclaredAfter.
 //                                          signature_documentation
 //                                          > struct field DeclaredAfter sg/initial.DeclaredAfter

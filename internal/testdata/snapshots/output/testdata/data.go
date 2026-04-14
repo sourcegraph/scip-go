@@ -45,10 +45,10 @@
 // ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#
 //            signature_documentation
 //            > type TestStruct struct {
-//            >     SimpleA int
-//            >     SimpleB int
-//            >     SimpleC int
-//            >     FieldWithTag string `json:"tag"`
+//            >     SimpleA                int
+//            >     SimpleB                int
+//            >     SimpleC                int
+//            >     FieldWithTag           string "json:\"tag\""
 //            >     FieldWithAnonymousType struct {
 //            >         NestedA string
 //            >         NestedB string
@@ -189,7 +189,7 @@
 //     ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructTagRegression#
 //                         signature_documentation
 //                         > type StructTagRegression struct {
-//                         >     Value int `key:",range=[:}"`
+//                         >     Value int "key:\",range=[:}\""
 //                         > }
 //                         documentation
 //                         > StructTagRegression is a struct that caused panic in the wild. Added here to
@@ -205,9 +205,7 @@
   type TestEqualsStruct = struct {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestEqualsStruct#
 //                      signature_documentation
-//                      > type TestEqualsStruct = struct {
-//                      >     Value int
-//                      > }
+//                      > type TestEqualsStruct = struct{ Value int }
    Value int
 // ^^^^^ definition 0.1.test `sg/testdata`/TestEqualsStruct#Value.
 //       signature_documentation
@@ -217,9 +215,7 @@
   type ShellStruct struct {
 //     ^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ShellStruct#
 //                 signature_documentation
-//                 > type ShellStruct struct {
-//                 >     InnerStruct
-//                 > }
+//                 > type ShellStruct struct{ InnerStruct }
    // Ensure this field comes before the definition
    // so that we grab the correct one in our unit
    // tests.

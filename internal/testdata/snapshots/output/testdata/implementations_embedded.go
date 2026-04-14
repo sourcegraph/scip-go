@@ -7,9 +7,7 @@
   type I3 interface {
 //     ^^ definition 0.1.test `sg/testdata`/I3#
 //        signature_documentation
-//        > type I3 interface {
-//        >     Close() error
-//        > }
+//        > type I3 interface{ Close() error }
    Close() error
 // ^^^^^ definition 0.1.test `sg/testdata`/I3#Close.
 //       signature_documentation
@@ -19,9 +17,7 @@
   type TClose struct {
 //     ^^^^^^ definition 0.1.test `sg/testdata`/TClose#
 //            signature_documentation
-//            > type TClose struct {
-//            >     Closer
-//            > }
+//            > type TClose struct{ Closer }
 //            relationship github.com/golang/go/src go1.22 io/Closer# implementation
 //            relationship 0.1.test `sg/testdata`/I3# implementation
    io.Closer

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/doc"
+	"go/format"
 	"go/token"
 	"go/types"
 	"log/slog"
@@ -233,83 +234,33 @@ func formatAliasDeclaration(obj *types.TypeName) string {
 	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Type().Underlying()))
 }
 
-// expandTypeExpr renders a type expression, expanding struct and interface
-// fields across multiple lines for readability.
+// expandTypeExpr renders a type expression, formatting struct and interface
+// types with aligned fields using go/format.
 func expandTypeExpr(t types.Type) string {
 	raw := types.TypeString(t, packageQualifier)
 
 	switch t.(type) {
 	case *types.Struct, *types.Interface:
-		return beautifyTypeExpr(raw)
-	default:
-		return raw
-	}
-}
-
-// beautifyTypeExpr expands semicolon-separated fields in a struct or interface
-// type string onto separate indented lines.
-func beautifyTypeExpr(raw string) string {
-	depth := 0
-	buf := bytes.NewBuffer(make([]byte, 0, len(raw)))
-
-outer:
-	for i := 0; i < len(raw); i++ {
-		switch raw[i] {
-		case '"':
-			for j := i + 1; j < len(raw); j++ {
-				if raw[j] == '\\' {
-					// skip over escaped characters
-					j++
-					continue
-				}
-
-				if raw[j] == '"' {
-					// found non-escaped ending quote
-					quoted := raw[i : j+1]
-					if unquoted, err := strconv.Unquote(quoted); err == nil {
-						buf.WriteByte('`')
-						buf.WriteString(unquoted)
-						buf.WriteByte('`')
-					} else {
-						buf.WriteString(quoted)
-					}
-					i = j
-					continue outer
-				}
-			}
-
-			// note: we should never get down here otherwise
-			// there is some illegal output from types.TypeString.
-
-		case ';':
-			buf.WriteString("\n")
-			buf.WriteString(strings.Repeat(indent, depth))
-			i++ // Skip following ' '
-
-		case '{':
-			// Special case empty fields so we don't insert
-			// an unnecessary newline.
-			if i < len(raw)-1 && raw[i+1] == '}' {
-				buf.WriteString("{}")
-				i++ // Skip following '}'
-			} else {
-				depth++
-				buf.WriteString(" {\n")
-				buf.WriteString(strings.Repeat(indent, depth))
-			}
-
-		case '}':
-			depth--
-			buf.WriteString("\n")
-			buf.WriteString(strings.Repeat(indent, depth))
-			buf.WriteString("}")
-
-		default:
-			buf.WriteByte(raw[i])
+		if formatted, err := formatGoDecl("type _ " + raw); err == nil {
+			return strings.TrimPrefix(formatted, "type _ ")
 		}
 	}
 
-	return buf.String()
+	return raw
+}
+
+// formatGoDecl formats a Go type declaration using go/format, returning
+// the formatted result with tabs replaced by spaces.
+func formatGoDecl(decl string) (string, error) {
+	src := "package p\n\n" + decl + "\n"
+	formatted, err := format.Source([]byte(src))
+	if err != nil {
+		return "", err
+	}
+	result := strings.TrimPrefix(string(formatted), "package p\n\n")
+	result = strings.TrimSpace(result)
+	result = strings.ReplaceAll(result, "\t", indent)
+	return result, nil
 }
 
 // quotedTagsToBacktick replaces double-quoted struct tag strings with

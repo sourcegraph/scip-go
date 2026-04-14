@@ -7,15 +7,9 @@
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#
 //                   signature_documentation
 //                   > type ContainerAnon struct {
-//                   >     items []struct {
-//                   >         id int
-//                   >     }
-//                   >     entries map[string]struct {
-//                   >         count int
-//                   >     }
-//                   >     ptr *struct {
-//                   >         data int
-//                   >     }
+//                   >     items   []struct{ id int }
+//                   >     entries map[string]struct{ count int }
+//                   >     ptr     *struct{ data int }
 //                   > }
    items   []struct{ id int }
 // ^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#items.
@@ -44,11 +38,7 @@
 //     ^^^^^^^^^^ definition 0.1.test `sg/pr202`/DeepNested#
 //                signature_documentation
 //                > type DeepNested struct {
-//                >     outer struct {
-//                >         inner struct {
-//                >             value int
-//                >         }
-//                >     }
+//                >     outer struct{ inner struct{ value int } }
 //                > }
    outer struct {
 // ^^^^^ definition 0.1.test `sg/pr202`/DeepNested#outer.
@@ -71,12 +61,8 @@
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/SliceAnonShared#
 //                     signature_documentation
 //                     > type SliceAnonShared struct {
-//                     >     a []struct {
-//                     >         v int
-//                     >     }
-//                     >     b []struct {
-//                     >         v int
-//                     >     }
+//                     >     a []struct{ v int }
+//                     >     b []struct{ v int }
 //                     > }
 //                     documentation
 //                     > Two fields with identical slice-of-anonymous-struct type.

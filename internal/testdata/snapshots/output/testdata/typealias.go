@@ -19,9 +19,7 @@
   type BadBurger = struct {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/BadBurger#
 //               signature_documentation
-//               > type BadBurger = struct {
-//               >     Field string
-//               > }
+//               > type BadBurger = struct{ Field string }
    Field string
 // ^^^^^ definition 0.1.test `sg/testdata`/BadBurger#Field.
 //       signature_documentation

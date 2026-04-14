@@ -138,7 +138,7 @@
 //              signature_documentation
 //              > type Embedded struct {
 //              >     EmbeddedField string
-//              >     Field string
+//              >     Field         string
 //              > }
 //              documentation
 //              > Embedded is a struct, to be embedded in another struct.
@@ -158,7 +158,7 @@
 //            signature_documentation
 //            > type Struct struct {
 //            >     *Embedded
-//            >     Field string
+//            >     Field     string
 //            >     Anonymous struct {
 //            >         FieldA int
 //            >         FieldB int
@@ -310,9 +310,7 @@
   type Interface interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/Interface#
 //               signature_documentation
-//               > type Interface interface {
-//               >     ImplementsInterface() string
-//               > }
+//               > type Interface interface{ ImplementsInterface() string }
 //               documentation
 //               > Interface has docs too
    ImplementsInterface() string
@@ -372,9 +370,7 @@
    X struct {
 // ^ definition 0.1.test `sg/initial`/X#
 //   signature_documentation
-//   > type X struct {
-//   >     bar string
-//   > }
+//   > type X struct{ bar string }
 //   documentation
 //   > Go can be fun
     bar string
@@ -386,9 +382,7 @@
    Y struct {
 // ^ definition 0.1.test `sg/initial`/Y#
 //   signature_documentation
-//   > type Y struct {
-//   >     baz float64
-//   > }
+//   > type Y struct{ baz float64 }
 //   documentation
 //   > Go can be fun
     baz float64

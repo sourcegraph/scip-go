@@ -4,9 +4,7 @@
   type InterfaceWithSingleMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#
 //                               signature_documentation
-//                               > type InterfaceWithSingleMethod interface {
-//                               >     SingleMethod() float64
-//                               > }
+//                               > type InterfaceWithSingleMethod interface{ SingleMethod() float64 }
    SingleMethod() float64
 // ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#SingleMethod.
 //              signature_documentation
@@ -31,9 +29,7 @@
   type InterfaceWithSingleMethodTwoImplementers interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#
 //                                              signature_documentation
-//                                              > type InterfaceWithSingleMethodTwoImplementers interface {
-//                                              >     SingleMethodTwoImpl() float64
-//                                              > }
+//                                              > type InterfaceWithSingleMethodTwoImplementers interface{ SingleMethodTwoImpl() float64 }
    SingleMethodTwoImpl() float64
 // ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl.
 //                     signature_documentation

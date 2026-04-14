@@ -32,19 +32,15 @@
 //                             >     Nodes []struct {
 //                             >         Authors struct {
 //                             >             Nodes []struct {
-//                             >                 Date string
-//                             >                 Email string
-//                             >                 Name string
-//                             >                 User struct {
-//                             >                     Login string
-//                             >                 }
+//                             >                 Date      string
+//                             >                 Email     string
+//                             >                 Name      string
+//                             >                 User      struct{ Login string }
 //                             >                 AvatarURL string
 //                             >             }
 //                             >         }
 //                             >     }
-//                             >     PageInfo struct {
-//                             >         HasNextPage bool
-//                             >     }
+//                             >     PageInfo struct{ HasNextPage bool }
 //                             > }
 //                             relationship github.com/golang/go/src go1.22 context/stringer# implementation
 //                             relationship github.com/golang/go/src go1.22 fmt/Stringer# implementation

@@ -9,9 +9,7 @@
   type I1 interface {
 //     ^^ definition 0.1.test `sg/testdata`/I1#
 //        signature_documentation
-//        > type I1 interface {
-//        >     F1()
-//        > }
+//        > type I1 interface{ F1() }
    F1()
 // ^^ definition 0.1.test `sg/testdata`/I1#F1.
 //    signature_documentation
@@ -21,9 +19,7 @@
   type I2 interface {
 //     ^^ definition 0.1.test `sg/testdata`/I2#
 //        signature_documentation
-//        > type I2 interface {
-//        >     F2()
-//        > }
+//        > type I2 interface{ F2() }
    F2()
 // ^^ definition 0.1.test `sg/testdata`/I2#F2.
 //    signature_documentation
@@ -95,9 +91,7 @@
   type InterfaceWithNonExportedMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod#
 //                                    signature_documentation
-//                                    > type InterfaceWithNonExportedMethod interface {
-//                                    >     nonExportedMethod()
-//                                    > }
+//                                    > type InterfaceWithNonExportedMethod interface{ nonExportedMethod() }
    nonExportedMethod()
 // ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod#nonExportedMethod.
 //                   signature_documentation
@@ -107,9 +101,7 @@
   type InterfaceWithExportedMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithExportedMethod#
 //                                 signature_documentation
-//                                 > type InterfaceWithExportedMethod interface {
-//                                 >     ExportedMethod()
-//                                 > }
+//                                 > type InterfaceWithExportedMethod interface{ ExportedMethod() }
    ExportedMethod()
 // ^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithExportedMethod#ExportedMethod.
 //                signature_documentation

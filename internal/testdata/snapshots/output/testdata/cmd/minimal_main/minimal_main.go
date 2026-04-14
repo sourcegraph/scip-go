@@ -8,7 +8,7 @@
 //     ^^^^ definition 0.1.test `sg/testdata/cmd/minimal_main`/User#
 //          signature_documentation
 //          > type User struct {
-//          >     Id string
+//          >     Id   string
 //          >     Name string
 //          > }
    Id, Name string
