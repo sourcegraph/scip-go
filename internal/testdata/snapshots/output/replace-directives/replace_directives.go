@@ -6,7 +6,7 @@
 //  ^^^ reference github.com/golang/go/src go1.22 fmt/
   
    replaced "github.com/example/original"
-// ^^^^^^^^ definition local 0
+// ^^^^^^^^ reference github.com/example/replaced 0.1.test `github.com/example/original`/
 //           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ reference github.com/example/replaced 0.1.test `github.com/example/original`/
   )
   
@@ -20,7 +20,7 @@
    fmt.Println(replaced.DefaultConfig)
 // ^^^ reference github.com/golang/go/src go1.22 fmt/
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 fmt/Println().
-//             ^^^^^^^^ reference local 0
+//             ^^^^^^^^ reference github.com/example/replaced 0.1.test `github.com/example/original`/
 //                      ^^^^^^^^^^^^^ reference github.com/example/replaced 0.1.test `github.com/example/original`/DefaultConfig.
   }
 //⌃ enclosing_range_end 0.1.test `sg/replace-directives`/Something().

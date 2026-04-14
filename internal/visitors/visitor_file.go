@@ -52,11 +52,9 @@ func NewFileVisitor(
 		globalSymbols: globalSymbols,
 		occurrences:   occurrences,
 		overrides: struct {
-			caseClauses     map[token.Pos]types.Object
-			pkgNameOverride map[newtypes.PackageID]string
+			caseClauses map[token.Pos]types.Object
 		}{
-			caseClauses:     caseClauses,
-			pkgNameOverride: map[newtypes.PackageID]string{},
+			caseClauses: caseClauses,
 		},
 		enclosingNodeMap: enclosingNodeMap(file),
 	}
@@ -93,10 +91,6 @@ type fileVisitor struct {
 	overrides struct {
 		// Case clauses have to map particular positions to different types
 		caseClauses map[token.Pos]types.Object
-
-		// maps tokens for package declaration to a local var,
-		// if ImportSpec.Name is not nil. Otherwise, just use package directly
-		pkgNameOverride map[newtypes.PackageID]string
 	}
 
 	// enclosingNodeMap maps certain nodes to their enclosing nodes for
@@ -136,16 +130,17 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			return nil
 		}
 
-		if node.Name != nil && node.Name.Name != "." {
-			pkgAlias := v.pkg.TypesInfo.Defs[node.Name]
-			symName := v.createNewLocalSymbol(node.Name.Pos(), pkgAlias)
+		if node.Name != nil && node.Name.Name != "." && node.Name.Name != "_" {
+			// Aliased import: emit a reference to the global package symbol
+			// for the alias name (Option A - pierce the veil)
 			rangeFromName := symbols.RangeFromName(
 				v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false)
-			v.NewDefinition(symName, rangeFromName, nil)
-
-			// Save package name override, so that we use the new local symbol
-			// within this file
-			v.overrides.pkgNameOverride[newtypes.GetID(importedPackage)] = symName
+			if rangeFromName != nil {
+				sym, ok := v.globalSymbols.GetPkgSymbol(importedPackage)
+				if ok {
+					v.AppendSymbolReference(sym, rangeFromName, nil)
+				}
+			}
 		}
 
 		position := v.pkg.Fset.Position(node.Path.Pos())
@@ -163,22 +158,14 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			case *types.PkgName:
 				startPosition := v.pkg.Fset.Position(ident.Pos())
 				endPosition := v.pkg.Fset.Position(ident.End())
-				pkgID := newtypes.GetFromTypesPackage(sel.Imported())
 
-				var symbolName string
-				if overrideSymbol, ok := v.overrides.pkgNameOverride[pkgID]; ok {
-					symbolName = overrideSymbol
-				} else {
-					sym, ok := v.globalSymbols.GetPkgSymbolByID(pkgID)
-					if !ok {
-						slog.Debug(fmt.Sprintf("Missing symbol for package: %s", sel.Imported().Path()))
-						return nil
-					}
-
-					symbolName = sym
+				sym, ok := v.globalSymbols.GetPkgSymbolByID(newtypes.GetFromTypesPackage(sel.Imported()))
+				if !ok {
+					slog.Debug(fmt.Sprintf("Missing symbol for package: %s", sel.Imported().Path()))
+					return nil
 				}
 
-				v.AppendSymbolReference(symbolName, scipRange(startPosition, endPosition, sel), nil)
+				v.AppendSymbolReference(sym, scipRange(startPosition, endPosition, sel), nil)
 
 				// Then walk the selection
 				ast.Walk(v, node.Sel)
