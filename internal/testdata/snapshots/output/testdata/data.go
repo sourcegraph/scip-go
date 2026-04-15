@@ -58,6 +58,8 @@
 //            >     }
 //            >     EmptyStructField struct{}
 //            > }
+//            documentation
+//            > TestStruct is a struct used for testing.
     // SimpleA docs
     SimpleA int
 //  ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#SimpleA.

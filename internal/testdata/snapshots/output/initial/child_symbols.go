@@ -366,7 +366,7 @@
 //   signature_documentation
 //   > type X struct{ bar string }
 //   documentation
-//   > Go can be fun
+//   > And confusing
     bar string
 //  ^^^ definition 0.1.test `sg/initial`/X#bar.
 //      signature_documentation

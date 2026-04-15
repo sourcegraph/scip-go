@@ -7,6 +7,8 @@
 // ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/HoverTypeList#
 //               signature_documentation
 //               > type HoverTypeList struct{}
+//               documentation
+//               > HoverTypeList is a cool struct
   )
   
   // This should show up as well

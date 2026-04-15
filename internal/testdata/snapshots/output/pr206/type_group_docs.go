@@ -9,7 +9,7 @@
 //       signature_documentation
 //       > type Alpha struct{ value int }
 //       documentation
-//       > Block doc for the type group.
+//       > Alpha is the first type in a group.
     value int
 //  ^^^^^ definition 0.1.test `sg/pr206`/Alpha#value.
 //        signature_documentation
