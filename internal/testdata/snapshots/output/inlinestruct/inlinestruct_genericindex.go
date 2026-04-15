@@ -3,6 +3,7 @@
   
   type Processor[T any] interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/Processor#
+//               display_name Processor
 //               signature_documentation
 //               > type Processor interface {
 //               >     Process(payload T)
@@ -14,6 +15,7 @@
 //                 > type parameter T any
    Process(payload T)
 // ^^^^^^^ definition 0.1.test `sg/inlinestruct`/Processor#Process.
+//         display_name Process
 //         signature_documentation
 //         > func (Processor[T any]).Process(payload T)
 //         ^^^^^^^ definition local 1
@@ -23,17 +25,20 @@
 //                 ^ reference local 0
    ProcessorType() string
 // ^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/Processor#ProcessorType.
+//               display_name ProcessorType
 //               signature_documentation
 //               > func (Processor[T any]).ProcessorType() string
   }
   
   type Limit int
 //     ^^^^^ definition 0.1.test `sg/inlinestruct`/Limit#
+//           display_name Limit
 //           signature_documentation
 //           > type Limit int
   
   type ProcessImpl struct{}
 //     ^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/ProcessImpl#
+//                 display_name ProcessImpl
 //                 signature_documentation
 //                 > type ProcessImpl struct{}
   
@@ -45,6 +50,7 @@
 //        > var p *ProcessImpl
 //         ^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/ProcessImpl#
 //                      ^^^^^^^ definition 0.1.test `sg/inlinestruct`/ProcessImpl#Process().
+//                              display_name Process
 //                              signature_documentation
 //                              > func (*ProcessImpl).Process(payload Limit)
 //                              ^^^^^^^ definition local 3
@@ -61,6 +67,7 @@
 //        > var p *ProcessImpl
 //         ^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/ProcessImpl#
 //                      ^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/ProcessImpl#ProcessorType().
+//                                    display_name ProcessorType
 //                                    signature_documentation
 //                                    > func (*ProcessImpl).ProcessorType() string
 //                                                                        ⌃ enclosing_range_end 0.1.test `sg/inlinestruct`/ProcessImpl#ProcessorType().

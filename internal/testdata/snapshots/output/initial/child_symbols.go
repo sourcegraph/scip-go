@@ -4,6 +4,7 @@
   // Const is a constant equal to 5. It's the best constant I've ever written. 😹
   const Const = 5
 //      ^^^^^ definition 0.1.test `sg/initial`/Const.
+//            display_name Const
 //            signature_documentation
 //            > const Const untyped int = 5
 //            documentation
@@ -14,6 +15,7 @@
    // ConstBlock1 is a constant in a block.
    ConstBlock1 = 1
 // ^^^^^^^^^^^ definition 0.1.test `sg/initial`/ConstBlock1.
+//             display_name ConstBlock1
 //             signature_documentation
 //             > const ConstBlock1 untyped int = 1
 //             documentation
@@ -24,6 +26,7 @@
    // ConstBlock2 is a constant in a block.
    ConstBlock2 = 2
 // ^^^^^^^^^^^ definition 0.1.test `sg/initial`/ConstBlock2.
+//             display_name ConstBlock2
 //             signature_documentation
 //             > const ConstBlock2 untyped int = 2
 //             documentation
@@ -35,6 +38,7 @@
   // Var is a variable interface.
   var Var Interface = &Struct{Field: "bar!"}
 //    ^^^ definition 0.1.test `sg/initial`/Var.
+//        display_name Var
 //        signature_documentation
 //        > var Var Interface
 //        documentation
@@ -46,6 +50,7 @@
   // unexportedVar is an unexported variable interface.
   var unexportedVar Interface = &Struct{Field: "bar!"}
 //    ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/unexportedVar.
+//                  display_name unexportedVar
 //                  signature_documentation
 //                  > var unexportedVar Interface
 //                  documentation
@@ -57,6 +62,7 @@
   // x has a builtin error type
   var x error
 //    ^ definition 0.1.test `sg/initial`/x.
+//      display_name x
 //      signature_documentation
 //      > var x error
 //      documentation
@@ -64,6 +70,7 @@
   
   var BigVar Interface = &Struct{
 //    ^^^^^^ definition 0.1.test `sg/initial`/BigVar.
+//           display_name BigVar
 //           signature_documentation
 //           > var BigVar Interface
 //           ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
@@ -74,14 +81,17 @@
 // ^^^^^^^^^ reference 0.1.test `sg/initial`/Struct#Anonymous.
     FieldA int
 //  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldA.
+//         display_name FieldA
 //         signature_documentation
 //         > struct field FieldA int
     FieldB int
 //  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldB.
+//         display_name FieldB
 //         signature_documentation
 //         > struct field FieldB int
     FieldC int
 //  ^^^^^^ definition 0.1.test `sg/initial`/BigVar:FieldC.
+//         display_name FieldC
 //         signature_documentation
 //         > struct field FieldC int
    }{FieldA: 1337},
@@ -103,6 +113,7 @@
    // This has some docs
    VarBlock1 = "if you're reading this"
 // ^^^^^^^^^ definition 0.1.test `sg/initial`/VarBlock1.
+//           display_name VarBlock1
 //           signature_documentation
 //           > var VarBlock1 string
 //           documentation
@@ -122,6 +133,7 @@
   
    VarBlock2 = "hi"
 // ^^^^^^^^^ definition 0.1.test `sg/initial`/VarBlock2.
+//           display_name VarBlock2
 //           signature_documentation
 //           > var VarBlock2 string
 //           documentation
@@ -141,6 +153,7 @@
   // Embedded is a struct, to be embedded in another struct.
   type Embedded struct {
 //     ^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#
+//              display_name Embedded
 //              signature_documentation
 //              > type Embedded struct {
 //              >     EmbeddedField string
@@ -151,12 +164,14 @@
    // EmbeddedField has some docs!
    EmbeddedField string
 // ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#EmbeddedField.
+//               display_name EmbeddedField
 //               signature_documentation
 //               > struct field EmbeddedField string
 //               documentation
 //               > EmbeddedField has some docs!
    Field         string // conflicts with parent "Field"
 // ^^^^^ definition 0.1.test `sg/initial`/Embedded#Field.
+//       display_name Field
 //       signature_documentation
 //       > struct field Field string
 //       documentation
@@ -165,6 +180,7 @@
   
   type Struct struct {
 //     ^^^^^^ definition 0.1.test `sg/initial`/Struct#
+//            display_name Struct
 //            signature_documentation
 //            > type Struct struct {
 //            >     *Embedded
@@ -178,27 +194,33 @@
 //            relationship 0.1.test `sg/initial`/Interface# implementation
    *Embedded
 //  ^^^^^^^^ definition 0.1.test `sg/initial`/Struct#Embedded.
+//           display_name Embedded
 //           signature_documentation
 //           > struct field Embedded *Embedded
 //  ^^^^^^^^ reference 0.1.test `sg/initial`/Embedded#
    Field     string
 // ^^^^^ definition 0.1.test `sg/initial`/Struct#Field.
+//       display_name Field
 //       signature_documentation
 //       > struct field Field string
    Anonymous struct {
 // ^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#Anonymous.
+//           display_name Anonymous
 //           signature_documentation
 //           > struct field Anonymous struct{FieldA int; FieldB int; FieldC int}
     FieldA int
 //  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_81475a76ba757de7#FieldA.
+//         display_name FieldA
 //         signature_documentation
 //         > struct field FieldA int
     FieldB int
 //  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_81475a76ba757de7#FieldB.
+//         display_name FieldB
 //         signature_documentation
 //         > struct field FieldB int
     FieldC int
 //  ^^^^^^ definition 0.1.test `sg/initial`/Struct#$anon_81475a76ba757de7#FieldC.
+//         display_name FieldC
 //         signature_documentation
 //         > struct field FieldC int
    }
@@ -213,6 +235,7 @@
 //        > var s *Struct
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#StructMethod().
+//                              display_name StructMethod
 //                              signature_documentation
 //                              > func (*Struct).StructMethod()
 //                              documentation
@@ -227,6 +250,7 @@
 //        > var s *Struct
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#ImplementsInterface().
+//                                     display_name ImplementsInterface
 //                                     signature_documentation
 //                                     > func (*Struct).ImplementsInterface() string
 //                                     relationship 0.1.test `sg/initial`/Interface#ImplementsInterface. implementation
@@ -240,6 +264,7 @@
 //        > var s *Struct
 //         ^^^^^^ reference 0.1.test `sg/initial`/Struct#
 //                 ^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Struct#MachineLearning().
+//                                 display_name MachineLearning
 //                                 signature_documentation
 //                                 > func (*Struct).MachineLearning(param1 float32, hyperparam2 float32, hyperparam3 float32) float32
    param1 float32, // It's ML, I can't describe what this param is.
@@ -319,12 +344,14 @@
   // Interface has docs too
   type Interface interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/initial`/Interface#
+//               display_name Interface
 //               signature_documentation
 //               > type Interface interface{ ImplementsInterface() string }
 //               documentation
 //               > Interface has docs too
    ImplementsInterface() string
 // ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Interface#ImplementsInterface.
+//                     display_name ImplementsInterface
 //                     signature_documentation
 //                     > func (Interface).ImplementsInterface() string
   }
@@ -332,6 +359,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/NewInterface().
   func NewInterface() Interface { return nil }
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/NewInterface().
+//                  display_name NewInterface
 //                  signature_documentation
 //                  > func NewInterface() Interface
 //                    ^^^^^^^^^ reference 0.1.test `sg/initial`/Interface#
@@ -339,16 +367,19 @@
   
   var SortExportedFirst = 1
 //    ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SortExportedFirst.
+//                      display_name SortExportedFirst
 //                      signature_documentation
 //                      > var SortExportedFirst int
   
   var sortUnexportedSecond = 2
 //    ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/sortUnexportedSecond.
+//                         display_name sortUnexportedSecond
 //                         signature_documentation
 //                         > var sortUnexportedSecond int
   
   var _sortUnderscoreLast = 3
 //    ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/_sortUnderscoreLast.
+//                        display_name _sortUnderscoreLast
 //                        signature_documentation
 //                        > var _sortUnderscoreLast int
   
@@ -379,6 +410,7 @@
    // And confusing
    X struct {
 // ^ definition 0.1.test `sg/initial`/X#
+//   display_name X
 //   signature_documentation
 //   > type X struct{ bar string }
 //   documentation
@@ -387,18 +419,21 @@
 //   > Go can be fun
     bar string
 //  ^^^ definition 0.1.test `sg/initial`/X#bar.
+//      display_name bar
 //      signature_documentation
 //      > struct field bar string
    }
   
    Y struct {
 // ^ definition 0.1.test `sg/initial`/Y#
+//   display_name Y
 //   signature_documentation
 //   > type Y struct{ baz float64 }
 //   documentation
 //   > Go can be fun
     baz float64
 //  ^^^ definition 0.1.test `sg/initial`/Y#baz.
+//      display_name baz
 //      signature_documentation
 //      > struct field baz float64
    }

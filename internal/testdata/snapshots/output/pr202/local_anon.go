@@ -6,6 +6,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr202`/localAnonymousStructs().
   func localAnonymousStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/localAnonymousStructs().
+//                           display_name localAnonymousStructs
 //                           signature_documentation
 //                           > func localAnonymousStructs()
    a := struct{ x int }{x: 1}
@@ -40,6 +41,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr202`/paramAnonymousStruct().
   func paramAnonymousStruct(p struct{ x int }) int {
 //     ^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/paramAnonymousStruct().
+//                          display_name paramAnonymousStruct
 //                          signature_documentation
 //                          > func paramAnonymousStruct(p struct{x int}) int
 //                          ^ definition local 4

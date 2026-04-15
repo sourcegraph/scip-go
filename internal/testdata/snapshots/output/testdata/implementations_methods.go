@@ -3,16 +3,19 @@
   
   type InterfaceWithSingleMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#
+//                               display_name InterfaceWithSingleMethod
 //                               signature_documentation
 //                               > type InterfaceWithSingleMethod interface{ SingleMethod() float64 }
    SingleMethod() float64
 // ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethod#SingleMethod.
+//              display_name SingleMethod
 //              signature_documentation
 //              > func (InterfaceWithSingleMethod).SingleMethod() float64
   }
   
   type StructWithMethods struct{}
 //     ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructWithMethods#
+//                       display_name StructWithMethods
 //                       signature_documentation
 //                       > type StructWithMethods struct{}
 //                       relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethod# implementation
@@ -21,6 +24,7 @@
   func (StructWithMethods) SingleMethod() float64 { return 5.0 }
 //      ^^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/StructWithMethods#
 //                         ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/StructWithMethods#SingleMethod().
+//                                      display_name SingleMethod
 //                                      signature_documentation
 //                                      > func (StructWithMethods).SingleMethod() float64
 //                                      relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethod#SingleMethod. implementation
@@ -28,16 +32,19 @@
   
   type InterfaceWithSingleMethodTwoImplementers interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#
+//                                              display_name InterfaceWithSingleMethodTwoImplementers
 //                                              signature_documentation
 //                                              > type InterfaceWithSingleMethodTwoImplementers interface{ SingleMethodTwoImpl() float64 }
    SingleMethodTwoImpl() float64
 // ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl.
+//                     display_name SingleMethodTwoImpl
 //                     signature_documentation
 //                     > func (InterfaceWithSingleMethodTwoImplementers).SingleMethodTwoImpl() float64
   }
   
   type TwoImplOne struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplOne#
+//                display_name TwoImplOne
 //                signature_documentation
 //                > type TwoImplOne struct{}
 //                relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers# implementation
@@ -46,6 +53,7 @@
   func (TwoImplOne) SingleMethodTwoImpl() float64 { return 5.0 }
 //      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplOne#
 //                  ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplOne#SingleMethodTwoImpl().
+//                                      display_name SingleMethodTwoImpl
 //                                      signature_documentation
 //                                      > func (TwoImplOne).SingleMethodTwoImpl() float64
 //                                      relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl. implementation
@@ -53,6 +61,7 @@
   
   type TwoImplTwo struct{}
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#
+//                display_name TwoImplTwo
 //                signature_documentation
 //                > type TwoImplTwo struct{}
 //                relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers# implementation
@@ -61,6 +70,7 @@
   func (TwoImplTwo) SingleMethodTwoImpl() float64         { return 5.0 }
 //      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplTwo#
 //                  ^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#SingleMethodTwoImpl().
+//                                      display_name SingleMethodTwoImpl
 //                                      signature_documentation
 //                                      > func (TwoImplTwo).SingleMethodTwoImpl() float64
 //                                      relationship 0.1.test `sg/testdata`/InterfaceWithSingleMethodTwoImplementers#SingleMethodTwoImpl. implementation
@@ -69,6 +79,7 @@
   func (TwoImplTwo) RandomThingThatDoesntMatter() float64 { return 5.0 }
 //      ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TwoImplTwo#
 //                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().
+//                                              display_name RandomThingThatDoesntMatter
 //                                              signature_documentation
 //                                              > func (TwoImplTwo).RandomThingThatDoesntMatter() float64
 //                                                                     ⌃ enclosing_range_end 0.1.test `sg/testdata`/TwoImplTwo#RandomThingThatDoesntMatter().

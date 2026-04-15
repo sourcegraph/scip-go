@@ -5,6 +5,7 @@
   
   type MultiNameStruct struct {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/MultiNameStruct#
+//                     display_name MultiNameStruct
 //                     signature_documentation
 //                     > type MultiNameStruct struct {
 //                     >     a struct {
@@ -18,17 +19,21 @@
 //                     > }
    a, b struct {
 // ^ definition 0.1.test `sg/pr202`/MultiNameStruct#a.
+//   display_name a
 //   signature_documentation
 //   > struct field a struct{x int; y string}
 //    ^ definition 0.1.test `sg/pr202`/MultiNameStruct#b.
+//      display_name b
 //      signature_documentation
 //      > struct field b struct{x int; y string}
     x int
 //  ^ definition 0.1.test `sg/pr202`/MultiNameStruct#$anon_c0a8952b3a214f68#x.
+//    display_name x
 //    signature_documentation
 //    > struct field x int
     y string
 //  ^ definition 0.1.test `sg/pr202`/MultiNameStruct#$anon_c0a8952b3a214f68#y.
+//    display_name y
 //    signature_documentation
 //    > struct field y string
    }
@@ -37,6 +42,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr202`/useMultiNameFields().
   func useMultiNameFields() {
 //     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/useMultiNameFields().
+//                        display_name useMultiNameFields
 //                        signature_documentation
 //                        > func useMultiNameFields()
    var m MultiNameStruct

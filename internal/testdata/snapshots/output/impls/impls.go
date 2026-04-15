@@ -6,26 +6,31 @@
   
   type I1 interface {
 //     ^^ definition 0.1.test `sg/impls`/I1#
+//        display_name I1
 //        signature_documentation
 //        > type I1 interface{ F1() }
    F1()
 // ^^ definition 0.1.test `sg/impls`/I1#F1.
+//    display_name F1
 //    signature_documentation
 //    > func (I1).F1()
   }
   
   type I1Clone interface {
 //     ^^^^^^^ definition 0.1.test `sg/impls`/I1Clone#
+//             display_name I1Clone
 //             signature_documentation
 //             > type I1Clone interface{ F1() }
    F1()
 // ^^ definition 0.1.test `sg/impls`/I1Clone#F1.
+//    display_name F1
 //    signature_documentation
 //    > func (I1Clone).F1()
   }
   
   type IfaceOther interface {
 //     ^^^^^^^^^^ definition 0.1.test `sg/impls`/IfaceOther#
+//                display_name IfaceOther
 //                signature_documentation
 //                > type IfaceOther interface {
 //                >     Another()
@@ -33,16 +38,19 @@
 //                > }
    Something()
 // ^^^^^^^^^ definition 0.1.test `sg/impls`/IfaceOther#Something.
+//           display_name Something
 //           signature_documentation
 //           > func (IfaceOther).Something()
    Another()
 // ^^^^^^^ definition 0.1.test `sg/impls`/IfaceOther#Another.
+//         display_name Another
 //         signature_documentation
 //         > func (IfaceOther).Another()
   }
   
   type T1 int
 //     ^^ definition 0.1.test `sg/impls`/T1#
+//        display_name T1
 //        signature_documentation
 //        > type T1 int
 //        relationship 0.1.test `sg/impls`/I1# implementation
@@ -56,6 +64,7 @@
 //        > var r T1
 //        ^^ reference 0.1.test `sg/impls`/T1#
 //            ^^ definition 0.1.test `sg/impls`/T1#F1().
+//               display_name F1
 //               signature_documentation
 //               > func (T1).F1()
 //               relationship 0.1.test `sg/impls`/I1#F1. implementation
@@ -64,6 +73,7 @@
   
   type T2 int
 //     ^^ definition 0.1.test `sg/impls`/T2#
+//        display_name T2
 //        signature_documentation
 //        > type T2 int
 //        relationship 0.1.test `sg/impls`/I1# implementation
@@ -77,6 +87,7 @@
 //        > var r T2
 //        ^^ reference 0.1.test `sg/impls`/T2#
 //            ^^ definition 0.1.test `sg/impls`/T2#F1().
+//               display_name F1
 //               signature_documentation
 //               > func (T2).F1()
 //               relationship 0.1.test `sg/impls`/I1#F1. implementation
@@ -90,6 +101,7 @@
 //        > var r T2
 //        ^^ reference 0.1.test `sg/impls`/T2#
 //            ^^ definition 0.1.test `sg/impls`/T2#F2().
+//               display_name F2
 //               signature_documentation
 //               > func (T2).F2()
 //                  ⌃ enclosing_range_end 0.1.test `sg/impls`/T2#F2().

@@ -3,31 +3,37 @@
   
   type I0 interface{}
 //     ^^ definition 0.1.test `sg/testdata`/I0#
+//        display_name I0
 //        signature_documentation
 //        > type I0 interface{}
   
   type I1 interface {
 //     ^^ definition 0.1.test `sg/testdata`/I1#
+//        display_name I1
 //        signature_documentation
 //        > type I1 interface{ F1() }
    F1()
 // ^^ definition 0.1.test `sg/testdata`/I1#F1.
+//    display_name F1
 //    signature_documentation
 //    > func (I1).F1()
   }
   
   type I2 interface {
 //     ^^ definition 0.1.test `sg/testdata`/I2#
+//        display_name I2
 //        signature_documentation
 //        > type I2 interface{ F2() }
    F2()
 // ^^ definition 0.1.test `sg/testdata`/I2#F2.
+//    display_name F2
 //    signature_documentation
 //    > func (I2).F2()
   }
   
   type T1 int
 //     ^^ definition 0.1.test `sg/testdata`/T1#
+//        display_name T1
 //        signature_documentation
 //        > type T1 int
 //        relationship 0.1.test `sg/testdata`/I1# implementation
@@ -40,6 +46,7 @@
 //        > var r T1
 //        ^^ reference 0.1.test `sg/testdata`/T1#
 //            ^^ definition 0.1.test `sg/testdata`/T1#F1().
+//               display_name F1
 //               signature_documentation
 //               > func (T1).F1()
 //               relationship 0.1.test `sg/testdata`/I1#F1. implementation
@@ -47,6 +54,7 @@
   
   type T2 int
 //     ^^ definition 0.1.test `sg/testdata`/T2#
+//        display_name T2
 //        signature_documentation
 //        > type T2 int
 //        relationship 0.1.test `sg/testdata`/I1# implementation
@@ -60,6 +68,7 @@
 //        > var r T2
 //        ^^ reference 0.1.test `sg/testdata`/T2#
 //            ^^ definition 0.1.test `sg/testdata`/T2#F1().
+//               display_name F1
 //               signature_documentation
 //               > func (T2).F1()
 //               relationship 0.1.test `sg/testdata`/I1#F1. implementation
@@ -72,6 +81,7 @@
 //        > var r T2
 //        ^^ reference 0.1.test `sg/testdata`/T2#
 //            ^^ definition 0.1.test `sg/testdata`/T2#F2().
+//               display_name F2
 //               signature_documentation
 //               > func (T2).F2()
 //               relationship 0.1.test `sg/testdata`/I2#F2. implementation
@@ -79,37 +89,44 @@
   
   type A1 = T1
 //     ^^ definition 0.1.test `sg/testdata`/A1#
+//        display_name A1
 //        signature_documentation
 //        > type A1 = T1
 //          ^^ reference 0.1.test `sg/testdata`/T1#
   type A12 = A1
 //     ^^^ definition 0.1.test `sg/testdata`/A12#
+//         display_name A12
 //         signature_documentation
 //         > type A12 = A1
 //           ^^ reference 0.1.test `sg/testdata`/A1#
   
   type InterfaceWithNonExportedMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod#
+//                                    display_name InterfaceWithNonExportedMethod
 //                                    signature_documentation
 //                                    > type InterfaceWithNonExportedMethod interface{ nonExportedMethod() }
    nonExportedMethod()
 // ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod#nonExportedMethod.
+//                   display_name nonExportedMethod
 //                   signature_documentation
 //                   > func (InterfaceWithNonExportedMethod).nonExportedMethod()
   }
   
   type InterfaceWithExportedMethod interface {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithExportedMethod#
+//                                 display_name InterfaceWithExportedMethod
 //                                 signature_documentation
 //                                 > type InterfaceWithExportedMethod interface{ ExportedMethod() }
    ExportedMethod()
 // ^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/InterfaceWithExportedMethod#ExportedMethod.
+//                display_name ExportedMethod
 //                signature_documentation
 //                > func (InterfaceWithExportedMethod).ExportedMethod()
   }
   
   type Foo int
 //     ^^^ definition 0.1.test `sg/testdata`/Foo#
+//         display_name Foo
 //         signature_documentation
 //         > type Foo int
 //         relationship 0.1.test `sg/testdata`/EmbeddedI3# implementation
@@ -125,6 +142,7 @@
 //        > var r Foo
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
 //             ^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/Foo#nonExportedMethod().
+//                               display_name nonExportedMethod
 //                               signature_documentation
 //                               > func (Foo).nonExportedMethod()
 //                               relationship 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod#nonExportedMethod. implementation
@@ -137,6 +155,7 @@
 //        > var r Foo
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
 //             ^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/Foo#ExportedMethod().
+//                            display_name ExportedMethod
 //                            signature_documentation
 //                            > func (Foo).ExportedMethod()
 //                            relationship 0.1.test `sg/testdata`/InterfaceWithExportedMethod#ExportedMethod. implementation
@@ -149,6 +168,7 @@
 //        > var r Foo
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
 //             ^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/Foo#ScipTestMethod().
+//                            display_name ScipTestMethod
 //                            signature_documentation
 //                            > func (Foo).ScipTestMethod()
 //                            relationship 0.1.test `sg/testdata`/EmbeddedI3#ScipTestMethod. implementation
@@ -157,6 +177,7 @@
   
   type SharedOne interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/SharedOne#
+//               display_name SharedOne
 //               signature_documentation
 //               > type SharedOne interface {
 //               >     Distinct()
@@ -164,16 +185,19 @@
 //               > }
    Shared()
 // ^^^^^^ definition 0.1.test `sg/testdata`/SharedOne#Shared.
+//        display_name Shared
 //        signature_documentation
 //        > func (SharedOne).Shared()
    Distinct()
 // ^^^^^^^^ definition 0.1.test `sg/testdata`/SharedOne#Distinct.
+//          display_name Distinct
 //          signature_documentation
 //          > func (SharedOne).Distinct()
   }
   
   type SharedTwo interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/SharedTwo#
+//               display_name SharedTwo
 //               signature_documentation
 //               > type SharedTwo interface {
 //               >     Shared()
@@ -181,16 +205,19 @@
 //               > }
    Shared()
 // ^^^^^^ definition 0.1.test `sg/testdata`/SharedTwo#Shared.
+//        display_name Shared
 //        signature_documentation
 //        > func (SharedTwo).Shared()
    Unique()
 // ^^^^^^ definition 0.1.test `sg/testdata`/SharedTwo#Unique.
+//        display_name Unique
 //        signature_documentation
 //        > func (SharedTwo).Unique()
   }
   
   type Between struct{}
 //     ^^^^^^^ definition 0.1.test `sg/testdata`/Between#
+//             display_name Between
 //             signature_documentation
 //             > type Between struct{}
 //             relationship 0.1.test `sg/testdata`/SharedOne# implementation
@@ -200,6 +227,7 @@
   func (Between) Shared()   {}
 //      ^^^^^^^ reference 0.1.test `sg/testdata`/Between#
 //               ^^^^^^ definition 0.1.test `sg/testdata`/Between#Shared().
+//                      display_name Shared
 //                      signature_documentation
 //                      > func (Between).Shared()
 //                      relationship 0.1.test `sg/testdata`/SharedOne#Shared. implementation
@@ -209,6 +237,7 @@
   func (Between) Distinct() {}
 //      ^^^^^^^ reference 0.1.test `sg/testdata`/Between#
 //               ^^^^^^^^ definition 0.1.test `sg/testdata`/Between#Distinct().
+//                        display_name Distinct
 //                        signature_documentation
 //                        > func (Between).Distinct()
 //                        relationship 0.1.test `sg/testdata`/SharedOne#Distinct. implementation
@@ -217,6 +246,7 @@
   func (Between) Unique()   {}
 //      ^^^^^^^ reference 0.1.test `sg/testdata`/Between#
 //               ^^^^^^ definition 0.1.test `sg/testdata`/Between#Unique().
+//                      display_name Unique
 //                      signature_documentation
 //                      > func (Between).Unique()
 //                      relationship 0.1.test `sg/testdata`/SharedTwo#Unique. implementation
@@ -225,6 +255,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/shouldShow().
   func shouldShow(shared SharedOne) {
 //     ^^^^^^^^^^ definition 0.1.test `sg/testdata`/shouldShow().
+//                display_name shouldShow
 //                signature_documentation
 //                > func shouldShow(shared SharedOne)
 //                ^^^^^^ definition local 6

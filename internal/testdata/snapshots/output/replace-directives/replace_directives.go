@@ -16,6 +16,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/replace-directives`/Something().
   func Something() {
 //     ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/Something().
+//               display_name Something
 //               signature_documentation
 //               > func Something()
    fmt.Println(replaced.DefaultConfig)

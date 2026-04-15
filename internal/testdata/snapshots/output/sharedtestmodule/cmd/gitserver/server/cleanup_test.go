@@ -7,6 +7,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestStuff().
   func TestStuff(t *testing.T) {
 //     ^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestStuff().
+//               display_name TestStuff
 //               signature_documentation
 //               > func TestStuff(t *testing.T)
 //               ^ definition local 0

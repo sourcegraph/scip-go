@@ -12,6 +12,7 @@
   // of this function type.
   type ParallelizableFunc func(ctx context.Context) error
 //     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ParallelizableFunc#
+//                        display_name ParallelizableFunc
 //                        signature_documentation
 //                        > type ParallelizableFunc func(ctx context.Context) error
 //                        documentation
@@ -29,6 +30,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/Parallel().
   func Parallel(ctx context.Context, fns ...ParallelizableFunc) error {
 //     ^^^^^^^^ definition 0.1.test `sg/testdata`/Parallel().
+//              display_name Parallel
 //              signature_documentation
 //              > func Parallel(ctx context.Context, fns ...ParallelizableFunc) error
 //              documentation

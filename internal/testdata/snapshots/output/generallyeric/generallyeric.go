@@ -13,6 +13,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/Print().
   func Print[T any](s []T) {
 //     ^^^^^ definition 0.1.test `sg/generallyeric`/Print().
+//           display_name Print
 //           signature_documentation
 //           > func Print[T any](s []T)
 //           ^ definition local 0

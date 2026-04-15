@@ -3,22 +3,27 @@
   
   type Params struct{}
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Params#
+//            display_name Params
 //            signature_documentation
 //            > type Params struct{}
   type HighlightedCode struct{}
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/HighlightedCode#
+//                     display_name HighlightedCode
 //                     signature_documentation
 //                     > type HighlightedCode struct{}
   
   var Mocks, emptyMocks struct {
 //    ^^^^^ definition 0.1.test `sg/inlinestruct`/Mocks.
+//          display_name Mocks
 //          signature_documentation
 //          > var Mocks struct{Code func(p Params) (response *HighlightedCode, aborted bool, err error)}
 //           ^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/emptyMocks.
+//                      display_name emptyMocks
 //                      signature_documentation
 //                      > var emptyMocks struct{Code func(p Params) (response *HighlightedCode, aborted bool, err error)}
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/inline-6-5:Code.
+//      display_name Code
 //      signature_documentation
 //      > struct field Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 //           ^ definition local 0
@@ -43,10 +48,12 @@
   
   var MocksSingle struct {
 //    ^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/MocksSingle.
+//                display_name MocksSingle
 //                signature_documentation
 //                > var MocksSingle struct{Code func(p Params) (response *HighlightedCode, aborted bool, err error)}
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/MocksSingle:Code.
+//      display_name Code
 //      signature_documentation
 //      > struct field Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 //           ^ definition local 4
@@ -72,10 +79,12 @@
   var (
    okReply   interface{} = "OK"
 // ^^^^^^^ definition 0.1.test `sg/inlinestruct`/okReply.
+//         display_name okReply
 //         signature_documentation
 //         > var okReply interface{}
    pongReply interface{} = "PONG"
 // ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/pongReply.
+//           display_name pongReply
 //           signature_documentation
 //           > var pongReply interface{}
   )
