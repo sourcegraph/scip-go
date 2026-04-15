@@ -226,28 +226,18 @@ func formatTypeDeclaration(obj *types.TypeName) string {
 	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Pkg(), obj.Type().Underlying()))
 }
 
-// qualifiedName returns the name of original, prefixed with its package name
-// if it differs from obj's package. Handles nil packages (builtins).
-func qualifiedName(obj, original types.Object) string {
-	objPkg := obj.Pkg()
-	origPkg := original.Pkg()
-	if objPkg == nil || origPkg == nil || objPkg.Name() == origPkg.Name() {
-		return original.Name()
-	}
-	return origPkg.Name() + "." + original.Name()
-}
-
 // formatAliasDeclaration returns the type declaration for alias types.
 func formatAliasDeclaration(obj *types.TypeName) string {
 	switch ty := obj.Type().(type) {
 	case *types.Alias:
-		switch rhs := ty.Rhs().(type) {
-		case *types.Alias:
-			return fmt.Sprintf("type %s = %s", obj.Name(), qualifiedName(obj, rhs.Obj()))
-		case *types.Named:
-			return fmt.Sprintf("type %s = %s", obj.Name(), qualifiedName(obj, rhs.Obj()))
+		qual := relativeQualifier(obj.Pkg())
+		lhs := obj.Name() + formatTypeParamList(ty.TypeParams())
+		rhs := ty.Rhs()
+		switch rhs.(type) {
+		case *types.Alias, *types.Named:
+			return fmt.Sprintf("type %s = %s", lhs, types.TypeString(rhs, qual))
 		default:
-			return fmt.Sprintf("type %s = %s", obj.Name(), expandTypeExpr(obj.Pkg(), rhs))
+			return fmt.Sprintf("type %s = %s", lhs, expandTypeExpr(obj.Pkg(), rhs))
 		}
 	default:
 		if val := os.Getenv("GODEBUG"); strings.Contains(val, "gotypealias=0") {
@@ -264,6 +254,27 @@ func formatAliasDeclaration(obj *types.TypeName) string {
 
 	// Fallback for when GODEBUG=gotypealias=0 or unexpected types.
 	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Pkg(), obj.Type().Underlying()))
+}
+
+// formatTypeParamList renders a TypeParamList as "[K C1, V C2]".
+// Returns "" when tparams is nil or empty.
+func formatTypeParamList(tparams *types.TypeParamList) string {
+	if tparams == nil || tparams.Len() == 0 {
+		return ""
+	}
+	var buf strings.Builder
+	buf.WriteByte('[')
+	for i := range tparams.Len() {
+		if i > 0 {
+			buf.WriteString(", ")
+		}
+		tp := tparams.At(i)
+		buf.WriteString(tp.Obj().Name())
+		buf.WriteByte(' ')
+		buf.WriteString(tp.Constraint().String())
+	}
+	buf.WriteByte(']')
+	return buf.String()
 }
 
 // expandTypeExpr renders a type expression, formatting struct and interface

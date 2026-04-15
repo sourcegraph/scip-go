@@ -59,7 +59,7 @@
   type Set[K comparable] = Map[K, bool]
 //     ^^^ definition 0.1.test `sg/pr211`/Set#
 //         signature_documentation
-//         > type Set = Map
+//         > type Set[K comparable] = Map[K, bool]
 //         documentation
 //         > Set is a generic alias that partially instantiates Map.
 //         ^ definition local 4
@@ -73,7 +73,7 @@
   type OrderedSet[K ~int | ~string] = Set[K]
 //     ^^^^^^^^^^ definition 0.1.test `sg/pr211`/OrderedSet#
 //                signature_documentation
-//                > type OrderedSet = Set
+//                > type OrderedSet[K ~int | ~string] = Set[K]
 //                documentation
 //                > Alias with a tighter constraint.
 //                ^ definition local 5
@@ -87,7 +87,7 @@
   type StringSet = Set[string]
 //     ^^^^^^^^^ definition 0.1.test `sg/pr211`/StringSet#
 //               signature_documentation
-//               > type StringSet = Set
+//               > type StringSet = Set[string]
 //               documentation
 //               > Alias of an alias (chained).
 //                 ^^^ reference 0.1.test `sg/pr211`/Set#
@@ -96,7 +96,7 @@
   type PairMap[K comparable, V any] = Map[K, V]
 //     ^^^^^^^ definition 0.1.test `sg/pr211`/PairMap#
 //             signature_documentation
-//             > type PairMap = Map
+//             > type PairMap[K comparable, V any] = Map[K, V]
 //             documentation
 //             > Alias with all params forwarded.
 //             ^ definition local 6
