@@ -292,11 +292,11 @@
 //      ^^^^^^^^^^^^^^^^^^^^^ definition local 8
 //                            display_name typeShouldNotHaveDocs
 //                            signature_documentation
-//                            > typeShouldNotHaveDocs typeShouldNotHaveDocs
+//                            > type typeShouldNotHaveDocs struct{a string}
 //                                    ^ definition local 9
 //                                      display_name a
 //                                      signature_documentation
-//                                      > var a string
+//                                      > field a string
   
    // funcShouldNotHaveDocs is in a function, should not have docs emitted.
    funcShouldNotHaveDocs := func(a string) string { return "hello" }

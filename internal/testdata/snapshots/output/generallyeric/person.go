@@ -46,7 +46,7 @@
 //            ^ definition local 1
 //              display_name T
 //              signature_documentation
-//              > T T
+//              > type parameter T Person
 //              ^^^^^^ reference 0.1.test `sg/generallyeric`/Person#
 //                      ^^^^^^ definition local 2
 //                             display_name things

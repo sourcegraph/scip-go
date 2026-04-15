@@ -11,7 +11,7 @@
 //               ^ definition local 0
 //                 display_name T
 //                 signature_documentation
-//                 > T T
+//                 > type parameter T any
    Process(payload T)
 // ^^^^^^^ definition 0.1.test `sg/inlinestruct`/Processor#Process.
 //         signature_documentation

@@ -69,12 +69,12 @@
 //  ^ definition local 1
 //    display_name x
 //    signature_documentation
-//    > var x int
+//    > field x int
     y string
 //  ^ definition local 2
 //    display_name y
 //    signature_documentation
-//    > var y string
+//    > field y string
    }{
     x: 1,
 //  ^ reference local 1
@@ -91,12 +91,12 @@
 //  ^ definition local 4
 //    display_name x
 //    signature_documentation
-//    > var x int
+//    > field x int
     y string
 //  ^ definition local 5
 //    display_name y
 //    signature_documentation
-//    > var y string
+//    > field y string
    }
   
    e.x = 2

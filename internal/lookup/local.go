@@ -1,9 +1,6 @@
 package lookup
 
-import (
-	"go/types"
-	"strings"
-)
+import "go/types"
 
 // Local contains information about a local symbol
 type Local struct {
@@ -16,36 +13,11 @@ func (l *Local) SignatureText() string {
 	if l.Obj == nil {
 		return ""
 	}
-
-	var parts []string
-
-	switch l.Obj.(type) {
-	case *types.Const:
-		parts = append(parts, "const")
-	case *types.PkgName:
-		parts = append(parts, "import")
-	case *types.Var:
-		parts = append(parts, "var")
-	}
-
-	if name := l.Obj.Name(); name != "" {
-		parts = append(parts, name)
-	}
-
-	// For PkgName, append the package path instead of type
-	if pkgName, isPkgName := l.Obj.(*types.PkgName); isPkgName {
+	if pkgName, ok := l.Obj.(*types.PkgName); ok {
 		if imported := pkgName.Imported(); imported != nil {
-			parts = append(parts, imported.Path())
+			return "import " + pkgName.Name() + " " + imported.Path()
 		}
-	} else {
-		if t := l.Obj.Type(); t != nil {
-			if ts := types.TypeString(
-				t, func(*types.Package) string { return "" },
-			); ts != "" {
-				parts = append(parts, ts)
-			}
-		}
+		return "import " + pkgName.Name()
 	}
-
-	return strings.Join(parts, " ")
+	return types.ObjectString(l.Obj, func(*types.Package) string { return "" })
 }

@@ -19,7 +19,7 @@
 //            ^ definition local 0
 //              display_name T
 //              signature_documentation
-//              > T T
+//              > type parameter T Number
 //              ^^^^^^ reference 0.1.test `sg/generallyeric`/Number#
 //                      ^^^^^ definition local 1
 //                            display_name value
@@ -39,7 +39,7 @@
 //         ^ definition local 2
 //           display_name T
 //           signature_documentation
-//           > T T
+//           > type parameter T any
    Something T
 // ^^^^^^^^^ definition 0.1.test `sg/generallyeric`/Box#Something.
 //           signature_documentation
@@ -57,7 +57,7 @@
 //             ^ definition local 3
 //               display_name T
 //               signature_documentation
-//               > T T
+//               > type parameter T any
    Box[T]
 // ^^^ definition 0.1.test `sg/generallyeric`/handler#Box.
 //     signature_documentation
