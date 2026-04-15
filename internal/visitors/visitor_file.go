@@ -42,16 +42,15 @@ func NewFileVisitor(
 	}
 
 	return &fileVisitor{
-		doc:              doc,
-		pkg:              pkg,
-		file:             file,
-		pkgLookup:        pkgLookup,
-		locals:           map[token.Pos]lookup.Local{},
-		pkgSymbols:       pkgSymbols,
-		globalSymbols:    globalSymbols,
-		occurrences:      occurrences,
-		caseClauses:      caseClauses,
-		enclosingNodeMap: enclosingNodeMap(file),
+		doc:           doc,
+		pkg:           pkg,
+		file:          file,
+		pkgLookup:     pkgLookup,
+		locals:        map[token.Pos]lookup.Local{},
+		pkgSymbols:    pkgSymbols,
+		globalSymbols: globalSymbols,
+		occurrences:   occurrences,
+		caseClauses:   caseClauses,
 	}
 }
 
@@ -85,9 +84,8 @@ type fileVisitor struct {
 	// caseClauses maps particular positions to different types for case clauses
 	caseClauses map[token.Pos]types.Object
 
-	// enclosingNodeMap maps certain nodes to their enclosing nodes for
-	// enclosing range computation.
-	enclosingNodeMap map[*ast.Ident]ast.Node
+	// currentFuncDecl tracks the enclosing FuncDecl during Visit traversal
+	currentFuncDecl *ast.FuncDecl
 }
 
 // Implements ast.Visitor
@@ -174,6 +172,20 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		}
 
 		return v
+	case *ast.FuncDecl:
+		v.currentFuncDecl = node
+		if node.Doc != nil {
+			ast.Walk(v, node.Doc)
+		}
+		if node.Recv != nil {
+			ast.Walk(v, node.Recv)
+		}
+		ast.Walk(v, node.Name)
+		ast.Walk(v, node.Type)
+		if node.Body != nil {
+			ast.Walk(v, node.Body)
+		}
+		return nil
 	case *ast.File:
 		if node.Doc != nil {
 			ast.Walk(v, node.Doc)
@@ -367,32 +379,10 @@ func (v *fileVisitor) ToScipDocument() *scip.Document {
 }
 
 func (v *fileVisitor) enclosingRange(n *ast.Ident) []int32 {
-	if n == nil {
+	if v.currentFuncDecl == nil || v.currentFuncDecl.Name != n {
 		return nil
 	}
-
-	enclosingNode, ok := v.enclosingNodeMap[n]
-	if !ok {
-		return nil
-	}
-
-	startPosition := v.pkg.Fset.Position(enclosingNode.Pos())
-	endPosition := v.pkg.Fset.Position(enclosingNode.End())
+	startPosition := v.pkg.Fset.Position(v.currentFuncDecl.Pos())
+	endPosition := v.pkg.Fset.Position(v.currentFuncDecl.End())
 	return scipRange(startPosition, endPosition, v.pkg.TypesInfo.Defs[n])
-}
-
-// enclosingNodeMap builds a map from [ast.Ident] to its enclosing node for enclosing range computation.
-// Currently only supports mapping [ast.Ident] to its enclosing [ast.FuncDecl].
-func enclosingNodeMap(root ast.Node) map[*ast.Ident]ast.Node {
-	enclNodes := map[*ast.Ident]ast.Node{}
-	ast.PreorderStack(root, nil, func(n ast.Node, stack []ast.Node) bool {
-		if ident, ok := n.(*ast.Ident); ok && len(stack) > 1 {
-			if funcDecl, ok := stack[len(stack)-1].(*ast.FuncDecl); ok {
-				enclNodes[ident] = funcDecl
-				return false
-			}
-		}
-		return true
-	})
-	return enclNodes
 }
