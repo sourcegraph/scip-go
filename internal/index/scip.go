@@ -98,13 +98,16 @@ func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 		return err
 	}
 
+	var externalSymbols []*scip.SymbolInformation
 	pathToDocument, globalSymbols := indexVisitPackages(opts, projectPackages, allPackages)
 	if !opts.SkipImplementations {
-		if err := impls.AddImplementationRelationships(
+		implSymbols, err := impls.AddImplementationRelationships(
 			projectPackages, allPackages, globalSymbols,
-		); err != nil {
+		)
+		if err != nil {
 			return err
 		}
+		externalSymbols = implSymbols
 	}
 
 	pkgIDs := slices.Sorted(maps.Keys(projectPackages))
@@ -156,7 +159,18 @@ func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 
 	output.WithProgressParallel(&wg, "Visiting Project Files", &count, uint64(pkgLen))
 
-	return writeErr
+	if writeErr != nil {
+		return writeErr
+	}
+
+	// Emit external symbols for remote types that implement local interfaces
+	for _, sym := range externalSymbols {
+		if err := writer(sym); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func indexVisitPackages(

@@ -1,11 +1,13 @@
 package testdata
 
-import "io"
-
 type I3 interface {
-	Close() error
+	ScipTestMethod()
+}
+
+type EmbeddedI3 interface {
+	ScipTestMethod()
 }
 
 type TClose struct {
-	io.Closer
+	EmbeddedI3
 }

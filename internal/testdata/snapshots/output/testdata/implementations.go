@@ -112,7 +112,7 @@
 //     ^^^ definition 0.1.test `sg/testdata`/Foo#
 //         signature_documentation
 //         > type Foo int
-//         relationship github.com/golang/go/src go1.22 io/Closer# implementation
+//         relationship 0.1.test `sg/testdata`/EmbeddedI3# implementation
 //         relationship 0.1.test `sg/testdata`/I3# implementation
 //         relationship 0.1.test `sg/testdata`/InterfaceWithExportedMethod# implementation
 //         relationship 0.1.test `sg/testdata`/InterfaceWithNonExportedMethod# implementation
@@ -141,19 +141,19 @@
 //                            > func (Foo).ExportedMethod()
 //                            relationship 0.1.test `sg/testdata`/InterfaceWithExportedMethod#ExportedMethod. implementation
 //                                  ⌃ enclosing_range_end 0.1.test `sg/testdata`/Foo#ExportedMethod().
-//⌄ enclosing_range_start 0.1.test `sg/testdata`/Foo#Close().
-  func (r Foo) Close() error       { return nil }
+//⌄ enclosing_range_start 0.1.test `sg/testdata`/Foo#ScipTestMethod().
+  func (r Foo) ScipTestMethod()    {}
 //      ^ definition local 5
 //        display_name r
 //        signature_documentation
 //        > var r Foo
 //        ^^^ reference 0.1.test `sg/testdata`/Foo#
-//             ^^^^^ definition 0.1.test `sg/testdata`/Foo#Close().
-//                   signature_documentation
-//                   > func (Foo).Close() error
-//                   relationship github.com/golang/go/src go1.22 io/Closer#Close. implementation
-//                   relationship 0.1.test `sg/testdata`/I3#Close. implementation
-//                                              ⌃ enclosing_range_end 0.1.test `sg/testdata`/Foo#Close().
+//             ^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/Foo#ScipTestMethod().
+//                            signature_documentation
+//                            > func (Foo).ScipTestMethod()
+//                            relationship 0.1.test `sg/testdata`/EmbeddedI3#ScipTestMethod. implementation
+//                            relationship 0.1.test `sg/testdata`/I3#ScipTestMethod. implementation
+//                                  ⌃ enclosing_range_end 0.1.test `sg/testdata`/Foo#ScipTestMethod().
   
   type SharedOne interface {
 //     ^^^^^^^^^ definition 0.1.test `sg/testdata`/SharedOne#
