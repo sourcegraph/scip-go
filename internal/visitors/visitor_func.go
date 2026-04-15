@@ -90,7 +90,7 @@ func visitFunctionDefinition(doc *document.Document, pkg *packages.Package, node
 
 func receiverTypeName(f *ast.FuncDecl) (string, bool) {
 	recv := f.Recv
-	if recv == nil || len(recv.List) == 0 {
+	if recv == nil || recv.List == nil {
 		return "", false
 	}
 
