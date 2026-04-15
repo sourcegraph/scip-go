@@ -132,9 +132,8 @@ func getIdentOfTypeExpr(pkg *packages.Package, ty ast.Expr) []*ast.Ident {
 	case *ast.UnaryExpr:
 		return getIdentOfTypeExpr(pkg, ty.X)
 
-	// TODO: This one does seem like something we should handle
 	case *ast.IndexListExpr:
-		return nil
+		return getIdentOfTypeExpr(pkg, ty.X)
 
 	// TODO: Should see if any of these need better ident finders
 	case *ast.InterfaceType:

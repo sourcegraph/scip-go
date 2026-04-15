@@ -80,7 +80,9 @@ func (v *varVisitor) Visit(n ast.Node) (w ast.Visitor) {
 				case *ast.SelectorExpr:
 					// TODO?
 				case *ast.IndexExpr:
-					// TODO: Generics, possibly need to travrerse
+					// TODO: Generics, possibly need to traverse
+				case *ast.IndexListExpr:
+					// TODO: Generics, possibly need to traverse
 				case *ast.InterfaceType:
 					ast.Walk(v, valueType)
 				case *ast.StructType:

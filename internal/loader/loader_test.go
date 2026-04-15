@@ -27,15 +27,15 @@ func TestBuiltinFormat(t *testing.T) {
 
 	fmtPkg := pkgs[0]
 
-	if !IsStandardLib(fmtPkg) {
+	if !isStandardLib(fmtPkg) {
 		t.Fatal("Package was not a builtin package: pre ensure")
 	}
 
-	// TODO: don't use nil?
 	normalizePackage(&config.IndexOpts{}, fmtPkg)
 
-	if !IsStandardLib(fmtPkg) {
-		t.Fatal("Package was not a builtin package: post ensure")
+	if fmtPkg.Module.Path != "github.com/golang/go/src" {
+		t.Fatalf("Expected normalized module path %q, got %q",
+			"github.com/golang/go/src", fmtPkg.Module.Path)
 	}
 }
 
@@ -185,5 +185,31 @@ func TestPackageWithinModule(t *testing.T) {
 	_, err := packages.Load(config, "./...")
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestStdlibDetection(t *testing.T) {
+	std := &packages.Module{Path: "std"}
+	userMod := &packages.Module{Path: "github.com/sourcegraph/scip-go"}
+
+	testCases := []struct {
+		pkgPath  string
+		module   *packages.Module
+		isStdlib bool
+	}{
+		{"fmt", std, true},
+		{"net/http", std, true},
+		{"encoding/json", std, true},
+		{"fmt", nil, true},
+		{"github.com/sourcegraph/scip-go", userMod, false},
+		{"sg/initial", &packages.Module{Path: "sg/initial"}, false},
+	}
+
+	for _, tc := range testCases {
+		pkg := &packages.Package{PkgPath: tc.pkgPath, Module: tc.module}
+		if got := isStandardLib(pkg); got != tc.isStdlib {
+			t.Errorf("isStandardLib(%q, module=%v) = %v, want %v",
+				tc.pkgPath, tc.module, got, tc.isStdlib)
+		}
 	}
 }

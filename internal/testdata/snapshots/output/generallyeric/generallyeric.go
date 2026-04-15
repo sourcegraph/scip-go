@@ -18,7 +18,7 @@
 //           ^ definition local 0
 //             display_name T
 //             signature_documentation
-//             > T T
+//             > type parameter T any
 //                  ^ definition local 1
 //                    display_name s
 //                    signature_documentation

@@ -127,18 +127,8 @@ func LoadPackages(
 	return projectPackages, allPackages, err
 }
 
-func IsStandardLib(pkg *packages.Package) bool {
-	// for example:
-	//  PkgPath = net/http
-	//  -> net
-	//  -> true
-	//
-	//  PkgPath = github.com/sourcegraph/scip-go/...
-	//  -> github.com/
-	//  -> false
-	base := strings.Split(pkg.PkgPath, "/")[0]
-	_, ok := getStdlibPackages()[base]
-	return ok
+func isStandardLib(pkg *packages.Package) bool {
+	return pkg.Module == nil || pkg.Module.Path == "std"
 }
 
 func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.Package {
@@ -170,7 +160,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 		return pkg
 	}
 
-	if IsStandardLib(pkg) || opts.IsIndexingStdlib {
+	if isStandardLib(pkg) || opts.IsIndexingStdlib {
 		pkg.Module = &packages.Module{
 			Path:    "github.com/golang/go/src",
 			Version: opts.GoStdlibVersion,

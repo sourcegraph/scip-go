@@ -16,7 +16,7 @@
 //              ^ definition local 1
 //                display_name x
 //                signature_documentation
-//                > var x int
+//                > field x int
 //                      ^ reference local 1
    b := struct{ x int }{x: 2}
 // ^ definition local 2
@@ -26,7 +26,7 @@
 //              ^ definition local 3
 //                display_name x
 //                signature_documentation
-//                > var x int
+//                > field x int
 //                      ^ reference local 3
    _ = a.x
 //     ^ reference local 0
@@ -49,7 +49,7 @@
 //                                    ^ definition local 5
 //                                      display_name x
 //                                      signature_documentation
-//                                      > var x int
+//                                      > field x int
    return p.x
 //        ^ reference local 4
 //          ^ reference local 5
