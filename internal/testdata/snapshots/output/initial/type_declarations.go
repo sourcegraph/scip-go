@@ -48,6 +48,8 @@
 // ^^^^ definition 0.1.test `sg/initial`/StructType#anon.
 //      signature_documentation
 //      > struct field anon struct{sub int}
+//      documentation
+//      > anonymous struct
     sub int
 //  ^^^ definition 0.1.test `sg/initial`/StructType#$anon_0ba9ace1dcfd6761#sub.
 //      signature_documentation
@@ -59,6 +61,8 @@
 // ^ definition 0.1.test `sg/initial`/StructType#i.
 //   signature_documentation
 //   > struct field i interface{AnonMethod() bool}
+//   documentation
+//   > interface within struct
     AnonMethod() bool
 //  ^^^^^^^^^^ definition 0.1.test `sg/initial`/StructType#$anon_97e7de633e3ef8e8#AnonMethod.
 //             signature_documentation

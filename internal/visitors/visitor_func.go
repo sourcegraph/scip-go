@@ -66,7 +66,7 @@ func (v funcVisitor) Visit(n ast.Node) ast.Visitor {
 		for _, field := range node.Methods.List {
 			for _, name := range field.Names {
 				symbol := v.scope.makeSymbol(v.pkg, name.Name, scip.Descriptor_Method)
-				v.doc.SetNewSymbol(symbol, name, name)
+				v.doc.SetNewSymbol(symbol, field, name)
 			}
 		}
 

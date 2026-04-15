@@ -105,6 +105,12 @@ func (d *Document) SetNewSymbolForPos(
 		if hover := d.extractHoverText(parent, ident); hover != "" {
 			documentation = append(documentation, hover)
 		}
+		if genDecl, ok := parent.(*ast.GenDecl); ok && genDecl.Doc != nil {
+			blockDoc := strings.TrimSpace(genDecl.Doc.Text())
+			if blockDoc != "" && (len(documentation) == 0 || documentation[0] != blockDoc) {
+				documentation = append(documentation, blockDoc)
+			}
+		}
 	}
 
 	d.pkgSymbols.Set(pos, &scip.SymbolInformation{
@@ -119,28 +125,28 @@ func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 	switch v := node.(type) {
 	case *ast.File:
 		if v.Doc != nil {
-			return v.Doc.Text()
+			return strings.TrimSpace(v.Doc.Text())
 		} else {
 			return fmt.Sprintf("package %s", v.Name.Name)
 		}
 	case *ast.FuncDecl:
-		return v.Doc.Text()
+		return strings.TrimSpace(v.Doc.Text())
 	case *ast.GenDecl:
-		return v.Doc.Text()
+		return strings.TrimSpace(v.Doc.Text())
 	case *ast.TypeSpec:
 		// Typespecs do not have the doc associated with them much
 		// of the time. They are often associated with the `type`
 		// token itself.
 		//
 		// This is why we have to pass the declaration node
-		doc := v.Doc.Text()
+		doc := strings.TrimSpace(v.Doc.Text())
 		if doc == "" && parent != nil {
 			doc = d.extractHoverText(nil, parent)
 		}
 
 		return doc
 	case *ast.ValueSpec:
-		doc := v.Doc.Text()
+		doc := strings.TrimSpace(v.Doc.Text() + "\n" + v.Comment.Text())
 		if doc == "" && parent != nil {
 			doc = d.extractHoverText(nil, parent)
 		}
@@ -149,6 +155,22 @@ func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 	case *ast.Field:
 		return strings.TrimSpace(v.Doc.Text() + "\n" + v.Comment.Text())
 	case *ast.Ident:
+		if genDecl, ok := parent.(*ast.GenDecl); ok {
+			for _, spec := range genDecl.Specs {
+				switch s := spec.(type) {
+				case *ast.TypeSpec:
+					if s.Name == v {
+						return d.extractHoverText(parent, s)
+					}
+				case *ast.ValueSpec:
+					for _, name := range s.Names {
+						if name == v {
+							return d.extractHoverText(parent, s)
+						}
+					}
+				}
+			}
+		}
 		if parent != nil {
 			return d.extractHoverText(nil, parent)
 		}

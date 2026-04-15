@@ -17,6 +17,8 @@
 //             signature_documentation
 //             > const ConstBlock1 untyped int = 1
 //             documentation
+//             > ConstBlock1 is a constant in a block.
+//             documentation
 //             > Docs for the const block itself.
   
    // ConstBlock2 is a constant in a block.
@@ -24,6 +26,8 @@
 // ^^^^^^^^^^^ definition 0.1.test `sg/initial`/ConstBlock2.
 //             signature_documentation
 //             > const ConstBlock2 untyped int = 2
+//             documentation
+//             > ConstBlock2 is a constant in a block.
 //             documentation
 //             > Docs for the const block itself.
   )
@@ -102,6 +106,8 @@
 //           signature_documentation
 //           > var VarBlock1 string
 //           documentation
+//           > This has some docs
+//           documentation
 //           > What are docs, really?
 //           > I can't say for sure, I don't write any.
 //           > But look, a CAT!
@@ -147,10 +153,14 @@
 // ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/Embedded#EmbeddedField.
 //               signature_documentation
 //               > struct field EmbeddedField string
+//               documentation
+//               > EmbeddedField has some docs!
    Field         string // conflicts with parent "Field"
 // ^^^^^ definition 0.1.test `sg/initial`/Embedded#Field.
 //       signature_documentation
 //       > struct field Field string
+//       documentation
+//       > conflicts with parent "Field"
   }
   
   type Struct struct {
@@ -371,6 +381,8 @@
 // ^ definition 0.1.test `sg/initial`/X#
 //   signature_documentation
 //   > type X struct{ bar string }
+//   documentation
+//   > And confusing
 //   documentation
 //   > Go can be fun
     bar string

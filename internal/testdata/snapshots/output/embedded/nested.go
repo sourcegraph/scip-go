@@ -24,6 +24,8 @@
 // ^^^^^ definition 0.1.test `sg/embedded`/NestedHandler#Other.
 //       signature_documentation
 //       > struct field Other int
+//       documentation
+//       > Wow, a great thing for integers
   }
   
 //⌄ enclosing_range_start 0.1.test `sg/embedded`/NestedExample().

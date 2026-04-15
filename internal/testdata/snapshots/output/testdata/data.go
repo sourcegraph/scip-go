@@ -23,6 +23,8 @@
 // ^^ definition 0.1.test `sg/testdata`/TestInterface#Do.
 //    signature_documentation
 //    > func (TestInterface).Do(ctx Context, data string) (score int, _ error)
+//    documentation
+//    > Do does a test thing.
 //    ^^^ definition local 0
 //        display_name ctx
 //        signature_documentation
@@ -56,21 +58,29 @@
 //            >     }
 //            >     EmptyStructField struct{}
 //            > }
+//            documentation
+//            > TestStruct is a struct used for testing.
     // SimpleA docs
     SimpleA int
 //  ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#SimpleA.
 //          signature_documentation
 //          > struct field SimpleA int
+//          documentation
+//          > SimpleA docs
     // SimpleB docs
     SimpleB int
 //  ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#SimpleB.
 //          signature_documentation
 //          > struct field SimpleB int
+//          documentation
+//          > SimpleB docs
     // SimpleC docs
     SimpleC int
 //  ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#SimpleC.
 //          signature_documentation
 //          > struct field SimpleC int
+//          documentation
+//          > SimpleC docs
   
     FieldWithTag           string `json:"tag"`
 //  ^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#FieldWithTag.
@@ -93,6 +103,8 @@
 //   ^^^^^^^ definition 0.1.test `sg/testdata`/TestStruct#$anon_2bed88e490dc48af#NestedC.
 //           signature_documentation
 //           > struct field NestedC string
+//           documentation
+//           > NestedC docs
     }
   
     EmptyStructField struct{}
