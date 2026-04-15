@@ -7,6 +7,7 @@
   // CustomSwitch does the things in a switch
   type CustomSwitch struct{}
 //     ^^^^^^^^^^^^ definition 0.1.test `sg/switches`/CustomSwitch#
+//                  display_name CustomSwitch
 //                  signature_documentation
 //                  > type CustomSwitch struct{}
 //                  documentation
@@ -21,6 +22,7 @@
 //        > var c *CustomSwitch
 //         ^^^^^^^^^^^^ reference 0.1.test `sg/switches`/CustomSwitch#
 //                       ^^^^^^^^^ definition 0.1.test `sg/switches`/CustomSwitch#Something().
+//                                 display_name Something
 //                                 signature_documentation
 //                                 > func (*CustomSwitch).Something() bool
 //                                 documentation
@@ -30,6 +32,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/switches`/Switch().
   func Switch(interfaceValue interface{}) bool {
 //     ^^^^^^ definition 0.1.test `sg/switches`/Switch().
+//            display_name Switch
 //            signature_documentation
 //            > func Switch(interfaceValue interface{}) bool
 //            ^^^^^^^^^^^^^^ definition local 1

@@ -4,6 +4,7 @@
   // SecretScore is like score but _secret_.
   const SecretScore = uint64(43)
 //      ^^^^^^^^^^^ definition 0.1.test `sg/testdata/internal/secret`/SecretScore.
+//                  display_name SecretScore
 //                  signature_documentation
 //                  > const SecretScore uint64 = 43
 //                  documentation
@@ -12,12 +13,14 @@
   // Original doc
   type Burger struct {
 //     ^^^^^^ definition 0.1.test `sg/testdata/internal/secret`/Burger#
+//            display_name Burger
 //            signature_documentation
 //            > type Burger struct{ Field int }
 //            documentation
 //            > Original doc
    Field int
 // ^^^^^ definition 0.1.test `sg/testdata/internal/secret`/Burger#Field.
+//       display_name Field
 //       signature_documentation
 //       > struct field Field int
   }

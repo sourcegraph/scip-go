@@ -13,6 +13,7 @@
   // pointing to Foo.
   type Foo interface {
 //     ^^^ definition 0.1.test `sg/pr198`/Foo#
+//         display_name Foo
 //         signature_documentation
 //         > type Foo interface{ Bar() }
 //         documentation
@@ -22,6 +23,7 @@
 //         > pointing to Foo.
    Bar()
 // ^^^ definition 0.1.test `sg/pr198`/Foo#Bar.
+//     display_name Bar
 //     signature_documentation
 //     > func (Foo).Bar()
   }
@@ -29,6 +31,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr198`/UseFoo().
   func UseFoo(f Foo) {}
 //     ^^^^^^ definition 0.1.test `sg/pr198`/UseFoo().
+//            display_name UseFoo
 //            signature_documentation
 //            > func UseFoo(f Foo)
 //            ^ definition local 0
@@ -41,6 +44,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr198`/Example().
   func Example() {
 //     ^^^^^^^ definition 0.1.test `sg/pr198`/Example().
+//             display_name Example
 //             signature_documentation
 //             > func Example()
    UseFoo(&dep.T{})

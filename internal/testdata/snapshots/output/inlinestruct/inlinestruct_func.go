@@ -3,16 +3,19 @@
   
   type InFuncSig struct {
 //     ^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/InFuncSig#
+//               display_name InFuncSig
 //               signature_documentation
 //               > type InFuncSig struct{ value bool }
    value bool
 // ^^^^^ definition 0.1.test `sg/inlinestruct`/InFuncSig#value.
+//       display_name value
 //       signature_documentation
 //       > struct field value bool
   }
   
   var rowsCloseHook = func() func(InFuncSig, *error) { return nil }
 //    ^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/rowsCloseHook.
+//                  display_name rowsCloseHook
 //                  signature_documentation
 //                  > var rowsCloseHook func() func(InFuncSig, *error)
 //                                ^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/InFuncSig#

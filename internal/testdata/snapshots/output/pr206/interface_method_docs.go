@@ -3,11 +3,13 @@
   
   type Doer interface {
 //     ^^^^ definition 0.1.test `sg/pr206`/Doer#
+//          display_name Doer
 //          signature_documentation
 //          > type Doer interface{ Do() error }
    // Do performs the action and returns an error if it fails.
    Do() error
 // ^^ definition 0.1.test `sg/pr206`/Doer#Do.
+//    display_name Do
 //    signature_documentation
 //    > func (Doer).Do() error
 //    documentation

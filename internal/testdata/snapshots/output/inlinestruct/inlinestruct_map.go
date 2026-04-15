@@ -3,6 +3,7 @@
   
   var testHook = func(map[string]string) {}
 //    ^^^^^^^^ definition 0.1.test `sg/inlinestruct`/testHook.
+//             display_name testHook
 //             signature_documentation
 //             > var testHook func(map[string]string)
   

@@ -9,6 +9,7 @@
   
   type TypeContainingAnonymousStructs struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
+//                                    display_name TypeContainingAnonymousStructs
 //                                    signature_documentation
 //                                    > type TypeContainingAnonymousStructs struct {
 //                                    >     a struct {
@@ -26,30 +27,37 @@
 //                                    > }
    a, b struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
+//   display_name a
 //   signature_documentation
 //   > struct field a struct{x int; y string}
 //    ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.
+//      display_name b
 //      signature_documentation
 //      > struct field b struct{x int; y string}
     x int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_c0a8952b3a214f68#x.
+//    display_name x
 //    signature_documentation
 //    > struct field x int
     y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_c0a8952b3a214f68#y.
+//    display_name y
 //    signature_documentation
 //    > struct field y string
    }
    c struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
+//   display_name c
 //   signature_documentation
 //   > struct field c struct{X int; Y string}
     X int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_2f238678626c0da1#X.
+//    display_name X
 //    signature_documentation
 //    > struct field X int
     Y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_2f238678626c0da1#Y.
+//    display_name Y
 //    signature_documentation
 //    > struct field Y string
    }
@@ -58,6 +66,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
   func funcContainingAnonymousStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
+//                                    display_name funcContainingAnonymousStructs
 //                                    signature_documentation
 //                                    > func funcContainingAnonymousStructs()
    d := struct {

@@ -5,6 +5,7 @@
   
   type ContainerAnon struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#
+//                   display_name ContainerAnon
 //                   signature_documentation
 //                   > type ContainerAnon struct {
 //                   >     items   []struct{ id int }
@@ -13,43 +14,53 @@
 //                   > }
    items   []struct{ id int }
 // ^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#items.
+//       display_name items
 //       signature_documentation
 //       > struct field items []struct{id int}
 //                   ^^ definition 0.1.test `sg/pr202`/ContainerAnon#$anon_71c5ea8d9342795c#id.
+//                      display_name id
 //                      signature_documentation
 //                      > struct field id int
    entries map[string]struct{ count int }
 // ^^^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#entries.
+//         display_name entries
 //         signature_documentation
 //         > struct field entries map[string]struct{count int}
 //                            ^^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#$anon_721f9800014370ac#count.
+//                                  display_name count
 //                                  signature_documentation
 //                                  > struct field count int
    ptr     *struct{ data int }
 // ^^^ definition 0.1.test `sg/pr202`/ContainerAnon#ptr.
+//     display_name ptr
 //     signature_documentation
 //     > struct field ptr *struct{data int}
 //                  ^^^^ definition 0.1.test `sg/pr202`/ContainerAnon#$anon_944f727740dfb75d#data.
+//                       display_name data
 //                       signature_documentation
 //                       > struct field data int
   }
   
   type DeepNested struct {
 //     ^^^^^^^^^^ definition 0.1.test `sg/pr202`/DeepNested#
+//                display_name DeepNested
 //                signature_documentation
 //                > type DeepNested struct {
 //                >     outer struct{ inner struct{ value int } }
 //                > }
    outer struct {
 // ^^^^^ definition 0.1.test `sg/pr202`/DeepNested#outer.
+//       display_name outer
 //       signature_documentation
 //       > struct field outer struct{inner struct{value int}}
     inner struct {
 //  ^^^^^ definition 0.1.test `sg/pr202`/DeepNested#$anon_5ee0364e53e1abd6#inner.
+//        display_name inner
 //        signature_documentation
 //        > struct field inner struct{value int}
      value int
 //   ^^^^^ definition 0.1.test `sg/pr202`/DeepNested#$anon_5ee0364e53e1abd6#$anon_77e42bf2e5c84d1a#value.
+//         display_name value
 //         signature_documentation
 //         > struct field value int
     }
@@ -59,6 +70,7 @@
   // Two fields with identical slice-of-anonymous-struct type.
   type SliceAnonShared struct {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/SliceAnonShared#
+//                     display_name SliceAnonShared
 //                     signature_documentation
 //                     > type SliceAnonShared struct {
 //                     >     a []struct{ v int }
@@ -68,16 +80,20 @@
 //                     > Two fields with identical slice-of-anonymous-struct type.
    a []struct{ v int }
 // ^ definition 0.1.test `sg/pr202`/SliceAnonShared#a.
+//   display_name a
 //   signature_documentation
 //   > struct field a []struct{v int}
 //             ^ definition 0.1.test `sg/pr202`/SliceAnonShared#$anon_358bfde4cba1ecae#v.
+//               display_name v
 //               signature_documentation
 //               > struct field v int
    b []struct{ v int }
 // ^ definition 0.1.test `sg/pr202`/SliceAnonShared#b.
+//   display_name b
 //   signature_documentation
 //   > struct field b []struct{v int}
 //             ^ definition 0.1.test `sg/pr202`/SliceAnonShared#$anon_358bfde4cba1ecae#v.
+//               display_name v
 //               signature_documentation
 //               > struct field v int
   }
@@ -85,6 +101,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr202`/useContainerAnon().
   func useContainerAnon() {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr202`/useContainerAnon().
+//                      display_name useContainerAnon
 //                      signature_documentation
 //                      > func useContainerAnon()
    var c ContainerAnon

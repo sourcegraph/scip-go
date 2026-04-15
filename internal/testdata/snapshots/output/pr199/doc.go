@@ -16,6 +16,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr199`/FromDoc().
   func FromDoc() {}
 //     ^^^^^^^ definition 0.1.test `sg/pr199`/FromDoc().
+//             display_name FromDoc
 //             signature_documentation
 //             > func FromDoc()
 //                ⌃ enclosing_range_end 0.1.test `sg/pr199`/FromDoc().

@@ -7,6 +7,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/impls`/Something().
   func Something(r http.ResponseWriter) {}
 //     ^^^^^^^^^ definition 0.1.test `sg/impls`/Something().
+//               display_name Something
 //               signature_documentation
 //               > func Something(r http.ResponseWriter)
 //               ^ definition local 0
@@ -19,6 +20,7 @@
   
   type MyWriter struct{}
 //     ^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#
+//              display_name MyWriter
 //              signature_documentation
 //              > type MyWriter struct{}
 //              relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash# implementation
@@ -34,6 +36,7 @@
 //        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^ definition 0.1.test `sg/impls`/MyWriter#Header().
+//                         display_name Header
 //                         signature_documentation
 //                         > func (MyWriter).Header() http.Header
 //                         relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
@@ -48,6 +51,7 @@
 //        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^ definition 0.1.test `sg/impls`/MyWriter#Write().
+//                        display_name Write
 //                        signature_documentation
 //                        > func (MyWriter).Write([]byte) (int, error)
 //                        relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash#Write. implementation
@@ -63,6 +67,7 @@
 //        > var w MyWriter
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^^^^^^ definition 0.1.test `sg/impls`/MyWriter#WriteHeader().
+//                              display_name WriteHeader
 //                              signature_documentation
 //                              > func (MyWriter).WriteHeader(statusCode int)
 //                              relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
@@ -75,6 +80,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/impls`/Another().
   func Another() {
 //     ^^^^^^^ definition 0.1.test `sg/impls`/Another().
+//             display_name Another
 //             signature_documentation
 //             > func Another()
    Something(MyWriter{})

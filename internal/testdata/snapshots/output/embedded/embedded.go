@@ -13,6 +13,7 @@
   
   type osExecCommand struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/osExecCommand#
+//                   display_name osExecCommand
 //                   signature_documentation
 //                   > type osExecCommand struct{ *exec.Cmd }
 //                   relationship github.com/golang/go/src go1.22 context/stringer# implementation
@@ -21,6 +22,7 @@
    *exec.Cmd
 //  ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
 //       ^^^ definition 0.1.test `sg/embedded`/osExecCommand#Cmd.
+//           display_name Cmd
 //           signature_documentation
 //           > struct field Cmd *exec.Cmd
 //       ^^^ reference github.com/golang/go/src go1.22 `os/exec`/Cmd#
@@ -29,6 +31,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/embedded`/wrapExecCommand().
   func wrapExecCommand(c *exec.Cmd) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/wrapExecCommand().
+//                     display_name wrapExecCommand
 //                     signature_documentation
 //                     > func wrapExecCommand(c *exec.Cmd)
 //                     ^ definition local 0
@@ -46,6 +49,7 @@
   
   type Inner struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Inner#
+//           display_name Inner
 //           signature_documentation
 //           > type Inner struct {
 //           >     X int
@@ -54,20 +58,24 @@
 //           > }
    X int
 // ^ definition 0.1.test `sg/embedded`/Inner#X.
+//   display_name X
 //   signature_documentation
 //   > struct field X int
    Y int
 // ^ definition 0.1.test `sg/embedded`/Inner#Y.
+//   display_name Y
 //   signature_documentation
 //   > struct field Y int
    Z int
 // ^ definition 0.1.test `sg/embedded`/Inner#Z.
+//   display_name Z
 //   signature_documentation
 //   > struct field Z int
   }
   
   type Outer struct {
 //     ^^^^^ definition 0.1.test `sg/embedded`/Outer#
+//           display_name Outer
 //           signature_documentation
 //           > type Outer struct {
 //           >     Inner
@@ -75,11 +83,13 @@
 //           > }
    Inner
 // ^^^^^ definition 0.1.test `sg/embedded`/Outer#Inner.
+//       display_name Inner
 //       signature_documentation
 //       > struct field Inner Inner
 // ^^^^^ reference 0.1.test `sg/embedded`/Inner#
    W int
 // ^ definition 0.1.test `sg/embedded`/Outer#W.
+//   display_name W
 //   signature_documentation
 //   > struct field W int
   }
@@ -87,6 +97,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/embedded`/useOfCompositeStructs().
   func useOfCompositeStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/useOfCompositeStructs().
+//                           display_name useOfCompositeStructs
 //                           signature_documentation
 //                           > func useOfCompositeStructs()
    o := Outer{

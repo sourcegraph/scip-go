@@ -6,16 +6,19 @@
   
   type Person interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Person#
+//            display_name Person
 //            signature_documentation
 //            > type Person interface{ Work() }
    Work()
 // ^^^^ definition 0.1.test `sg/generallyeric`/Person#Work.
+//      display_name Work
 //      signature_documentation
 //      > func (Person).Work()
   }
   
   type worker string
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/worker#
+//            display_name worker
 //            signature_documentation
 //            > type worker string
 //            relationship 0.1.test `sg/generallyeric`/Person# implementation
@@ -28,6 +31,7 @@
 //        > var w worker
 //        ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
 //                ^^^^ definition 0.1.test `sg/generallyeric`/worker#Work().
+//                     display_name Work
 //                     signature_documentation
 //                     > func (worker).Work()
 //                     relationship 0.1.test `sg/generallyeric`/Person#Work. implementation
@@ -41,6 +45,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/DoWork().
   func DoWork[T Person](things []T) {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/DoWork().
+//            display_name DoWork
 //            signature_documentation
 //            > func DoWork[T Person](things []T)
 //            ^ definition local 1
@@ -69,6 +74,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/main().
   func main() {
 //     ^^^^ definition 0.1.test `sg/generallyeric`/main().
+//          display_name main
 //          signature_documentation
 //          > func main()
    var a, b, c worker

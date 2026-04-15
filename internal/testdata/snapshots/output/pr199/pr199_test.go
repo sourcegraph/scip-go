@@ -8,6 +8,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr199`/TestExample().
   func TestExample(t *testing.T) {}
 //     ^^^^^^^^^^^ definition 0.1.test `sg/pr199`/TestExample().
+//                 display_name TestExample
 //                 signature_documentation
 //                 > func TestExample(t *testing.T)
 //                 ^ definition local 0

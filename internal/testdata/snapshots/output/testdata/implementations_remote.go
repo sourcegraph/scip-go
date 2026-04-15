@@ -6,6 +6,7 @@
   
   type implementsWriter struct{}
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#
+//                      display_name implementsWriter
 //                      signature_documentation
 //                      > type implementsWriter struct{}
 //                      relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash# implementation
@@ -17,6 +18,7 @@
   func (implementsWriter) Header() http.Header        { panic("Just for how") }
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Header().
+//                               display_name Header
 //                               signature_documentation
 //                               > func (implementsWriter).Header() http.Header
 //                               relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
@@ -27,6 +29,7 @@
   func (implementsWriter) Write([]byte) (int, error)  { panic("Just for show") }
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Write().
+//                              display_name Write
 //                              signature_documentation
 //                              > func (implementsWriter).Write([]byte) (int, error)
 //                              relationship github.com/golang/go/src go1.22 `crypto/tls`/transcriptHash#Write. implementation
@@ -38,6 +41,7 @@
   func (implementsWriter) WriteHeader(statusCode int) {}
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#WriteHeader().
+//                                    display_name WriteHeader
 //                                    signature_documentation
 //                                    > func (implementsWriter).WriteHeader(statusCode int)
 //                                    relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#WriteHeader. implementation
@@ -50,6 +54,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/ShowsInSignature().
   func ShowsInSignature(respWriter http.ResponseWriter) {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ShowsInSignature().
+//                      display_name ShowsInSignature
 //                      signature_documentation
 //                      > func ShowsInSignature(respWriter http.ResponseWriter)
 //                      ^^^^^^^^^^ definition local 1

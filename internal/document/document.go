@@ -91,9 +91,13 @@ func (d *Document) SetNewSymbolForPos(
 	ident *ast.Ident,
 	pos token.Pos,
 ) {
+	var displayName string
 	var documentation []string
 	var sigDoc *scip.Document
+
 	if ident != nil {
+		displayName = ident.Name
+
 		if def := d.pkg.TypesInfo.Defs[ident]; def != nil {
 			if signature := typeStringForObject(def); signature != "" {
 				sigDoc = &scip.Document{
@@ -115,6 +119,7 @@ func (d *Document) SetNewSymbolForPos(
 
 	d.pkgSymbols.Set(pos, &scip.SymbolInformation{
 		Symbol:                 symbol,
+		DisplayName:            displayName,
 		Documentation:          documentation,
 		SignatureDocumentation: sigDoc,
 		Relationships:          []*scip.Relationship{},

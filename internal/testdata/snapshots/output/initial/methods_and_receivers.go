@@ -6,15 +6,18 @@
   
   type MyStruct struct{ f, y int }
 //     ^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#
+//              display_name MyStruct
 //              signature_documentation
 //              > type MyStruct struct {
 //              >     f int
 //              >     y int
 //              > }
 //                      ^ definition 0.1.test `sg/initial`/MyStruct#f.
+//                        display_name f
 //                        signature_documentation
 //                        > struct field f int
 //                         ^ definition 0.1.test `sg/initial`/MyStruct#y.
+//                           display_name y
 //                           signature_documentation
 //                           > struct field y int
   
@@ -26,6 +29,7 @@
 //        > var m MyStruct
 //        ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //                  ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#RecvFunction().
+//                               display_name RecvFunction
 //                               signature_documentation
 //                               > func (MyStruct).RecvFunction(b int) int
 //                               ^ definition local 1
@@ -40,6 +44,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/SomethingElse().
   func SomethingElse() {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SomethingElse().
+//                   display_name SomethingElse
 //                   signature_documentation
 //                   > func SomethingElse()
    s := MyStruct{f: 0}

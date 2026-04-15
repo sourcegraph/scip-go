@@ -4,6 +4,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/Switch().
   func Switch(interfaceValue interface{}) bool {
 //     ^^^^^^ definition 0.1.test `sg/testdata`/Switch().
+//            display_name Switch
 //            signature_documentation
 //            > func Switch(interfaceValue interface{}) bool
 //            ^^^^^^^^^^^^^^ definition local 0

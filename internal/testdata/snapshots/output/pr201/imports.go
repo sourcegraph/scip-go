@@ -27,6 +27,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr201`/UseImports().
   func UseImports() {
 //     ^^^^^^^^^^ definition 0.1.test `sg/pr201`/UseImports().
+//                display_name UseImports
 //                signature_documentation
 //                > func UseImports()
    fmt.Println(context.Background())

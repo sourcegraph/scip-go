@@ -3,6 +3,7 @@
   
   type Number interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Number#
+//            display_name Number
 //            signature_documentation
 //            > type Number interface {
 //            >     ~int | ~int8 | ~int16 | ~int32 | ~int64 | ~float32 | ~float64
@@ -14,6 +15,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/Double().
   func Double[T Number](value T) T {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Double().
+//            display_name Double
 //            signature_documentation
 //            > func Double[T Number](value T) T
 //            ^ definition local 0
@@ -34,6 +36,7 @@
   
   type Box[T any] struct {
 //     ^^^ definition 0.1.test `sg/generallyeric`/Box#
+//         display_name Box
 //         signature_documentation
 //         > type Box struct{ Something T }
 //         ^ definition local 2
@@ -42,6 +45,7 @@
 //           > type parameter T any
    Something T
 // ^^^^^^^^^ definition 0.1.test `sg/generallyeric`/Box#Something.
+//           display_name Something
 //           signature_documentation
 //           > struct field Something T
 //           ^ reference local 2
@@ -49,6 +53,7 @@
   
   type handler[T any] struct {
 //     ^^^^^^^ definition 0.1.test `sg/generallyeric`/handler#
+//             display_name handler
 //             signature_documentation
 //             > type handler struct {
 //             >     Box[T]
@@ -60,12 +65,14 @@
 //               > type parameter T any
    Box[T]
 // ^^^ definition 0.1.test `sg/generallyeric`/handler#Box.
+//     display_name Box
 //     signature_documentation
 //     > struct field Box Box[T]
 // ^^^ reference 0.1.test `sg/generallyeric`/Box#
 //     ^ reference local 3
    Another string
 // ^^^^^^^ definition 0.1.test `sg/generallyeric`/handler#Another.
+//         display_name Another
 //         signature_documentation
 //         > struct field Another string
   }

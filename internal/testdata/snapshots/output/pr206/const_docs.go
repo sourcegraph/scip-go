@@ -10,6 +10,7 @@
    // It spans two lines.
    BlockConst1 = 1
 // ^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConst1.
+//             display_name BlockConst1
 //             signature_documentation
 //             > const BlockConst1 untyped int = 1
 //             documentation
@@ -20,6 +21,7 @@
   
    BlockConstNoDoc = 2
 // ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConstNoDoc.
+//                 display_name BlockConstNoDoc
 //                 signature_documentation
 //                 > const BlockConstNoDoc untyped int = 2
 //                 documentation
@@ -27,6 +29,7 @@
   
    BlockConstTrailing = 3 // trailing comment on const
 // ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConstTrailing.
+//                    display_name BlockConstTrailing
 //                    signature_documentation
 //                    > const BlockConstTrailing untyped int = 3
 //                    documentation
@@ -39,6 +42,7 @@
    // OrphanConst lives in a block with no block-level doc.
    OrphanConst = 99
 // ^^^^^^^^^^^ definition 0.1.test `sg/pr206`/OrphanConst.
+//             display_name OrphanConst
 //             signature_documentation
 //             > const OrphanConst untyped int = 99
 //             documentation
