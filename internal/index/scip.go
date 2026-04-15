@@ -210,6 +210,7 @@ func indexVisitPackages(
 
 			symInfo := &scip.SymbolInformation{
 				Symbol:        pkgSymbol,
+				Kind:          scip.SymbolInformation_Package,
 				DisplayName:   pkg.Name,
 				Documentation: findPackageDocs(pkg),
 				SignatureDocumentation: &scip.Document{

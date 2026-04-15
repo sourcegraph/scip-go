@@ -354,6 +354,7 @@ func (v *fileVisitor) ToScipDocument() *scip.Document {
 
 		if obj := local.Obj; obj != nil {
 			symbolInfo.DisplayName = obj.Name()
+			symbolInfo.Kind = symbols.KindForObject(obj)
 			// Skip SignatureDocumentation for type-switch locals because
 			// multiple case clauses share the same obj.Pos(), making the
 			// type recorded in caseClauses nondeterministic.

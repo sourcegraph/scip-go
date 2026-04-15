@@ -6,6 +6,7 @@
   
   type MyStruct struct{ f, y int }
 //     ^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#
+//              kind Struct
 //              display_name MyStruct
 //              signature_documentation
 //              > type MyStruct struct {
@@ -13,10 +14,12 @@
 //              >     y int
 //              > }
 //                      ^ definition 0.1.test `sg/initial`/MyStruct#f.
+//                        kind Field
 //                        display_name f
 //                        signature_documentation
 //                        > struct field f int
 //                         ^ definition 0.1.test `sg/initial`/MyStruct#y.
+//                           kind Field
 //                           display_name y
 //                           signature_documentation
 //                           > struct field y int
@@ -24,15 +27,18 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/MyStruct#RecvFunction().
   func (m MyStruct) RecvFunction(b int) int { return m.f + b }
 //      ^ definition local 0
+//        kind Variable
 //        display_name m
 //        signature_documentation
 //        > var m MyStruct
 //        ^^^^^^^^ reference 0.1.test `sg/initial`/MyStruct#
 //                  ^^^^^^^^^^^^ definition 0.1.test `sg/initial`/MyStruct#RecvFunction().
+//                               kind Method
 //                               display_name RecvFunction
 //                               signature_documentation
 //                               > func (MyStruct).RecvFunction(b int) int
 //                               ^ definition local 1
+//                                 kind Variable
 //                                 display_name b
 //                                 signature_documentation
 //                                 > var b int
@@ -44,11 +50,13 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/SomethingElse().
   func SomethingElse() {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/SomethingElse().
+//                   kind Function
 //                   display_name SomethingElse
 //                   signature_documentation
 //                   > func SomethingElse()
    s := MyStruct{f: 0}
 // ^ definition local 2
+//   kind Variable
 //   display_name s
 //   signature_documentation
 //   > var s MyStruct

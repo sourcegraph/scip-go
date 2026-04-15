@@ -6,11 +6,13 @@
   
   type Person interface {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/Person#
+//            kind Interface
 //            display_name Person
 //            signature_documentation
 //            > type Person interface{ Work() }
    Work()
 // ^^^^ definition 0.1.test `sg/generallyeric`/Person#Work.
+//      kind MethodSpecification
 //      display_name Work
 //      signature_documentation
 //      > func (Person).Work()
@@ -18,6 +20,7 @@
   
   type worker string
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/worker#
+//            kind Type
 //            display_name worker
 //            signature_documentation
 //            > type worker string
@@ -26,11 +29,13 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/worker#Work().
   func (w worker) Work() {
 //      ^ definition local 0
+//        kind Variable
 //        display_name w
 //        signature_documentation
 //        > var w worker
 //        ^^^^^^ reference 0.1.test `sg/generallyeric`/worker#
 //                ^^^^ definition 0.1.test `sg/generallyeric`/worker#Work().
+//                     kind Method
 //                     display_name Work
 //                     signature_documentation
 //                     > func (worker).Work()
@@ -45,21 +50,25 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/DoWork().
   func DoWork[T Person](things []T) {
 //     ^^^^^^ definition 0.1.test `sg/generallyeric`/DoWork().
+//            kind Function
 //            display_name DoWork
 //            signature_documentation
 //            > func DoWork[T Person](things []T)
 //            ^ definition local 1
+//              kind Interface
 //              display_name T
 //              signature_documentation
 //              > type parameter T Person
 //              ^^^^^^ reference 0.1.test `sg/generallyeric`/Person#
 //                      ^^^^^^ definition local 2
+//                             kind Variable
 //                             display_name things
 //                             signature_documentation
 //                             > var things []T
 //                               ^ reference local 1
    for _, v := range things {
 //        ^ definition local 3
+//          kind Variable
 //          display_name v
 //          signature_documentation
 //          > var v T
@@ -74,19 +83,23 @@
 //⌄ enclosing_range_start 0.1.test `sg/generallyeric`/main().
   func main() {
 //     ^^^^ definition 0.1.test `sg/generallyeric`/main().
+//          kind Function
 //          display_name main
 //          signature_documentation
 //          > func main()
    var a, b, c worker
 //     ^ definition local 4
+//       kind Variable
 //       display_name a
 //       signature_documentation
 //       > var a worker
 //        ^ definition local 5
+//          kind Variable
 //          display_name b
 //          signature_documentation
 //          > var b worker
 //           ^ definition local 6
+//             kind Variable
 //             display_name c
 //             signature_documentation
 //             > var c worker

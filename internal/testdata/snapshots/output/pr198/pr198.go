@@ -1,5 +1,6 @@
   package pr198
 //        ^^^^^ definition 0.1.test `sg/pr198`/
+//              kind Package
 //              display_name pr198
 //              signature_documentation
 //              > package pr198
@@ -13,6 +14,7 @@
   // pointing to Foo.
   type Foo interface {
 //     ^^^ definition 0.1.test `sg/pr198`/Foo#
+//         kind Interface
 //         display_name Foo
 //         signature_documentation
 //         > type Foo interface{ Bar() }
@@ -23,6 +25,7 @@
 //         > pointing to Foo.
    Bar()
 // ^^^ definition 0.1.test `sg/pr198`/Foo#Bar.
+//     kind MethodSpecification
 //     display_name Bar
 //     signature_documentation
 //     > func (Foo).Bar()
@@ -31,10 +34,12 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr198`/UseFoo().
   func UseFoo(f Foo) {}
 //     ^^^^^^ definition 0.1.test `sg/pr198`/UseFoo().
+//            kind Function
 //            display_name UseFoo
 //            signature_documentation
 //            > func UseFoo(f Foo)
 //            ^ definition local 0
+//              kind Variable
 //              display_name f
 //              signature_documentation
 //              > var f Foo
@@ -44,6 +49,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr198`/Example().
   func Example() {
 //     ^^^^^^^ definition 0.1.test `sg/pr198`/Example().
+//             kind Function
 //             display_name Example
 //             signature_documentation
 //             > func Example()

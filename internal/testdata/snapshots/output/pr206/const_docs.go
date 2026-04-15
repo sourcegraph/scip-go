@@ -1,5 +1,6 @@
   package pr206
 //        ^^^^^ definition 0.1.test `sg/pr206`/
+//              kind Package
 //              display_name pr206
 //              signature_documentation
 //              > package pr206
@@ -10,6 +11,7 @@
    // It spans two lines.
    BlockConst1 = 1
 // ^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConst1.
+//             kind Constant
 //             display_name BlockConst1
 //             signature_documentation
 //             > const BlockConst1 untyped int = 1
@@ -21,6 +23,7 @@
   
    BlockConstNoDoc = 2
 // ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConstNoDoc.
+//                 kind Constant
 //                 display_name BlockConstNoDoc
 //                 signature_documentation
 //                 > const BlockConstNoDoc untyped int = 2
@@ -29,6 +32,7 @@
   
    BlockConstTrailing = 3 // trailing comment on const
 // ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConstTrailing.
+//                    kind Constant
 //                    display_name BlockConstTrailing
 //                    signature_documentation
 //                    > const BlockConstTrailing untyped int = 3
@@ -42,6 +46,7 @@
    // OrphanConst lives in a block with no block-level doc.
    OrphanConst = 99
 // ^^^^^^^^^^^ definition 0.1.test `sg/pr206`/OrphanConst.
+//             kind Constant
 //             display_name OrphanConst
 //             signature_documentation
 //             > const OrphanConst untyped int = 99

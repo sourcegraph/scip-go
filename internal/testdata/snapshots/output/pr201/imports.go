@@ -1,5 +1,6 @@
   package pr201
 //        ^^^^^ definition 0.1.test `sg/pr201`/
+//              kind Package
 //              display_name pr201
 //              signature_documentation
 //              > package pr201
@@ -27,6 +28,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr201`/UseImports().
   func UseImports() {
 //     ^^^^^^^^^^ definition 0.1.test `sg/pr201`/UseImports().
+//                kind Function
 //                display_name UseImports
 //                signature_documentation
 //                > func UseImports()

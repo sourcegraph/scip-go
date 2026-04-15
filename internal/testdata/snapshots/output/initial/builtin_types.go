@@ -1,5 +1,6 @@
   package initial
 //        ^^^^^^^ definition 0.1.test `sg/initial`/
+//                kind Package
 //                display_name initial
 //                signature_documentation
 //                > package initial
@@ -10,11 +11,13 @@
 //⌄ enclosing_range_start 0.1.test `sg/initial`/UsesBuiltin().
   func UsesBuiltin() int {
 //     ^^^^^^^^^^^ definition 0.1.test `sg/initial`/UsesBuiltin().
+//                 kind Function
 //                 display_name UsesBuiltin
 //                 signature_documentation
 //                 > func UsesBuiltin() int
    var x int = 5
 //     ^ definition local 0
+//       kind Variable
 //       display_name x
 //       signature_documentation
 //       > var x int
