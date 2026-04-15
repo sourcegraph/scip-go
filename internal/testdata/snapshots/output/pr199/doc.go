@@ -1,6 +1,7 @@
   // Package pr199 tests package definition and documentation handling.
   package pr199
 //        ^^^^^ definition 0.1.test `sg/pr199`/
+//              kind Package
 //              display_name pr199
 //              signature_documentation
 //              > package pr199
@@ -16,6 +17,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/pr199`/FromDoc().
   func FromDoc() {}
 //     ^^^^^^^ definition 0.1.test `sg/pr199`/FromDoc().
+//             kind Function
 //             display_name FromDoc
 //             signature_documentation
 //             > func FromDoc()

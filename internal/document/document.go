@@ -16,6 +16,7 @@ import (
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/lookup"
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -94,11 +95,13 @@ func (d *Document) SetNewSymbolForPos(
 	var displayName string
 	var documentation []string
 	var sigDoc *scip.Document
+	var def types.Object
 
 	if ident != nil {
 		displayName = ident.Name
 
-		if def := d.pkg.TypesInfo.Defs[ident]; def != nil {
+		def = d.pkg.TypesInfo.Defs[ident]
+		if def != nil {
 			if signature := typeStringForObject(def); signature != "" {
 				sigDoc = &scip.Document{
 					Language: "go",
@@ -119,6 +122,7 @@ func (d *Document) SetNewSymbolForPos(
 
 	d.pkgSymbols.Set(pos, &scip.SymbolInformation{
 		Symbol:                 symbol,
+		Kind:                   symbols.KindForObject(def),
 		DisplayName:            displayName,
 		Documentation:          documentation,
 		SignatureDocumentation: sigDoc,

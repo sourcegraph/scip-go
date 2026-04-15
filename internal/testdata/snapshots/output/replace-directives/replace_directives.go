@@ -1,5 +1,6 @@
   package replacers
 //        ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/
+//                  kind Package
 //                  display_name replacers
 //                  signature_documentation
 //                  > package replacers
@@ -16,6 +17,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/replace-directives`/Something().
   func Something() {
 //     ^^^^^^^^^ definition 0.1.test `sg/replace-directives`/Something().
+//               kind Function
 //               display_name Something
 //               signature_documentation
 //               > func Something()

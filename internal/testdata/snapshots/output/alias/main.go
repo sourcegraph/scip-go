@@ -1,5 +1,6 @@
   package main
 //        ^^^^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/
+//             kind Package
 //             display_name main
 //             signature_documentation
 //             > package main
@@ -9,6 +10,7 @@
   type (
    T struct{}
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/T#
+//   kind Struct
 //   display_name T
 //   signature_documentation
 //   > type T struct{}
@@ -17,6 +19,7 @@
 //   > Copied from https://github.com/golang/go/issues/68877#issuecomment-2290000187
    U = T
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
+//   kind TypeAlias
 //   display_name U
 //   signature_documentation
 //   > type U = T
@@ -26,6 +29,7 @@
 //     ^ reference github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/T#
    V = U
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/V#
+//   kind TypeAlias
 //   display_name V
 //   signature_documentation
 //   > type V = U
@@ -35,6 +39,7 @@
 //     ^ reference github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
    S U
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/S#
+//   kind Struct
 //   display_name S
 //   signature_documentation
 //   > type S struct{}
@@ -44,6 +49,7 @@
 //   ^ reference github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/U#
    Z int32
 // ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/Z#
+//   kind Type
 //   display_name Z
 //   signature_documentation
 //   > type Z int32
@@ -55,10 +61,12 @@
 //⌄ enclosing_range_start github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
   func f(u U) {}
 //     ^ definition github.com/sourcegraph/scip-go 0.1.test `github.com/sourcegraph/scip-go/internal/testdata/snapshots/input/alias`/f().
+//       kind Function
 //       display_name f
 //       signature_documentation
 //       > func f(u U)
 //       ^ definition local 0
+//         kind Variable
 //         display_name u
 //         signature_documentation
 //         > var u U

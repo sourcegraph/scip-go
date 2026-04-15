@@ -12,6 +12,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/Example().
   func Example() {
 //     ^^^^^^^ definition 0.1.test `sg/testdata`/Example().
+//             kind Function
 //             display_name Example
 //             signature_documentation
 //             > func Example()

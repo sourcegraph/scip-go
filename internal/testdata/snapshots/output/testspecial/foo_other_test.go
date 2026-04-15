@@ -1,5 +1,6 @@
   package testspecial_test
 //        ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testspecial_test`/
+//                         kind Package
 //                         display_name testspecial_test
 //                         signature_documentation
 //                         > package testspecial_test
@@ -15,6 +16,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testspecial_test`/TestFoo_Blackbox().
   func TestFoo_Blackbox(*testing.T) { testspecial.Foo() }
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testspecial_test`/TestFoo_Blackbox().
+//                      kind Function
 //                      display_name TestFoo_Blackbox
 //                      signature_documentation
 //                      > func TestFoo_Blackbox(*testing.T)

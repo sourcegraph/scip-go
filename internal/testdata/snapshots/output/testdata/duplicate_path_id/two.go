@@ -4,6 +4,7 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata/duplicate_path_id`/init().
   func init() {}
 //     ^^^^ definition 0.1.test `sg/testdata/duplicate_path_id`/init().
+//          kind Function
 //          display_name init
 //          signature_documentation
 //          > func init()

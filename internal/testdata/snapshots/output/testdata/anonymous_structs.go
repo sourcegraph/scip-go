@@ -1,5 +1,6 @@
   package testdata
 //        ^^^^^^^^ definition 0.1.test `sg/testdata`/
+//                 kind Package
 //                 display_name testdata
 //                 signature_documentation
 //                 > package testdata
@@ -9,6 +10,7 @@
   
   type TypeContainingAnonymousStructs struct {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#
+//                                    kind Struct
 //                                    display_name TypeContainingAnonymousStructs
 //                                    signature_documentation
 //                                    > type TypeContainingAnonymousStructs struct {
@@ -27,36 +29,43 @@
 //                                    > }
    a, b struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#a.
+//   kind Field
 //   display_name a
 //   signature_documentation
 //   > struct field a struct{x int; y string}
 //    ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#b.
+//      kind Field
 //      display_name b
 //      signature_documentation
 //      > struct field b struct{x int; y string}
     x int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_c0a8952b3a214f68#x.
+//    kind Field
 //    display_name x
 //    signature_documentation
 //    > struct field x int
     y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_c0a8952b3a214f68#y.
+//    kind Field
 //    display_name y
 //    signature_documentation
 //    > struct field y string
    }
    c struct {
 // ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#c.
+//   kind Field
 //   display_name c
 //   signature_documentation
 //   > struct field c struct{X int; Y string}
     X int
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_2f238678626c0da1#X.
+//    kind Field
 //    display_name X
 //    signature_documentation
 //    > struct field X int
     Y string
 //  ^ definition 0.1.test `sg/testdata`/TypeContainingAnonymousStructs#$anon_2f238678626c0da1#Y.
+//    kind Field
 //    display_name Y
 //    signature_documentation
 //    > struct field Y string
@@ -66,21 +75,25 @@
 //⌄ enclosing_range_start 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
   func funcContainingAnonymousStructs() {
 //     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/funcContainingAnonymousStructs().
+//                                    kind Function
 //                                    display_name funcContainingAnonymousStructs
 //                                    signature_documentation
 //                                    > func funcContainingAnonymousStructs()
    d := struct {
 // ^ definition local 0
+//   kind Variable
 //   display_name d
 //   signature_documentation
 //   > var d struct{x int; y string}
     x int
 //  ^ definition local 1
+//    kind Field
 //    display_name x
 //    signature_documentation
 //    > field x int
     y string
 //  ^ definition local 2
+//    kind Field
 //    display_name y
 //    signature_documentation
 //    > field y string
@@ -93,16 +106,19 @@
   
    var e struct {
 //     ^ definition local 3
+//       kind Variable
 //       display_name e
 //       signature_documentation
 //       > var e struct{x int; y string}
     x int
 //  ^ definition local 4
+//    kind Field
 //    display_name x
 //    signature_documentation
 //    > field x int
     y string
 //  ^ definition local 5
+//    kind Field
 //    display_name y
 //    signature_documentation
 //    > field y string
@@ -117,6 +133,7 @@
   
    var f TypeContainingAnonymousStructs
 //     ^ definition local 6
+//       kind Variable
 //       display_name f
 //       signature_documentation
 //       > var f TypeContainingAnonymousStructs
