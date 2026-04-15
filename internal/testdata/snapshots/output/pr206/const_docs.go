@@ -6,37 +6,33 @@
   
   // Block doc for the const group.
   const (
-   // BlockConst1 is the first constant in a block.
+   // BlockConst1 is a multi-line doc.
+   // It spans two lines.
    BlockConst1 = 1
 // ^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConst1.
 //             signature_documentation
 //             > const BlockConst1 untyped int = 1
 //             documentation
-//             > BlockConst1 is the first constant in a block.
-  
-   // BlockConst2 is a multi-line doc.
-   // It spans two lines.
-   BlockConst2 = 2
-// ^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConst2.
-//             signature_documentation
-//             > const BlockConst2 untyped int = 2
-//             documentation
-//             > BlockConst2 is a multi-line doc.
+//             > BlockConst1 is a multi-line doc.
 //             > It spans two lines.
+//             documentation
+//             > Block doc for the const group.
   
-   BlockConstNoDoc = 3
+   BlockConstNoDoc = 2
 // ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConstNoDoc.
 //                 signature_documentation
-//                 > const BlockConstNoDoc untyped int = 3
+//                 > const BlockConstNoDoc untyped int = 2
 //                 documentation
 //                 > Block doc for the const group.
   
-   BlockConstTrailing = 5 // trailing comment on const
+   BlockConstTrailing = 3 // trailing comment on const
 // ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr206`/BlockConstTrailing.
 //                    signature_documentation
-//                    > const BlockConstTrailing untyped int = 5
+//                    > const BlockConstTrailing untyped int = 3
 //                    documentation
 //                    > trailing comment on const
+//                    documentation
+//                    > Block doc for the const group.
   )
   
   const (

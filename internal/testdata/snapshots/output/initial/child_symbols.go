@@ -18,6 +18,8 @@
 //             > const ConstBlock1 untyped int = 1
 //             documentation
 //             > ConstBlock1 is a constant in a block.
+//             documentation
+//             > Docs for the const block itself.
   
    // ConstBlock2 is a constant in a block.
    ConstBlock2 = 2
@@ -26,6 +28,8 @@
 //             > const ConstBlock2 untyped int = 2
 //             documentation
 //             > ConstBlock2 is a constant in a block.
+//             documentation
+//             > Docs for the const block itself.
   )
   
   // Var is a variable interface.
@@ -103,6 +107,18 @@
 //           > var VarBlock1 string
 //           documentation
 //           > This has some docs
+//           documentation
+//           > What are docs, really?
+//           > I can't say for sure, I don't write any.
+//           > But look, a CAT!
+//           > 
+//           > 	      |\      _,,,---,,_
+//           > 	ZZZzz /,`.-'`'    -.  ;-;;,_
+//           > 	     |,4-  ) )-,_. ,\ (  `'-'
+//           > 	    '---''(_/--'  `-'\_)
+//           > 
+//           > It's sleeping! Some people write that as `sleeping` but Markdown
+//           > isn't allowed in Go docstrings, right? right?!
   
    VarBlock2 = "hi"
 // ^^^^^^^^^ definition 0.1.test `sg/initial`/VarBlock2.
@@ -367,6 +383,8 @@
 //   > type X struct{ bar string }
 //   documentation
 //   > And confusing
+//   documentation
+//   > Go can be fun
     bar string
 //  ^^^ definition 0.1.test `sg/initial`/X#bar.
 //      signature_documentation
