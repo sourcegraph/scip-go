@@ -82,7 +82,9 @@ func AddImplementationRelationships(
 ) ([]*scip.SymbolInformation, error) {
 	var externalSymbols []*scip.SymbolInformation
 	err := output.WithProgress("Indexing Implementations", func() error {
-		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(pkgs, symbols)
+		var msCache typeutil.MethodSetCache
+		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(
+			pkgs, symbols, &msCache)
 		if err != nil {
 			return err
 		}
@@ -96,7 +98,7 @@ func AddImplementationRelationships(
 			remotePackages[pkgID] = pkg
 		}
 		remoteInterfaces, remoteTypes, err := extractInterfacesAndConcreteTypes(
-			remotePackages, symbols)
+			remotePackages, symbols, &msCache)
 		if err != nil {
 			return err
 		}
@@ -125,7 +127,11 @@ func AddImplementationRelationships(
 	return externalSymbols, err
 }
 
-func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *lookup.Global) (interfaces map[string]ImplDef, concreteTypes map[string]ImplDef, err error) {
+func extractInterfacesAndConcreteTypes(
+	pkgs loader.PackageLookup,
+	symbols *lookup.Global,
+	msCache *typeutil.MethodSetCache,
+) (interfaces map[string]ImplDef, concreteTypes map[string]ImplDef, err error) {
 	interfaces = map[string]ImplDef{}
 	concreteTypes = map[string]ImplDef{}
 
@@ -179,7 +185,7 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				continue
 			}
 
-			methods := typeutil.IntuitiveMethodSet(objType, nil)
+			methods := typeutil.IntuitiveMethodSet(objType, msCache)
 
 			// ignore interfaces that are empty. they are too
 			// plentiful and don't provide useful intelligence.
