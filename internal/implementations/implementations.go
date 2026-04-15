@@ -5,17 +5,18 @@ import (
 	"go/ast"
 	"go/types"
 	"log/slog"
-	"strings"
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/output"
-	"golang.org/x/tools/container/intsets"
 	"golang.org/x/tools/go/packages"
+	"golang.org/x/tools/go/types/typeutil"
 )
 
-type canonicalMethod string
+// methodID is a unique identifier for a method, using types.Id semantics
+// (package-path-qualified for unexported methods, just the name for exported).
+type methodID string
 
 type ImplDef struct {
 	// The corresponding scip symbol, generated via previous iteration over the AST
@@ -23,45 +24,11 @@ type ImplDef struct {
 
 	Pkg     *packages.Package
 	Ident   *ast.Ident
-	Methods map[canonicalMethod]*scip.SymbolInformation
+	Named   *types.Named
+	Methods map[methodID]*scip.SymbolInformation
 }
 
 func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string]ImplDef, symbols *lookup.Global) {
-	// Create a unique mapping of method -> int
-	//	Then we'll use sparse sets to lookup whether things duck type or not
-	allMethods := map[canonicalMethod]int{}
-
-	for _, iface := range interfaces {
-		for method := range iface.Methods {
-			if _, ok := allMethods[method]; !ok {
-				allMethods[method] = len(allMethods)
-			}
-		}
-	}
-
-	for _, ty := range concreteTypes {
-		for method := range ty.Methods {
-			if _, ok := allMethods[method]; !ok {
-				allMethods[method] = len(allMethods)
-			}
-		}
-	}
-
-	// Create a map of method names to corresponding interfaces
-	interfaceToMethodSet := map[*scip.SymbolInformation]*intsets.Sparse{}
-	for _, iface := range interfaces {
-		if iface.Ident == nil {
-			continue
-		}
-
-		methodSet := &intsets.Sparse{}
-		for method := range iface.Methods {
-			methodSet.Insert(allMethods[method])
-		}
-
-		interfaceToMethodSet[iface.Symbol] = methodSet
-	}
-
 	for _, ty := range concreteTypes {
 		pos := ty.Ident.Pos()
 		sym, ok := symbols.GetSymbolInformation(ty.Pkg, pos)
@@ -69,27 +36,31 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 			panic(fmt.Sprintf("Could not find symbol for %s", ty.Symbol))
 		}
 
-		methodSet := &intsets.Sparse{}
-		for method := range ty.Methods {
-			methodSet.Insert(allMethods[method])
-		}
+		for _, iface := range interfaces {
+			if iface.Ident == nil {
+				continue
+			}
 
-		tyImpls := implementationsForType(ty, methodSet, interfaceToMethodSet)
-		for _, impl := range tyImpls {
-			implDef, ok := interfaces[impl.Symbol]
+			ifaceType, ok := iface.Named.Underlying().(*types.Interface)
 			if !ok {
-				slog.Error("Could not find interface", "symbol", impl.Symbol)
+				continue
+			}
+
+			// Use types.Implements to correctly check interface satisfaction,
+			// handling all edge cases (embedded types, generics, unexported methods).
+			if !types.Implements(ty.Named, ifaceType) &&
+				!types.Implements(types.NewPointer(ty.Named), ifaceType) {
 				continue
 			}
 
 			// Add implementation details for the struct & interface relationship
 			sym.Relationships = append(sym.Relationships, &scip.Relationship{
-				Symbol:           impl.Symbol,
+				Symbol:           iface.Symbol.Symbol,
 				IsImplementation: true,
 			})
 
 			// For all methods, add implementation details as well
-			for name, implMethod := range implDef.Methods {
+			for name, implMethod := range iface.Methods {
 				tyMethodInfo, ok := ty.Methods[name]
 				if !ok {
 					continue
@@ -154,21 +125,6 @@ func AddImplementationRelationships(
 	return externalSymbols, err
 }
 
-func implementationsForType(ty ImplDef, tyMethods *intsets.Sparse, interfaceToMethodSet map[*scip.SymbolInformation]*intsets.Sparse) (matching []*scip.SymbolInformation) {
-	// Empty type - skip it.
-	if len(ty.Methods) == 0 {
-		return
-	}
-
-	for symbol, methods := range interfaceToMethodSet {
-		if methods.SubsetOf(tyMethods) {
-			matching = append(matching, symbol)
-		}
-	}
-
-	return matching
-}
-
 func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *lookup.Global) (interfaces map[string]ImplDef, concreteTypes map[string]ImplDef, err error) {
 	interfaces = map[string]ImplDef{}
 	concreteTypes = map[string]ImplDef{}
@@ -196,8 +152,6 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				continue
 			}
 
-			// fmt.Printf("extracting: %s %s %T\n", ident.Name, obj.Name(), obj)
-
 			// We ignore aliases 'type M = N' to avoid duplicate reporting
 			// of the Named type N.
 			obj, ok := obj.(*types.TypeName)
@@ -215,13 +169,12 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				if obj.Exported() {
 					// TODO: Look into whether this is a bug or not
 					// https://linear.app/sourcegraph/issue/GRAPH-852
-					// slog.Debug("No symbol for:", "identifier", ident.Name, "package", obj.Pkg(), "id", obj.Id())
 				}
 
 				continue
 			}
 
-			methods := listMethods(objType)
+			methods := typeutil.IntuitiveMethodSet(objType, nil)
 
 			// ignore interfaces that are empty. they are too
 			// plentiful and don't provide useful intelligence.
@@ -229,9 +182,8 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				continue
 			}
 
-			canonicalizedMethods := map[canonicalMethod]*scip.SymbolInformation{}
+			methodIds := map[methodID]*scip.SymbolInformation{}
 			for _, m := range methods {
-				// sym, ok := pkgSymbols.Get(m.Obj().Pos())
 				sym, ok, err := symbols.GetSymbolOfObject(m.Obj())
 				if err != nil {
 					slog.Debug(fmt.Sprintf("Error while looking for symbol %s | %s", err, m.Obj()))
@@ -239,18 +191,18 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				}
 
 				if !ok {
-					// panic(fmt.Sprintf("Could not find symbol for %s", m.Obj()))
 					continue
 				}
 
-				canonicalizedMethods[canonicalizeMethod(m)] = sym
+				methodIds[methodID(m.Obj().Id())] = sym
 			}
 
 			d := ImplDef{
 				Symbol:  symbol,
 				Pkg:     pkg,
 				Ident:   ident,
-				Methods: canonicalizedMethods,
+				Named:   objType,
+				Methods: methodIds,
 			}
 
 			if types.IsInterface(objType) {
@@ -263,69 +215,4 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 	}
 
 	return
-}
-
-// listMethods returns the method set for a named type T
-// merged with all the methods of *T that have different names than
-// the methods of T.
-//
-// Copied from https://github.com/golang/tools/blob/1a7ca93429f83e087f7d44d35c0e9ea088fc722e/cmd/godex/print.go#L355
-func listMethods(T *types.Named) []*types.Selection {
-	// method set for T
-	mset := types.NewMethodSet(T)
-	var res []*types.Selection
-	for i, n := 0, mset.Len(); i < n; i++ {
-		res = append(res, mset.At(i))
-	}
-
-	// add all *T methods with names different from T methods
-	pmset := types.NewMethodSet(types.NewPointer(T))
-	for i, n := 0, pmset.Len(); i < n; i++ {
-		pm := pmset.At(i)
-		if obj := pm.Obj(); mset.Lookup(obj.Pkg(), obj.Name()) == nil {
-			res = append(res, pm)
-		}
-	}
-
-	return res
-}
-
-// Returns a string representation of a method that can be used as a key for finding matches in interfaces.
-func canonicalizeMethod(m *types.Selection) canonicalMethod {
-	builder := strings.Builder{}
-
-	writeTuple := func(t *types.Tuple) {
-		for i := 0; i < t.Len(); i++ {
-			builder.WriteString(t.At(i).Type().String())
-		}
-	}
-
-	signature := m.Type().(*types.Signature)
-
-	// if an object is not exported, then we need to make the canonical
-	// representation of the object not able to match any other representations
-	if !m.Obj().Exported() {
-		builder.WriteString(m.Obj().Pkg().Path())
-		builder.WriteString(":")
-	}
-
-	builder.WriteString(m.Obj().Name())
-	builder.WriteString("(")
-	writeTuple(signature.Params())
-	builder.WriteString(")")
-
-	returnTypes := signature.Results()
-	returnLen := returnTypes.Len()
-	if returnLen == 0 {
-		// Don't add anything
-	} else if returnLen == 1 {
-		builder.WriteString(" ")
-		writeTuple(returnTypes)
-	} else {
-		builder.WriteString(" (")
-		writeTuple(returnTypes)
-		builder.WriteString(")")
-	}
-
-	return canonicalMethod(builder.String())
 }

@@ -2,7 +2,6 @@ package loader
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -211,7 +210,7 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	// then update the module path appropriately
 	if strings.HasPrefix(pkg.Module.Path, ".") {
 		if pkg.Module.GoMod != "" {
-			contents, err := ioutil.ReadFile(pkg.Module.GoMod)
+			contents, err := os.ReadFile(pkg.Module.GoMod)
 
 			if err != nil {
 				slog.Debug(fmt.Sprintf("Failed to read go mod file: %s", err))

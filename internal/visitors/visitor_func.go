@@ -90,31 +90,28 @@ func visitFunctionDefinition(doc *document.Document, pkg *packages.Package, node
 
 func receiverTypeName(f *ast.FuncDecl) (string, bool) {
 	recv := f.Recv
-	if recv == nil {
+	if recv == nil || recv.List == nil {
 		return "", false
 	}
 
-	if len(recv.List) > 1 {
-		panic("I don't understand what this would look like")
-	} else if len(recv.List) == 0 {
-		return "", false
-	}
+	return baseTypeName(recv.List[0].Type)
+}
 
-	field := recv.List[0]
-	if field.Type == nil {
-		return "", false
+// baseTypeName extracts the base type name from a receiver type expression,
+// handling pointers, generic instantiations, and parenthesized expressions.
+// Modeled after go/doc's baseTypeName.
+func baseTypeName(x ast.Expr) (string, bool) {
+	switch t := x.(type) {
+	case *ast.Ident:
+		return t.Name, true
+	case *ast.StarExpr:
+		return baseTypeName(t.X)
+	case *ast.IndexExpr:
+		return baseTypeName(t.X)
+	case *ast.IndexListExpr:
+		return baseTypeName(t.X)
+	case *ast.ParenExpr:
+		return baseTypeName(t.X)
 	}
-
-	// Dereference pointer receiver types
-	typ := field.Type
-	if p, _ := typ.(*ast.StarExpr); p != nil {
-		typ = p.X
-	}
-
-	// If we have an identifier, then we have a receiver
-	if p, _ := typ.(*ast.Ident); p != nil {
-		return p.Name, true
-	}
-
 	return "", false
 }
