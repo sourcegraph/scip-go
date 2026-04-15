@@ -274,14 +274,12 @@ func listMethods(T *types.Named) []*types.Selection {
 	// method set for T
 	mset := types.NewMethodSet(T)
 	var res []*types.Selection
-	for i, n := 0, mset.Len(); i < n; i++ {
-		res = append(res, mset.At(i))
+	for sel := range mset.Methods() {
+		res = append(res, sel)
 	}
 
 	// add all *T methods with names different from T methods
-	pmset := types.NewMethodSet(types.NewPointer(T))
-	for i, n := 0, pmset.Len(); i < n; i++ {
-		pm := pmset.At(i)
+	for pm := range types.NewMethodSet(types.NewPointer(T)).Methods() {
 		if obj := pm.Obj(); mset.Lookup(obj.Pkg(), obj.Name()) == nil {
 			res = append(res, pm)
 		}
@@ -295,8 +293,8 @@ func canonicalizeMethod(m *types.Selection) canonicalMethod {
 	builder := strings.Builder{}
 
 	writeTuple := func(t *types.Tuple) {
-		for i := 0; i < t.Len(); i++ {
-			builder.WriteString(t.At(i).Type().String())
+		for v := range t.Variables() {
+			builder.WriteString(v.Type().String())
 		}
 	}
 
