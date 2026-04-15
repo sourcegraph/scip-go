@@ -179,7 +179,7 @@
    *Embedded
 //  ^^^^^^^^ definition 0.1.test `sg/initial`/Struct#Embedded.
 //           signature_documentation
-//           > struct field Embedded *sg/initial.Embedded
+//           > struct field Embedded *Embedded
 //  ^^^^^^^^ reference 0.1.test `sg/initial`/Embedded#
    Field     string
 // ^^^^^ definition 0.1.test `sg/initial`/Struct#Field.

@@ -18,7 +18,7 @@
 //      ^^^^^^^^^^^^^^^^ reference 0.1.test `sg/testdata`/implementsWriter#
 //                        ^^^^^^ definition 0.1.test `sg/testdata`/implementsWriter#Header().
 //                               signature_documentation
-//                               > func (implementsWriter).Header() Header
+//                               > func (implementsWriter).Header() http.Header
 //                               relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
 //                                 ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                                      ^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Header#
@@ -51,7 +51,7 @@
   func ShowsInSignature(respWriter http.ResponseWriter) {
 //     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ShowsInSignature().
 //                      signature_documentation
-//                      > func ShowsInSignature(respWriter ResponseWriter)
+//                      > func ShowsInSignature(respWriter http.ResponseWriter)
 //                      ^^^^^^^^^^ definition local 1
 //                                 display_name respWriter
 //                                 signature_documentation

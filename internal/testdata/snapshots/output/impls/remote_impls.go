@@ -8,7 +8,7 @@
   func Something(r http.ResponseWriter) {}
 //     ^^^^^^^^^ definition 0.1.test `sg/impls`/Something().
 //               signature_documentation
-//               > func Something(r ResponseWriter)
+//               > func Something(r http.ResponseWriter)
 //               ^ definition local 0
 //                 display_name r
 //                 signature_documentation
@@ -35,7 +35,7 @@
 //        ^^^^^^^^ reference 0.1.test `sg/impls`/MyWriter#
 //                  ^^^^^^ definition 0.1.test `sg/impls`/MyWriter#Header().
 //                         signature_documentation
-//                         > func (MyWriter).Header() Header
+//                         > func (MyWriter).Header() http.Header
 //                         relationship github.com/golang/go/src go1.22 `net/http`/ResponseWriter#Header. implementation
 //                           ^^^^ reference github.com/golang/go/src go1.22 `net/http`/
 //                                ^^^^^^ reference github.com/golang/go/src go1.22 `net/http`/Header#

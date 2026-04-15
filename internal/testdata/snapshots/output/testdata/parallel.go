@@ -13,7 +13,7 @@
   type ParallelizableFunc func(ctx context.Context) error
 //     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ParallelizableFunc#
 //                        signature_documentation
-//                        > type ParallelizableFunc func(ctx Context) error
+//                        > type ParallelizableFunc func(ctx context.Context) error
 //                        documentation
 //                        > ParallelizableFunc is a function that can be called concurrently with other instances
 //                        > of this function type.
@@ -30,7 +30,7 @@
   func Parallel(ctx context.Context, fns ...ParallelizableFunc) error {
 //     ^^^^^^^^ definition 0.1.test `sg/testdata`/Parallel().
 //              signature_documentation
-//              > func Parallel(ctx Context, fns ...ParallelizableFunc) error
+//              > func Parallel(ctx context.Context, fns ...ParallelizableFunc) error
 //              documentation
 //              > Parallel invokes each of the given parallelizable functions in their own goroutines and
 //              > returns the first error to occur. This method will block until all goroutines have returned.

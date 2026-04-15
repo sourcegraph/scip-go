@@ -14,7 +14,7 @@
    Base
 // ^^^^ definition 0.1.test `sg/pr206`/Container#Base.
 //      signature_documentation
-//      > struct field Base sg/pr206.Base
+//      > struct field Base Base
 //      documentation
 //      > Base is embedded to inherit shared fields.
 // ^^^^ reference 0.1.test `sg/pr206`/Base#

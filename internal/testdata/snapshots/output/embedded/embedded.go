@@ -14,7 +14,7 @@
   type osExecCommand struct {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/osExecCommand#
 //                   signature_documentation
-//                   > type osExecCommand struct{ *Cmd }
+//                   > type osExecCommand struct{ *exec.Cmd }
 //                   relationship github.com/golang/go/src go1.22 context/stringer# implementation
 //                   relationship github.com/golang/go/src go1.22 fmt/Stringer# implementation
 //                   relationship github.com/golang/go/src go1.22 runtime/stringer# implementation
@@ -22,7 +22,7 @@
 //  ^^^^ reference github.com/golang/go/src go1.22 `os/exec`/
 //       ^^^ definition 0.1.test `sg/embedded`/osExecCommand#Cmd.
 //           signature_documentation
-//           > struct field Cmd *os/exec.Cmd
+//           > struct field Cmd *exec.Cmd
 //       ^^^ reference github.com/golang/go/src go1.22 `os/exec`/Cmd#
   }
   
@@ -30,7 +30,7 @@
   func wrapExecCommand(c *exec.Cmd) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/embedded`/wrapExecCommand().
 //                     signature_documentation
-//                     > func wrapExecCommand(c *Cmd)
+//                     > func wrapExecCommand(c *exec.Cmd)
 //                     ^ definition local 0
 //                       display_name c
 //                       signature_documentation
@@ -76,7 +76,7 @@
    Inner
 // ^^^^^ definition 0.1.test `sg/embedded`/Outer#Inner.
 //       signature_documentation
-//       > struct field Inner sg/embedded.Inner
+//       > struct field Inner Inner
 // ^^^^^ reference 0.1.test `sg/embedded`/Inner#
    W int
 // ^ definition 0.1.test `sg/embedded`/Outer#W.

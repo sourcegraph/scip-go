@@ -8,7 +8,7 @@
   func TestExecRequest(t *testing.T) {
 //     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/TestExecRequest().
 //                     signature_documentation
-//                     > func TestExecRequest(t *T)
+//                     > func TestExecRequest(t *testing.T)
 //                     ^ definition local 0
 //                       display_name t
 //                       signature_documentation
@@ -25,7 +25,7 @@
   func runCmd(t *testing.T, dir string, cmd string, arg ...string) {}
 //     ^^^^^^ definition 0.1.test `sg/sharedtestmodule/cmd/gitserver/server`/runCmd().
 //            signature_documentation
-//            > func runCmd(t *T, dir string, cmd string, arg ...string)
+//            > func runCmd(t *testing.T, dir string, cmd string, arg ...string)
 //            ^ definition local 1
 //              display_name t
 //              signature_documentation

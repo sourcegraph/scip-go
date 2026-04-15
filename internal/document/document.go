@@ -179,11 +179,21 @@ func (d *Document) extractHoverText(parent ast.Node, node ast.Node) string {
 	return ""
 }
 
-// packageQualifier returns an empty string in order to remove the leading package
-// name from all identifiers in the return value of types.ObjectString.
-func packageQualifier(*types.Package) string { return "" }
+// relativeQualifier returns a types.Qualifier that omits the package name for
+// types in pkg (the "current" package) but includes it for all other packages.
+// This ensures that e.g. embedded fields like io.Reader retain their package prefix.
+func relativeQualifier(pkg *types.Package) types.Qualifier {
+	return func(other *types.Package) string {
+		if pkg == other {
+			return ""
+		}
+		return other.Name()
+	}
+}
 
 func typeStringForObject(obj types.Object) string {
+	qual := relativeQualifier(obj.Pkg())
+
 	switch v := obj.(type) {
 	case *types.PkgName:
 		return fmt.Sprintf("package %s", v.Name())
@@ -194,14 +204,14 @@ func typeStringForObject(obj types.Object) string {
 	case *types.Var:
 		if v.IsField() {
 			// TODO(tjdevries) - make this be "(T).F" instead of "struct field F string"
-			return fmt.Sprintf("struct %s", quotedTagsToBacktick(obj.String()))
+			return fmt.Sprintf("struct %s", quotedTagsToBacktick(types.ObjectString(obj, qual)))
 		}
 
 	case *types.Const:
-		return fmt.Sprintf("%s = %s", types.ObjectString(v, packageQualifier), v.Val())
+		return fmt.Sprintf("%s = %s", types.ObjectString(v, qual), v.Val())
 	}
 
-	return types.ObjectString(obj, packageQualifier)
+	return types.ObjectString(obj, qual)
 }
 
 var loggedGODEBUGWarning sync.Once
@@ -213,7 +223,7 @@ func formatTypeDeclaration(obj *types.TypeName) string {
 		return formatAliasDeclaration(obj)
 	}
 
-	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Type().Underlying()))
+	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Pkg(), obj.Type().Underlying()))
 }
 
 // qualifiedName returns the name of original, prefixed with its package name
@@ -237,7 +247,7 @@ func formatAliasDeclaration(obj *types.TypeName) string {
 		case *types.Named:
 			return fmt.Sprintf("type %s = %s", obj.Name(), qualifiedName(obj, rhs.Obj()))
 		default:
-			return fmt.Sprintf("type %s = %s", obj.Name(), expandTypeExpr(rhs))
+			return fmt.Sprintf("type %s = %s", obj.Name(), expandTypeExpr(obj.Pkg(), rhs))
 		}
 	default:
 		if val := os.Getenv("GODEBUG"); strings.Contains(val, "gotypealias=0") {
@@ -253,13 +263,13 @@ func formatAliasDeclaration(obj *types.TypeName) string {
 	}
 
 	// Fallback for when GODEBUG=gotypealias=0 or unexpected types.
-	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Type().Underlying()))
+	return fmt.Sprintf("type %s %s", obj.Name(), expandTypeExpr(obj.Pkg(), obj.Type().Underlying()))
 }
 
 // expandTypeExpr renders a type expression, formatting struct and interface
 // types with aligned fields using go/format.
-func expandTypeExpr(t types.Type) string {
-	raw := types.TypeString(t, packageQualifier)
+func expandTypeExpr(pkg *types.Package, t types.Type) string {
+	raw := types.TypeString(t, relativeQualifier(pkg))
 
 	switch t.(type) {
 	case *types.Struct, *types.Interface:

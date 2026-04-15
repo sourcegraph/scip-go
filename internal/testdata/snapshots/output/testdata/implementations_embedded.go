@@ -32,7 +32,7 @@
    EmbeddedI3
 // ^^^^^^^^^^ definition 0.1.test `sg/testdata`/TClose#EmbeddedI3.
 //            signature_documentation
-//            > struct field EmbeddedI3 sg/testdata.EmbeddedI3
+//            > struct field EmbeddedI3 EmbeddedI3
 // ^^^^^^^^^^ reference 0.1.test `sg/testdata`/EmbeddedI3#
   }
   

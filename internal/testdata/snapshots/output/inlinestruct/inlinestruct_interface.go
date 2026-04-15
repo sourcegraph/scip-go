@@ -8,29 +8,29 @@
   func Target() interface {
 //     ^^^^^^ definition 0.1.test `sg/inlinestruct`/Target().
 //            signature_documentation
-//            > func Target() interface{AbbreviatedOID(Context) (string, error); Commit(Context) (string, error); OID(Context) (int, error); Type(Context) (int, error)}
+//            > func Target() interface{AbbreviatedOID(context.Context) (string, error); Commit(context.Context) (string, error); OID(context.Context) (int, error); Type(context.Context) (int, error)}
    OID(context.Context) (int, error)
 // ^^^ definition 0.1.test `sg/inlinestruct`/func:Target:OID().
 //     signature_documentation
-//     > func (interface).OID(Context) (int, error)
+//     > func (interface).OID(context.Context) (int, error)
 //     ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //             ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    AbbreviatedOID(context.Context) (string, error)
 // ^^^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:AbbreviatedOID().
 //                signature_documentation
-//                > func (interface).AbbreviatedOID(Context) (string, error)
+//                > func (interface).AbbreviatedOID(context.Context) (string, error)
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                        ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Commit(context.Context) (string, error)
 // ^^^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Commit().
 //        signature_documentation
-//        > func (interface).Commit(Context) (string, error)
+//        > func (interface).Commit(context.Context) (string, error)
 //        ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //                ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
    Type(context.Context) (int, error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/func:Target:Type().
 //      signature_documentation
-//      > func (interface).Type(Context) (int, error)
+//      > func (interface).Type(context.Context) (int, error)
 //      ^^^^^^^ reference github.com/golang/go/src go1.22 context/
 //              ^^^^^^^ reference github.com/golang/go/src go1.22 context/Context#
   } {
