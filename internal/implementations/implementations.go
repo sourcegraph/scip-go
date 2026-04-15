@@ -159,6 +159,13 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 				continue
 			}
 
+			// Skip types declared inside function bodies — the type visitor
+			// only indexes package-level declarations, so local types will
+			// never have a symbol entry.
+			if pkg.Types != nil && obj.Parent() != pkg.Types.Scope() {
+				continue
+			}
+
 			objType, ok := obj.Type().(*types.Named)
 			if !ok {
 				continue
@@ -166,11 +173,9 @@ func extractInterfacesAndConcreteTypes(pkgs loader.PackageLookup, symbols *looku
 
 			symbol, ok := pkgSymbols.Get(obj.Pos())
 			if !ok {
-				if obj.Exported() {
-					// TODO: Look into whether this is a bug or not
-					// https://linear.app/sourcegraph/issue/GRAPH-852
-				}
-
+				slog.Debug(
+					"No symbol for package-level named type",
+					"identifier", ident.Name, "package", pkg.PkgPath, "id", obj.Id())
 				continue
 			}
 
