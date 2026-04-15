@@ -6,7 +6,6 @@ import (
 	"go/token"
 	"go/types"
 	"log/slog"
-	"strings"
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"github.com/sourcegraph/scip-go/internal/document"
@@ -116,8 +115,14 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 
 	switch node := n.(type) {
 	case *ast.ImportSpec:
-		// Generate import references
-		importedPackage := v.pkg.Imports[strings.Trim(node.Path.Value, `"`)]
+		// Use PkgNameOf to resolve the import reliably via the type checker.
+		pkgName := v.pkg.TypesInfo.PkgNameOf(node)
+		if pkgName == nil {
+			slog.Warn("Could not find node", "node.Path", node.Path)
+			return nil
+		}
+
+		importedPackage := v.pkg.Imports[pkgName.Imported().Path()]
 		if importedPackage == nil {
 			slog.Warn("Could not find node", "node.Path", node.Path)
 			return nil
