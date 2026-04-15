@@ -25,7 +25,7 @@
   func newKey(t *testing.T) (string, error) {
 //     ^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/newKey().
 //            signature_documentation
-//            > func newKey(t *T) (string, error)
+//            > func newKey(t *testing.T) (string, error)
 //            ^ definition local 0
 //              display_name t
 //              signature_documentation
@@ -41,7 +41,7 @@
   func verifySandbox(t *testing.T, s string) {
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/testdata/conflicting_test_symbols`/verifySandbox().
 //                   signature_documentation
-//                   > func verifySandbox(t *T, s string)
+//                   > func verifySandbox(t *testing.T, s string)
 //                   ^ definition local 1
 //                     display_name t
 //                     signature_documentation

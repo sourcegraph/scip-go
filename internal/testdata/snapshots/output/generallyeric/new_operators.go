@@ -61,7 +61,7 @@
    Box[T]
 // ^^^ definition 0.1.test `sg/generallyeric`/handler#Box.
 //     signature_documentation
-//     > struct field Box sg/generallyeric.Box[T]
+//     > struct field Box Box[T]
 // ^^^ reference 0.1.test `sg/generallyeric`/Box#
 //     ^ reference local 3
    Another string

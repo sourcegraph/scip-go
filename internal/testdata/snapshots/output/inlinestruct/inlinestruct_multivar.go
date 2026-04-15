@@ -20,7 +20,7 @@
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/inline-6-5:Code.
 //      signature_documentation
-//      > struct field Code func(p sg/inlinestruct.Params) (response *sg/inlinestruct.HighlightedCode, aborted bool, err error)
+//      > struct field Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 //           ^ definition local 0
 //             display_name p
 //             signature_documentation
@@ -48,7 +48,7 @@
    Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 // ^^^^ definition 0.1.test `sg/inlinestruct`/MocksSingle:Code.
 //      signature_documentation
-//      > struct field Code func(p sg/inlinestruct.Params) (response *sg/inlinestruct.HighlightedCode, aborted bool, err error)
+//      > struct field Code func(p Params) (response *HighlightedCode, aborted bool, err error)
 //           ^ definition local 4
 //             display_name p
 //             signature_documentation

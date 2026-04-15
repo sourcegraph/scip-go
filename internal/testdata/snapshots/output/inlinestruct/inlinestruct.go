@@ -21,12 +21,12 @@
    privateField FieldInterface
 // ^^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/MyInline:privateField.
 //              signature_documentation
-//              > struct field privateField sg/inlinestruct.FieldInterface
+//              > struct field privateField FieldInterface
 //              ^^^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/FieldInterface#
    PublicField  FieldInterface
 // ^^^^^^^^^^^ definition 0.1.test `sg/inlinestruct`/MyInline:PublicField.
 //             signature_documentation
-//             > struct field PublicField sg/inlinestruct.FieldInterface
+//             > struct field PublicField FieldInterface
 //              ^^^^^^^^^^^^^^ reference 0.1.test `sg/inlinestruct`/FieldInterface#
   }{}
   

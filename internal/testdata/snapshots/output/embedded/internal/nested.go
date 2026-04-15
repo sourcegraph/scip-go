@@ -15,7 +15,7 @@
   func Something(recent embedded.RecentCommittersResults) {
 //     ^^^^^^^^^ definition 0.1.test `sg/embedded/internal`/Something().
 //               signature_documentation
-//               > func Something(recent RecentCommittersResults)
+//               > func Something(recent embedded.RecentCommittersResults)
 //               ^^^^^^ definition local 0
 //                      display_name recent
 //                      signature_documentation

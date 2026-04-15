@@ -14,7 +14,7 @@
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/testdata`/TestInterface#
 //                   signature_documentation
 //                   > type TestInterface interface {
-//                   >     Do(ctx Context, data string) (score int, _ error)
+//                   >     Do(ctx context.Context, data string) (score int, _ error)
 //                   > }
 //                   documentation
 //                   > TestInterface is an interface used for testing.
@@ -22,7 +22,7 @@
    Do(ctx context.Context, data string) (score int, _ error)
 // ^^ definition 0.1.test `sg/testdata`/TestInterface#Do.
 //    signature_documentation
-//    > func (TestInterface).Do(ctx Context, data string) (score int, _ error)
+//    > func (TestInterface).Do(ctx context.Context, data string) (score int, _ error)
 //    documentation
 //    > Do does a test thing.
 //    ^^^ definition local 0
@@ -167,7 +167,7 @@
 //          ^^^^^^^^^^ reference 0.1.test `sg/testdata`/TestStruct#
 //                      ^^^^ definition 0.1.test `sg/testdata`/TestStruct#Doer().
 //                           signature_documentation
-//                           > func (*TestStruct).Doer(ctx Context, data string) (score int, err error)
+//                           > func (*TestStruct).Doer(ctx context.Context, data string) (score int, err error)
 //                           documentation
 //                           > Doer is similar to the test interface (but not the same).
 //                           ^^^ definition local 4
@@ -234,7 +234,7 @@
    InnerStruct
 // ^^^^^^^^^^^ definition 0.1.test `sg/testdata`/ShellStruct#InnerStruct.
 //             signature_documentation
-//             > struct field InnerStruct sg/testdata.InnerStruct
+//             > struct field InnerStruct InnerStruct
 //             documentation
 //             > Ensure this field comes before the definition
 //             > so that we grab the correct one in our unit

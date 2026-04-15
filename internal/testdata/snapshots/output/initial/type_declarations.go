@@ -35,12 +35,12 @@
    m IfaceType
 // ^ definition 0.1.test `sg/initial`/StructType#m.
 //   signature_documentation
-//   > struct field m sg/initial.IfaceType
+//   > struct field m IfaceType
 //   ^^^^^^^^^ reference 0.1.test `sg/initial`/IfaceType#
    f LiteralType
 // ^ definition 0.1.test `sg/initial`/StructType#f.
 //   signature_documentation
-//   > struct field f sg/initial.LiteralType
+//   > struct field f LiteralType
 //   ^^^^^^^^^^^ reference 0.1.test `sg/initial`/LiteralType#
   
    // anonymous struct
@@ -76,7 +76,7 @@
 //                    > type DeclaredBefore struct{ DeclaredAfter }
 //                            ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredBefore#DeclaredAfter.
 //                                          signature_documentation
-//                                          > struct field DeclaredAfter sg/initial.DeclaredAfter
+//                                          > struct field DeclaredAfter DeclaredAfter
 //                            ^^^^^^^^^^^^^ reference 0.1.test `sg/initial`/DeclaredAfter#
   type DeclaredAfter struct{}
 //     ^^^^^^^^^^^^^ definition 0.1.test `sg/initial`/DeclaredAfter#
