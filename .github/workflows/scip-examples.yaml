@@ -79,7 +79,7 @@ jobs:
 
           scip print --json "$GITHUB_WORKSPACE/index.scip" \
             | jq -e --arg f "${{ matrix.expect_file }}" \
-                'any(.documents[]; .relativePath == $f)'
+                'any(.documents[]; .relative_path == $f)'
 
   scip-examples:
     if: always()
