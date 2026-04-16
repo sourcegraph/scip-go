@@ -2,7 +2,6 @@ package impls
 
 import (
 	"fmt"
-	"go/ast"
 	"go/types"
 	"log/slog"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/sourcegraph/scip-go/internal/loader"
 	"github.com/sourcegraph/scip-go/internal/lookup"
 	"github.com/sourcegraph/scip-go/internal/output"
+	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/types/typeutil"
 )
@@ -19,28 +19,17 @@ import (
 type methodID string
 
 type ImplDef struct {
-	// The corresponding scip symbol, generated via previous iteration over the AST
+	// The corresponding scip symbol
 	Symbol *scip.SymbolInformation
 
 	Pkg     *packages.Package
-	Ident   *ast.Ident
 	Named   *types.Named
 	Methods map[methodID]*scip.SymbolInformation
 }
 
 func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string]ImplDef, symbols *lookup.Global) {
 	for _, ty := range concreteTypes {
-		pos := ty.Ident.Pos()
-		sym, ok := symbols.GetSymbolInformation(ty.Pkg, pos)
-		if !ok {
-			panic(fmt.Sprintf("Could not find symbol for %s", ty.Symbol))
-		}
-
 		for _, iface := range interfaces {
-			if iface.Ident == nil {
-				continue
-			}
-
 			ifaceType, ok := iface.Named.Underlying().(*types.Interface)
 			if !ok {
 				continue
@@ -54,10 +43,11 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 			}
 
 			// Add implementation details for the struct & interface relationship
-			sym.Relationships = append(sym.Relationships, &scip.Relationship{
-				Symbol:           iface.Symbol.Symbol,
-				IsImplementation: true,
-			})
+			ty.Symbol.Relationships = append(ty.Symbol.Relationships,
+				&scip.Relationship{
+					Symbol:           iface.Symbol.Symbol,
+					IsImplementation: true,
+				})
 
 			// For all methods, add implementation details as well
 			for name, implMethod := range iface.Methods {
@@ -83,11 +73,8 @@ func AddImplementationRelationships(
 	var externalSymbols []*scip.SymbolInformation
 	err := output.WithProgress("Indexing Implementations", func() error {
 		var msCache typeutil.MethodSetCache
-		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(
+		localInterfaces, localTypes := extractInterfacesAndConcreteTypes(
 			pkgs, symbols, &msCache)
-		if err != nil {
-			return err
-		}
 
 		remotePackages := make(loader.PackageLookup)
 		for pkgID, pkg := range allPackages {
@@ -97,11 +84,8 @@ func AddImplementationRelationships(
 
 			remotePackages[pkgID] = pkg
 		}
-		remoteInterfaces, remoteTypes, err := extractInterfacesAndConcreteTypes(
+		remoteInterfaces, remoteTypes := extractInterfacesAndConcreteTypes(
 			remotePackages, symbols, &msCache)
-		if err != nil {
-			return err
-		}
 
 		// local type -> local interface
 		findImplementations(localTypes, localInterfaces, symbols)
@@ -115,10 +99,8 @@ func AddImplementationRelationships(
 
 		// Collect remote type symbols that gained relationships
 		for _, typ := range remoteTypes {
-			if sym, ok := symbols.GetSymbolInformation(typ.Pkg, typ.Ident.Pos()); ok {
-				if len(sym.Relationships) > 0 {
-					externalSymbols = append(externalSymbols, sym)
-				}
+			if len(typ.Symbol.Relationships) > 0 {
+				externalSymbols = append(externalSymbols, typ.Symbol)
 			}
 		}
 
@@ -129,11 +111,11 @@ func AddImplementationRelationships(
 
 func extractInterfacesAndConcreteTypes(
 	pkgs loader.PackageLookup,
-	symbols *lookup.Global,
+	globalSymbols *lookup.Global,
 	msCache *typeutil.MethodSetCache,
-) (interfaces map[string]ImplDef, concreteTypes map[string]ImplDef, err error) {
-	interfaces = map[string]ImplDef{}
-	concreteTypes = map[string]ImplDef{}
+) (map[string]ImplDef, map[string]ImplDef) {
+	interfaces := map[string]ImplDef{}
+	concreteTypes := map[string]ImplDef{}
 
 	for _, pkg := range pkgs {
 		// Builtin isn't the same as standard library, that is for builtin types
@@ -142,88 +124,146 @@ func extractInterfacesAndConcreteTypes(
 			continue
 		}
 
-		if pkg.TypesInfo == nil {
+		if pkg.Types == nil {
 			slog.Warn("No types for package", "path", pkg.PkgPath)
 			continue
 		}
 
-		pkgSymbols := symbols.GetPackage(pkg)
-		if pkgSymbols == nil {
-			slog.Warn("No symbols for package", "path", pkg.PkgPath)
+		if pkg.TypesInfo != nil {
+			extractFromTypesInfo(pkg, globalSymbols, msCache, interfaces, concreteTypes)
 			continue
 		}
 
-		for ident, obj := range pkg.TypesInfo.Defs {
-			if obj == nil {
-				continue
-			}
-
-			// We ignore aliases 'type M = N' to avoid duplicate reporting
-			// of the Named type N.
-			obj, ok := obj.(*types.TypeName)
-			if !ok {
-				continue
-			}
-
-			// Skip types declared inside function bodies — the type visitor
-			// only indexes package-level declarations, so local types will
-			// never have a symbol entry.
-			if pkg.Types != nil && obj.Parent() != pkg.Types.Scope() {
-				continue
-			}
-
-			objType, ok := obj.Type().(*types.Named)
-			if !ok {
-				continue
-			}
-
-			symbol, ok := pkgSymbols.Get(obj.Pos())
-			if !ok {
-				slog.Debug(
-					"No symbol for package-level named type",
-					"identifier", ident.Name, "package", pkg.PkgPath, "id", obj.Id())
-				continue
-			}
-
-			methods := typeutil.IntuitiveMethodSet(objType, msCache)
-
-			// ignore interfaces that are empty. they are too
-			// plentiful and don't provide useful intelligence.
-			if len(methods) == 0 {
-				continue
-			}
-
-			methodIds := map[methodID]*scip.SymbolInformation{}
-			for _, m := range methods {
-				sym, ok, err := symbols.GetSymbolOfObject(m.Obj())
-				if err != nil {
-					slog.Debug(fmt.Sprintf("Error while looking for symbol %s | %s", err, m.Obj()))
-					continue
-				}
-
-				if !ok {
-					continue
-				}
-
-				methodIds[methodID(m.Obj().Id())] = sym
-			}
-
-			d := ImplDef{
-				Symbol:  symbol,
-				Pkg:     pkg,
-				Ident:   ident,
-				Named:   objType,
-				Methods: methodIds,
-			}
-
-			if types.IsInterface(objType) {
-				interfaces[d.Symbol.Symbol] = d
-			} else {
-				concreteTypes[d.Symbol.Symbol] = d
-			}
-
-		}
+		extractFromScope(pkg, globalSymbols, msCache, interfaces, concreteTypes)
 	}
 
-	return
+	return interfaces, concreteTypes
+}
+
+// extractFromTypesInfo handles project packages that have full TypesInfo/AST.
+func extractFromTypesInfo(
+	pkg *packages.Package,
+	globalSymbols *lookup.Global,
+	msCache *typeutil.MethodSetCache,
+	interfaces map[string]ImplDef,
+	concreteTypes map[string]ImplDef,
+) {
+	pkgSymbols := globalSymbols.GetPackage(pkg)
+	if pkgSymbols == nil {
+		slog.Warn("No symbols for package", "path", pkg.PkgPath)
+		return
+	}
+
+	for ident, obj := range pkg.TypesInfo.Defs {
+		if obj == nil {
+			continue
+		}
+
+		obj, ok := obj.(*types.TypeName)
+		if !ok {
+			continue
+		}
+
+		// Skip types declared inside function bodies
+		if pkg.Types != nil && obj.Parent() != pkg.Types.Scope() {
+			continue
+		}
+
+		objType, ok := obj.Type().(*types.Named)
+		if !ok {
+			continue
+		}
+
+		symbol, ok := pkgSymbols.Get(obj.Pos())
+		if !ok {
+			slog.Debug(
+				"No symbol for package-level named type",
+				"identifier", ident.Name, "package", pkg.PkgPath, "id", obj.Id())
+			continue
+		}
+
+		collectImplDef(
+			pkg, globalSymbols, msCache, objType, symbol, interfaces, concreteTypes)
+	}
+}
+
+// extractFromScope handles dep packages that have no AST — uses
+// pkg.Types.Scope() to enumerate package-level named types and synthesizes
+// their SCIP symbols.
+func extractFromScope(
+	pkg *packages.Package,
+	globalSymbols *lookup.Global,
+	msCache *typeutil.MethodSetCache,
+	interfaces map[string]ImplDef,
+	concreteTypes map[string]ImplDef,
+) {
+	scope := pkg.Types.Scope()
+	for _, name := range scope.Names() {
+		obj := scope.Lookup(name)
+		tn, ok := obj.(*types.TypeName)
+		if !ok {
+			continue
+		}
+
+		objType, ok := tn.Type().(*types.Named)
+		if !ok {
+			continue
+		}
+
+		sym, ok := symbols.SynthesizeFromObject(pkg, tn)
+		if !ok {
+			slog.Debug("Could not synthesize symbol for dep type",
+				"name", name, "package", pkg.PkgPath)
+			continue
+		}
+		symbol := &scip.SymbolInformation{Symbol: sym}
+
+		collectImplDef(pkg, globalSymbols, msCache, objType, symbol, interfaces, concreteTypes)
+	}
+}
+
+func collectImplDef(
+	pkg *packages.Package,
+	globalSymbols *lookup.Global,
+	msCache *typeutil.MethodSetCache,
+	objType *types.Named,
+	symbol *scip.SymbolInformation,
+	interfaces map[string]ImplDef,
+	concreteTypes map[string]ImplDef,
+) {
+	methods := typeutil.IntuitiveMethodSet(objType, msCache)
+
+	// ignore interfaces that are empty. they are too
+	// plentiful and don't provide useful intelligence.
+	if len(methods) == 0 {
+		return
+	}
+
+	methodIds := map[methodID]*scip.SymbolInformation{}
+	for _, m := range methods {
+		sym, ok, err := globalSymbols.GetSymbolOfObject(m.Obj())
+		if err != nil {
+			slog.Debug(fmt.Sprintf("Error while looking for symbol %s | %s", err, m.Obj()))
+			continue
+		}
+
+		if !ok {
+			continue
+		}
+
+		methodIds[methodID(m.Obj().Id())] = sym
+	}
+
+	d := ImplDef{
+		Symbol:  symbol,
+		Pkg:     pkg,
+		Named:   objType,
+		Methods: methodIds,
+	}
+
+	if types.IsInterface(objType) {
+		interfaces[d.Symbol.Symbol] = d
+	} else {
+		concreteTypes[d.Symbol.Symbol] = d
+	}
 }

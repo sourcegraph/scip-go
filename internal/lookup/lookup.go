@@ -83,6 +83,18 @@ func (p *Global) Add(pkgSymbols *Package) {
 	p.m.Unlock()
 }
 
+// EnsurePackage registers an empty Package entry for pkg if one doesn't
+// already exist. This ensures dep packages (which skip VisitPackageSyntax)
+// are present in the symbols map for synthesis fallback.
+func (p *Global) EnsurePackage(pkg *packages.Package) {
+	p.m.Lock()
+	id := newtypes.GetID(pkg)
+	if _, ok := p.symbols[id]; !ok {
+		p.symbols[id] = NewPackageSymbols(pkg)
+	}
+	p.m.Unlock()
+}
+
 func (p *Global) SetPkgSymbol(pkg *packages.Package) string {
 	sym := symbols.FromDescriptors(pkg, &scip.Descriptor{
 		Name:   pkg.PkgPath,
@@ -162,9 +174,17 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 		}
 	}
 
+	// Fallback: synthesize the symbol from types.Object metadata.
+	// This handles dep packages that have no AST/syntax (loaded from export data).
+	if pkgEntry, ok := p.symbols[newtypes.PackageID(pkgPath)]; ok {
+		if sym, ok := symbols.SynthesizeFromObject(pkgEntry.pkg, obj); ok {
+			info := &scip.SymbolInformation{Symbol: sym}
+			return info, true, nil
+		}
+	}
+
 	switch obj := obj.(type) {
 	case *types.Var:
-		// , "| position", pkg.Fset.Position(obj.Pos())))
 		return nil, false, errors.New(fmt.Sprintln("obj", obj, "| origin", obj.Origin()))
 	}
 

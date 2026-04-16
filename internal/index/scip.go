@@ -54,15 +54,16 @@ func GetPackages(opts config.IndexOpts) (current []newtypes.PackageID, deps []ne
 }
 
 func ListMissing(opts config.IndexOpts) (missing []string, err error) {
-	projectPackages, allPackages, err := loader.LoadPackages(opts, opts.ModuleRoot)
+	projectPackages, _, err := loader.LoadPackages(opts, opts.ModuleRoot)
 	if err != nil {
 		return nil, err
 	}
 
 	pathToDocuments := map[string]*document.Document{}
-	for _, pkg := range allPackages {
+	globalSymbols := lookup.NewGlobalSymbols()
+	for _, pkg := range projectPackages {
 		visitors.VisitPackageSyntax(
-			opts.ModuleRoot, pkg, pathToDocuments, lookup.NewGlobalSymbols())
+			opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 	}
 
 	for _, pkg := range projectPackages {
@@ -185,29 +186,22 @@ func indexVisitPackages(
 	var wg sync.WaitGroup
 	wg.Add(1)
 
-	lookupIDs := slices.Sorted(maps.Keys(allPackages))
+	for _, pkg := range allPackages {
+		globalSymbols.EnsurePackage(pkg)
+		globalSymbols.SetPkgSymbol(pkg)
+	}
 
-	// We have to visit all the packages to get the definition sites
-	// for all the symbols.
-	//
-	// We don't want to visit in the same depth as file visitors though,
-	// so we do ONLY do this
+	projectIDs := slices.Sorted(maps.Keys(projectPackages))
+
 	go func() {
 		defer wg.Done()
 
-		for _, pkgID := range lookupIDs {
-			pkg := allPackages[pkgID]
+		for _, pkgID := range projectIDs {
+			pkg := projectPackages[pkgID]
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
-			pkgSymbol := globalSymbols.SetPkgSymbol(pkg)
-
-			// If we don't have this package anywhere, don't try to create a new symbol
-			if _, ok := projectPackages[newtypes.GetID(pkg)]; !ok {
-				atomic.AddUint64(&count, 1)
-				continue
-			}
-
+			pkgSymbol, _ := globalSymbols.GetPkgSymbol(pkg)
 			symInfo := &scip.SymbolInformation{
 				Symbol:        pkgSymbol,
 				Kind:          scip.SymbolInformation_Package,
@@ -237,7 +231,7 @@ func indexVisitPackages(
 		}
 	}()
 
-	output.WithProgressParallel(&wg, "Visiting Packages", &count, uint64(len(lookupIDs)))
+	output.WithProgressParallel(&wg, "Visiting Packages", &count, uint64(len(projectIDs)))
 
 	return pathToDocuments, globalSymbols
 }
