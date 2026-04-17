@@ -208,6 +208,12 @@ func indexVisitPackages(
 				continue
 			}
 
+			// Skip packages with no source files (e.g. directories with only subdirectories)
+			if len(pkg.Syntax) == 0 {
+				atomic.AddUint64(&count, 1)
+				continue
+			}
+
 			symInfo := &scip.SymbolInformation{
 				Symbol:        pkgSymbol,
 				Kind:          scip.SymbolInformation_Package,
