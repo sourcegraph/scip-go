@@ -1,4 +1,4 @@
-name: scip-examples
+name: test
 
 on:
   push:
@@ -10,7 +10,35 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - run: nix flake check
+      - run: nix build .#scip-go
+      - name: Upload scip-go binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: scip-go
+          path: result/bin/scip-go
+
+  docker:
+    strategy:
+      matrix:
+        include:
+          - runner: ubuntu-latest
+          - runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - run: nix build .#docker
+
   index:
+    needs: [build]
     strategy:
       matrix:
         include:
@@ -41,20 +69,21 @@ jobs:
     timeout-minutes: 120
 
     steps:
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
-
-      - name: Checkout scip-go
-        uses: actions/checkout@v6
+      - name: Download scip-go binary
+        uses: actions/download-artifact@v4
         with:
-          path: scip-go
+          name: scip-go
+          path: scip-go-bin
 
-      - name: Build scip-go & scip CLI
+      - name: Download scip CLI
         run: |
-          nix build ./scip-go#scip-go -o scip-go-bin
-          nix build github:scip-code/scip#scip -o scip-bin
-          echo "$GITHUB_WORKSPACE/scip-go-bin/bin" >> "$GITHUB_PATH"
-          echo "$GITHUB_WORKSPACE/scip-bin/bin" >> "$GITHUB_PATH"
+          curl -fsSL https://github.com/scip-code/scip/releases/latest/download/scip-linux-amd64.tar.gz \
+            | tar -xz -C /usr/local/bin scip
+
+      - name: Install scip-go
+        run: |
+          chmod +x scip-go-bin/scip-go
+          echo "$GITHUB_WORKSPACE/scip-go-bin" >> "$GITHUB_PATH"
 
       - name: Checkout target repo
         uses: actions/checkout@v6
@@ -99,9 +128,9 @@ jobs:
             | jq -e --arg f "${{ matrix.expect_file }}" \
                 'any(.documents[]; .relative_path == $f)'
 
-  scip-examples:
+  ci-test:
     if: always()
-    needs: [index]
+    needs: [build, docker, index]
     runs-on: ubuntu-latest
     steps:
       - if: >-
