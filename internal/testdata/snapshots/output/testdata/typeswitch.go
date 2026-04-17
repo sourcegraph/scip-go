@@ -21,17 +21,9 @@
    case int:
     return concreteValue*3 > 10
 //         ^^^^^^^^^^^^^ reference local 1
-//                       override_documentation
-//                       > ```go
-//                       > int
-//                       > ```
    case bool:
     return !concreteValue
 //          ^^^^^^^^^^^^^ reference local 1
-//                        override_documentation
-//                        > ```go
-//                        > bool
-//                        > ```
    default:
     return false
    }

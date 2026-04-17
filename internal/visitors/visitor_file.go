@@ -131,7 +131,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false)
 			if rangeFromName != nil {
 				if sym, ok := v.globalSymbols.GetPkgSymbol(importedPackage); ok {
-					v.AppendSymbolReference(sym, rangeFromName, nil)
+					v.newReference(sym, rangeFromName)
 				}
 			}
 		}
@@ -161,7 +161,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				}
 
 				symRange := scipRange(startPosition, endPosition, sel)
-				v.AppendSymbolReference(sym, symRange, nil)
+				v.newReference(sym, symRange)
 
 				// Then walk the selection
 				ast.Walk(v, node.Sel)
@@ -208,7 +208,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		// Short circuit on case clauses
 		if obj, ok := v.caseClauses[node.Pos()]; ok {
 			symName := v.createNewLocalSymbol(obj.Pos(), obj)
-			v.NewDefinition(symName, scipRange(startPosition, endPosition, obj), nil)
+			v.newDefinition(symName, scipRange(startPosition, endPosition, obj), nil)
 			return nil
 		}
 
@@ -226,23 +226,19 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				symName = v.createNewLocalSymbol(def.Pos(), def)
 			}
 
-			v.NewDefinition(symName, scipRange(startPosition, endPosition, def), v.enclosingRange(node))
+			v.newDefinition(
+				symName,
+				scipRange(startPosition, endPosition, def),
+				v.enclosingRange(node))
 		}
 
 		// Emit Reference
 		ref := info.Uses[node]
 		if ref != nil {
-			var (
-				symbol       string
-				overrideType types.Type
-			)
+			var symbol string
 
 			if localSymbol, ok := v.locals[ref.Pos()]; ok {
 				symbol = localSymbol.Symbol
-
-				if _, ok := v.caseClauses[ref.Pos()]; ok {
-					overrideType = v.pkg.TypesInfo.TypeOf(node)
-				}
 			} else {
 				var err error
 				symInfo, ok, err := v.globalSymbols.GetSymbolOfObject(ref)
@@ -276,7 +272,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				symbol = symInfo.Symbol
 			}
 
-			v.AppendSymbolReference(symbol, scipRange(startPosition, endPosition, ref), overrideType)
+			v.newReference(symbol, scipRange(startPosition, endPosition, ref))
 		}
 
 		if def == nil && ref == nil {
@@ -309,12 +305,12 @@ func (v *fileVisitor) emitImportReference(
 		return
 	}
 
-	v.AppendSymbolReference(sym, scipRange, nil)
+	v.newReference(sym, scipRange)
 }
 
-// NewDefinition emits a scip.Occurence ONLY. This will not emit a
+// newDefinition emits a scip.Occurence ONLY. This will not emit a
 // new symbol. You must do that using DeclareNewSymbol[ForPos]
-func (v *fileVisitor) NewDefinition(symbol string, rng []int32, enclRng []int32) {
+func (v *fileVisitor) newDefinition(symbol string, rng []int32, enclRng []int32) {
 	v.occurrences = append(v.occurrences, &scip.Occurrence{
 		Range:          rng,
 		Symbol:         symbol,
@@ -323,20 +319,11 @@ func (v *fileVisitor) NewDefinition(symbol string, rng []int32, enclRng []int32)
 	})
 }
 
-func (v *fileVisitor) AppendSymbolReference(symbol string, rng []int32, overrideType types.Type) {
-	var documentation []string = nil
-	if overrideType != nil {
-		tyString := overrideType.String()
-		if tyString != "" {
-			documentation = append(documentation, symbols.FormatCode(tyString))
-		}
-	}
-
+func (v *fileVisitor) newReference(symbol string, rng []int32) {
 	v.occurrences = append(v.occurrences, &scip.Occurrence{
-		Range:                 rng,
-		Symbol:                symbol,
-		SymbolRoles:           symbolReference,
-		OverrideDocumentation: documentation,
+		Range:       rng,
+		Symbol:      symbol,
+		SymbolRoles: symbolReference,
 	})
 }
 
