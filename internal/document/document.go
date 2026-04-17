@@ -23,6 +23,19 @@ import (
 // indent is used to format struct fields.
 const indent = "    "
 
+// IsDocDeprecated reports whether the documentation strings contain a paragraph
+// starting with "Deprecated:" per Go convention.
+func IsDocDeprecated(docs []string) bool {
+	for _, d := range docs {
+		for line := range strings.SplitSeq(d, "\n") {
+			if strings.HasPrefix(line, "Deprecated:") {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func NewDocument(
 	relative string,
 	pkg *packages.Package,
