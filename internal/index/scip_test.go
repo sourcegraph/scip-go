@@ -3,6 +3,8 @@ package index_test
 import (
 	"flag"
 	"fmt"
+	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -42,14 +44,30 @@ func TestSnapshots(t *testing.T) {
 				return nil
 			}
 
-			err := index.Index(writer, config.IndexOpts{
+			opts := config.IndexOpts{
 				ModuleRoot:      inputDirectory,
 				ModuleVersion:   "0.1.test",
 				ModulePath:      "sg/" + filepath.Base(inputDirectory),
 				GoStdlibVersion: "go1.22",
-			})
-			if err != nil {
+			}
+
+			driverDir := filepath.Join(inputDirectory, "driver")
+			var driverPath string
+			if _, err := os.Stat(filepath.Join(driverDir, "main.go")); err == nil {
+				driverPath = buildGoPackagesDriver(t, driverDir)
+				os.Setenv("GOPACKAGESDRIVER", driverPath)
+				defer os.Unsetenv("GOPACKAGESDRIVER")
+				opts.IsGoPackagesDriverSet = true
+			}
+
+			if err := index.Index(writer, opts); err != nil {
 				t.Fatal(err)
+			}
+
+			if driverPath != "" {
+				if _, err := os.Stat(driverPath + ".sentinel"); err != nil {
+					t.Fatal("GOPACKAGESDRIVER was not invoked")
+				}
 			}
 
 			// Filter out documents outside of current directory
@@ -95,4 +113,22 @@ func getTestdataRoot(t *testing.T) string {
 	}
 
 	return testdata
+}
+
+// buildGoPackagesDriver compiles the GOPACKAGESDRIVER binary found in
+// driverDir (a directory containing main.go and go.mod) and returns the
+// path to the built binary.
+func buildGoPackagesDriver(t *testing.T, driverDir string) string {
+	t.Helper()
+
+	driverPath := filepath.Join(t.TempDir(), "gopackagesdriver")
+
+	cmd := exec.Command("go", "build", "-o", driverPath, ".")
+	cmd.Dir = driverDir
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("building GOPACKAGESDRIVER in %s: %v\n%s", driverDir, err, out)
+	}
+
+	return driverPath
 }
