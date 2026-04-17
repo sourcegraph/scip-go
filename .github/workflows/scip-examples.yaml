@@ -30,6 +30,11 @@ jobs:
             repo: syncthing/syncthing
             ref: v1.29.2
             expect_file: "lib/protocol/protocol.go"
+          - name: bazel-gazelle
+            repo: bazelbuild/bazel-gazelle
+            ref: v0.50.0
+            expect_file: "cmd/gazelle/main.go"
+            gopackagesdriver: true
 
     runs-on: ubuntu-latest
     name: ${{ matrix.name }}
@@ -62,6 +67,19 @@ jobs:
         with:
           go-version: stable
           cache-dependency-path: target/go.sum
+
+      - name: Set up GOPACKAGESDRIVER
+        if: matrix.gopackagesdriver
+        working-directory: target
+        run: |
+          driver="$GITHUB_WORKSPACE/gopackagesdriver.sh"
+          cat > "$driver" <<'DRIVER'
+          #!/usr/bin/env bash
+          exec bazel run --tool_tag=gopackagesdriver \
+            @io_bazel_rules_go//go/tools/gopackagesdriver -- "$@"
+          DRIVER
+          chmod +x "$driver"
+          echo "GOPACKAGESDRIVER=$driver" >> "$GITHUB_ENV"
 
       - name: Run scip-go
         working-directory: target
