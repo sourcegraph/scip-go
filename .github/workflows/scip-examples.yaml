@@ -1,0 +1,92 @@
+name: scip-examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  index:
+    strategy:
+      matrix:
+        include:
+          - name: scip-go
+            repo: sourcegraph/scip-go
+            ref: ${{ github.sha }}
+            expect_file: "cmd/scip-go/main.go"
+          - name: kubernetes
+            repo: kubernetes/kubernetes
+            ref: v1.32.3
+            expect_file: "pkg/apis/core/validation/validation.go"
+          - name: caddy
+            repo: caddyserver/caddy
+            ref: v2.9.1
+            expect_file: "caddy.go"
+          - name: syncthing
+            repo: syncthing/syncthing
+            ref: v1.29.2
+            expect_file: "lib/protocol/protocol.go"
+
+    runs-on: ubuntu-latest
+    name: ${{ matrix.name }}
+    timeout-minutes: 120
+
+    steps:
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+
+      - name: Checkout scip-go
+        uses: actions/checkout@v6
+        with:
+          path: scip-go
+
+      - name: Build scip-go & scip CLI
+        run: |
+          nix build ./scip-go#scip-go -o scip-go-bin
+          nix build github:scip-code/scip#scip -o scip-bin
+          echo "$GITHUB_WORKSPACE/scip-go-bin/bin" >> "$GITHUB_PATH"
+          echo "$GITHUB_WORKSPACE/scip-bin/bin" >> "$GITHUB_PATH"
+
+      - name: Checkout target repo
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ matrix.repo }}
+          ref: ${{ matrix.ref }}
+          path: target
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache-dependency-path: target/go.sum
+
+      - name: Run scip-go
+        working-directory: target
+        run: scip-go -o "$GITHUB_WORKSPACE/index.scip" -VV
+
+      - name: Validate index
+        working-directory: target
+        run: |
+          size=$(stat --format='%s' "$GITHUB_WORKSPACE/index.scip")
+          echo "Index size: $size bytes"
+          [ "$size" -ge 1024 ] || { echo "FAIL: index too small"; exit 1; }
+
+          scip stats --from "$GITHUB_WORKSPACE/index.scip" \
+            | jq -e '.documents > 0 and .occurrences > 0 and .definitions > 0'
+
+          scip print --json "$GITHUB_WORKSPACE/index.scip" \
+            | jq -e --arg f "${{ matrix.expect_file }}" \
+                'any(.documents[]; .relative_path == $f)'
+
+  scip-examples:
+    if: always()
+    needs: [index]
+    runs-on: ubuntu-latest
+    steps:
+      - if: >-
+          contains(needs.*.result, 'failure') ||
+          contains(needs.*.result, 'cancelled')
+        run: exit 1
