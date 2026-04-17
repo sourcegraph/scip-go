@@ -16,11 +16,6 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-const (
-	symbolDefinition = int32(scip.SymbolRole_Definition)
-	symbolReference  = int32(scip.SymbolRole_ReadAccess)
-)
-
 func NewFileVisitor(
 	doc *document.Document,
 	pkg *packages.Package,
@@ -131,7 +126,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				v.pkg.Fset.Position(node.Name.Pos()), node.Name.Name, false)
 			if rangeFromName != nil {
 				if sym, ok := v.globalSymbols.GetPkgSymbol(importedPackage); ok {
-					v.newReference(sym, rangeFromName)
+					v.newReference(sym, rangeFromName, false)
 				}
 			}
 		}
@@ -161,7 +156,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				}
 
 				symRange := scipRange(startPosition, endPosition, sel)
-				v.newReference(sym, symRange)
+				v.newReference(sym, symRange, false)
 
 				// Then walk the selection
 				ast.Walk(v, node.Sel)
@@ -208,7 +203,7 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 		// Short circuit on case clauses
 		if obj, ok := v.caseClauses[node.Pos()]; ok {
 			symName := v.createNewLocalSymbol(obj.Pos(), obj)
-			v.newDefinition(symName, scipRange(startPosition, endPosition, obj), nil)
+			v.newDefinition(symName, scipRange(startPosition, endPosition, obj), nil, false)
 			return nil
 		}
 
@@ -229,13 +224,17 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			v.newDefinition(
 				symName,
 				scipRange(startPosition, endPosition, def),
-				v.enclosingRange(node))
+				v.enclosingRange(node),
+				v.isDeprecated(def.Pos()))
 		}
 
 		// Emit Reference
 		ref := info.Uses[node]
 		if ref != nil {
-			var symbol string
+			var (
+				symbol     string
+				deprecated bool
+			)
 
 			if localSymbol, ok := v.locals[ref.Pos()]; ok {
 				symbol = localSymbol.Symbol
@@ -243,18 +242,6 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 				var err error
 				symInfo, ok, err := v.globalSymbols.GetSymbolOfObject(ref)
 				if err != nil {
-					// _, ok := v.pkgLookup[symbols.PkgPathFromObject(ref)]
-					// if !ok {
-					// 	if err := output.DebugErr(
-					// 		"Failed to find a package for ref: |%+v|\nNode: %s",
-					// 		ref,
-					// 		v.pkg.Fset.Position(node.Pos()),
-					// 	); err != nil {
-					// 		return v
-					// 	}
-					//
-					// }
-
 					slog.Debug(fmt.Sprintf(
 						"Unable to find symbol of object: %s\nNode Position -> %s\n\nPath: %s\n\n",
 						err,
@@ -270,9 +257,10 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 
 				// Set the resulting info
 				symbol = symInfo.Symbol
+				deprecated = document.IsDocDeprecated(symInfo.Documentation)
 			}
 
-			v.newReference(symbol, scipRange(startPosition, endPosition, ref))
+			v.newReference(symbol, scipRange(startPosition, endPosition, ref), deprecated)
 		}
 
 		if def == nil && ref == nil {
@@ -305,26 +293,38 @@ func (v *fileVisitor) emitImportReference(
 		return
 	}
 
-	v.newReference(sym, scipRange)
+	v.newReference(sym, scipRange, false)
 }
 
 // newDefinition emits a scip.Occurence ONLY. This will not emit a
 // new symbol. You must do that using DeclareNewSymbol[ForPos]
-func (v *fileVisitor) newDefinition(symbol string, rng []int32, enclRng []int32) {
-	v.occurrences = append(v.occurrences, &scip.Occurrence{
+func (v *fileVisitor) newDefinition(
+	symbol string, rng []int32, enclRng []int32, deprecated bool,
+) {
+	occ := &scip.Occurrence{
 		Range:          rng,
 		Symbol:         symbol,
-		SymbolRoles:    symbolDefinition,
+		SymbolRoles:    int32(scip.SymbolRole_Definition),
 		EnclosingRange: enclRng,
-	})
+	}
+	if deprecated {
+		occ.Diagnostics = deprecatedDiagnostics()
+	}
+	v.occurrences = append(v.occurrences, occ)
 }
 
-func (v *fileVisitor) newReference(symbol string, rng []int32) {
-	v.occurrences = append(v.occurrences, &scip.Occurrence{
+func (v *fileVisitor) newReference(
+	symbol string, rng []int32, deprecated bool,
+) {
+	occ := &scip.Occurrence{
 		Range:       rng,
 		Symbol:      symbol,
-		SymbolRoles: symbolReference,
-	})
+		SymbolRoles: int32(scip.SymbolRole_ReadAccess),
+	}
+	if deprecated {
+		occ.Diagnostics = deprecatedDiagnostics()
+	}
+	v.occurrences = append(v.occurrences, occ)
 }
 
 func (v *fileVisitor) ToScipDocument() *scip.Document {
@@ -373,4 +373,24 @@ func (v *fileVisitor) enclosingRange(n *ast.Ident) []int32 {
 	startPosition := v.pkg.Fset.Position(v.currentFuncDecl.Pos())
 	endPosition := v.pkg.Fset.Position(v.currentFuncDecl.End())
 	return scipRange(startPosition, endPosition, v.pkg.TypesInfo.Defs[n])
+}
+
+func deprecatedDiagnostics() []*scip.Diagnostic {
+	return []*scip.Diagnostic{{
+		Severity: scip.Severity_Warning,
+		Message:  "Deprecated",
+		Tags:     []scip.DiagnosticTag{scip.DiagnosticTag_Deprecated},
+	}}
+}
+
+// isDeprecated reports whether the symbol at pos has documentation containing
+// a "Deprecated:" paragraph per Go convention.
+func (v *fileVisitor) isDeprecated(pos token.Pos) bool {
+	if info, ok := v.pkgSymbols.Get(pos); ok {
+		return document.IsDocDeprecated(info.Documentation)
+	}
+	if info, ok := v.globalSymbols.GetSymbolInformation(v.pkg, pos); ok {
+		return document.IsDocDeprecated(info.Documentation)
+	}
+	return false
 }
