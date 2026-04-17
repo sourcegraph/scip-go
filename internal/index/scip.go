@@ -208,6 +208,11 @@ func indexVisitPackages(
 				continue
 			}
 
+			if len(pkg.Syntax) == 0 {
+				atomic.AddUint64(&count, 1)
+				continue
+			}
+
 			symInfo := &scip.SymbolInformation{
 				Symbol:        pkgSymbol,
 				Kind:          scip.SymbolInformation_Package,
