@@ -228,8 +228,8 @@ func normalizePackage(opts *config.IndexOpts, pkg *packages.Package) *packages.P
 	}
 
 	if pkg.Module.Version == "" {
-		if hasSameRepoRoot(pkg.Module.Path, opts.ModulePath) ||
-			isNestedDir(pkg.Module.Dir, opts.ModuleRoot) {
+		if isNestedDir(pkg.Module.Dir, opts.ModuleRoot) ||
+			hasSameRepoRoot(pkg.Module.Path, opts.ModulePath) {
 			pkg.Module.Version = opts.ModuleVersion
 		} else {
 			slog.Debug(fmt.Sprintf(
