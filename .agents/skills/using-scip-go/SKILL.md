@@ -1,154 +1,91 @@
 ---
 name: using-scip-go
 description: >
-  Indexes Go projects with scip-go to produce SCIP indexes. Use when
-  asked to index, run scip-go, or generate code navigation data for
-  Go code.
+  Generate a SCIP index for a Go module with scip-go. Use when asked
+  to index Go code, produce index.scip / SCIP output, or handle Go
+  monorepos and GOPACKAGESDRIVER-based builds.
 ---
 
-# Using scip-go
+# scip-go
 
-scip-go is an SCIP indexer for Go. It produces `.scip` index files that
-power code navigation (go-to-definition, find-references,
-find-implementations).
-
-## Basic Usage
-
-Run from the root of a Go module (where `go.mod` lives):
+Primary command:
 
 ``` bash
-scip-go index
+# Run from the directory containing the target go.mod
+scip-go index -o index.scip [package-pattern...]
 ```
 
-This indexes all packages (`./...`) and writes `index.scip` in the
-current directory.
-
-## Commands
-
-| Command    | Description                                        |
-|------------|----------------------------------------------------|
-| `index`    | Index Go source code and emit SCIP index (default) |
-| `packages` | List current and dependency packages               |
-| `missing`  | List missing documents                             |
-
-The `index` command is the default and runs when no command is
-specified.
-
-## Common Flags
-
-| Flag                      | Short | Description                                                          |
-|---------------------------|-------|----------------------------------------------------------------------|
-| `--output`                | `-o`  | Output file path (default: `index.scip`)                             |
-| `--module-root`           |       | Directory containing `go.mod` (default: auto-detected)               |
-| `--module-path`           |       | Override module path inferred from `go.mod`                          |
-| `--module-version`        |       | Module version (default: inferred from git)                          |
-| `--go-version`            |       | Go stdlib version to link to, e.g. `go1.22` (default: from `go.mod`) |
-| `--repository-remote`     |       | Canonical repository remote name (default: from git)                 |
-| `--skip-implementations`  |       | Skip generating implementation relationships                        |
-| `--skip-tests`            |       | Skip indexing test files                                             |
-| `--verbose`               | `-V`  | Enable info logs. Use `-VV` for debug logs                           |
-| `--quiet`                 | `-q`  | Suppress all output                                                  |
-| `--version`               | `-v`  | Show version                                                         |
-
-All flags can also be set via environment variables with the flag name
-uppercased and hyphens replaced by underscores (e.g. `MODULE_ROOT`,
-`SKIP_TESTS`, `OUTPUT`).
-
-## Package Patterns
-
-By default scip-go indexes `./...` (all packages recursively). You can
-specify explicit patterns:
+## Standard module
 
 ``` bash
-# Index only specific packages
-scip-go index ./pkg/... ./cmd/...
+cd path/to/module
+scip-go index -o index.scip
+```
 
-# Index a single package
-scip-go index ./internal/loader
+## Specific packages only
+
+``` bash
+scip-go index -o index.scip ./cmd/... ./pkg/...
 ```
 
 See `go help packages` for the full pattern syntax.
 
-## Standard Go Module Projects
-
-For most projects, just run `scip-go` from the module root:
+## Submodule without changing directories
 
 ``` bash
-cd my-project
-scip-go index -o index.scip
+scip-go index --module-root=path/to/module -o module.scip
 ```
 
-## Multi-Module Repositories (Monorepos)
+## Multi-module / go.work repo
 
-For repositories with multiple `go.mod` files (e.g. Kubernetes), index
-each module separately:
+Index each module separately (run once per `go.mod`):
 
 ``` bash
-# Index root module
-scip-go index -o root-index.scip
-
-# Index sub-modules
+scip-go index -o root.scip
 cd staging/src/k8s.io/api
-scip-go index -o api-index.scip
-
-cd staging/src/k8s.io/client-go
-scip-go index -o client-go-index.scip
+scip-go index -o api.scip
 ```
 
-Alternatively, use `--module-root` to point at a sub-module without
-changing directories:
+## Custom build system (Bazel, Buck2, Please)
 
 ``` bash
-scip-go index --module-root=staging/src/k8s.io/api -o api-index.scip
+GOPACKAGESDRIVER=./driver.sh \
+  scip-go index \
+    --module-path=example.com/repo \
+    --module-version=abc1234 \
+    -o index.scip
 ```
 
-## Alternative Build Systems (Bazel, Buck2, Please)
+With `GOPACKAGESDRIVER`, module metadata may be incomplete. Pass
+`--module-path` and, if known, `--module-version` to improve symbol
+identity. Dependency cross-repo navigation may still be limited.
 
-For projects using non-Go build systems, set the `GOPACKAGESDRIVER`
-environment variable:
+## Useful flags
+
+| Flag                     | Short | Description                              |
+|--------------------------|-------|------------------------------------------|
+| `--output`               | `-o`  | Output file (default: `index.scip`)      |
+| `--module-root`          |       | Directory containing `go.mod`            |
+| `--module-path`          |       | Override module path from `go.mod`       |
+| `--module-version`       |       | Module version (default: from git)       |
+| `--go-version`           |       | Go stdlib version, e.g. `go1.22`        |
+| `--skip-tests`           |       | Exclude test files                       |
+| `--skip-implementations` |       | Skip implementation relationship edges   |
+| `--verbose`              | `-V`  | Info logs; use `-VV` for debug           |
+
+## Diagnostics
 
 ``` bash
-GOPACKAGESDRIVER=./gopackagesdriver.sh scip-go index
+scip-go missing   # list files not covered by the index
+scip-go packages  # list current and dependency packages
 ```
 
-Note: cross-repo navigation does not work with custom package drivers
-because the driver protocol does not expose module metadata. Use
-`--module-path` to set the module path manually.
+These accept the same flags and package patterns as `index`.
 
-## Troubleshooting
+## Guardrails
 
-### Go standard library navigation not working
-
-Specify the Go version explicitly:
-
-``` bash
-scip-go index --go-version=go1.22
-```
-
-To enable navigation *into* stdlib source, index the Go source tree
-separately:
-
-``` bash
-cd $(go env GOROOT)/src
-scip-go index --go-version=go1.22
-```
-
-### `unsafe.Pointer` warnings
-
-Warnings about `Unable to find symbol` for `unsafe.Pointer` or
-`unsafe.Sizeof` are expected and harmless — the `unsafe` package is a
-compiler builtin without real source.
-
-### `*types.Label` warnings
-
-Warnings about `*types.Label` (for `goto`/`break`/`continue` labels)
-are expected — Go labels are not symbolized.
-
-### Projects without `go.mod`
-
-Projects without a `go.mod` may have issues. Supply the module name
-explicitly:
-
-``` bash
-scip-go index --module-path="github.com/owner/repo"
-```
+- Always run from the target module root or pass `--module-root`
+  explicitly. Do not rely on automatic detection.
+- `--module-path` sets the module identity in the index but does not
+  replace a working `go.mod` or package driver. If `go/packages`
+  cannot load the code, indexing will fail.
