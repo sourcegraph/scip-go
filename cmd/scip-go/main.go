@@ -95,7 +95,27 @@ func makeOptions(shared *SharedFlags) (config.IndexOpts, error) {
 		slog.Info("Skipping tests")
 	}
 
-	return config.New(moduleRoot, shared.ModuleVersion, modulePath, shared.GoVersion, isStdLib, shared.SkipImplementations, shared.SkipTests, shared.PackagePatterns), nil
+	driver, isPackagesDriverSet := os.LookupEnv("GOPACKAGESDRIVER")
+	if isPackagesDriverSet {
+		if driver == "off" {
+			isPackagesDriverSet = false
+		} else {
+			slog.Info("GOPACKAGESDRIVER", "driver", driver)
+		}
+	}
+
+	return config.IndexOpts{
+		ModuleRoot:            moduleRoot,
+		ModuleVersion:         shared.ModuleVersion,
+		ModulePath:            modulePath,
+		GoStdlibVersion:       shared.GoVersion,
+		IsIndexingStdlib:      isStdLib,
+		SkipImplementations:   shared.SkipImplementations,
+		SkipTests:             shared.SkipTests,
+		PackagePatterns:       shared.PackagePatterns,
+		Arguments:             os.Args[1:],
+		IsGoPackagesDriverSet: isPackagesDriverSet,
+	}, nil
 }
 
 func (cmd *IndexCmd) Run() error {

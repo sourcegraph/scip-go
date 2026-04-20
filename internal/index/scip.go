@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"log/slog"
 	"maps"
+	"net/url"
 	"slices"
 	"sort"
 	"strings"
@@ -80,14 +81,15 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 	// Emit Metadata.
 	//   NOTE: Must be the first field emitted
+	projectRoot := url.URL{Scheme: "file", Path: opts.ModuleRoot}
 	if err := writer(&scip.Metadata{
-		Version: 0,
+		Version: scip.ProtocolVersion_UnspecifiedProtocolVersion,
 		ToolInfo: &scip.ToolInfo{
 			Name:      "scip-go",
 			Version:   ScipGoVersion,
-			Arguments: []string{},
+			Arguments: opts.Arguments,
 		},
-		ProjectRoot:          "file://" + opts.ModuleRoot,
+		ProjectRoot:          projectRoot.String(),
 		TextDocumentEncoding: scip.TextEncoding_UTF8,
 	}); err != nil {
 		return err
