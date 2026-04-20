@@ -1,10 +1,5 @@
 package config
 
-import (
-	"os"
-	"path/filepath"
-)
-
 type IndexOpts struct {
 	ModuleRoot    string
 	ModuleVersion string
@@ -25,26 +20,7 @@ type IndexOpts struct {
 
 	// Package patterns to index
 	PackagePatterns []string
-}
 
-func New(ModuleRoot, ModuleVersion, ModulePath, GoStdlibVersion string, IsIndexingStdlib bool, SkipImplementations bool, SkipTests bool, PackagePatterns []string) IndexOpts {
-	ModuleRoot, err := filepath.Abs(ModuleRoot)
-	if err != nil {
-		panic(err)
-	}
-
-	driver := os.Getenv("GOPACKAGESDRIVER")
-	isGoPackagesDriverSet := driver != "" && driver != "off"
-
-	return IndexOpts{
-		ModuleRoot:            ModuleRoot,
-		ModuleVersion:         ModuleVersion,
-		ModulePath:            ModulePath,
-		GoStdlibVersion:       GoStdlibVersion,
-		SkipImplementations:   SkipImplementations,
-		SkipTests:             SkipTests,
-		IsIndexingStdlib:      IsIndexingStdlib,
-		PackagePatterns:       PackagePatterns,
-		IsGoPackagesDriverSet: isGoPackagesDriverSet,
-	}
+	// Arguments passed to the CLI
+	Arguments []string
 }
