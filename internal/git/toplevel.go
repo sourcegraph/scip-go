@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sourcegraph/scip-go/internal/command"
+	"github.com/scip-code/scip-go/internal/command"
 )
 
 // TopLevel returns the root of the git project containing the given directory.

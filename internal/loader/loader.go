@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sourcegraph/scip-go/internal/config"
-	"github.com/sourcegraph/scip-go/internal/newtypes"
-	"github.com/sourcegraph/scip-go/internal/output"
+	"github.com/scip-code/scip-go/internal/config"
+	"github.com/scip-code/scip-go/internal/newtypes"
+	"github.com/scip-code/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
 	"golang.org/x/mod/semver"

@@ -1,4 +1,4 @@
-module github.com/sourcegraph/scip-go
+module github.com/scip-code/scip-go
 
 go 1.25.0
 

@@ -20,4 +20,4 @@ definitions, SCIP is a protocol serving a greater number of languages. Resolving
 aliases as global references is a more universal approach --- it matches how
 most languages treat imports and ensures consistent cross-language behavior.
 
-  [#34]: https://github.com/sourcegraph/scip-go/issues/34
+  [#34]: https://github.com/scip-code/scip-go/issues/34

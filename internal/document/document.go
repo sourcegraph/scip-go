@@ -14,9 +14,9 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/scip-code/scip-go/internal/lookup"
+	"github.com/scip-code/scip-go/internal/symbols"
 	"github.com/scip-code/scip/bindings/go/scip"
-	"github.com/sourcegraph/scip-go/internal/lookup"
-	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
 

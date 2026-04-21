@@ -6,10 +6,10 @@ import (
 	"go/types"
 	"log/slog"
 
+	"github.com/scip-code/scip-go/internal/loader"
+	"github.com/scip-code/scip-go/internal/lookup"
+	"github.com/scip-code/scip-go/internal/output"
 	"github.com/scip-code/scip/bindings/go/scip"
-	"github.com/sourcegraph/scip-go/internal/loader"
-	"github.com/sourcegraph/scip-go/internal/lookup"
-	"github.com/sourcegraph/scip-go/internal/output"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/types/typeutil"
 )

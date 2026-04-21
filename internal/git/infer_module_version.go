@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/mod/semver"
 
-	"github.com/sourcegraph/scip-go/internal/command"
+	"github.com/scip-code/scip-go/internal/command"
 )
 
 // InferModuleVersion returns the version of the module declared in the given

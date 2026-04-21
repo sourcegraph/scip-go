@@ -3,9 +3,9 @@ package visitors
 import (
 	"go/ast"
 
+	"github.com/scip-code/scip-go/internal/document"
+	"github.com/scip-code/scip-go/internal/symbols"
 	"github.com/scip-code/scip/bindings/go/scip"
-	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip-go/internal/symbols"
 	"golang.org/x/tools/go/packages"
 )
 

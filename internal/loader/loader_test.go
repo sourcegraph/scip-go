@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/sourcegraph/scip-go/internal/config"
+	"github.com/scip-code/scip-go/internal/config"
 	"golang.org/x/mod/module"
 	"golang.org/x/tools/go/packages"
 )
@@ -55,29 +55,29 @@ func TestNormalizePackageSiblingModule(t *testing.T) {
 		{
 			name:            "sibling subpaths in same repo",
 			moduleVersion:   "abc123",
-			modulePath:      "github.com/sourcegraph/scip-go/internal/loader",
-			pkgModulePath:   "github.com/sourcegraph/scip-go/internal/config",
+			modulePath:      "github.com/scip-code/scip-go/internal/loader",
+			pkgModulePath:   "github.com/scip-code/scip-go/internal/config",
 			expectedVersion: "abc123",
 		},
 		{
 			name:            "root module and submodule",
 			moduleVersion:   "abc123",
-			modulePath:      "github.com/sourcegraph/scip-go",
-			pkgModulePath:   "github.com/sourcegraph/scip-go/submodule",
+			modulePath:      "github.com/scip-code/scip-go",
+			pkgModulePath:   "github.com/scip-code/scip-go/submodule",
 			expectedVersion: "abc123",
 		},
 		{
 			name:            "different repos",
 			moduleVersion:   "abc123",
-			modulePath:      "github.com/sourcegraph/scip-go",
+			modulePath:      "github.com/scip-code/scip-go",
 			pkgModulePath:   "github.com/sourcegraph/sourcegraph",
 			expectedVersion: ".",
 		},
 		{
 			name:            "sibling module with empty module version",
 			moduleVersion:   ".",
-			modulePath:      "github.com/sourcegraph/scip-go/module-a",
-			pkgModulePath:   "github.com/sourcegraph/scip-go/module-b",
+			modulePath:      "github.com/scip-code/scip-go/module-a",
+			pkgModulePath:   "github.com/scip-code/scip-go/module-b",
 			expectedVersion: ".",
 		},
 	}
@@ -190,7 +190,7 @@ func TestPackageWithinModule(t *testing.T) {
 
 func TestStdlibDetection(t *testing.T) {
 	std := &packages.Module{Path: "std"}
-	userMod := &packages.Module{Path: "github.com/sourcegraph/scip-go"}
+	userMod := &packages.Module{Path: "github.com/scip-code/scip-go"}
 
 	testCases := []struct {
 		pkgPath  string
@@ -201,7 +201,7 @@ func TestStdlibDetection(t *testing.T) {
 		{"net/http", std, true},
 		{"encoding/json", std, true},
 		{"fmt", nil, true},
-		{"github.com/sourcegraph/scip-go", userMod, false},
+		{"github.com/scip-code/scip-go", userMod, false},
 		{"sg/initial", &packages.Module{Path: "sg/initial"}, false},
 	}
 

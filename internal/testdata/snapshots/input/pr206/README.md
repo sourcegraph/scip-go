@@ -1,6 +1,6 @@
 # pr206 — Doc comments missing from hover documentation
 
-Regression tests for [#108](https://github.com/sourcegraph/scip-go/issues/108):
+Regression tests for [#108](https://github.com/scip-code/scip-go/issues/108):
 hover docs do not contain doc comments for several kinds of symbols.
 
 The `initial/child_symbols.go` test already covers the basic patterns (standalone

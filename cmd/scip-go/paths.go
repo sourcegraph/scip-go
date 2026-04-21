@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/sourcegraph/scip-go/internal/git"
+	"github.com/scip-code/scip-go/internal/git"
 )
 
 var wd = sync.OnceValue(func() string {
