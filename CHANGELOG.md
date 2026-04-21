@@ -1,5 +1,26 @@
 # ChangeLog
 
+## v0.2.0
+
+- Migrate module to `github.com/scip-code/scip-go`
+- Migrate Docker images to GitHub Container Registry
+- Migrate CLI to kong
+- Populate `SymbolInformation.Kind` and `display_name` fields
+- Emit `Deprecated` diagnostics for symbols with `Deprecated:` doc comments
+- Emit implementation relationships for remote type → local interface
+- Make `package` statements handling similar to the way `gopls` treat them
+- Support enclosing ranges for function definitions
+- Support generic type aliases
+- Support resolving versions for sibling submodules in a monorepo
+- Fix module resolution for `go.work` workspaces
+- Import aliases are now resolved as global definitions instead of local
+- Fix anonymous struct symbol naming
+- Fix panic on new stdlib packages
+- Improve hover docs: full type declarations, external package qualifiers,
+  extended doc comments, backtick syntax for struct tags
+- Nixify project setup
+- Upgrade SCIP bindings to v0.7.1
+
 ## v0.1.26
 
 - Add information about local symbols to generated index
