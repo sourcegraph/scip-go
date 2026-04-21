@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v0.2.2
+
+- Add BusyBox to Docker image for shell and basic utilities in CI sidecar workflows
+- Precreate `/work` and `/tmp` in Docker image with Go cache env vars for read-only-root environments
+- Support writing SCIP output to stdout with `-o -`
+
 ## v0.2.1
 
 - Migrate module to `github.com/scip-code/scip-go`
