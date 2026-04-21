@@ -1,6 +1,6 @@
 # ChangeLog
 
-## v0.2.0
+## v0.2.1
 
 - Migrate module to `github.com/scip-code/scip-go`
 - Migrate Docker images to GitHub Container Registry
