@@ -129,6 +129,8 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 		panic(fmt.Sprintf("should never lookup PkgName %s | %+v", obj.Id(), obj.Imported().Path()))
 	case *types.Nil:
 		return nil, false, nil
+	case *types.Label:
+		return nil, false, nil
 	}
 
 	pkg := obj.Pkg()
@@ -155,6 +157,13 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 	}
 
 	pkgPath := pkg.Path()
+
+	// The "unsafe" package is a compiler pseudo-package that is never loaded
+	// via packages.Load, so it has no entry in the global symbols map.
+	if pkgPath == "unsafe" {
+		return nil, false, nil
+	}
+
 	for _, combination := range testPackageCombinations(pkgPath) {
 		symbol, _, ok := p.getSymbolInformationByPath(combination, obj.Pos())
 		if ok {
