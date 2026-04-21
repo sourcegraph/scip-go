@@ -46,6 +46,7 @@
               pkgs.go
               pkgs.git
               pkgs.cacert
+              pkgs.busybox
             ];
             config = {
               Cmd = [ "scip-go" ];
