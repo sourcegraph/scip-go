@@ -154,7 +154,7 @@ jobs:
           MINOR="$(echo "$VERSION" | cut -d. -f1-2)"
           AMD64="ghcr.io/scip-code/scip-go:v${VERSION}-amd64"
           ARM64="ghcr.io/scip-code/scip-go:v${VERSION}-arm64"
-          for TAG in "v$VERSION" "v$MAJOR" "v$MAJOR.$MINOR" "latest"; do
+          for TAG in "v$VERSION" "v$MAJOR" "v$MINOR" "latest"; do
             docker manifest create "ghcr.io/scip-code/scip-go:$TAG" "$AMD64" "$ARM64"
             docker manifest push "ghcr.io/scip-code/scip-go:$TAG"
           done
