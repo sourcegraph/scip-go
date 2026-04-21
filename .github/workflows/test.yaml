@@ -43,7 +43,7 @@ jobs:
       matrix:
         include:
           - name: scip-go
-            repo: sourcegraph/scip-go
+            repo: scip-code/scip-go
             ref: ${{ github.sha }}
             expect_file: "cmd/scip-go/main.go"
           - name: kubernetes
