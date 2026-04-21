@@ -9,7 +9,7 @@ SCIP indexer for Golang.
 This will build and install the latest version of `scip-go`
 
 ```
-go install github.com/sourcegraph/scip-go/cmd/scip-go@latest
+go install github.com/scip-code/scip-go/cmd/scip-go@latest
 ```
 
 You can confirm it's been installed by running:
@@ -80,7 +80,7 @@ NOTE: The rest of this isn't properly implemented yet. It's on the todo list for
 
 ```
 # Install scip-go
-go install github.com/sourcegraph/scip-go/cmd/scip-go@latest
+go install github.com/scip-code/scip-go/cmd/scip-go@latest
 
 # Run scip-go
 scip-go
@@ -121,7 +121,7 @@ go test ./internal/index -update-snapshots
    - A ChangeLog entry with `## vM.N.P`
    - Updated version in `internal/index/version.txt`
 
-2. From the `main` branch, trigger the [release workflow](https://github.com/sourcegraph/scip-go/actions/workflows/release.yml)
+2. From the `main` branch, trigger the [release workflow](https://github.com/scip-code/scip-go/actions/workflows/release.yml)
    via **Actions → release → Run workflow**, entering `M.N.P` as the version.
 
 # Contributing
