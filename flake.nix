@@ -46,10 +46,22 @@
               pkgs.go
               pkgs.git
               pkgs.cacert
+              pkgs.busybox
             ];
+            fakeRootCommands = ''
+              mkdir -p /work /tmp
+            '';
+            enableFakechroot = true;
             config = {
               Cmd = [ "scip-go" ];
-              Env = [ "GOTOOLCHAIN=auto" ];
+              WorkingDir = "/work";
+              Env = [
+                "GOTOOLCHAIN=auto"
+                "HOME=/tmp"
+                "TMPDIR=/tmp"
+                "GOCACHE=/tmp/go-build"
+                "GOMODCACHE=/tmp/go-mod"
+              ];
               Labels = {
                 "org.opencontainers.image.source" = "https://github.com/scip-code/scip-go";
               };

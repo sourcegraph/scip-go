@@ -38,7 +38,7 @@ type SharedFlags struct {
 
 type IndexCmd struct {
 	SharedFlags
-	Output  string `help:"The output file." short:"o" default:"index.scip"`
+	Output  string `help:"The output file. Use '-' to write to stdout." short:"o" default:"index.scip"`
 	Profile int    `help:"Turn on debug profiling. This will reduce performance. Do not turn on unless debugging. Set to number of milliseconds per sample"`
 }
 
@@ -141,11 +141,17 @@ func (cmd *IndexCmd) Run() error {
 		return err
 	}
 
-	file, err := os.Create(cmd.Output)
-	if err != nil {
-		return fmt.Errorf("failed to create scip index file %q: %w", cmd.Output, err)
+	var file *os.File
+	if cmd.Output == "-" {
+		file = os.Stdout
+	} else {
+		var err error
+		file, err = os.Create(cmd.Output)
+		if err != nil {
+			return fmt.Errorf("failed to create scip index file %q: %w", cmd.Output, err)
+		}
+		defer file.Close()
 	}
-	defer file.Close()
 
 	var fileMutex sync.Mutex
 	writer := func(msg proto.Message) error {
@@ -179,14 +185,12 @@ func (cmd *IndexCmd) Run() error {
 		return nil
 	}
 
-	removeOutFileIfPresent := func() {
-		if fileInfo, err := os.Stat(cmd.Output); err == nil && fileInfo.Mode().IsRegular() {
-			os.RemoveAll(cmd.Output)
-		}
-	}
-
 	if err = index.Index(writer, options); err != nil {
-		removeOutFileIfPresent()
+		if cmd.Output != "-" {
+			if fileInfo, statErr := os.Stat(cmd.Output); statErr == nil && fileInfo.Mode().IsRegular() {
+				os.Remove(cmd.Output)
+			}
+		}
 		return err
 	}
 
