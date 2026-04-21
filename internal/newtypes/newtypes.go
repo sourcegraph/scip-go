@@ -7,7 +7,7 @@ import (
 )
 
 // PackageID is a Go package's import path (e.g. "fmt", "encoding/json",
-// "github.com/sourcegraph/scip-go/internal/loader").
+// "github.com/scip-code/scip-go/internal/loader").
 type PackageID string
 
 func GetID(pkg *packages.Package) PackageID {

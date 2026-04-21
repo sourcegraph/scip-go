@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sourcegraph/scip-go/internal/output"
+	"github.com/scip-code/scip-go/internal/output"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/vcs"
 )

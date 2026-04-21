@@ -16,15 +16,15 @@ func TestInferRepo(t *testing.T) {
 		t.Fatalf("unexpected error inferring repo: %s", err)
 	}
 
-	if repo != "github.com/sourcegraph/scip-go" {
-		t.Errorf("unexpected remote repo. want=%q have=%q", "github.com/sourcegraph/scip-go", repo)
+	if repo != "github.com/scip-code/scip-go" {
+		t.Errorf("unexpected remote repo. want=%q have=%q", "github.com/scip-code/scip-go", repo)
 	}
 }
 
 func TestParseRemote(t *testing.T) {
 	testCases := map[string]string{
-		"git@github.com:sourcegraph/scip-go.git":                                "github.com/sourcegraph/scip-go",
-		"https://github.com/sourcegraph/scip-go":                                "github.com/sourcegraph/scip-go",
+		"git@github.com:scip-code/scip-go.git":                                  "github.com/scip-code/scip-go",
+		"https://github.com/scip-code/scip-go":                                  "github.com/scip-code/scip-go",
 		"ssh://git@phabricator.company.com:2222/diffusion/COMPANY/companay.git": "phabricator.company.com/diffusion/COMPANY/companay",
 	}
 

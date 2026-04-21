@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/sourcegraph/scip-go/internal/command"
+	"github.com/scip-code/scip-go/internal/command"
 )
 
 // InferRepo gets a human-readable repository name from the git clone enclosing
@@ -21,7 +21,7 @@ func InferRepo(dir string) (string, error) {
 
 // parseRemote converts a git origin url into a Sourcegraph-friendly repo name.
 func parseRemote(remoteURL string) (string, error) {
-	// e.g., git@github.com:sourcegraph/scip-go.git
+	// e.g., git@github.com:scip-code/scip-go.git
 	if strings.HasPrefix(remoteURL, "git@") {
 		if parts := strings.Split(remoteURL, ":"); len(parts) == 2 {
 			return strings.Join([]string{
@@ -31,7 +31,7 @@ func parseRemote(remoteURL string) (string, error) {
 		}
 	}
 
-	// e.g., https://github.com/sourcegraph/scip-go.git
+	// e.g., https://github.com/scip-code/scip-go.git
 	if url, err := url.Parse(remoteURL); err == nil {
 		return url.Hostname() + strings.TrimSuffix(url.Path, ".git"), nil
 	}

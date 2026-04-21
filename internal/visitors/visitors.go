@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/scip-code/scip-go/internal/document"
+	"github.com/scip-code/scip-go/internal/lookup"
 	"github.com/scip-code/scip/bindings/go/scip"
-	"github.com/sourcegraph/scip-go/internal/document"
-	"github.com/sourcegraph/scip-go/internal/lookup"
 	"golang.org/x/tools/go/packages"
 )
 

@@ -16,5 +16,5 @@ The indexer must correctly:
   arguments.
 - Render hover documentation that includes the type parameter list.
 
-  [#112]: https://github.com/sourcegraph/scip-go/issues/112
+  [#112]: https://github.com/scip-code/scip-go/issues/112
   [go#46477]: https://github.com/golang/go/issues/46477
