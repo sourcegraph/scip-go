@@ -52,8 +52,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: v${{ inputs.version }}
         run: |
-          gh release create "$TAG" --title "scip-go $TAG" --generate-notes \
-            || echo "Release $TAG already exists"
+          gh release create "$TAG" --title "scip-go $TAG" --generate-notes --draft --verify-tag
 
   binaries:
     needs: create-release
@@ -83,7 +82,7 @@ jobs:
         run: |
           cp result/bin/scip-go .
           tar czf "${{ matrix.asset }}.tar.gz" scip-go LICENSE
-          sha256sum "${{ matrix.asset }}.tar.gz" > "${{ matrix.asset }}.tar.gz.sha256"
+          shasum -a 256 "${{ matrix.asset }}.tar.gz" > "${{ matrix.asset }}.tar.gz.sha256"
 
       - name: Upload release assets
         env:
@@ -159,3 +158,15 @@ jobs:
             docker manifest create "ghcr.io/scip-code/scip-go:$TAG" "$AMD64" "$ARM64"
             docker manifest push "ghcr.io/scip-code/scip-go:$TAG"
           done
+
+  publish-release:
+    needs: [binaries, docker-manifest]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit "v${{ inputs.version }}" --repo "${{ github.repository }}" --draft=false
