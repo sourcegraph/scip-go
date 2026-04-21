@@ -50,6 +50,9 @@
             config = {
               Cmd = [ "scip-go" ];
               Env = [ "GOTOOLCHAIN=auto" ];
+              Labels = {
+                "org.opencontainers.image.source" = "https://github.com/scip-code/scip-go";
+              };
             };
           };
         };
