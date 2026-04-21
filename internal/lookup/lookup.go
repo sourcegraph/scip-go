@@ -129,6 +129,8 @@ func (p *Global) GetSymbolOfObject(obj types.Object) (*scip.SymbolInformation, b
 		panic(fmt.Sprintf("should never lookup PkgName %s | %+v", obj.Id(), obj.Imported().Path()))
 	case *types.Nil:
 		return nil, false, nil
+	case *types.Label:
+		return nil, false, nil
 	}
 
 	pkg := obj.Pkg()
