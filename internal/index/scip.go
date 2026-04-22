@@ -141,7 +141,6 @@ func Index(writer func(proto.Message) error, opts config.IndexOpts) error {
 					doc,
 					pkg,
 					file,
-					allPackages,
 					pkgSymbols,
 					globalSymbols,
 				)

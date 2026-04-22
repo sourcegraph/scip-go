@@ -8,7 +8,6 @@ import (
 	"log/slog"
 
 	"github.com/scip-code/scip-go/internal/document"
-	"github.com/scip-code/scip-go/internal/loader"
 	"github.com/scip-code/scip-go/internal/lookup"
 	"github.com/scip-code/scip-go/internal/newtypes"
 	"github.com/scip-code/scip-go/internal/symbols"
@@ -20,7 +19,6 @@ func NewFileVisitor(
 	doc *document.Document,
 	pkg *packages.Package,
 	file *ast.File,
-	pkgLookup loader.PackageLookup,
 	pkgSymbols *lookup.Package,
 	globalSymbols *lookup.Global,
 ) *fileVisitor {
@@ -40,7 +38,6 @@ func NewFileVisitor(
 		doc:           doc,
 		pkg:           pkg,
 		file:          file,
-		pkgLookup:     pkgLookup,
 		locals:        map[token.Pos]lookup.Local{},
 		pkgSymbols:    pkgSymbols,
 		globalSymbols: globalSymbols,
@@ -60,9 +57,6 @@ type fileVisitor struct {
 	// Current file information
 	pkg  *packages.Package
 	file *ast.File
-
-	// soething
-	pkgLookup loader.PackageLookup
 
 	// local definition position to symbol and its type information
 	locals map[token.Pos]lookup.Local
