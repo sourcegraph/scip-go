@@ -3,5 +3,22 @@
   "ignorePaths": [ "**/internal/testdata/snapshots/**", ".tool-versions" ],
   "extends": [
     "local>sourcegraph/renovate-config"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^\\.github/workflows/test\\.yaml$"],
+      "matchStrings": [
+        "repo: (?<depName>[^\\s]+)\\s+ref: (?<currentValue>v[^\\s]+)"
+      ],
+      "datasourceTemplate": "github-releases"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["custom.regex"],
+      "matchFileNames": [".github/workflows/test.yaml"],
+      "schedule": ["on the first day of the month in January,April,July,October"]
+    }
   ]
 }
