@@ -108,11 +108,7 @@ go test ./internal/index -update-snapshots
 
 ## Cutting releases
 
-1.  Land a PR with the following changes:
-
-    - A ChangeLog entry with `## vM.N.P`
-    - Updated version in `internal/index/version.txt`
-
+1.  Land a PR with updated `internal/index/version.txt`
 2.  From the `main` branch, trigger the [release workflow] via **Actions →
     release → Run workflow**, entering `M.N.P` as the version.
 
