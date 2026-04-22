@@ -128,9 +128,20 @@ jobs:
             | jq -e --arg f "${{ matrix.expect_file }}" \
                 'any(.documents[]; .relative_path == $f)'
 
+  fingerprint-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache-dependency-path: go.sum
+      - run: ./internal/implementations/fingerprint/sync.sh
+      - run: git diff --exit-code internal/implementations/fingerprint/fingerprint.go
+
   ci-test:
     if: always()
-    needs: [build, docker, index]
+    needs: [build, docker, index, fingerprint-sync]
     runs-on: ubuntu-latest
     steps:
       - if: >-
