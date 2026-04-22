@@ -4,8 +4,12 @@ import (
 	"fmt"
 	"go/ast"
 	"go/types"
+	"hash/crc32"
 	"log/slog"
+	"sync"
+	"sync/atomic"
 
+	"github.com/scip-code/scip-go/internal/implementations/fingerprint"
 	"github.com/scip-code/scip-go/internal/loader"
 	"github.com/scip-code/scip-go/internal/lookup"
 	"github.com/scip-code/scip-go/internal/output"
@@ -26,9 +30,46 @@ type ImplDef struct {
 	Ident   *ast.Ident
 	Named   *types.Named
 	Methods map[methodID]*scip.SymbolInformation
+
+	// Precomputed fields for fast filtering before calling types.Implements.
+	Mask           uint64 // bitmask of hashed method signatures
+	MethodCount    int
+	HasUnexported  bool   // true if any method is unexported
+	PkgPath        string // package path, used to skip cross-package checks for unexported methods
 }
 
-func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string]ImplDef, symbols *lookup.Global) {
+// methodMask computes a 64-bit bitmask from a set of methods, using
+// the same algorithm as gopls's methodsets package. Each method's
+// identity (Id + fingerprint) is hashed and mapped to a single bit.
+// The resulting mask enables O(1) rejection of non-matching
+// type/interface pairs: if ty.Mask & iface.Mask != iface.Mask,
+// the type is missing at least one method of the interface.
+func methodMask(methods []*types.Selection) uint64 {
+	var mask uint64
+	var buf []byte
+	for _, m := range methods {
+		fn := m.Obj().(*types.Func)
+		id := fn.Id()
+		fp, _ := fingerprint.Encode(fn.Signature())
+		buf = append(buf[:0], id...)
+		buf = append(buf, fp...)
+		sum := crc32.ChecksumIEEE(buf)
+		mask |= 1 << uint64(((sum>>24)^(sum>>16)^(sum>>8)^sum)&0x3f)
+	}
+	return mask
+}
+
+// hasUnexportedMethods returns true if any of the given methods is unexported.
+func hasUnexportedMethods(methods []*types.Selection) bool {
+	for _, m := range methods {
+		if !m.Obj().Exported() {
+			return true
+		}
+	}
+	return false
+}
+
+func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string]ImplDef, symbols *lookup.Global, count *uint64) {
 	for _, ty := range concreteTypes {
 		pos := ty.Ident.Pos()
 		sym, ok := symbols.GetSymbolInformation(ty.Pkg, pos)
@@ -43,6 +84,25 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 
 			ifaceType, ok := iface.Named.Underlying().(*types.Interface)
 			if !ok {
+				continue
+			}
+
+			// Fast filter 1: if the interface has unexported methods,
+			// only types in the same package can implement it.
+			if iface.HasUnexported && ty.PkgPath != iface.PkgPath {
+				continue
+			}
+
+			// Fast filter 2: the type must have at least as many methods
+			// as the interface requires.
+			if ty.MethodCount < iface.MethodCount {
+				continue
+			}
+
+			// Fast filter 3: bitmask subset check. If the type's mask
+			// doesn't cover all bits of the interface's mask, the type
+			// is definitely missing at least one required method.
+			if ty.Mask&iface.Mask != iface.Mask {
 				continue
 			}
 
@@ -72,6 +132,8 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 				})
 			}
 		}
+
+		atomic.AddUint64(count, 1)
 	}
 }
 
@@ -81,50 +143,60 @@ func AddImplementationRelationships(
 	symbols *lookup.Global,
 ) ([]*scip.SymbolInformation, error) {
 	var externalSymbols []*scip.SymbolInformation
-	err := output.WithProgress("Indexing Implementations", func() error {
-		var msCache typeutil.MethodSetCache
-		localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(
-			pkgs, symbols, &msCache)
-		if err != nil {
-			return err
+
+	var msCache typeutil.MethodSetCache
+	localInterfaces, localTypes, err := extractInterfacesAndConcreteTypes(
+		pkgs, symbols, &msCache)
+	if err != nil {
+		return nil, err
+	}
+
+	remotePackages := make(loader.PackageLookup)
+	for pkgID, pkg := range allPackages {
+		if _, ok := pkgs[pkgID]; ok {
+			continue
 		}
 
-		remotePackages := make(loader.PackageLookup)
-		for pkgID, pkg := range allPackages {
-			if _, ok := pkgs[pkgID]; ok {
-				continue
-			}
+		remotePackages[pkgID] = pkg
+	}
+	remoteInterfaces, remoteTypes, err := extractInterfacesAndConcreteTypes(
+		remotePackages, symbols, &msCache)
+	if err != nil {
+		return nil, err
+	}
 
-			remotePackages[pkgID] = pkg
-		}
-		remoteInterfaces, remoteTypes, err := extractInterfacesAndConcreteTypes(
-			remotePackages, symbols, &msCache)
-		if err != nil {
-			return err
-		}
+	// Total concrete types to check across the three passes.
+	total := uint64(len(localTypes)*2 + len(remoteTypes))
+	var count uint64
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
 
 		// local type -> local interface
-		findImplementations(localTypes, localInterfaces, symbols)
+		findImplementations(localTypes, localInterfaces, symbols, &count)
 
 		// local type -> remote interface
-		findImplementations(localTypes, remoteInterfaces, symbols)
+		findImplementations(localTypes, remoteInterfaces, symbols, &count)
 
 		// remote type -> local interface
 		// We emit these as external symbols so index consumer can merge them.
-		findImplementations(remoteTypes, localInterfaces, symbols)
+		findImplementations(remoteTypes, localInterfaces, symbols, &count)
+	}()
 
-		// Collect remote type symbols that gained relationships
-		for _, typ := range remoteTypes {
-			if sym, ok := symbols.GetSymbolInformation(typ.Pkg, typ.Ident.Pos()); ok {
-				if len(sym.Relationships) > 0 {
-					externalSymbols = append(externalSymbols, sym)
-				}
+	output.WithProgressParallel(&wg, "Indexing Implementations", &count, total)
+
+	// Collect remote type symbols that gained relationships
+	for _, typ := range remoteTypes {
+		if sym, ok := symbols.GetSymbolInformation(typ.Pkg, typ.Ident.Pos()); ok {
+			if len(sym.Relationships) > 0 {
+				externalSymbols = append(externalSymbols, sym)
 			}
 		}
+	}
 
-		return nil
-	})
-	return externalSymbols, err
+	return externalSymbols, nil
 }
 
 func extractInterfacesAndConcreteTypes(
@@ -209,11 +281,15 @@ func extractInterfacesAndConcreteTypes(
 			}
 
 			d := ImplDef{
-				Symbol:  symbol,
-				Pkg:     pkg,
-				Ident:   ident,
-				Named:   objType,
-				Methods: methodIds,
+				Symbol:        symbol,
+				Pkg:           pkg,
+				Ident:         ident,
+				Named:         objType,
+				Methods:       methodIds,
+				Mask:          methodMask(methods),
+				MethodCount:   len(methods),
+				HasUnexported: hasUnexportedMethods(methods),
+				PkgPath:       pkg.PkgPath,
 			}
 
 			if types.IsInterface(objType) {
