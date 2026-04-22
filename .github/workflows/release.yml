@@ -22,6 +22,10 @@ jobs:
         env:
           NEW_VERSION: ${{ inputs.version }}
         run: |
+          if ! echo "$NEW_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "error: version '$NEW_VERSION' does not match semantic versioning (expected X.Y.Z)"
+            exit 1
+          fi
           VERSION_FILE_PATH="internal/index/version.txt"
           if ! grep -q "$NEW_VERSION" "$VERSION_FILE_PATH"; then
             echo "error: scip-go version in $VERSION_FILE_PATH doesn't match NEW_VERSION=$NEW_VERSION"
