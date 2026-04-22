@@ -22,13 +22,13 @@ jobs:
         env:
           NEW_VERSION: ${{ inputs.version }}
         run: |
+          if ! echo "$NEW_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "error: version '$NEW_VERSION' does not match semantic versioning (expected X.Y.Z)"
+            exit 1
+          fi
           VERSION_FILE_PATH="internal/index/version.txt"
           if ! grep -q "$NEW_VERSION" "$VERSION_FILE_PATH"; then
             echo "error: scip-go version in $VERSION_FILE_PATH doesn't match NEW_VERSION=$NEW_VERSION"
-            exit 1
-          fi
-          if ! grep -q "## v$NEW_VERSION" CHANGELOG.md; then
-            echo "error: Missing CHANGELOG entry for v$NEW_VERSION"
             exit 1
           fi
 
@@ -73,7 +73,6 @@ jobs:
         with:
           ref: v${{ inputs.version }}
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
 
       - name: Build
         run: nix build .#scip-go
@@ -110,7 +109,6 @@ jobs:
         with:
           ref: v${{ inputs.version }}
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
