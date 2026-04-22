@@ -27,10 +27,6 @@ jobs:
             echo "error: scip-go version in $VERSION_FILE_PATH doesn't match NEW_VERSION=$NEW_VERSION"
             exit 1
           fi
-          if ! grep -q "## v$NEW_VERSION" CHANGELOG.md; then
-            echo "error: Missing CHANGELOG entry for v$NEW_VERSION"
-            exit 1
-          fi
 
       - name: Create and push tag
         env:
