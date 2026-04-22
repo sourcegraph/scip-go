@@ -121,7 +121,7 @@ jobs:
           echo "Index size: $size bytes"
           [ "$size" -ge 1024 ] || { echo "FAIL: index too small"; exit 1; }
 
-          scip stats --from "$GITHUB_WORKSPACE/index.scip" \
+          scip stats --from "$GITHUB_WORKSPACE/index.scip" --project-root . \
             | jq -e '.documents > 0 and .occurrences > 0 and .definitions > 0'
 
           scip print --json "$GITHUB_WORKSPACE/index.scip" \
