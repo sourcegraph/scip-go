@@ -1,8 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "ignorePaths": [ "**/internal/testdata/snapshots/**", ".tool-versions" ],
+  "ignorePaths": [ "internal/testdata/snapshots/**" ],
   "extends": [
-    "local>sourcegraph/renovate-config"
+    "config:recommended"
   ],
   "customManagers": [
     {
