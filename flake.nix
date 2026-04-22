@@ -37,7 +37,8 @@
             nativeCheckInputs = [ pkgs.git ];
           };
           default = self.packages.${system}.scip-go;
-
+        }
+        // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
           docker = pkgs.dockerTools.buildLayeredImage {
             name = "scip-go";
             tag = version;

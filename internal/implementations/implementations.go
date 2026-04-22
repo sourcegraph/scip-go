@@ -32,10 +32,10 @@ type ImplDef struct {
 	Methods map[methodID]*scip.SymbolInformation
 
 	// Precomputed fields for fast filtering before calling types.Implements.
-	Mask           uint64 // bitmask of hashed method signatures
-	MethodCount    int
-	HasUnexported  bool   // true if any method is unexported
-	PkgPath        string // package path, used to skip cross-package checks for unexported methods
+	Mask          uint64 // bitmask of hashed method signatures
+	MethodCount   int
+	HasUnexported bool   // true if any method is unexported
+	PkgPath       string // package path, used to skip cross-package checks for unexported methods
 }
 
 // methodMask computes a 64-bit bitmask from a set of methods, using
