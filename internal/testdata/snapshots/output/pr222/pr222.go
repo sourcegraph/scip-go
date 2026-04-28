@@ -1,16 +1,16 @@
-  package depsymbols
-//        ^^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/
-//                   kind Package
-//                   display_name depsymbols
-//                   signature_documentation
-//                   > package depsymbols
+  package pr222
+//        ^^^^^ definition 0.1.test `sg/pr222`/
+//              kind Package
+//              display_name pr222
+//              signature_documentation
+//              > package pr222
   
   import "github.com/example/deplib"
 //        ^^^^^^^^^^^^^^^^^^^^^^^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/
   
-//⌄ enclosing_range_start 0.1.test `sg/dep-symbols`/UseGenericField().
+//⌄ enclosing_range_start 0.1.test `sg/pr222`/UseGenericField().
   func UseGenericField() int {
-//     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/UseGenericField().
+//     ^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr222`/UseGenericField().
 //                     kind Function
 //                     display_name UseGenericField
 //                     signature_documentation
@@ -28,11 +28,11 @@
 //        ^ reference local 0
 //          ^^^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/Box#Value.
   }
-//⌃ enclosing_range_end 0.1.test `sg/dep-symbols`/UseGenericField().
+//⌃ enclosing_range_end 0.1.test `sg/pr222`/UseGenericField().
   
-//⌄ enclosing_range_start 0.1.test `sg/dep-symbols`/UseGenericMethod().
+//⌄ enclosing_range_start 0.1.test `sg/pr222`/UseGenericMethod().
   func UseGenericMethod() string {
-//     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/UseGenericMethod().
+//     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr222`/UseGenericMethod().
 //                      kind Function
 //                      display_name UseGenericMethod
 //                      signature_documentation
@@ -50,11 +50,11 @@
 //        ^ reference local 1
 //          ^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/Box#Get().
   }
-//⌃ enclosing_range_end 0.1.test `sg/dep-symbols`/UseGenericMethod().
+//⌃ enclosing_range_end 0.1.test `sg/pr222`/UseGenericMethod().
   
-//⌄ enclosing_range_start 0.1.test `sg/dep-symbols`/UseNonGenericField().
+//⌄ enclosing_range_start 0.1.test `sg/pr222`/UseNonGenericField().
   func UseNonGenericField() string {
-//     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/UseNonGenericField().
+//     ^^^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr222`/UseNonGenericField().
 //                        kind Function
 //                        display_name UseNonGenericField
 //                        signature_documentation
@@ -73,11 +73,11 @@
 //        ^ reference local 2
 //          ^^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/Config#Name.
   }
-//⌃ enclosing_range_end 0.1.test `sg/dep-symbols`/UseNonGenericField().
+//⌃ enclosing_range_end 0.1.test `sg/pr222`/UseNonGenericField().
   
-//⌄ enclosing_range_start 0.1.test `sg/dep-symbols`/UseConst().
+//⌄ enclosing_range_start 0.1.test `sg/pr222`/UseConst().
   func UseConst() string {
-//     ^^^^^^^^ definition 0.1.test `sg/dep-symbols`/UseConst().
+//     ^^^^^^^^ definition 0.1.test `sg/pr222`/UseConst().
 //              kind Function
 //              display_name UseConst
 //              signature_documentation
@@ -86,11 +86,11 @@
 //        ^^^^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/
 //               ^^^^^^^^^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/DefaultName.
   }
-//⌃ enclosing_range_end 0.1.test `sg/dep-symbols`/UseConst().
+//⌃ enclosing_range_end 0.1.test `sg/pr222`/UseConst().
   
-//⌄ enclosing_range_start 0.1.test `sg/dep-symbols`/UseVar().
+//⌄ enclosing_range_start 0.1.test `sg/pr222`/UseVar().
   func UseVar() int {
-//     ^^^^^^ definition 0.1.test `sg/dep-symbols`/UseVar().
+//     ^^^^^^ definition 0.1.test `sg/pr222`/UseVar().
 //            kind Function
 //            display_name UseVar
 //            signature_documentation
@@ -99,65 +99,65 @@
 //        ^^^^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/
 //               ^^^^^^^^^^^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/GlobalCounter.
   }
-//⌃ enclosing_range_end 0.1.test `sg/dep-symbols`/UseVar().
+//⌃ enclosing_range_end 0.1.test `sg/pr222`/UseVar().
   
   type LocalType struct{}
-//     ^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/LocalType#
+//     ^^^^^^^^^ definition 0.1.test `sg/pr222`/LocalType#
 //               kind Struct
 //               display_name LocalType
 //               signature_documentation
 //               > type LocalType struct{}
 //               relationship github.com/example/deplib 0.1.test `github.com/example/deplib`/Stringer# implementation
   
-//⌄ enclosing_range_start 0.1.test `sg/dep-symbols`/LocalType#String().
+//⌄ enclosing_range_start 0.1.test `sg/pr222`/LocalType#String().
   func (l LocalType) String() string { return "local" }
 //      ^ definition local 3
 //        kind Variable
 //        display_name l
 //        signature_documentation
 //        > var l LocalType
-//        ^^^^^^^^^ reference 0.1.test `sg/dep-symbols`/LocalType#
-//                   ^^^^^^ definition 0.1.test `sg/dep-symbols`/LocalType#String().
+//        ^^^^^^^^^ reference 0.1.test `sg/pr222`/LocalType#
+//                   ^^^^^^ definition 0.1.test `sg/pr222`/LocalType#String().
 //                          kind Method
 //                          display_name String
 //                          signature_documentation
 //                          > func (LocalType).String() string
 //                          relationship github.com/example/deplib 0.1.test `github.com/example/deplib`/Stringer#String(). implementation
-//                                                    ⌃ enclosing_range_end 0.1.test `sg/dep-symbols`/LocalType#String().
+//                                                    ⌃ enclosing_range_end 0.1.test `sg/pr222`/LocalType#String().
   
   type EmbeddedStringer struct {
-//     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/EmbeddedStringer#
+//     ^^^^^^^^^^^^^^^^ definition 0.1.test `sg/pr222`/EmbeddedStringer#
 //                      kind Struct
 //                      display_name EmbeddedStringer
 //                      signature_documentation
 //                      > type EmbeddedStringer struct{ LocalType }
 //                      relationship github.com/example/deplib 0.1.test `github.com/example/deplib`/Stringer# implementation
    LocalType
-// ^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/EmbeddedStringer#LocalType.
+// ^^^^^^^^^ definition 0.1.test `sg/pr222`/EmbeddedStringer#LocalType.
 //           kind Field
 //           display_name LocalType
 //           signature_documentation
 //           > struct field LocalType LocalType
-// ^^^^^^^^^ reference 0.1.test `sg/dep-symbols`/LocalType#
+// ^^^^^^^^^ reference 0.1.test `sg/pr222`/LocalType#
   }
   
   type LocalInterface interface {
-//     ^^^^^^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/LocalInterface#
+//     ^^^^^^^^^^^^^^ definition 0.1.test `sg/pr222`/LocalInterface#
 //                    kind Interface
 //                    display_name LocalInterface
 //                    signature_documentation
 //                    > type LocalInterface interface{ Get() int }
    Get() int
-// ^^^ definition 0.1.test `sg/dep-symbols`/LocalInterface#Get.
+// ^^^ definition 0.1.test `sg/pr222`/LocalInterface#Get.
 //     kind MethodSpecification
 //     display_name Get
 //     signature_documentation
 //     > func (LocalInterface).Get() int
   }
   
-//⌄ enclosing_range_start 0.1.test `sg/dep-symbols`/UseDepWriter().
+//⌄ enclosing_range_start 0.1.test `sg/pr222`/UseDepWriter().
   func UseDepWriter(w deplib.Writer) {
-//     ^^^^^^^^^^^^ definition 0.1.test `sg/dep-symbols`/UseDepWriter().
+//     ^^^^^^^^^^^^ definition 0.1.test `sg/pr222`/UseDepWriter().
 //                  kind Function
 //                  display_name UseDepWriter
 //                  signature_documentation
@@ -173,5 +173,5 @@
 // ^ reference local 4
 //   ^^^^^ reference github.com/example/deplib 0.1.test `github.com/example/deplib`/Writer#Write().
   }
-//⌃ enclosing_range_end 0.1.test `sg/dep-symbols`/UseDepWriter().
+//⌃ enclosing_range_end 0.1.test `sg/pr222`/UseDepWriter().
   

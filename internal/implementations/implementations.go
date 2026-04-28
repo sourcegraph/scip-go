@@ -125,7 +125,7 @@ func findImplementations(concreteTypes map[string]ImplDef, interfaces map[string
 func AddImplementationRelationships(
 	pkgs loader.PackageLookup,
 	allPackages loader.PackageLookup,
-	extractor Extractor,
+	extractor *Extractor,
 ) ([]*scip.SymbolInformation, error) {
 	var externalSymbols []*scip.SymbolInformation
 

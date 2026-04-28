@@ -1,4 +1,4 @@
-package depsymbols
+package pr222
 
 import "github.com/example/deplib"
 

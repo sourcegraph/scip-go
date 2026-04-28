@@ -10,7 +10,7 @@ import (
 )
 
 func TestComposeNil(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	if got := c.Compose(pkg, nil); got != "" {
@@ -19,7 +19,7 @@ func TestComposeNil(t *testing.T) {
 }
 
 func TestComposeNilPkg(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	obj := types.Universe.Lookup("len")
@@ -29,7 +29,7 @@ func TestComposeNilPkg(t *testing.T) {
 }
 
 func TestComposeTypeName(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")
@@ -44,7 +44,7 @@ func TestComposeTypeName(t *testing.T) {
 }
 
 func TestComposeConst(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")
@@ -58,7 +58,7 @@ func TestComposeConst(t *testing.T) {
 }
 
 func TestComposePackageVar(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")
@@ -72,7 +72,7 @@ func TestComposePackageVar(t *testing.T) {
 }
 
 func TestComposeFunc(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")
@@ -87,7 +87,7 @@ func TestComposeFunc(t *testing.T) {
 }
 
 func TestComposeMethod(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")
@@ -106,7 +106,7 @@ func TestComposeMethod(t *testing.T) {
 }
 
 func TestComposeMethodPointerReceiver(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")
@@ -125,7 +125,7 @@ func TestComposeMethodPointerReceiver(t *testing.T) {
 }
 
 func TestComposeStructField(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")
@@ -144,10 +144,7 @@ func TestComposeStructField(t *testing.T) {
 }
 
 func TestComposeDefaultModule(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{
-		DefaultModulePath:    "example.com/project",
-		DefaultModuleVersion: "1.0.0",
-	})
+	c := symbols.NewComposer("example.com/project", "1.0.0")
 	pkg := &packages.Package{PkgPath: "example.com/lib"}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")
@@ -161,7 +158,7 @@ func TestComposeDefaultModule(t *testing.T) {
 }
 
 func TestComposeMemoization(t *testing.T) {
-	c := symbols.NewComposer(symbols.ComposerConfig{})
+	c := symbols.NewComposer("", "")
 	pkg := &packages.Package{PkgPath: "example.com/lib", Module: &packages.Module{Path: "example.com/lib", Version: "v1.0.0"}}
 
 	tpkg := types.NewPackage("example.com/lib", "lib")

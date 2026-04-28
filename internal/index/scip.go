@@ -60,10 +60,7 @@ func ListMissing(opts config.IndexOpts) (missing []string, err error) {
 		return nil, err
 	}
 
-	composer := symbols.NewComposer(symbols.ComposerConfig{
-		DefaultModulePath:    opts.ModuleRoot,
-		DefaultModuleVersion: opts.ModuleVersion,
-	})
+	composer := symbols.NewComposer(opts.ModuleRoot, opts.ModuleVersion)
 	globalSymbols := lookup.NewGlobalSymbols(composer)
 
 	pathToDocuments := map[string]*document.Document{}
@@ -187,10 +184,7 @@ func indexVisitPackages(
 ) (map[string]*document.Document, *lookup.Global) {
 	pathToDocuments := map[string]*document.Document{}
 
-	composer := symbols.NewComposer(symbols.ComposerConfig{
-		DefaultModulePath:    opts.ModuleRoot,
-		DefaultModuleVersion: opts.ModuleVersion,
-	})
+	composer := symbols.NewComposer(opts.ModuleRoot, opts.ModuleVersion)
 	globalSymbols := lookup.NewGlobalSymbols(composer)
 	for _, pkg := range allPackages {
 		globalSymbols.SetPkgSymbol(pkg)

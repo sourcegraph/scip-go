@@ -1,4 +1,4 @@
-module sg/dep-symbols
+module sg/pr222
 
 go 1.22
 

@@ -21,7 +21,7 @@ func NewPackageSymbols(pkg *packages.Package) *Package {
 	}
 }
 
-func NewGlobalSymbols(composer symbols.Composer) *Global {
+func NewGlobalSymbols(composer *symbols.Composer) *Global {
 	return &Global{
 		symbols:    map[newtypes.PackageID]*Package{},
 		pkgSymbols: map[newtypes.PackageID]string{},
@@ -76,10 +76,10 @@ type Global struct {
 	m          sync.Mutex
 	symbols    map[newtypes.PackageID]*Package
 	pkgSymbols map[newtypes.PackageID]string
-	composer   symbols.Composer
+	composer   *symbols.Composer
 }
 
-func (p *Global) Composer() symbols.Composer {
+func (p *Global) Composer() *symbols.Composer {
 	return p.composer
 }
 

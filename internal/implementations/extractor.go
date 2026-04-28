@@ -12,22 +12,18 @@ import (
 	"golang.org/x/tools/go/types/typeutil"
 )
 
-type Extractor interface {
-	Extract(pkgLookup loader.PackageLookup) (interfaces, concretes map[string]ImplDef)
-}
-
-type extractor struct {
+type Extractor struct {
 	global         *lookup.Global
 	methodSetCache typeutil.MethodSetCache
 }
 
-func NewExtractor(global *lookup.Global) Extractor {
-	return &extractor{
+func NewExtractor(global *lookup.Global) *Extractor {
+	return &Extractor{
 		global: global,
 	}
 }
 
-func (e *extractor) Extract(pkgLookup loader.PackageLookup) (map[string]ImplDef, map[string]ImplDef) {
+func (e *Extractor) Extract(pkgLookup loader.PackageLookup) (map[string]ImplDef, map[string]ImplDef) {
 	interfaces := map[string]ImplDef{}
 	concretes := map[string]ImplDef{}
 
@@ -48,7 +44,7 @@ func (e *extractor) Extract(pkgLookup loader.PackageLookup) (map[string]ImplDef,
 	return interfaces, concretes
 }
 
-func (e *extractor) extractLocal(pkg *packages.Package, interfaces, concretes map[string]ImplDef) {
+func (e *Extractor) extractLocal(pkg *packages.Package, interfaces, concretes map[string]ImplDef) {
 	pkgSymbols := e.global.GetPackage(pkg)
 	if pkgSymbols == nil {
 		slog.Warn("No symbols for package", "path", pkg.PkgPath)
@@ -89,7 +85,7 @@ func (e *extractor) extractLocal(pkg *packages.Package, interfaces, concretes ma
 	}
 }
 
-func (e *extractor) extractRemote(pkg *packages.Package, interfaces, concretes map[string]ImplDef) {
+func (e *Extractor) extractRemote(pkg *packages.Package, interfaces, concretes map[string]ImplDef) {
 	scope := pkg.Types.Scope()
 
 	for _, name := range scope.Names() {
@@ -112,7 +108,7 @@ func (e *extractor) extractRemote(pkg *packages.Package, interfaces, concretes m
 	}
 }
 
-func (e *extractor) classify(
+func (e *Extractor) classify(
 	named *types.Named,
 	sym *scip.SymbolInformation,
 	pkgPath string,

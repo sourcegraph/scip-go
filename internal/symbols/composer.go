@@ -2,47 +2,43 @@ package symbols
 
 import (
 	"go/types"
+	"sync"
 
 	"github.com/scip-code/scip/bindings/go/scip"
 	"golang.org/x/tools/go/packages"
 )
 
-const (
-	_scheme  = "scip-go"
-	_manager = "gomod"
-)
-
-type Composer interface {
-	Compose(pkg *packages.Package, obj types.Object) string
-}
-
-type ComposerConfig struct {
-	DefaultModulePath    string
-	DefaultModuleVersion string
-}
-
-type composer struct {
+type Composer struct {
 	defaultModulePath    string
 	defaultModuleVersion string
 
+	mu           sync.Mutex
 	compositions map[types.Object]string
-	fieldOwners  map[*types.Var]*types.TypeName
 }
 
-func NewComposer(cfg ComposerConfig) Composer {
-	return &composer{
-		defaultModulePath:    cfg.DefaultModulePath,
-		defaultModuleVersion: cfg.DefaultModuleVersion,
+func NewComposer(defaultModulePath, defaultModuleVersion string) *Composer {
+	return &Composer{
+		defaultModulePath:    defaultModulePath,
+		defaultModuleVersion: defaultModuleVersion,
 
 		compositions: make(map[types.Object]string),
-		fieldOwners:  make(map[*types.Var]*types.TypeName),
 	}
 }
 
-func (c *composer) Compose(pkg *packages.Package, obj types.Object) string {
+func (c *Composer) Compose(pkg *packages.Package, obj types.Object) string {
 	if obj == nil || obj.Pkg() == nil {
 		return ""
 	}
+
+	switch o := obj.(type) {
+	case *types.Var:
+		obj = o.Origin()
+	case *types.Func:
+		obj = o.Origin()
+	}
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
 	if composition, ok := c.compositions[obj]; ok {
 		return composition
@@ -66,30 +62,30 @@ func (c *composer) Compose(pkg *packages.Package, obj types.Object) string {
 	}
 
 	c.compositions[obj] = scip.VerboseSymbolFormatter.FormatSymbol(&scip.Symbol{
-		Scheme:      _scheme,
+		Scheme:      "scip-go",
 		Package:     c.pack(pkg),
 		Descriptors: descriptors,
 	})
 	return c.compositions[obj]
 }
 
-func (c *composer) pack(pkg *packages.Package) *scip.Package {
+func (c *Composer) pack(pkg *packages.Package) *scip.Package {
 	if pkg == nil || pkg.Module == nil {
 		return &scip.Package{
-			Manager: _manager,
+			Manager: "gomod",
 			Name:    c.defaultModulePath,
 			Version: c.defaultModuleVersion,
 		}
 	}
 
 	return &scip.Package{
-		Manager: _manager,
+		Manager: "gomod",
 		Name:    pkg.Module.Path,
 		Version: pkg.Module.Version,
 	}
 }
 
-func (c *composer) describePkgName(pkgName *types.PkgName) []*scip.Descriptor {
+func (c *Composer) describePkgName(pkgName *types.PkgName) []*scip.Descriptor {
 	return []*scip.Descriptor{
 		{
 			Name:   pkgName.Imported().Path(),
@@ -98,7 +94,7 @@ func (c *composer) describePkgName(pkgName *types.PkgName) []*scip.Descriptor {
 	}
 }
 
-func (c *composer) describeTypeName(typeName *types.TypeName) []*scip.Descriptor {
+func (c *Composer) describeTypeName(typeName *types.TypeName) []*scip.Descriptor {
 	return []*scip.Descriptor{
 		{
 			Name:   typeName.Pkg().Path(),
@@ -111,7 +107,7 @@ func (c *composer) describeTypeName(typeName *types.TypeName) []*scip.Descriptor
 	}
 }
 
-func (c *composer) describeConst(constant *types.Const) []*scip.Descriptor {
+func (c *Composer) describeConst(constant *types.Const) []*scip.Descriptor {
 	return []*scip.Descriptor{
 		{
 			Name:   constant.Pkg().Path(),
@@ -124,7 +120,7 @@ func (c *composer) describeConst(constant *types.Const) []*scip.Descriptor {
 	}
 }
 
-func (c *composer) describeFunc(fn *types.Func) []*scip.Descriptor {
+func (c *Composer) describeFunc(fn *types.Func) []*scip.Descriptor {
 	sig, ok := fn.Type().(*types.Signature)
 	if !ok {
 		return nil
@@ -164,7 +160,7 @@ func (c *composer) describeFunc(fn *types.Func) []*scip.Descriptor {
 	}
 }
 
-func (c *composer) nameType(t types.Type) string {
+func (c *Composer) nameType(t types.Type) string {
 	for {
 		switch u := types.Unalias(t).(type) {
 		case *types.Pointer:
@@ -177,7 +173,7 @@ func (c *composer) nameType(t types.Type) string {
 	}
 }
 
-func (c *composer) describeVar(variable *types.Var) []*scip.Descriptor {
+func (c *Composer) describeVar(variable *types.Var) []*scip.Descriptor {
 	if !variable.IsField() {
 		return []*scip.Descriptor{
 			{
@@ -212,18 +208,10 @@ func (c *composer) describeVar(variable *types.Var) []*scip.Descriptor {
 	}
 }
 
-func (c *composer) locateOwner(field *types.Var) *types.TypeName {
-	origin := field.Origin()
-
-	if owner, ok := c.fieldOwners[origin]; ok {
-		return owner
-	}
-
+func (c *Composer) locateOwner(field *types.Var) *types.TypeName {
 	scope := field.Pkg().Scope()
 	for _, name := range scope.Names() {
-		obj := scope.Lookup(name)
-
-		typeName, ok := obj.(*types.TypeName)
+		typeName, ok := scope.Lookup(name).(*types.TypeName)
 		if !ok {
 			continue
 		}
@@ -238,10 +226,12 @@ func (c *composer) locateOwner(field *types.Var) *types.TypeName {
 			continue
 		}
 
-		for field := range structType.Fields() {
-			c.fieldOwners[field.Origin()] = typeName
+		for f := range structType.Fields() {
+			if f == field {
+				return typeName
+			}
 		}
 	}
 
-	return c.fieldOwners[origin]
+	return nil
 }
