@@ -15,6 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v22
+        with:
+          summarize: false
       - uses: DeterminateSystems/magic-nix-cache-action@v13
       - run: nix flake check
       - run: nix build .#scip-go
@@ -34,6 +36,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@v22
+        with:
+          summarize: false
       - uses: DeterminateSystems/magic-nix-cache-action@v13
       - run: nix build .#docker
 
@@ -112,7 +116,9 @@ jobs:
 
       - name: Run scip-go
         working-directory: target
-        run: scip-go -o "$GITHUB_WORKSPACE/index.scip" -VV
+        run: |
+          /usr/bin/time -v -o "$GITHUB_WORKSPACE/metrics.txt" \
+            scip-go -o "$GITHUB_WORKSPACE/index.scip" -VV
 
       - name: Validate index
         working-directory: target
@@ -127,6 +133,16 @@ jobs:
           scip print --json "$GITHUB_WORKSPACE/index.scip" \
             | jq -e --arg f "${{ matrix.expect_file }}" \
                 'any(.documents[]; .relative_path == $f)'
+
+      - name: Report resource usage
+        run: |
+          {
+            echo "### scip-go: ${{ matrix.name }}"
+            echo '```'
+            grep -E 'Maximum resident|User time|System time|Percent of CPU' \
+              "$GITHUB_WORKSPACE/metrics.txt"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   fingerprint-sync:
     runs-on: ubuntu-latest
