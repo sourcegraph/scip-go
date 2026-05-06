@@ -18,7 +18,7 @@
     {
       "matchManagers": ["custom.regex"],
       "matchFileNames": [".github/workflows/test.yaml"],
-      "schedule": ["on the first day of the month in January,April,July,October"]
+      "schedule": ["* * 1 */3 *"]
     }
   ]
 }
