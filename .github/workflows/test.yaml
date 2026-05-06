@@ -67,6 +67,22 @@ jobs:
             ref: v0.50.0
             expect_file: "cmd/gazelle/main.go"
             gopackagesdriver: true
+          - name: prometheus
+            repo: prometheus/prometheus
+            ref: v3.0.1
+            expect_file: "cmd/prometheus/main.go"
+          - name: hugo
+            repo: gohugoio/hugo
+            ref: v0.143.1
+            expect_file: "main.go"
+          - name: tailscale
+            repo: tailscale/tailscale
+            ref: v1.78.1
+            expect_file: "cmd/tailscale/cli/cli.go"
+          - name: klauspost-compress
+            repo: klauspost/compress
+            ref: v1.18.0
+            expect_file: "s2/encode.go"
 
     runs-on: ubuntu-latest
     name: ${{ matrix.name }}
