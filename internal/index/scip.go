@@ -22,6 +22,7 @@ import (
 	"github.com/scip-code/scip-go/internal/symbols"
 	"github.com/scip-code/scip-go/internal/visitors"
 	"github.com/scip-code/scip/bindings/go/scip"
+	"golang.org/x/tools/go/packages"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -204,6 +205,18 @@ func indexVisitPackages(
 		for _, pkgID := range lookupIDs {
 			pkg := projectPackages[pkgID]
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
+
+			// Some packages have no syntax files for the current build:
+			// - "unsafe" is a compiler-builtin pseudo-package with no source.
+			// - Build-constrained packages (e.g. internal/runtime/wasitest)
+			//   may have zero matching .go files for the host platform.
+			// There is nothing to visit in either case.
+			if len(pkg.Syntax) == 0 {
+				slog.Debug("Skipping package with no syntax files", "path", pkg.PkgPath)
+				atomic.AddUint64(&count, 1)
+				continue
+			}
+
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
 			pkgSymbol, _ := globalSymbols.GetPkgSymbol(pkg)
@@ -218,12 +231,23 @@ func indexVisitPackages(
 					Text:     "package " + pkg.Name,
 				},
 			}
-			firstFile := pkg.Syntax[0]
-			firstDoc := pathToDocuments[pkg.Fset.File(firstFile.Package).Name()]
+			// Find the first file that produced a document. Some files
+			// may have been skipped by VisitPackageSyntax (e.g. generated
+			// files outside the module root), so pkg.Syntax[0] is not
+			// guaranteed to be in pathToDocuments.
+			firstFile, firstDoc := firstSyntaxWithDocument(pkg, pathToDocuments)
+			if firstDoc == nil {
+				slog.Debug("Skipping package with no in-tree syntax files", "path", pkg.PkgPath)
+				atomic.AddUint64(&count, 1)
+				continue
+			}
 			firstDoc.SetSymbolInformation(firstFile.Name.NamePos, symInfo)
 
 			for _, f := range pkg.Syntax {
 				doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]
+				if doc == nil {
+					continue
+				}
 				position := pkg.Fset.Position(f.Name.NamePos)
 
 				doc.PackageOccurrence = &scip.Occurrence{
@@ -240,4 +264,20 @@ func indexVisitPackages(
 	output.WithProgressParallel(&wg, "Visiting Packages", &count, uint64(len(lookupIDs)))
 
 	return pathToDocuments, globalSymbols
+}
+
+// firstSyntaxWithDocument returns the first parsed file in pkg.Syntax that
+// has an associated *document.Document in pathToDocuments. Files outside
+// the module root (e.g. generated _testmain.go in $GOCACHE) are skipped
+// during visiting and won't appear in pathToDocuments.
+func firstSyntaxWithDocument(
+	pkg *packages.Package,
+	pathToDocuments map[string]*document.Document,
+) (*ast.File, *document.Document) {
+	for _, f := range pkg.Syntax {
+		if doc := pathToDocuments[pkg.Fset.File(f.Package).Name()]; doc != nil {
+			return f, doc
+		}
+	}
+	return nil, nil
 }

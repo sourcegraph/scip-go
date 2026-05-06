@@ -122,9 +122,78 @@ func LoadPackages(
 			projectPackages[newtypes.GetID(pkg)] = allPackages[newtypes.GetID(pkg)]
 		}
 
+		// Promote any in-tree dependency to a project package.
+		//
+		// `go list ./...` and friends deliberately exclude vendor/
+		// directories, so vendored dependencies arrive only via the
+		// transitive import graph. Their source lives in the repository
+		// being indexed, however, so they should be indexed (with
+		// definitions, hover docs, etc.) just like first-party code.
+		// The most prominent case is the standard library, which vendors
+		// golang.org/x/{crypto,net,...} under src/vendor/, but the same
+		// applies to any module that vendors its dependencies.
+		for id, pkg := range allPackages {
+			if _, ok := projectPackages[id]; ok {
+				continue
+			}
+			if isInTree(pkg, moduleRoot) {
+				projectPackages[id] = pkg
+			}
+		}
+
 		return nil
 	})
 	return projectPackages, allPackages, err
+}
+
+// isInTree reports whether pkg's source files live under root. Packages
+// loaded transitively from the module cache, GOROOT, or anywhere outside
+// the indexed tree return false.
+//
+// Use Syntax (or CompiledGoFiles, falling back to GoFiles) because some
+// loaders—most notably the stdlib's vendored packages loaded via export
+// data—report empty GoFiles even though their source is on disk and
+// available via the parsed Syntax file positions.
+func isInTree(pkg *packages.Package, root string) bool {
+	if pkg == nil {
+		return false
+	}
+
+	files := packageSourceFiles(pkg)
+	if len(files) == 0 {
+		return false
+	}
+
+	for _, f := range files {
+		rel, err := filepath.Rel(root, f)
+		if err != nil || !filepath.IsLocal(rel) {
+			return false
+		}
+	}
+	return true
+}
+
+// packageSourceFiles returns the paths of all parseable source files
+// associated with pkg, preferring Syntax (parsed AST) > CompiledGoFiles
+// > GoFiles.
+func packageSourceFiles(pkg *packages.Package) []string {
+	if pkg == nil {
+		return nil
+	}
+
+	if len(pkg.Syntax) > 0 && pkg.Fset != nil {
+		files := make([]string, 0, len(pkg.Syntax))
+		for _, f := range pkg.Syntax {
+			if tf := pkg.Fset.File(f.Package); tf != nil {
+				files = append(files, tf.Name())
+			}
+		}
+		return files
+	}
+	if len(pkg.CompiledGoFiles) > 0 {
+		return pkg.CompiledGoFiles
+	}
+	return pkg.GoFiles
 }
 
 func isStandardLib(pkg *packages.Package) bool {
