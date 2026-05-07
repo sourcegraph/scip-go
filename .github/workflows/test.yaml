@@ -67,6 +67,11 @@ jobs:
             ref: v0.50.0
             expect_file: "cmd/gazelle/main.go"
             gopackagesdriver: true
+          - name: golang
+            repo: golang/go
+            ref: go1.26.2
+            expect_file: "fmt/print.go"
+            module_root: src
 
     runs-on: ubuntu-latest
     name: ${{ matrix.name }}
@@ -99,7 +104,7 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: stable
-          cache-dependency-path: target/go.sum
+          cache-dependency-path: target/${{ matrix.module_root || '.' }}/go.sum
 
       - name: Set up GOPACKAGESDRIVER
         if: matrix.gopackagesdriver
@@ -114,11 +119,16 @@ jobs:
           chmod +x "$driver"
           echo "GOPACKAGESDRIVER=$driver" >> "$GITHUB_ENV"
 
+      - name: Point GOROOT at target stdlib
+        if: matrix.name == 'golang'
+        run: echo "GOROOT=$GITHUB_WORKSPACE/target" >> "$GITHUB_ENV"
+
       - name: Run scip-go
         working-directory: target
         run: |
           /usr/bin/time -v -o "$GITHUB_WORKSPACE/metrics.txt" \
-            scip-go -o "$GITHUB_WORKSPACE/index.scip" -VV
+            scip-go --module-root="${{ matrix.module_root || '.' }}" \
+              -o "$GITHUB_WORKSPACE/index.scip" -VV
 
       - name: Validate index
         working-directory: target
@@ -127,7 +137,8 @@ jobs:
           echo "Index size: $size bytes"
           [ "$size" -ge 1024 ] || { echo "FAIL: index too small"; exit 1; }
 
-          scip stats --from "$GITHUB_WORKSPACE/index.scip" --project-root . \
+          scip stats --from "$GITHUB_WORKSPACE/index.scip" \
+              --project-root "${{ matrix.module_root || '.' }}" \
             | jq -e '.documents > 0 and .occurrences > 0 and .definitions > 0'
 
           scip print --json "$GITHUB_WORKSPACE/index.scip" \
