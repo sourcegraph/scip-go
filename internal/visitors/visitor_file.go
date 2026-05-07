@@ -110,7 +110,15 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 			return nil
 		}
 
-		importedPackage := v.lookupImportedPackage(node, pkgName)
+		// pkg.Imports is keyed by the import path string as it appears
+		// in source, not by the resolved path returned by the type checker
+		// (the two differ for vendored imports).
+		sourcePath, err := strconv.Unquote(node.Path.Value)
+		if err != nil {
+			slog.Warn("Could not find node", "node.Path", node.Path)
+			return nil
+		}
+		importedPackage := v.pkg.Imports[sourcePath]
 		if importedPackage == nil {
 			slog.Warn("Could not find node", "node.Path", node.Path)
 			return nil
@@ -269,32 +277,6 @@ func (v *fileVisitor) Visit(n ast.Node) ast.Visitor {
 	}
 
 	return v
-}
-
-// lookupImportedPackage resolves an *ast.ImportSpec to its loaded
-// *packages.Package.
-//
-// pkg.Imports is keyed by the import path string as it appears in the
-// source code, while pkgName.Imported().Path() returns the resolved path.
-// These differ when an import is satisfied through a vendor directory
-// (most commonly the standard library's own vendored copies of
-// golang.org/x/...), so we try both keys.
-func (v *fileVisitor) lookupImportedPackage(
-	node *ast.ImportSpec,
-	pkgName *types.PkgName,
-) *packages.Package {
-	if sourcePath, err := strconv.Unquote(node.Path.Value); err == nil {
-		if imp := v.pkg.Imports[sourcePath]; imp != nil {
-			return imp
-		}
-	}
-
-	resolvedPath := pkgName.Imported().Path()
-	if imp := v.pkg.Imports[resolvedPath]; imp != nil {
-		return imp
-	}
-
-	return nil
 }
 
 func (v *fileVisitor) emitImportReference(

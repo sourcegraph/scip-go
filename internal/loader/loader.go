@@ -143,54 +143,21 @@ func LoadPackages(
 	return projectPackages, allPackages, err
 }
 
-// isInTree reports whether pkg's source files live under root. Packages
-// loaded transitively from the module cache, GOROOT, or anywhere outside
-// the indexed tree return false.
-//
-// Use Syntax (or CompiledGoFiles, falling back to GoFiles) because some
-// loaders—most notably the stdlib's vendored packages loaded via export
-// data—report empty GoFiles even though their source is on disk and
-// available via the parsed Syntax file positions.
+// isInTree reports whether pkg's source files live under root. All files
+// of a Go package share a directory, so checking the first parsed file
+// is sufficient. We deliberately use Syntax (rather than GoFiles) because
+// some loaders—most notably the stdlib's vendored packages loaded via
+// export data—report empty GoFiles even when source is available on disk.
 func isInTree(pkg *packages.Package, root string) bool {
-	if pkg == nil {
+	if pkg == nil || len(pkg.Syntax) == 0 || pkg.Fset == nil {
 		return false
 	}
-
-	files := packageSourceFiles(pkg)
-	if len(files) == 0 {
+	f := pkg.Fset.File(pkg.Syntax[0].Package)
+	if f == nil {
 		return false
 	}
-
-	for _, f := range files {
-		rel, err := filepath.Rel(root, f)
-		if err != nil || !filepath.IsLocal(rel) {
-			return false
-		}
-	}
-	return true
-}
-
-// packageSourceFiles returns the paths of all parseable source files
-// associated with pkg, preferring Syntax (parsed AST) > CompiledGoFiles
-// > GoFiles.
-func packageSourceFiles(pkg *packages.Package) []string {
-	if pkg == nil {
-		return nil
-	}
-
-	if len(pkg.Syntax) > 0 && pkg.Fset != nil {
-		files := make([]string, 0, len(pkg.Syntax))
-		for _, f := range pkg.Syntax {
-			if tf := pkg.Fset.File(f.Package); tf != nil {
-				files = append(files, tf.Name())
-			}
-		}
-		return files
-	}
-	if len(pkg.CompiledGoFiles) > 0 {
-		return pkg.CompiledGoFiles
-	}
-	return pkg.GoFiles
+	rel, err := filepath.Rel(root, f.Name())
+	return err == nil && filepath.IsLocal(rel)
 }
 
 func isStandardLib(pkg *packages.Package) bool {
