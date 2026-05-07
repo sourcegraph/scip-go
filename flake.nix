@@ -91,6 +91,11 @@
             fi
             touch $out
           '';
+          renovate = pkgs.runCommand "check-renovate" { } ''
+            LOG_LEVEL=warn ${pkgs.renovate}/bin/renovate-config-validator \
+              ${./.github/renovate.json}
+            touch $out
+          '';
         };
 
         devShells = {
