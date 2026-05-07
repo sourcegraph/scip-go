@@ -206,11 +206,6 @@ func indexVisitPackages(
 			pkg := projectPackages[pkgID]
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
 
-			// Some packages have no syntax files for the current build:
-			// - "unsafe" is a compiler-builtin pseudo-package with no source.
-			// - Build-constrained packages (e.g. internal/runtime/wasitest)
-			//   may have zero matching .go files for the host platform.
-			// There is nothing to visit in either case.
 			if len(pkg.Syntax) == 0 {
 				slog.Debug("Skipping package with no syntax files", "path", pkg.PkgPath)
 				atomic.AddUint64(&count, 1)
@@ -231,10 +226,6 @@ func indexVisitPackages(
 					Text:     "package " + pkg.Name,
 				},
 			}
-			// Find the first file that produced a document. Some files
-			// may have been skipped by VisitPackageSyntax (e.g. generated
-			// files outside the module root), so pkg.Syntax[0] is not
-			// guaranteed to be in pathToDocuments.
 			firstFile, firstDoc := firstSyntaxWithDocument(pkg, pathToDocuments)
 			if firstDoc == nil {
 				slog.Debug("Skipping package with no in-tree syntax files", "path", pkg.PkgPath)
@@ -266,10 +257,9 @@ func indexVisitPackages(
 	return pathToDocuments, globalSymbols
 }
 
-// firstSyntaxWithDocument returns the first parsed file in pkg.Syntax that
-// has an associated *document.Document in pathToDocuments. Files outside
-// the module root (e.g. generated _testmain.go in $GOCACHE) are skipped
-// during visiting and won't appear in pathToDocuments.
+// firstSyntaxWithDocument returns the first parsed file in pkg.Syntax that has
+// an associated *document.Document in pathToDocuments. Files outside the module
+// root are skipped during visiting and won't appear in pathToDocuments.
 func firstSyntaxWithDocument(
 	pkg *packages.Package,
 	pathToDocuments map[string]*document.Document,

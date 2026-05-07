@@ -124,14 +124,11 @@ func LoadPackages(
 
 		// Promote any in-tree dependency to a project package.
 		//
-		// `go list ./...` and friends deliberately exclude vendor/
-		// directories, so vendored dependencies arrive only via the
-		// transitive import graph. Their source lives in the repository
-		// being indexed, however, so they should be indexed (with
-		// definitions, hover docs, etc.) just like first-party code.
-		// The most prominent case is the standard library, which vendors
-		// golang.org/x/{crypto,net,...} under src/vendor/, but the same
-		// applies to any module that vendors its dependencies.
+		// `go list ./...` deliberately exclude vendor/ directories, so vendored
+		// dependencies arrive only via the transitive import graph. Their source
+		// lives in the repository being indexed, however, so they should be indexed
+		// just like first-party code. The most prominent case is the standard
+		// library, which vendors golang.org/x/{crypto,net,...} under src/vendor/.
 		for id, pkg := range allPackages {
 			if _, ok := projectPackages[id]; ok {
 				continue

@@ -28,11 +28,6 @@ func VisitPackageSyntax(
 		abs := pkg.Fset.File(f.Package).Name()
 		relative, err := filepath.Rel(moduleRoot, abs)
 		if err != nil || !filepath.IsLocal(relative) {
-			// The file is outside the module root. This commonly happens
-			// for generated files placed by the toolchain in $GOCACHE
-			// (e.g. _testmain.go for "<pkg>.test" packages). Such files
-			// are machine-specific, recreated on every build, and not
-			// part of the source tree being indexed, so skip them.
 			continue
 		}
 
