@@ -1,0 +1,70 @@
+name: update-vendor-hash
+
+# Renovate updates go.mod / go.sum but cannot update the vendorHash in
+# flake.nix, which causes the Nix build to fail until the hash is fixed by
+# hand. This workflow watches Renovate PRs that modify the Go module files,
+# recomputes the vendorHash with `nix-update`, pushes the corrected flake.nix
+# back to the PR branch, and re-dispatches the `test` workflow.
+#
+# The dispatch is necessary because GitHub deliberately does not trigger
+# workflow runs from commits pushed with the default GITHUB_TOKEN.
+
+on:
+  pull_request:
+    paths:
+      - go.mod
+      - go.sum
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    # Only Renovate's same-repo PRs: forks can't be pushed to with
+    # GITHUB_TOKEN, and we only want to react to Renovate-authored branches.
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.head_ref, 'renovate/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: DeterminateSystems/nix-installer-action@v22
+        with:
+          summarize: false
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+
+      - name: Recompute vendorHash with nix-update
+        run: |
+          nix run github:Mic92/nix-update -- \
+            --flake --version=skip scip-go
+
+      - name: Commit, push, and re-trigger test workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Pass head_ref through an env var rather than expanding it
+          # directly in the shell, since branch names are user-controlled
+          # input and could in principle contain shell metacharacters.
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet flake.nix; then
+            echo "vendorHash unchanged; nothing to push."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add flake.nix
+          git commit -m 'chore: update vendorHash for go.mod changes'
+          git push
+          # Dispatch the test workflow against the new HEAD so the PR's
+          # check status reflects the fixed build, not the stale one from
+          # Renovate's original commit.
+          gh workflow run test.yaml --ref "$HEAD_REF"

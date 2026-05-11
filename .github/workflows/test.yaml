@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch: # Dispatched by .github/workflows/update-vendor-hash.yaml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
