@@ -146,8 +146,7 @@ func LoadPackages(
 // isInTree reports whether pkg's source files live under root. All files
 // of a Go package share a directory, so checking the first parsed file
 // is sufficient. We deliberately use Syntax (rather than GoFiles) because
-// some loaders—most notably the stdlib's vendored packages loaded via
-// export data—report empty GoFiles even when source is available on disk.
+// some loaders report empty GoFiles even when source is available on disk.
 func isInTree(pkg *packages.Package, root string) bool {
 	if pkg == nil || len(pkg.Syntax) == 0 || pkg.Fset == nil {
 		return false
