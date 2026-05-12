@@ -3,11 +3,20 @@ name: update-vendor-hash
 # Renovate updates go.mod / go.sum but cannot update the vendorHash in
 # flake.nix, which causes the Nix build to fail until the hash is fixed by
 # hand. This workflow watches Renovate PRs that modify the Go module files,
-# recomputes the vendorHash with `nix-update`, pushes the corrected flake.nix
-# back to the PR branch, and re-dispatches the `test` workflow.
+# recomputes the vendorHash with `nix-update`, and pushes the corrected
+# flake.nix back to the PR branch using a GitHub App token. We can't just
+# use the regular token as it wouldn't re-trigger GitHub actions.
 #
-# The dispatch is necessary because GitHub deliberately does not trigger
-# workflow runs from commits pushed with the default GITHUB_TOKEN.
+# Setup (one-time)
+# ----------------
+# 1. Create a GitHub App (Settings → Developer settings → GitHub Apps).
+#    Disable webhooks. Repository permissions:
+#      - Contents: Read & write
+#      - Metadata: Read
+# 2. Generate a private key (.pem) and install the App on this repository.
+# 3. In repository settings:
+#      - Add a *variable* RENOVATE_FIX_APP_ID          = <numeric app id>
+#      - Add a *secret*   RENOVATE_FIX_APP_PRIVATE_KEY = <pem contents>
 
 on:
   pull_request:
@@ -16,8 +25,7 @@ on:
       - go.sum
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -25,16 +33,20 @@ concurrency:
 
 jobs:
   update:
-    # Only Renovate's same-repo PRs: forks can't be pushed to with
-    # GITHUB_TOKEN, and we only want to react to Renovate-authored branches.
-    if: >-
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      startsWith(github.head_ref, 'renovate/')
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.RENOVATE_FIX_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_FIX_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: DeterminateSystems/nix-installer-action@v22
         with:
@@ -42,17 +54,9 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@v13
 
       - name: Recompute vendorHash with nix-update
-        run: |
-          nix run github:Mic92/nix-update -- \
-            --flake --version=skip scip-go
+        run: nix run github:Mic92/nix-update -- --flake --version=skip scip-go
 
-      - name: Commit, push, and re-trigger test workflow
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Pass head_ref through an env var rather than expanding it
-          # directly in the shell, since branch names are user-controlled
-          # input and could in principle contain shell metacharacters.
-          HEAD_REF: ${{ github.head_ref }}
+      - name: Commit and push
         run: |
           set -euo pipefail
           if git diff --quiet flake.nix; then
@@ -64,7 +68,3 @@ jobs:
           git add flake.nix
           git commit -m 'chore: update vendorHash for go.mod changes'
           git push
-          # Dispatch the test workflow against the new HEAD so the PR's
-          # check status reflects the fixed build, not the stale one from
-          # Renovate's original commit.
-          gh workflow run test.yaml --ref "$HEAD_REF"
