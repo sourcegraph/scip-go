@@ -3,7 +3,7 @@ module github.com/scip-code/scip-go
 go 1.25.0
 
 require (
-	github.com/alecthomas/kong v1.14.0
+	github.com/alecthomas/kong v1.15.0
 	github.com/scip-code/scip/bindings/go/scip v0.7.1
 	golang.org/x/mod v0.34.0
 	golang.org/x/tools v0.43.0
