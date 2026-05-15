@@ -206,6 +206,15 @@ func indexVisitPackages(
 			slog.Debug("Visiting package", "path", pkg.PkgPath)
 			visitors.VisitPackageSyntax(opts.ModuleRoot, pkg, pathToDocuments, globalSymbols)
 
+			// A package may have no parsed source files (e.g. a directory
+			// that only contains *_test.go files belonging to an external
+			// "*_test" package). There is nothing to attach package symbol
+			// information or occurrences to, so skip it.
+			if len(pkg.Syntax) == 0 {
+				atomic.AddUint64(&count, 1)
+				continue
+			}
+
 			pkgSymbol, _ := globalSymbols.GetPkgSymbol(pkg)
 
 			symInfo := &scip.SymbolInformation{
