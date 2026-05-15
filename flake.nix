@@ -46,7 +46,9 @@
               self.packages.${system}.scip-go
               pkgs.go
               pkgs.git
-              pkgs.cacert
+              pkgs.dockerTools.caCertificates
+              pkgs.dockerTools.usrBinEnv
+              pkgs.dockerTools.fakeNss
               pkgs.busybox
             ];
             fakeRootCommands = ''
