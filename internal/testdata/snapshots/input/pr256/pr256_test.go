@@ -1,4 +1,4 @@
-package comment_test
+package pr256_test
 
 import "testing"
 
